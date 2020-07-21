@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "242065106765",
+    "firebase_url": "https://techstagram-377cf.firebaseio.com",
+    "project_id": "techstagram-377cf",
+    "storage_bucket": "techstagram-377cf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242065106765:android:bb3580adf12dc7b2397904",
+        "android_client_info": {
+          "package_name": "com.affletus.techstagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "242065106765-03i2cgqgieaooun01sjtgkeu7e1d9qtb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCgvAY3rozi5VbdAcLd0_MnTfPLMgAtzA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "242065106765-03i2cgqgieaooun01sjtgkeu7e1d9qtb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
