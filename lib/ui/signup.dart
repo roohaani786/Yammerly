@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:techstagram/Widget/bezierContainer.dart';
 
 import 'HomePage.dart';
@@ -54,105 +55,133 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-        backgroundColor: Colors.grey.shade900,
-
+//        backgroundColor: Colors.grey.shade900,
+    backgroundColor: Colors.white,
+ 
         body: Container(
             height: height,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/sd.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
+////            decoration: BoxDecoration(
+////              image: DecorationImage(
+////                image: AssetImage("assets/sd.png"),
+////                fit: BoxFit.cover,
+////              ),
+//            ),
             padding: const EdgeInsets.all(20.0),
             child: SingleChildScrollView(
                 child: Form(
                   key: _registerFormKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(top: 150.0),
-                        child: Container(
-                          height: 200.0,
-                          child: Image.asset("assets/flash.png",
-                          height: 300.0,
-                          width: 300.0,),
-                        ),
-                      ),
-                      Container(
-                        height: 50.0,
-                        child: new Theme(
-                          data: new ThemeData(
-                            primaryColor: Colors.blueAccent,
-                          ),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                                border: new OutlineInputBorder(
-                                  borderRadius: const BorderRadius.all(
-                                    const Radius.circular(60.0),
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: Row(
+                          children: [
+                            Column(
+                              children: [
+                                Container(
 
-                                  ),
-                                ),
-
-                                fillColor: Color(0xfff3f3f4),
-
-                                filled: true,
-                                hintText: "first name",),
-                            controller: firstNameInputController,
-                            validator: (value) {
-                              if (value.length < 3) {
-                                return "Please enter a valid first name";
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Container(
-                          height: 50.0,
-                          child: new Theme(
-                            data: new ThemeData(
-                              primaryColor: Colors.blueAccent,
-                            ),
-                            child: TextFormField(
-                                decoration: InputDecoration(
-                                    border: new OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                        const Radius.circular(60.0),
-
-                                      ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(40.0),
                                     ),
-                                    fillColor: Color(0xfff3f3f4),
-                                    filled: true,
-                                     hintText: "last name"),
-                                controller: lastNameInputController,
-                                validator: (value) {
-                                  if (value.length < 3) {
-                                    return "Please enter a valid last name.";
-                                  }
-                                }),
-                          ),
+                                    height: 50.0,
+                                    width: 50.0,
+                                    child: Image.asset("assets/google-logo.png",
+                                      )),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(60.0),
+                                      ),
+                                      height: 44.0,
+                                      width: 50.0,
+                                      child: Image.asset("assets/fb-logo.png",)),
+                                ),
+                                Container(
+                                    height: 50.0,
+                                    width: 50.0,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(60.0),
+                                    ),
+                                    child: Image.asset("assets/phone-icon.png")),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 60.0,top: 140.0),
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 0.0),
+                                child: Container(
+                                  height: 120.0,
+
+                                  child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text("SIGNUP",
+                                      style: TextStyle(
+                                        color: Colors.deepPurple,
+                                        fontSize: 25.0,
+                                        fontWeight: FontWeight.bold,
+
+                                      ),)),
+//                                Image.asset("assets/flashu.png",
+//                                ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+
+//                      Padding(
+//                        padding: const EdgeInsets.only(top: 8.0),
+//                        child: Container(
+//                          height: 50.0,
+//                          child: new Theme(
+//                            data: new ThemeData(
+//                              primaryColor: Colors.blueAccent,
+//                            ),
+//                            child: TextFormField(
+//                                decoration: InputDecoration(
+////                                    border: new OutlineInputBorder(
+////                                      borderRadius: const BorderRadius.all(
+////                                        const Radius.circular(60.0),
+////
+////                                      ),
+////                                    ),
+//                                    fillColor: Colors.white70,
+//                                    filled: true,
+//                                     hintText: "last name"),
+//                                controller: lastNameInputController,
+//                                validator: (value) {
+//                                  if (value.length < 3) {
+//                                    return "Please enter a valid last name.";
+//                                  }
+//                                }),
+//                          ),
+//                        ),
+//                      ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
+                        padding: const EdgeInsets.only(top: 10.0),
                         child: Container(
                           height: 50.0,
                           child: new Theme(
                             data: new ThemeData(
-                              primaryColor: Colors.blueAccent,
+                              primaryColor: Colors.deepPurple,
                             ),
                             child: TextFormField(
 
                               decoration: InputDecoration(
-                                  border: new OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                      const Radius.circular(60.0),
-
-                                    ),
-                                  ),
-                                  fillColor: Color(0xfff3f3f4),
+//                                  border: new OutlineInputBorder(
+//                                    borderRadius: const BorderRadius.all(
+//                                      const Radius.circular(60.0),
+//
+//                                    ),
+//                                  ),
+                                  fillColor: Colors.white70,
                                   filled: true,
                                    hintText: "email"),
                               controller: emailInputController,
@@ -168,17 +197,17 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 50.0,
                           child: new Theme(
                             data: new ThemeData(
-                              primaryColor: Colors.blueAccent,
+                              primaryColor: Colors.deepPurple,
                             ),
                             child: TextFormField(
                               decoration: InputDecoration(
-                                  border: new OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                      const Radius.circular(60.0),
-
-                                    ),
-                                  ),
-                                  fillColor: Color(0xfff3f3f4),
+//                                  border: new OutlineInputBorder(
+//                                    borderRadius: const BorderRadius.all(
+//                                      const Radius.circular(60.0),
+//
+//                                    ),
+//                                  ),
+                                  fillColor: Colors.white70,
                                   filled: true,
                                    hintText: "create password"),
                               controller: pwdInputController,
@@ -194,17 +223,17 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 50.0,
                           child: new Theme(
                             data: new ThemeData(
-                              primaryColor: Colors.blueAccent,
+                              primaryColor: Colors.deepPurple,
                             ),
                             child: TextFormField(
                               decoration: InputDecoration(
-                                  border: new OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                      const Radius.circular(80.0),
-
-                                    ),
-                                  ),
-                                  fillColor: Color(0xfff3f3f4),
+//                                  border: new OutlineInputBorder(
+//                                    borderRadius: const BorderRadius.all(
+//                                      const Radius.circular(80.0),
+//
+//                                    ),
+//                                  ),
+                                  fillColor: Colors.white70,
                                   filled: true,
                                    hintText: "confirm password",
                               labelStyle: TextStyle(color: Colors.grey.shade200,
@@ -218,7 +247,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
+                        padding: const EdgeInsets.only(top: 30.0),
                         child: Container(
                           width: 250.0,
                           height: 50.0,
@@ -227,11 +256,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
                           ),
                           child: RaisedButton(
+                            shape:  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30)),
 
 
-                            child: Text("Register"),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0)),
+
+                                ),
+                                child: Text("SIGNUP")),
 //                            color: Theme.of(context).primaryColor,
-                          color: Colors.blue,
+                          color: Colors.deepPurple,
                             textColor: Colors.white,
                             onPressed: () {
                               if (_registerFormKey.currentState.validate()) {
@@ -294,21 +330,33 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.only(top: 20.0),
                         child: Text("Already have an account?",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
+                          fontStyle: FontStyle.italic
                         ),),
                       ),
-                      FlatButton(
-                        child: Text("Login here!",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(context, "/Login");
-                        },
-                      )
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Container(
+                          height: 40.0,
+                          width: 160.0,
+                          child: FlatButton(
+                            shape:  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            color: Colors.purple,
+                            child: Text("LOGIN!",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),),
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(context, "/Login");
+                            },
+                          ),
+                        ),
+                      ),
+
                     ],
                   ),
                 ))));
