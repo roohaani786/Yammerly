@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                                     child: Image.asset("assets/google-logo.png",
                                     )),
                                 Padding(
-                                  padding: const EdgeInsets.all(10.0),
+                                  padding: const EdgeInsets.only(top: 10.0),
                                   child: Container(
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade200,
@@ -87,35 +87,114 @@ class _LoginPageState extends State<LoginPage> {
                                       width: 50.0,
                                       child: Image.asset("assets/fb-logo.png",)),
                                 ),
-                                Container(
-                                    height: 50.0,
-                                    width: 50.0,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
-                                      borderRadius: BorderRadius.circular(60.0),
-                                    ),
-                                    child: Image.asset("assets/phone-icon.png")),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Container(
+
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(40.0),
+                                      ),
+                                      height: 50.0,
+                                      width: 50.0,
+                                      child: Image.asset("assets/insta_logo.png",
+                                      )),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Container(
+
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(40.0),
+                                      ),
+                                      height: 50.0,
+                                      width: 50.0,
+                                      child: Image.asset("assets/twitter-logo.png",
+                                      )),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Container(
+                                      height: 50.0,
+                                      width: 50.0,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(60.0),
+                                      ),
+                                      child: Image.asset("assets/phone-icon.png")),
+                                ),
                               ],
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 60.0,top: 140.0),
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 0.0),
-                                child: Container(
-                                  height: 120.0,
+                                child: Row(
+                                  children: <Widget>[
+                                    // height: 120.0,
 
-                                  child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text("LOGIN",
-                                        style: TextStyle(
-                                          color: Colors.deepPurple,
-                                          fontSize: 25.0,
-                                          fontWeight: FontWeight.bold,
+                                    Container(
+                                      child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text("LOGIN",
+                                            style: TextStyle(
+                                              color: Colors.deepPurple,
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.bold,
 
-                                        ),)),
+                                            ),)),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        child: Align(
+                                          child: FlatButton(
+//                                             shape:  RoundedRectangleBorder(
+//                                                 borderRadius: BorderRadius.circular(20)),
+//                                             color: Colors.purple,
+                                            child: Text("SIGNUP",
+                                              style: TextStyle(
+                                                color: Colors.deepPurpleAccent,
+                                                fontSize: 15.0,
+                                              ),),
+                                            onPressed: () {
+                                              Navigator.pushReplacementNamed(context, "/Signup");
+                                            },
+                                          ),
+                                          //alignment: Alignment.center,
+//                                           child: Text("SIGNIN",
+//                                             style: TextStyle(
+//                                               color: Colors.deepPurple,
+//                                               fontSize: 25.0,
+//                                               fontWeight: FontWeight.bold,
+//
+//                                             ),)
+                                        ),
+                                      ),
+                                    ),
+
 //                                Image.asset("assets/flashu.png",
 //                                ),
+                                  ],
                                 ),
+//                                child: Container(
+//                                  height: 120.0,
+//
+//                                  child: Align(
+//                                      alignment: Alignment.center,
+//                                      child: Text("LOGIN",
+//                                        style: TextStyle(
+//                                          color: Colors.deepPurple,
+//                                          fontSize: 25.0,
+//                                          fontWeight: FontWeight.bold,
+//
+//                                        ),)),
+////                                Image.asset("assets/flashu.png",
+////                                ),
+//                                ),
                               ),
                             ),
                           ],
@@ -190,36 +269,36 @@ class _LoginPageState extends State<LoginPage> {
 
                           ),
                           child: RaisedButton(
-                            shape:  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                            child: Text("LOGIN"),
-                            color: Colors.deepPurple,
-                            textColor: Colors.white,
-                            onPressed: () {
-                              if (_loginFormKey.currentState.validate()) {
+                              shape:  RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Text("LOGIN"),
+                              color: Colors.deepPurple,
+                              textColor: Colors.white,
+                              onPressed: () {
+                                if (_loginFormKey.currentState.validate()) {
 
-                                FirebaseAuth.instance
-                                    .signInWithEmailAndPassword(
-                                    email: emailInputController.text,
-                                    password: pwdInputController.text)
-                                    .then((authResult) => Firestore.instance
-                                    .collection("users")
-                                    .document(authResult.user.uid)
-                                    .get()
-                                    .then((DocumentSnapshot result) =>
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                              title: result["fname"] +
-                                                  "'s Tasks",
-                                              uid: authResult.user.uid,
-                                            ))))
-                                    .catchError((err) => print(err)))
-                                    .catchError((err) => print(err));
+                                  FirebaseAuth.instance
+                                      .signInWithEmailAndPassword(
+                                      email: emailInputController.text,
+                                      password: pwdInputController.text)
+                                      .then((authResult) => Firestore.instance
+                                      .collection("users")
+                                      .document(authResult.user.uid)
+                                      .get()
+                                      .then((DocumentSnapshot result) =>
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => HomePage(
+                                                title: result["fname"] +
+                                                    "'s Tasks",
+                                                uid: authResult.user.uid,
+                                              ))))
+                                      .catchError((err) => print(err)))
+                                      .catchError((err) => print(err));
 
-                                  }
                                 }
+                              }
 
 
 
@@ -230,29 +309,29 @@ class _LoginPageState extends State<LoginPage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 20.0),
                         child: Text("Don't have an account yet?",style:
-                          TextStyle(
-                            color: Colors.black,
-                          ),),
+                        TextStyle(
+                          color: Colors.black,
+                        ),),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Container(
-                          height: 40.0,
-                          width: 160.0,
-                          child: FlatButton(
-                            shape:  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            color: Colors.purple,
-                            child: Text("SIGNUP",style:
-                              TextStyle(
-                                color: Colors.white
-                              ),),
-                            onPressed: () {
-                              Navigator.pushNamed(context, "/Signup");
-                            },
-                          ),
-                        ),
-                      ),
+//                      Padding(
+//                        padding: const EdgeInsets.only(top: 20.0),
+//                        child: Container(
+//                          height: 40.0,
+//                          width: 160.0,
+//                          child: FlatButton(
+//                            shape:  RoundedRectangleBorder(
+//                                borderRadius: BorderRadius.circular(20)),
+//                            color: Colors.purple,
+//                            child: Text("SIGNUP",style:
+//                              TextStyle(
+//                                color: Colors.white
+//                              ),),
+//                            onPressed: () {
+//                              Navigator.pushNamed(context, "/Signup");
+//                            },
+//                          ),
+//                        ),
+//                      ),
                       Padding(
                         padding: const EdgeInsets.only(top: 20.0),
                         child: Text("Forgot Password?",

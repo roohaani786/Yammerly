@@ -56,8 +56,8 @@ class _RegisterPageState extends State<RegisterPage> {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
 //        backgroundColor: Colors.grey.shade900,
-    backgroundColor: Colors.white,
- 
+        backgroundColor: Colors.white,
+
         body: Container(
             height: height,
 ////            decoration: BoxDecoration(
@@ -80,6 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           children: [
                             Column(
                               children: [
+
                                 Container(
 
                                     decoration: BoxDecoration(
@@ -89,9 +90,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                     height: 50.0,
                                     width: 50.0,
                                     child: Image.asset("assets/google-logo.png",
-                                      )),
+                                    )),
                                 Padding(
-                                  padding: const EdgeInsets.all(10.0),
+                                  padding: const EdgeInsets.only(top: 10.0),
                                   child: Container(
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade200,
@@ -101,34 +102,101 @@ class _RegisterPageState extends State<RegisterPage> {
                                       width: 50.0,
                                       child: Image.asset("assets/fb-logo.png",)),
                                 ),
-                                Container(
-                                    height: 50.0,
-                                    width: 50.0,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
-                                      borderRadius: BorderRadius.circular(60.0),
-                                    ),
-                                    child: Image.asset("assets/phone-icon.png")),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Container(
+
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(40.0),
+                                      ),
+                                      height: 45.0,
+                                      width: 50.0,
+                                      child: Image.asset("assets/insta_logo.png",
+                                      )),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Container(
+
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(40.0),
+                                      ),
+                                      height: 50.0,
+                                      width: 50.0,
+                                      child: Image.asset("assets/twitter-logo.png",
+                                      )),
+                                ),
+
+
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Container(
+                                      height: 50.0,
+                                      width: 50.0,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(60.0),
+                                      ),
+                                      child: Image.asset("assets/phone-icon.png")),
+                                ),
                               ],
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 60.0,top: 140.0),
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 0.0),
-                                child: Container(
-                                  height: 120.0,
+                                child: Row(
+                                  children: <Widget>[
+                                    // height: 120.0,
 
-                                  child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text("SIGNUP",
-                                      style: TextStyle(
-                                        color: Colors.deepPurple,
-                                        fontSize: 25.0,
-                                        fontWeight: FontWeight.bold,
+                                    Container(
+                                      child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text("SIGNUP",
+                                            style: TextStyle(
+                                              color: Colors.deepPurple,
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.bold,
 
-                                      ),)),
+                                            ),)),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        child: Align(
+                                          child: FlatButton(
+//                                             shape:  RoundedRectangleBorder(
+//                                                 borderRadius: BorderRadius.circular(20)),
+//                                             color: Colors.purple,
+                                            child: Text("LOGIN",
+                                              style: TextStyle(
+                                                color: Colors.deepPurpleAccent,
+                                                fontSize: 15.0,
+                                              ),),
+                                            onPressed: () {
+                                              Navigator.pushReplacementNamed(context, "/Login");
+                                            },
+                                          ),
+                                          //alignment: Alignment.center,
+//                                           child: Text("SIGNIN",
+//                                             style: TextStyle(
+//                                               color: Colors.deepPurple,
+//                                               fontSize: 25.0,
+//                                               fontWeight: FontWeight.bold,
+//
+//                                             ),)
+                                        ),
+                                      ),
+                                    ),
+
 //                                Image.asset("assets/flashu.png",
 //                                ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -183,7 +251,7 @@ class _RegisterPageState extends State<RegisterPage> {
 //                                  ),
                                   fillColor: Colors.white70,
                                   filled: true,
-                                   hintText: "email"),
+                                  hintText: "email"),
                               controller: emailInputController,
                               keyboardType: TextInputType.emailAddress,
                               validator: emailValidator,
@@ -191,6 +259,36 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                       ),
+//full name field
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Container(
+                          height: 50.0,
+                          child: new Theme(
+                            data: new ThemeData(
+                              primaryColor: Colors.deepPurple,
+                            ),
+                            child: TextFormField(
+
+                              decoration: InputDecoration(
+//                                  border: new OutlineInputBorder(
+//                                    borderRadius: const BorderRadius.all(
+//                                      const Radius.circular(60.0),
+//
+//                                    ),
+//                                  ),
+                                  fillColor: Colors.white70,
+                                  filled: true,
+                                  hintText: "Full name"),
+                              controller: firstNameInputController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: emailValidator,
+                            ),
+                          ),
+                        ),
+                      ),
+
+
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Container(
@@ -209,7 +307,7 @@ class _RegisterPageState extends State<RegisterPage> {
 //                                  ),
                                   fillColor: Colors.white70,
                                   filled: true,
-                                   hintText: "create password"),
+                                  hintText: "create password"),
                               controller: pwdInputController,
                               obscureText: true,
                               validator: pwdValidator,
@@ -235,10 +333,10 @@ class _RegisterPageState extends State<RegisterPage> {
 //                                  ),
                                   fillColor: Colors.white70,
                                   filled: true,
-                                   hintText: "confirm password",
-                              labelStyle: TextStyle(color: Colors.grey.shade200,
-                              fontSize: 10.0,
-                              fontWeight: FontWeight.bold)),
+                                  hintText: "confirm password",
+                                  labelStyle: TextStyle(color: Colors.grey.shade200,
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.bold)),
                               controller: confirmPwdInputController,
                               obscureText: true,
                               validator: pwdValidator,
@@ -257,17 +355,17 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           child: RaisedButton(
                             shape:  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
+                                borderRadius: BorderRadius.circular(15)),
 
 
                             child: Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0)),
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0)),
 
                                 ),
                                 child: Text("SIGNUP")),
 //                            color: Theme.of(context).primaryColor,
-                          color: Colors.deepPurple,
+                            color: Colors.deepPurple,
                             textColor: Colors.white,
                             onPressed: () {
                               if (_registerFormKey.currentState.validate()) {
@@ -332,34 +430,33 @@ class _RegisterPageState extends State<RegisterPage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 20.0),
                         child: Text("Already have an account?",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontStyle: FontStyle.italic
-                        ),),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontStyle: FontStyle.italic
+                          ),),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: Container(
-                          height: 40.0,
-                          width: 160.0,
-                          child: FlatButton(
-                            shape:  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            color: Colors.purple,
-                            child: Text("LOGIN!",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),),
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(context, "/Login");
-                            },
-                          ),
-                        ),
-                      ),
+//                      Padding(
+//                        padding: const EdgeInsets.only(top: 20.0),
+//                        child: Container(
+//                          height: 40.0,
+//                          width: 160.0,
+//                          child: FlatButton(
+//                            shape:  RoundedRectangleBorder(
+//                                borderRadius: BorderRadius.circular(20)),
+//                            color: Colors.purple,
+//                            child: Text("LOGIN!",
+//                            style: TextStyle(
+//                              color: Colors.white,
+//                            ),),
+//                            onPressed: () {
+//                              Navigator.pushReplacementNamed(context, "/Login");
+//                            },
+//                          ),
+//                        ),
+//                      ),
 
                     ],
                   ),
                 ))));
   }
 }
-
