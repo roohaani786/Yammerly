@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:techstagram/resources/repository.dart';
+import 'package:techstagram/ui/fblogin.dart';
 import 'package:techstagram/ui/signup.dart';
 
 import 'ui/Login.dart';
@@ -26,6 +27,7 @@ class MyAppState extends State<MyApp> {
 //        '/HomePage': (context) => CurrentPage(),
           '/Signup': (context) => RegisterPage(),
           '/Login': (context) => LoginPage(),
+          '/Fblogin': (context) => Fblogin(),
         },
         theme: new ThemeData(
             primarySwatch: Colors.blue,

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:techstagram/ui/Login.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title, this.uid}) : super(key: key); //update this to include the uid in the constructor
@@ -41,7 +41,10 @@ class _HomePageState extends State<HomePage> {
               FirebaseAuth.instance
                   .signOut()
                   .then((result) =>
-                  Navigator.pushReplacementNamed(context, "/login"))
+                  Navigator.push(context, new MaterialPageRoute(
+                      builder: (context) =>
+                      new LoginPage())
+                  ))
                   .catchError((err) => print(err));
             },
           )
@@ -56,60 +59,5 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _showDialog() async {
-    await showDialog<String>(
-      context: context,
-      child: AlertDialog(
-        contentPadding: const EdgeInsets.all(16.0),
-        content: Column(
-          children: <Widget>[
-            Text("Please fill all fields to create a new task"),
-            Expanded(
-              child: TextField(
-                autofocus: true,
-                decoration: InputDecoration(labelText: 'Task Title*'),
-                controller: taskTitleInputController,
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                decoration: InputDecoration(labelText: 'Task Description*'),
-                controller: taskDescripInputController,
-              ),
-            )
-          ],
-        ),
-        actions: <Widget>[
-          FlatButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                taskTitleInputController.clear();
-                taskDescripInputController.clear();
-                Navigator.pop(context);
-              }),
-          FlatButton(
-              child: Text('Add'),
-              onPressed: () {
-                if (taskDescripInputController.text.isNotEmpty &&
-                    taskTitleInputController.text.isNotEmpty) {
-                  Firestore.instance
-                      .collection("users")
-                      .document(widget.uid)
-                      .collection('tasks')
-                      .add({
-                    "title": taskTitleInputController.text,
-                    "description": taskDescripInputController.text
-                  })
-                      .then((result) => {
-                    Navigator.pop(context),
-                    taskTitleInputController.clear(),
-                    taskDescripInputController.clear(),
-                  })
-                      .catchError((err) => print(err));
-                }
-              })
-        ],
-      ),
-    );
-  }
+
 }

@@ -42,6 +42,8 @@ dependencies:
   cached_network_image: ^2.0.0-rc
   image:
   google_fonts:
+  flutter_webview_plugin:
+  flutter_facebook_login:
 
 dev_dependencies:
   flutter_test:

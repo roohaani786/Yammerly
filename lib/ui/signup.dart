@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:techstagram/Widget/bezierContainer.dart';
+import 'package:techstagram/resources/googlesignin.dart';
+
 
 import 'HomePage.dart';
 
@@ -53,7 +54,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    final height = MediaQuery
+        .of(context)
+        .size
+        .height;
     return Scaffold(
 //        backgroundColor: Colors.grey.shade900,
         backgroundColor: Colors.white,
@@ -81,26 +85,52 @@ class _RegisterPageState extends State<RegisterPage> {
                             Column(
                               children: [
 
-                                Container(
+                                FlatButton(
 
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
-                                      borderRadius: BorderRadius.circular(40.0),
-                                    ),
-                                    height: 50.0,
-                                    width: 50.0,
-                                    child: Image.asset("assets/google-logo.png",
-                                    )),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
                                   child: Container(
+
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(60.0),
+                                        borderRadius: BorderRadius.circular(
+                                            40.0),
                                       ),
-                                      height: 44.0,
+                                      height: 50.0,
                                       width: 50.0,
-                                      child: Image.asset("assets/fb-logo.png",)),
+                                      child: Image.asset(
+                                        "assets/google-logo.png",
+                                      )),
+                                  onPressed: () {
+                                    signInWithGoogle().whenComplete(() {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return HomePage();
+                                          },
+                                        ),
+                                      );
+                                    });
+                                  },
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: FlatButton(
+
+                                    onPressed: () {
+                                      Navigator.pushReplacementNamed(
+                                          context, "/Fblogin");
+                                    },
+
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade200,
+                                          borderRadius: BorderRadius.circular(
+                                              60.0),
+                                        ),
+                                        height: 44.0,
+                                        width: 50.0,
+                                        child: Image.asset(
+                                          "assets/fb-logo.png",)),
+                                  ),
                                 ),
 
                                 Padding(
@@ -109,11 +139,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(40.0),
+                                        borderRadius: BorderRadius.circular(
+                                            40.0),
                                       ),
                                       height: 45.0,
                                       width: 50.0,
-                                      child: Image.asset("assets/insta_logo.png",
+                                      child: Image.asset(
+                                        "assets/insta_logo.png",
                                       )),
                                 ),
 
@@ -123,11 +155,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(40.0),
+                                        borderRadius: BorderRadius.circular(
+                                            40.0),
                                       ),
                                       height: 50.0,
                                       width: 50.0,
-                                      child: Image.asset("assets/twitter-logo.png",
+                                      child: Image.asset(
+                                        "assets/twitter-logo.png",
                                       )),
                                 ),
 
@@ -139,14 +173,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                       width: 50.0,
                                       decoration: BoxDecoration(
                                         color: Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(60.0),
+                                        borderRadius: BorderRadius.circular(
+                                            60.0),
                                       ),
-                                      child: Image.asset("assets/phone-icon.png")),
+                                      child: Image.asset(
+                                          "assets/phone-icon.png")),
                                 ),
                               ],
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 60.0,top: 140.0),
+                              padding: const EdgeInsets.only(
+                                  left: 60.0, top: 140.0),
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 0.0),
                                 child: Row(
@@ -179,7 +216,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 fontSize: 15.0,
                                               ),),
                                             onPressed: () {
-                                              Navigator.pushReplacementNamed(context, "/Login");
+                                              Navigator.pushReplacementNamed(
+                                                  context, "/Login");
                                             },
                                           ),
                                           //alignment: Alignment.center,
@@ -334,7 +372,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                   fillColor: Colors.white70,
                                   filled: true,
                                   hintText: "confirm password",
-                                  labelStyle: TextStyle(color: Colors.grey.shade200,
+                                  labelStyle: TextStyle(
+                                      color: Colors.grey.shade200,
                                       fontSize: 10.0,
                                       fontWeight: FontWeight.bold)),
                               controller: confirmPwdInputController,
@@ -354,13 +393,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
                           ),
                           child: RaisedButton(
-                            shape:  RoundedRectangleBorder(
+                            shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15)),
 
 
                             child: Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0)),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10.0)),
 
                                 ),
                                 child: Text("SIGNUP")),
@@ -375,34 +415,37 @@ class _RegisterPageState extends State<RegisterPage> {
                                       .createUserWithEmailAndPassword(
                                       email: emailInputController.text,
                                       password: pwdInputController.text)
-                                      .then((authResult) => Firestore.instance
-                                      .collection("users")
-                                      .document(authResult.user.uid)
-                                      .setData({
-                                    "uid": authResult.user.uid,
-                                    "fname": firstNameInputController.text,
-                                    "surname": lastNameInputController.text,
-                                    "email": emailInputController.text,
-                                  })
-                                      .then((result) => {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                              title:
-                                              firstNameInputController
-                                                  .text +
-                                                  "'s Tasks",
-                                              uid: authResult.user.uid,
-                                            )),
-                                            (_) => false),
-                                    firstNameInputController.clear(),
-                                    lastNameInputController.clear(),
-                                    emailInputController.clear(),
-                                    pwdInputController.clear(),
-                                    confirmPwdInputController.clear()
-                                  })
-                                      .catchError((err) => print(err)))
+                                      .then((authResult) =>
+                                      Firestore.instance
+                                          .collection("users")
+                                          .document(authResult.user.uid)
+                                          .setData({
+                                        "uid": authResult.user.uid,
+                                        "fname": firstNameInputController.text,
+                                        "surname": lastNameInputController.text,
+                                        "email": emailInputController.text,
+                                      })
+                                          .then((result) =>
+                                      {
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    HomePage(
+                                                      title:
+                                                      firstNameInputController
+                                                          .text +
+                                                          "'s Tasks",
+                                                      uid: authResult.user.uid,
+                                                    )),
+                                                (_) => false),
+                                        firstNameInputController.clear(),
+                                        lastNameInputController.clear(),
+                                        emailInputController.clear(),
+                                        pwdInputController.clear(),
+                                        confirmPwdInputController.clear()
+                                      })
+                                          .catchError((err) => print(err)))
                                       .catchError((err) => print(err));
                                 } else {
                                   showDialog(
@@ -410,7 +453,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       builder: (BuildContext context) {
                                         return AlertDialog(
                                           title: Text("Error"),
-                                          content: Text("The passwords do not match"),
+                                          content: Text(
+                                              "The passwords do not match"),
                                           actions: <Widget>[
                                             FlatButton(
                                               child: Text("Close"),
@@ -459,4 +503,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ))));
   }
+
+
 }
