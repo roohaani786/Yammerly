@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
 import 'HomePage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -287,8 +288,7 @@ class _LoginPageState extends State<LoginPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => HomePage(
-                                                title: result["fname"] +
-                                                    "'s Tasks",
+                                                title: "hello",
                                                 uid: authResult.user.uid,
                                               ))))
                                       .catchError((err) => print(err)))

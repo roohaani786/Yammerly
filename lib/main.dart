@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:techstagram/Welcome/welcome_screen.dart';
+import 'package:techstagram/pages/intro_page.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/fblogin.dart';
-import 'package:techstagram/ui/signup.dart';
 
+import 'Signup/signup_screen.dart';
 import 'ui/Login.dart';
 
 void main() => runApp(MyApp());
@@ -25,9 +27,12 @@ class MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         routes: {
 //        '/HomePage': (context) => CurrentPage(),
-          '/Signup': (context) => RegisterPage(),
+//          '/Signup': (context) => RegisterPage(),
           '/Login': (context) => LoginPage(),
           '/Fblogin': (context) => Fblogin(),
+          '/Welcome': (context) => WelcomeScreen(),
+          '/nayasignup': (context) => SignUpScreen(),
+//          '/Twit': (context) => Twit(),
         },
         theme: new ThemeData(
             primarySwatch: Colors.blue,
@@ -40,9 +45,9 @@ class MyAppState extends State<MyApp> {
           future: _repository.getCurrentUser(),
           builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
             if (snapshot.hasData) {
-              return RegisterPage();
+              return IntroPage();
             } else {
-              return RegisterPage();
+              return IntroPage();
             }
           },
         ));

@@ -44,6 +44,8 @@ dependencies:
   google_fonts:
   flutter_webview_plugin:
   flutter_facebook_login:
+  flutter_svg:
+  flutter_twitter_login:
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +80,10 @@ flutter:
     - assets/flashu.png
     - assets/phone-icon.png
     - assets/insta_logo.png
+    - assets/images/
+    - assets/icons/
+    - assets/icons/google-icon.svg
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

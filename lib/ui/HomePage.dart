@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:techstagram/ui/Login.dart';
+import 'package:techstagram/Login/login_screen.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title, this.uid}) : super(key: key); //update this to include the uid in the constructor
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                   .then((result) =>
                   Navigator.push(context, new MaterialPageRoute(
                       builder: (context) =>
-                      new LoginPage())
+                      new LoginScreen())
                   ))
                   .catchError((err) => print(err));
             },
