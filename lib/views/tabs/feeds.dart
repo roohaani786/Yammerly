@@ -33,16 +33,19 @@ class _HomePageState extends State<FeedsPage> {
           child: ListView(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(2.0),
             child: Container(
                 height: 50.0,
                 width: 100.0,
                 child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "HASH FEED",
+                    "Qqkjdksjdksjdksjdk",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
+                      fontFamily: 'Quicksand-Bold',
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 )),
