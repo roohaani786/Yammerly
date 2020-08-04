@@ -39,8 +39,12 @@ class MyAppState extends State<MyApp> {
             primaryColor: Colors.black,
             primaryIconTheme: IconThemeData(color: Colors.black),
             primaryTextTheme: TextTheme(
-                headline6: TextStyle(color: Colors.black, fontFamily: "Aveny")),
-            textTheme: TextTheme(headline6: TextStyle(color: Colors.black))),
+                headline6: TextStyle(
+                    color: Colors.black, fontFamily: "Cookie-Regular")),
+            textTheme: TextTheme(headline6: TextStyle(
+                color: Colors.black, fontFamily: "Cookie-Regular")),
+            fontFamily: "Cookie-Regular"),
+
 
         home: FutureBuilder(
           future: _repository.getCurrentUser(),

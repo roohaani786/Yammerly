@@ -50,6 +50,7 @@ dependencies:
   path_provider:
   path:
   image_cropper:
+  velocity_x:
 
 
 dev_dependencies:
@@ -65,6 +66,14 @@ flutter:
     - family: Quicksand-Bold
       fonts:
         - asset: assets/fonts/Quicksand-Bold.ttf
+
+    - family: Pacifico-Regular
+      fonts:
+        - asset: assets/fonts/Pacifico-Regular.ttf
+
+    - family: Cookie-Regular
+      fonts:
+        - asset: assets/fonts/Cookie-Regular.ttf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

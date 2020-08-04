@@ -1,15 +1,18 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/opencamera.dart';
+import 'package:techstagram/resources/repository.dart';
+import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
-import 'package:techstagram/views/tabs/profile.dart';
 //import 'package:techstagram/pages/home.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title, this.uid}) : super(key: key); //update this to include the uid in the constructor
+  HomePage({Key key, this.title = "Hashtag", this.uid})
+      : super(key: key); //update this to include the uid in the constructor
   final String title;
   final String uid; //include this
 
@@ -21,9 +24,11 @@ class _HomePageState extends State<HomePage> {
   TextEditingController taskTitleInputController;
   TextEditingController taskDescripInputController;
   FirebaseUser currentUser;
+  FirebaseProvider firebaseProvider;
 
   @override
   initState() {
+    firebaseProvider = FirebaseProvider();
     taskTitleInputController = new TextEditingController();
     taskDescripInputController = new TextEditingController();
     this.getCurrentUser();
@@ -32,32 +37,35 @@ class _HomePageState extends State<HomePage> {
 
   void getCurrentUser() async {
     currentUser = await FirebaseAuth.instance.currentUser();
+    firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
+        title: Text(widget.title, style: TextStyle(color: Colors.deepPurple)),
+        backgroundColor: Colors.white,
         //  backgroundColor: Colors.white,
         leading: Padding(
           padding: EdgeInsets.only(left: 12,),
           child: IconButton(
-            icon: Icon(Icons.camera_alt, color: Colors.white,),
+            icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
             onPressed: _opencamera,
           ),
 
         ),
-        title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Hashtag',
-                style: TextStyle(color: Colors.white,),),
-            ]
-        ),
+        // title: Row(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: <Widget>[
+        //       Text('Hashtag',
+        //         style: TextStyle(color: Colors.white,),),
+        //     ]
+        // ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search, color: Colors.white,),
+            icon: Icon(Icons.search, color: Colors.deepPurple,),
             onPressed: () {
               Navigator.push(
                 context,
@@ -66,7 +74,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.message, color: Colors.white,),
+            icon: Icon(Icons.message, color: Colors.deepPurple,),
             onPressed: () {
               print('Click start');
             },
@@ -195,7 +203,7 @@ class SearchListExample extends StatefulWidget {
 
 class _SearchListExampleState extends State<SearchListExample> {
   Widget appBarTitle = new Text(
-    "HashTag",
+    "Hashtag",
     style: new TextStyle(color: Colors.white),
   );
   Icon icon = new Icon(
@@ -283,7 +291,7 @@ class _SearchListExampleState extends State<SearchListExample> {
 
   Widget buildAppBar(BuildContext context) {
     return new AppBar(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.white,
         centerTitle: true, title: appBarTitle, actions: <Widget>[
       new IconButton(
         icon: icon,
@@ -292,15 +300,16 @@ class _SearchListExampleState extends State<SearchListExample> {
             if (this.icon.icon == Icons.search) {
               this.icon = new Icon(
                 Icons.close,
-                color: Colors.white,
+                color: Colors.black,
               );
               this.appBarTitle = new TextField(
                 controller: _controller,
                 style: new TextStyle(
-                  color: Colors.white,
+                  color: Colors.deepPurple,
                 ),
                 decoration: new InputDecoration(
-                    prefixIcon: new Icon(Icons.search, color: Colors.white),
+                    prefixIcon: new Icon(
+                        Icons.search, color: Colors.deepPurple),
                     hintText: "Search...",
                     hintStyle: new TextStyle(color: Colors.white)),
                 onChanged: searchOperation,
@@ -325,11 +334,11 @@ class _SearchListExampleState extends State<SearchListExample> {
     setState(() {
       this.icon = new Icon(
         Icons.search,
-        color: Colors.white,
+        color: Colors.deepPurple,
       );
       this.appBarTitle = new Text(
         "Hashtag",
-        style: new TextStyle(color: Colors.white),
+        style: new TextStyle(color: Colors.deepPurple),
       );
       _isSearching = false;
       _controller.clear();

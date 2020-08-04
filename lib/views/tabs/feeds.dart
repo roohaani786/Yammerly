@@ -40,10 +40,10 @@ class _HomePageState extends State<FeedsPage> {
                 child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "Qqkjdksjdksjdksjdk",
+                    "Hash Feed",
                     style: TextStyle(
                       color: Colors.black,
-                      fontFamily: 'Quicksand-Bold',
+                      fontFamily: 'Cookie-Regular',
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
