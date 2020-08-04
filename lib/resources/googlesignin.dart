@@ -64,7 +64,7 @@ class _GoogleSigninScreenState extends State<GoogleSigninScreen> {
                   MaterialPageRoute(
                     builder: (context) {
                       return HomePage(
-                        title: "Welcome",
+                        title: "welcome",
                       );
                     },
                   ),

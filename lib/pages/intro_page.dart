@@ -37,7 +37,7 @@ class _IntroPageState extends State<IntroPage> {
       margin: EdgeInsets.only(top: 25),
       padding: EdgeInsets.all(12),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           GestureDetector(
             onTap: () {
@@ -71,11 +71,16 @@ class _IntroPageState extends State<IntroPage> {
           ),
           FlatButton(
             onPressed: () {
-              if (initialPage < list.length)
-                _controller.animateToPage(list.length,
-                    duration: Duration(microseconds: 500),
-                    curve: Curves.easeInOut);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return WelcomeScreen();
+                  },
+                ),
+              );
             },
+
             child: Text(
               "Skip",
               style: TextStyle(
@@ -98,13 +103,16 @@ class _IntroPageState extends State<IntroPage> {
         itemBuilder: (context, index) {
           return Column(
             children: <Widget>[
-              index == 1
+              SizedBox(
+                height: 15,
+              ),
+              index == 1 || index == 2 || index == 3
                   ? _displayText(list[index].text)
                   : _displayImage(list[index].id),
               SizedBox(
                 height: 25,
               ),
-              index == 1
+              index == 1 || index == 2 || index == 3
                   ? _displayImage(list[index].id)
                   : _displayText(list[index].text),
             ],
@@ -176,7 +184,7 @@ class _IntroPageState extends State<IntroPage> {
       text,
       style: TextStyle(
         fontWeight: FontWeight.normal,
-        fontSize: 20,
+        fontSize: 15,
       ),
       textAlign: TextAlign.center,
     );
@@ -186,7 +194,10 @@ class _IntroPageState extends State<IntroPage> {
     return Image.asset(
       "assets/images/$path.jpg",
       height: MediaQuery.of(context).size.height * .5,
-      width: MediaQuery.of(context).size.height * .3,
+      width: MediaQuery
+          .of(context)
+          .size
+          .height * .2,
     );
   }
 }

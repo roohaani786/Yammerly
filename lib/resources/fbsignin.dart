@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
@@ -39,7 +39,7 @@ class _FbLoginPageState extends State<FbLoginPage> {
                     builder: (context) =>
                     HomePage(title:
 
-                        "'huhu",
+                    "huhu",
                       uid: "h",
                     )),
                             (_) => false);

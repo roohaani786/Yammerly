@@ -258,8 +258,6 @@ class _BodyState extends State<Body> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => HomePage(
-                                                  title: "'s Tasks",
-                                                  uid: authResult.user.uid,
                                                 )),
                                         (_) => false),
                                     firstNameInputController.clear(),
@@ -319,7 +317,7 @@ class _BodyState extends State<Body> {
                               MaterialPageRoute(
                                 builder: (context) {
                                   return HomePage(
-                                    title: "Welcome",
+//                                    title: "Welcome",
                                   );
                                 },
                               ),
