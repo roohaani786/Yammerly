@@ -345,7 +345,7 @@ class _BodyState extends State<Body> {
                     SocalIcon(
                       iconSrc: "assets/icons/twitter.svg",
                       press: () {
-                        Navigator.pushReplacementNamed(context, "/Twit");
+//                        Navigator.pushReplacementNamed(context, "/Twit");
                       },
                     ),
                   ],
