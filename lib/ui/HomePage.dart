@@ -8,6 +8,8 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
+
+import 'insta_profile_screen.dart';
 //import 'package:techstagram/pages/home.dart';
 
 class HomePage extends StatefulWidget {
@@ -161,7 +163,7 @@ class TabLayoutDemo extends StatelessWidget {
                 child: NotificationsPage(),
               ),
               new Container(
-                  child: ProfilePage()
+                  child: AccountBottomIconScreen()
               ),
             ],
           ),
