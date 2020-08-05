@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/pages/intro_page.dart';
 import 'package:techstagram/resources/repository.dart';
-import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/fblogin.dart';
 
 import 'Signup/signup_screen.dart';
@@ -50,7 +49,7 @@ class MyAppState extends State<MyApp> {
           future: _repository.getCurrentUser(),
           builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
             if (snapshot.hasData) {
-              return HomePage();
+              return IntroPage();
             } else {
               return IntroPage();
             }

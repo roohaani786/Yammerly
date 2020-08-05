@@ -70,283 +70,288 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Background(
-      child: SingleChildScrollView(
-        child: Form(
-          key: _registerFormKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "SIGNUP",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: size.height * 0.03),
-              SvgPicture.asset(
-                "assets/icons/signup.svg",
-                height: size.height * 0.15,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 0.0),
-                child: Container(
-                  height: 70.0,
-                  child: TextFieldContainer(
-                    child: TextFormField(
-                      cursorColor: kPrimaryColor,
+    return Scaffold(
+      body: Background(
+        child: SingleChildScrollView(
+          child: Form(
+            key: _registerFormKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "SIGNUP",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: size.height * 0.03),
+                SvgPicture.asset(
+                  "assets/icons/signup.svg",
+                  height: size.height * 0.15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 0.0),
+                  child: Container(
+                    height: 70.0,
+                    child: TextFieldContainer(
+                      child: TextFormField(
+                        cursorColor: kPrimaryColor,
 
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.person,
-                            color: kPrimaryColor,
-                          ),
-                          fillColor: Colors.deepPurple.shade50,
-                          filled: true,
-                          hintText: "first name"),
-                      controller: firstNameInputController,
-                      keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.person,
+                              color: kPrimaryColor,
+                            ),
+                            fillColor: Colors.deepPurple.shade50,
+                            filled: true,
+                            hintText: "first name"),
+                        controller: firstNameInputController,
+                        keyboardType: TextInputType.name,
 //                      validator: emailValidator,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Container(
-                  height: 70.0,
-                  child: TextFieldContainer(
-                    child: TextFormField(
-                      cursorColor: kPrimaryColor,
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: Container(
+                    height: 70.0,
+                    child: TextFieldContainer(
+                      child: TextFormField(
+                        cursorColor: kPrimaryColor,
 
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.input,
-                            color: kPrimaryColor,
-                          ),
-                          fillColor: Colors.deepPurple.shade50,
-                          filled: true,
-                          hintText: "last name"),
-                      controller: lastNameInputController,
-                      keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.input,
+                              color: kPrimaryColor,
+                            ),
+                            fillColor: Colors.deepPurple.shade50,
+                            filled: true,
+                            hintText: "last name"),
+                        controller: lastNameInputController,
+                        keyboardType: TextInputType.name,
 //                      validator: emailValidator,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Container(
-                  height: 70.0,
-                  child: TextFieldContainer(
-                    child: TextFormField(
-                      cursorColor: kPrimaryColor,
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: Container(
+                    height: 70.0,
+                    child: TextFieldContainer(
+                      child: TextFormField(
+                        cursorColor: kPrimaryColor,
 
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.phone_android,
-                            color: kPrimaryColor,
-                          ),
-                          fillColor: Colors.deepPurple.shade50,
-                          filled: true,
-                          hintText: "phone number"),
-                      controller: phoneNumberController,
-                      validator: validateMobile,
-                      keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.phone_android,
+                              color: kPrimaryColor,
+                            ),
+                            fillColor: Colors.deepPurple.shade50,
+                            filled: true,
+                            hintText: "phone number"),
+                        controller: phoneNumberController,
+                        validator: validateMobile,
+                        keyboardType: TextInputType.number,
 //                      validator: emailValidator,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Container(
-                  height: 70.0,
-                  child: TextFieldContainer(
-                    child: TextFormField(
-                      cursorColor: kPrimaryColor,
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: Container(
+                    height: 70.0,
+                    child: TextFieldContainer(
+                      child: TextFormField(
+                        cursorColor: kPrimaryColor,
 
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.email,
-                            color: kPrimaryColor,
-                          ),
-                          fillColor: Colors.deepPurple.shade50,
-                          filled: true,
-                          hintText: "email"),
-                      controller: emailInputController,
-                      validator: emailValidator,
-                      keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.email,
+                              color: kPrimaryColor,
+                            ),
+                            fillColor: Colors.deepPurple.shade50,
+                            filled: true,
+                            hintText: "email"),
+                        controller: emailInputController,
+                        validator: emailValidator,
+                        keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Container(
-                  height: 70.0,
-                  child: TextFieldContainer(
-                    child: TextFormField(
-                      cursorColor: kPrimaryColor,
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Container(
+                    height: 70.0,
+                    child: TextFieldContainer(
+                      child: TextFormField(
+                        cursorColor: kPrimaryColor,
 
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.lock,
-                            color: kPrimaryColor,
-                          ),
-                          fillColor: Colors.deepPurple.shade50,
-                          filled: true,
-                          hintText: "create password"),
-                      controller: pwdInputController,
-                      validator: pwdValidator,
-                      obscureText: true,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.lock,
+                              color: kPrimaryColor,
+                            ),
+                            fillColor: Colors.deepPurple.shade50,
+                            filled: true,
+                            hintText: "create password"),
+                        controller: pwdInputController,
+                        validator: pwdValidator,
+                        obscureText: true,
 //                      validator: emailValidator,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Container(
-                  height: 70.0,
-                  child: TextFieldContainer(
-                    child: TextFormField(
-                      cursorColor: kPrimaryColor,
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: Container(
+                    height: 70.0,
+                    child: TextFieldContainer(
+                      child: TextFormField(
+                        cursorColor: kPrimaryColor,
 
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          icon: Icon(
-                            Icons.lock,
-                            color: kPrimaryColor,
-                          ),
-                          fillColor: Colors.deepPurple.shade50,
-                          filled: true,
-                          hintText: "confirm password"),
-                      controller: confirmPwdInputController,
-                      obscureText: true,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.lock,
+                              color: kPrimaryColor,
+                            ),
+                            fillColor: Colors.deepPurple.shade50,
+                            filled: true,
+                            hintText: "confirm password"),
+                        controller: confirmPwdInputController,
+                        obscureText: true,
 //                      validator: emailValidator,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              RoundedButton(
-                text: "SIGNUP",
-                press: () {
-                  if (_registerFormKey.currentState.validate()) {
-                    if (pwdInputController.text ==
-                        confirmPwdInputController.text) {
-                      FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: emailInputController.text,
-                              password: pwdInputController.text)
-                          .then((authResult) => Firestore.instance
-                              .collection("users")
-                              .document(authResult.user.uid)
-                              .setData({
-                                "uid": authResult.user.uid,
-                                "fname": firstNameInputController.text,
-                                "surname": lastNameInputController.text,
-                                "phonenumber": phoneNumberController.text,
-                                "email": emailInputController.text,
-                              })
-                              .then((result) => {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                                )),
-                                        (_) => false),
-                                    firstNameInputController.clear(),
-                                    lastNameInputController.clear(),
-                                    phoneNumberController.clear(),
-                                    emailInputController.clear(),
-                                    pwdInputController.clear(),
-                                    confirmPwdInputController.clear()
-                                  })
-                              .catchError((err) => print(err)))
-                          .catchError((err) => print(err));
-                    } else {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text("Error"),
-                              content: Text("The passwords do not match"),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text("Close"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
-                              ],
-                            );
-                          });
+                RoundedButton(
+                  text: "SIGNUP",
+                  press: () {
+                    if (_registerFormKey.currentState.validate()) {
+                      if (pwdInputController.text ==
+                          confirmPwdInputController.text) {
+                        FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                            email: emailInputController.text,
+                            password: pwdInputController.text)
+                            .then((authResult) =>
+                            Firestore.instance
+                                .collection("users")
+                                .document(authResult.user.uid)
+                                .setData({
+                              "uid": authResult.user.uid,
+                              "fname": firstNameInputController.text,
+                              "surname": lastNameInputController.text,
+                              "phonenumber": phoneNumberController.text,
+                              "email": emailInputController.text,
+                            })
+                                .then((result) =>
+                            {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          HomePage(
+                                          )),
+                                      (_) => false),
+                              firstNameInputController.clear(),
+                              lastNameInputController.clear(),
+                              phoneNumberController.clear(),
+                              emailInputController.clear(),
+                              pwdInputController.clear(),
+                              confirmPwdInputController.clear()
+                            })
+                                .catchError((err) => print(err)))
+                            .catchError((err) => print(err));
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Error"),
+                                content: Text("The passwords do not match"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text("Close"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              );
+                            });
+                      }
                     }
-                  }
-                },
-              ),
-              SizedBox(height: size.height * 0.01),
-              AlreadyHaveAnAccountCheck(
-                login: false,
-                press: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return LoginScreen();
+                  },
+                ),
+                SizedBox(height: size.height * 0.01),
+                AlreadyHaveAnAccountCheck(
+                  login: false,
+                  press: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return LoginScreen();
+                        },
+                      ),
+                    );
+                  },
+                ),
+                OrDivider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SocalIcon(
+                        iconSrc: "assets/icons/google-icon.svg",
+                        press: () {
+                          signInWithGoogle(success).whenComplete(() {
+                            if (success == true)
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return HomePage(
+//                                    title: "Welcome",
+                                    );
+                                  },
+                                ),
+                              );
+                            else
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return Body();
+                                  },
+                                ),
+                              );
+                          });
+                        }),
+                    SocalIcon(
+                      iconSrc: "assets/icons/facebook.svg",
+                      press: () {
+                        Navigator.pushReplacementNamed(context, "/Fblogin");
                       },
                     ),
-                  );
-                },
-              ),
-              OrDivider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SocalIcon(
-                      iconSrc: "assets/icons/google-icon.svg",
+                    SocalIcon(
+                      iconSrc: "assets/icons/twitter.svg",
                       press: () {
-                        signInWithGoogle(success).whenComplete(() {
-                          if (success == true)
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return HomePage(
-//                                    title: "Welcome",
-                                  );
-                                },
-                              ),
-                            );
-                          else
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return Body();
-                                },
-                              ),
-                            );
-                        });
-                      }),
-                  SocalIcon(
-                    iconSrc: "assets/icons/facebook.svg",
-                    press: () {
-                      Navigator.pushReplacementNamed(context, "/Fblogin");
-                    },
-                  ),
-                  SocalIcon(
-                    iconSrc: "assets/icons/twitter.svg",
-                    press: () {
-                      Navigator.pushReplacementNamed(context, "/Twit");
-                    },
-                  ),
-                ],
-              )
-            ],
+                        Navigator.pushReplacementNamed(context, "/Twit");
+                      },
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

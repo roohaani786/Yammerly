@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
@@ -9,7 +10,7 @@ import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
 
-import 'insta_profile_screen.dart';
+import 'messagingsystem.dart';
 //import 'package:techstagram/pages/home.dart';
 
 class HomePage extends StatefulWidget {
@@ -43,47 +44,72 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  void _onHorizontalDrag(DragEndDetails details) {
+    if (details.primaryVelocity == 0)
+      return; // user have just tapped on screen (no dragging)
+
+    if (details.primaryVelocity.compareTo(0) == -1)
+      _opencamera();
+    else
+      _opencamera();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title, style: TextStyle(color: Colors.deepPurple)),
-        backgroundColor: Colors.white,
-        //  backgroundColor: Colors.white,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 12,),
-          child: IconButton(
-            icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
-            onPressed: _opencamera,
+    return GestureDetector(
+      onHorizontalDragEnd: (DragEndDetails details) =>
+          _onHorizontalDrag(details),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Hashtag", style: TextStyle(color: Colors.deepPurple)),
+          backgroundColor: Colors.white,
+          //  backgroundColor: Colors.white,
+          leading: Padding(
+            padding: EdgeInsets.only(left: 12,),
+            child: IconButton(
+              icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
+              onPressed: _opencamera,
+            ),
+
           ),
+          // title: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: <Widget>[
+          //       Text('Hashtag',
+          //         style: TextStyle(color: Colors.white,),),
+          //     ]
+          // ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search, color: Colors.deepPurple,),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchListExample()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.message, color: Colors.deepPurple,),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ConversationPage()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.exit_to_app, color: Colors.deepPurple,),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+            ),
+          ],
 
         ),
-        // title: Row(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: <Widget>[
-        //       Text('Hashtag',
-        //         style: TextStyle(color: Colors.white,),),
-        //     ]
-        // ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search, color: Colors.deepPurple,),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SearchListExample()),
-              );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.message, color: Colors.deepPurple,),
-            onPressed: () {
-              print('Click start');
-            },
-          ),
-        ],
-
-      ),
 //      appBar: AppBar(
 //        title: Text(widget.title),
 //        actions: <Widget>[
@@ -110,8 +136,9 @@ class _HomePageState extends State<HomePage> {
 ////            child: Text("Welcome")),
 ////
 ////      ),
-      body: new TabLayoutDemo(),
+        body: new TabLayoutDemo(),
 
+      ),
     );
   }
 
@@ -206,11 +233,11 @@ class SearchListExample extends StatefulWidget {
 class _SearchListExampleState extends State<SearchListExample> {
   Widget appBarTitle = new Text(
     "Hashtag",
-    style: new TextStyle(color: Colors.white),
+    style: new TextStyle(color: Colors.deepPurple),
   );
   Icon icon = new Icon(
     Icons.search,
-    color: Colors.white,
+    color: Colors.deepPurple,
   );
   final globalKey = new GlobalKey<ScaffoldState>();
   final TextEditingController _controller = new TextEditingController();

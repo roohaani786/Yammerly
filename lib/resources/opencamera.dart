@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
+import 'package:techstagram/ui/HomePage.dart';
 
 //Future<void> main() async {
 //  // Ensure that plugin services are initialized so that `availableCameras()`
@@ -73,6 +74,17 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Take a picture'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.arrow_forward, color: Colors.white,),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+              );
+            },
+          ),
+        ],
       ),
       // Wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner
