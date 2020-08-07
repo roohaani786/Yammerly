@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:techstagram/Login/login_screen.dart';
+import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
@@ -14,7 +14,7 @@ import 'messagingsystem.dart';
 //import 'package:techstagram/pages/home.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title = "Hashtag", this.uid})
+  HomePage({Key key, this.title = "Hashtag", this.uid,})
       : super(key: key); //update this to include the uid in the constructor
   final String title;
   final String uid; //include this
@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController taskDescripInputController;
   FirebaseUser currentUser;
   FirebaseProvider firebaseProvider;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
   initState() {
@@ -44,6 +45,10 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  _signOut() async {
+    await _firebaseAuth.signOut();
+  }
+
   void _onHorizontalDrag(DragEndDetails details) {
     if (details.primaryVelocity == 0)
       return; // user have just tapped on screen (no dragging)
@@ -57,8 +62,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails details) =>
-          _onHorizontalDrag(details),
+
       child: Scaffold(
         appBar: AppBar(
           title: Text("Hashtag", style: TextStyle(color: Colors.deepPurple)),
@@ -68,7 +72,10 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.only(left: 12,),
             child: IconButton(
               icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
-              onPressed: _opencamera,
+                onPressed: () {
+                  _opencamera();
+                }
+
             ),
 
           ),
@@ -101,9 +108,11 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: Icon(Icons.exit_to_app, color: Colors.deepPurple,),
               onPressed: () {
+                _signOut();
+
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
                 );
               },
             ),
@@ -284,6 +293,7 @@ class _SearchListExampleState extends State<SearchListExample> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+        backgroundColor: Colors.white,
         key: globalKey,
         appBar: buildAppBar(context),
         body: new Container(

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/pages/intro_page.dart';
 import 'package:techstagram/resources/repository.dart';
+import 'package:techstagram/resources/twittersignin.dart';
+import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/fblogin.dart';
 
 import 'Signup/signup_screen.dart';
@@ -32,6 +34,7 @@ class MyAppState extends State<MyApp> {
           '/Fblogin': (context) => Fblogin(),
           '/Welcome': (context) => WelcomeScreen(),
           '/nayasignup': (context) => SignUpScreen(),
+          '/Twit': (context) => TwitterLoginScreen(),
         },
         theme: new ThemeData(
             primarySwatch: Colors.blue,
@@ -49,7 +52,7 @@ class MyAppState extends State<MyApp> {
           future: _repository.getCurrentUser(),
           builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
             if (snapshot.hasData) {
-              return IntroPage();
+              return HomePage();
             } else {
               return IntroPage();
             }

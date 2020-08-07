@@ -47,11 +47,13 @@ dependencies:
   flutter_facebook_login:
   flutter_svg:
   flutter_twitter_login:
+  twitter_login:
   camera:
   path_provider:
   path:
   image_cropper:
   velocity_x:
+  oauth1:
 
 
 dev_dependencies:
