@@ -1,8 +1,10 @@
 //import 'package:camera/camera.dart';
+import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
+import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
@@ -48,6 +50,28 @@ class _HomePageState extends State<HomePage> {
     await _firebaseAuth.signOut();
   }
 
+//  List<CameraDescription> cameras = [];
+//
+//  Future<void> main() async {
+//    // Fetch the available cameras before initializing the app.
+//    try {
+//      WidgetsFlutterBinding.ensureInitialized();
+//      cameras = await availableCameras();
+//      final firstCamera = cameras.first;
+//      runApp(
+//        MaterialApp(
+//          theme: ThemeData.dark(),
+//          home: CameraExampleHome(
+//            // Pass the appropriate camera to the TakePictureScreen widget.
+//            camera: firstCamera,
+//          ),
+//        ),
+//      );
+//    } on CameraException catch (e) {
+//      logError(e.code, e.description);
+//    }
+//  }
+
 //  void _onHorizontalDrag(DragEndDetails details) {
 //    if (details.primaryVelocity == 0)
 //      return; // user have just tapped on screen (no dragging)
@@ -57,6 +81,22 @@ class _HomePageState extends State<HomePage> {
 //    else
 //      _opencamera();
 //  }
+
+//  List<CameraDescription> cameras = [];
+
+  Future<void> _opencamera() async {
+    // Fetch the available cameras before initializing the app.
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
+      cameras = await availableCameras();
+    } on CameraException catch (e) {
+      logError(e.code, e.description);
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CameraApp()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +112,12 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
               icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
                 onPressed: () {
-//                  _opencamera();
+                  _opencamera();
+
+//                  Navigator.push(
+//                    context,
+//                    MaterialPageRoute(builder: (context) =>CameraExampleHome()),
+//                  );
                 }
 
             ),

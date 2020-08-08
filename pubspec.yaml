@@ -48,12 +48,17 @@ dependencies:
   flutter_svg:
   flutter_twitter_login:
   twitter_login:
-  #  camera:
+  camera:
   path_provider:
   path:
   image_cropper:
   velocity_x:
   oauth1:
+  video_player:
+  firebase_core_web:
+  location_web:
+  cloud_firestore_web:
+  firebase_auth_web:
 
 
 dev_dependencies:
