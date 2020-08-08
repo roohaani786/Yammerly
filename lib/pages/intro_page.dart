@@ -184,7 +184,7 @@ class _IntroPageState extends State<IntroPage> {
       text,
       style: TextStyle(
         fontWeight: FontWeight.normal,
-        fontSize: 15,
+        fontSize: 20,
       ),
       textAlign: TextAlign.center,
     );

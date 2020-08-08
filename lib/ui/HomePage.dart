@@ -1,9 +1,8 @@
-import 'package:camera/camera.dart';
+//import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
-import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
@@ -49,15 +48,15 @@ class _HomePageState extends State<HomePage> {
     await _firebaseAuth.signOut();
   }
 
-  void _onHorizontalDrag(DragEndDetails details) {
-    if (details.primaryVelocity == 0)
-      return; // user have just tapped on screen (no dragging)
-
-    if (details.primaryVelocity.compareTo(0) == -1)
-      _opencamera();
-    else
-      _opencamera();
-  }
+//  void _onHorizontalDrag(DragEndDetails details) {
+//    if (details.primaryVelocity == 0)
+//      return; // user have just tapped on screen (no dragging)
+//
+//    if (details.primaryVelocity.compareTo(0) == -1)
+//      _opencamera();
+//    else
+//      _opencamera();
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +72,7 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
               icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
                 onPressed: () {
-                  _opencamera();
+//                  _opencamera();
                 }
 
             ),
@@ -152,28 +151,28 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  Future<void> _opencamera() async {
-    // Ensure that plugin services are initialized so that `availableCameras()`
-    // can be called before `runApp()`
-    WidgetsFlutterBinding.ensureInitialized();
-
-    // Obtain a list of the available cameras on the device.
-    final cameras = await availableCameras();
-
-    // Get a specific camera from the list of available cameras.
-    final firstCamera = cameras.first;
-
-    runApp(
-      MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.dark(),
-        home: TakePictureScreen(
-          // Pass the appropriate camera to the TakePictureScreen widget.
-          camera: firstCamera,
-        ),
-      ),
-    );
-  }
+//  Future<void> _opencamera() async {
+//    // Ensure that plugin services are initialized so that `availableCameras()`
+//    // can be called before `runApp()`
+//    WidgetsFlutterBinding.ensureInitialized();
+//
+//    // Obtain a list of the available cameras on the device.
+//    final cameras = await availableCameras();
+//
+//    // Get a specific camera from the list of available cameras.
+//    final firstCamera = cameras.first;
+//
+//    runApp(
+//      MaterialApp(
+//        debugShowCheckedModeBanner: false,
+//        theme: ThemeData.dark(),
+//        home: TakePictureScreen(
+//          // Pass the appropriate camera to the TakePictureScreen widget.
+//          camera: firstCamera,
+//        ),
+//      ),
+//    );
+//  }
 }
 
 

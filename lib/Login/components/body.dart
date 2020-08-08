@@ -177,7 +177,7 @@ class _BodyState extends State<Body> {
                               filled: true,
                               hintText: "email"),
                           controller: emailInputController,
-                          keyboardType: TextInputType.emailAddress,
+//                          keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
                         ),
                       ),

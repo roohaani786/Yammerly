@@ -48,7 +48,7 @@ dependencies:
   flutter_svg:
   flutter_twitter_login:
   twitter_login:
-  camera:
+  #  camera:
   path_provider:
   path:
   image_cropper:
