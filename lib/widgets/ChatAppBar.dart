@@ -98,7 +98,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                               child: CircleAvatar(
                         radius: (80 - (width * .06)) / 2,
                         backgroundImage: Image.asset(
-                          "assets/insta_logo.png",
+                          "assets/icons/google-icon.svg",
                         ).image,
                       )))),
                 ]))));

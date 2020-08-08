@@ -2,6 +2,7 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/opencamera.dart';
@@ -50,6 +51,23 @@ class _HomePageState extends State<HomePage> {
     await _firebaseAuth.signOut();
   }
 
+
+  static const Map<LayoutSize, String> layoutSizeEnumToString = {
+    LayoutSize.watch: 'Wristwatch',
+    LayoutSize.mobile: 'Mobile',
+    LayoutSize.tablet: 'Tablet',
+    LayoutSize.desktop: 'Desktop',
+    LayoutSize.tv: 'TV',
+  };
+  static const Map<MobileLayoutSize, String> mobileLayoutSizeEnumToString = {
+    MobileLayoutSize.small: 'Small',
+    MobileLayoutSize.medium: 'Medium',
+    MobileLayoutSize.large: 'Large',
+  };
+  static const Map<TabletLayoutSize, String> tabletLayoutSizeEnumToString = {
+    TabletLayoutSize.small: 'Small',
+    TabletLayoutSize.large: 'Large',
+  };
 //  List<CameraDescription> cameras = [];
 //
 //  Future<void> main() async {
@@ -189,7 +207,9 @@ class _HomePageState extends State<HomePage> {
 ////            child: Text("Welcome")),
 ////
 ////      ),
-        body: new TabLayoutDemo(),
+        body: ResponsiveLayoutBuilder(
+            builder: (context, size) =>
+            new TabLayoutDemo()),
 
       ),
     );

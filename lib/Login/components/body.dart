@@ -5,6 +5,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
+import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:techstagram/Login/components/background.dart';
 import 'package:techstagram/Signup/components/or_divider.dart';
 import 'package:techstagram/Signup/components/social_icon.dart';
@@ -50,6 +51,23 @@ class _BodyState extends State<Body> {
     super.initState();
   }
 
+  static const Map<LayoutSize, String> layoutSizeEnumToString = {
+    LayoutSize.watch: 'Wristwatch',
+    LayoutSize.mobile: 'Mobile',
+    LayoutSize.tablet: 'Tablet',
+    LayoutSize.desktop: 'Desktop',
+    LayoutSize.tv: 'TV',
+  };
+  static const Map<MobileLayoutSize, String> mobileLayoutSizeEnumToString = {
+    MobileLayoutSize.small: 'Small',
+    MobileLayoutSize.medium: 'Medium',
+    MobileLayoutSize.large: 'Large',
+  };
+  static const Map<TabletLayoutSize, String> tabletLayoutSizeEnumToString = {
+    TabletLayoutSize.small: 'Small',
+    TabletLayoutSize.large: 'Large',
+  };
+
 
   Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
     FirebaseUser currentUser;
@@ -57,6 +75,7 @@ class _BodyState extends State<Body> {
       consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
       consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
     );
+
 
     final TwitterLoginResult result = await twitterLogin.authorize();
 
@@ -69,8 +88,7 @@ class _BodyState extends State<Body> {
             authToken: session.token,
             authTokenSecret: session.secret
         );
-        FirebaseUser firebaseUser = (await auth.signInWithCredential(
-            credential)).user;
+
         final AuthResult user = await auth.signInWithCredential(credential);
         assert(user.user.email == null);
         assert(user.user.displayName != null);
@@ -131,6 +149,7 @@ class _BodyState extends State<Body> {
     return true;
   }
 
+
   @override
   Widget build(BuildContext context) {
     bool loginfail = false;
@@ -138,200 +157,203 @@ class _BodyState extends State<Body> {
         .of(context)
         .size;
     return Scaffold(
-      body: Background(
-        child: SingleChildScrollView(
-          child: Form(
-            key: _loginFormKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "LOGIN",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: size.height * 0.03),
-                SvgPicture.asset(
-                  "assets/icons/login.svg",
-                  height: size.height * 0.35,
-                ),
-                SizedBox(height: size.height * 0.03),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Container(
-                    height: 70.0,
-                    child: new Theme(
-                      data: new ThemeData(
-                        primaryColor: Colors.deepPurple,
+      body: ResponsiveLayoutBuilder(
+        builder: (context, size) =>
+            Background(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _loginFormKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "LOGIN",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      child: TextFieldContainer(
-                        child: TextFormField(
-                          cursorColor: kPrimaryColor,
+                      SizedBox(height: 10.0),
+                      SvgPicture.asset(
+                        "assets/icons/login.svg",
+                        height: 300.0,
+                      ),
+                      SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Container(
+                          height: 70.0,
+                          child: new Theme(
+                            data: new ThemeData(
+                              primaryColor: Colors.deepPurple,
+                            ),
+                            child: TextFieldContainer(
+                              child: TextFormField(
+                                cursorColor: kPrimaryColor,
 
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              icon: Icon(
-                                widget.icon,
-                                color: kPrimaryColor,
-                              ),
-                              fillColor: Colors.deepPurple.shade50,
-                              filled: true,
-                              hintText: "email"),
-                          controller: emailInputController,
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    icon: Icon(
+                                      widget.icon,
+                                      color: kPrimaryColor,
+                                    ),
+                                    fillColor: Colors.deepPurple.shade50,
+                                    filled: true,
+                                    hintText: "email"),
+                                controller: emailInputController,
 //                          keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Container(
-                    height: 70.0,
-                    child: new Theme(
-                      data: new ThemeData(
-                        primaryColor: Colors.deepPurple,
-                      ),
-                      child: TextFieldContainer(
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                              icon: Icon(
-                                Icons.lock,
-                                color: kPrimaryColor,
                               ),
-                              border: InputBorder.none,
-                              fillColor: Colors.deepPurple.shade50,
-                              errorText: loginfail
-                                  ? 'password not match'
-                                  : null,
-                              filled: true,
-                              hintText: "password"),
-                          controller: pwdInputController,
-                          obscureText: true,
-//                      validator: pwdValidator,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                RoundedButton(
-                    text: "LOGIN",
-                    press: () {
-                      if (_loginFormKey.currentState.validate()) {
-                        FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                            email: emailInputController.text,
-                            password: pwdInputController.text)
-                            .then((authResult) =>
-                            Firestore.instance
-                                .collection("users")
-                                .document(authResult.user.uid)
-                                .get()
-                                .then((DocumentSnapshot result) =>
-                                Navigator.pushReplacement(
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Container(
+                          height: 70.0,
+                          child: new Theme(
+                            data: new ThemeData(
+                              primaryColor: Colors.deepPurple,
+                            ),
+                            child: TextFieldContainer(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.lock,
+                                      color: kPrimaryColor,
+                                    ),
+                                    border: InputBorder.none,
+                                    fillColor: Colors.deepPurple.shade50,
+                                    errorText: loginfail
+                                        ? 'password not match'
+                                        : null,
+                                    filled: true,
+                                    hintText: "password"),
+                                controller: pwdInputController,
+                                obscureText: true,
+//                      validator: pwdValidator,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      RoundedButton(
+                          text: "LOGIN",
+                          press: () {
+                            if (_loginFormKey.currentState.validate()) {
+                              FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                  email: emailInputController.text,
+                                  password: pwdInputController.text)
+                                  .then((authResult) =>
+                                  Firestore.instance
+                                      .collection("users")
+                                      .document(authResult.user.uid)
+                                      .get()
+                                      .then((DocumentSnapshot result) =>
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HomePage(
+                                                    title: "hello",
+                                                    uid: authResult.user.uid,
+                                                  ))))
+                                      .catchError((err) => print(err)))
+                                  .catchError((err) => print(err));
+                            }
+                          }),
+                      SizedBox(height: 20.0),
+                      AlreadyHaveAnAccountCheck(
+                        press: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SignUpScreen();
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 0.0, top: 10.0),
+                        child: Container(
+                          width: double.infinity,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ForgotScreen()));
+                            },
+                            child: Text(
+                              "Forgot password ?",
+                              style: TextStyle(color: Color(0xFF6F35A5)),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                      OrDivider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SocalIcon(
+                              iconSrc: "assets/icons/google-icon.svg",
+                              press: () {
+                                signInWithGoogle(success).whenComplete(() {
+//                            if (success == true)
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return HomePage(
+//                                    title: "Welcome",
+                                        );
+                                      },
+                                    ),
+                                  );
+                                });
+                              }),
+                          SocalIcon(
+                            iconSrc: "assets/icons/facebook.svg",
+                            press: () {
+                              facebookLogin(context).then((user) {
+                                print('Logged in successfully.');
+
+                                Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            HomePage(
-                                              title: "hello",
-                                              uid: authResult.user.uid,
-                                            ))))
-                                .catchError((err) => print(err)))
-                            .catchError((err) => print(err));
-                      }
-                    }),
-                SizedBox(height: size.height * 0.03),
-                AlreadyHaveAnAccountCheck(
-                  press: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return SignUpScreen();
-                        },
-                      ),
-                    );
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 0.0, top: 10.0),
-                  child: Container(
-                    width: double.infinity,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ForgotScreen()));
-                      },
-                      child: Text(
-                        "Forgot password ?",
-                        style: TextStyle(color: Color(0xFF6F35A5)),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
-                OrDivider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SocalIcon(
-                        iconSrc: "assets/icons/google-icon.svg",
-                        press: () {
-                          signInWithGoogle(success).whenComplete(() {
-//                            if (success == true)
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return HomePage(
-//                                    title: "Welcome",
-                                    );
-                                  },
-                                ),
-                              );
-                          });
-                        }),
-                    SocalIcon(
-                      iconSrc: "assets/icons/facebook.svg",
-                      press: () {
-                        facebookLogin(context).then((user) {
-                          print('Logged in successfully.');
+                                            HomePage(title:
 
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      HomePage(title:
+                                            "huhu",
+                                              uid: "h",
+                                            )),
+                                        (_) => false);
 
-                                      "huhu",
-                                        uid: "h",
-                                      )),
-                                  (_) => false);
-
-                          setState(() {
-                            isFacebookLoginIn = true;
-                            successMessage =
-                            'Logged in successfully.\nEmail : ${user
-                                .email}\nYou can now navigate to Home Page.';
-                          });
-                        },);
-                      },
-                    ),
-                    SocalIcon(
-                      iconSrc: "assets/icons/twitter.svg",
-                      press: () {
-                        loginWithTwitter(context).then((user) {
-                          print('Logged in successfully.');
+                                setState(() {
+                                  isFacebookLoginIn = true;
+                                  successMessage =
+                                  'Logged in successfully.\nEmail : ${user
+                                      .email}\nYou can now navigate to Home Page.';
+                                });
+                              },);
+                            },
+                          ),
+                          SocalIcon(
+                            iconSrc: "assets/icons/twitter.svg",
+                            press: () {
+                              loginWithTwitter(context).then((user) {
+                                print('Logged in successfully.');
 
 //
-                        });
-                      },
-                    ),
-                  ],
-                )
-              ],
+                              });
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
             ),
           ),
         ),

@@ -506,6 +506,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.3"
+  responsive_framework:
+    dependency: "direct main"
+    description:
+      name: responsive_framework
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.8"
+  responsive_layout_builder:
+    dependency: "direct main"
+    description:
+      name: responsive_layout_builder
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.4"
   rxdart:
     dependency: "direct main"
     description:

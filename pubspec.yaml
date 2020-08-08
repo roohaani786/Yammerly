@@ -59,7 +59,8 @@ dependencies:
   location_web:
   cloud_firestore_web:
   firebase_auth_web:
-
+  responsive_framework:
+  responsive_layout_builder:
 
 dev_dependencies:
   flutter_test:

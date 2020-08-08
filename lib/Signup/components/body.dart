@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:techstagram/Login/login_screen.dart';
@@ -31,13 +29,14 @@ class _BodyState extends State<Body> {
   TextEditingController pwdInputController;
   TextEditingController confirmPwdInputController;
   bool success = false;
+  final FocusNode _firstName = FocusNode();
+  final FocusNode _lastName = FocusNode();
+  final FocusNode _phoneNumber = FocusNode();
+  final FocusNode _email = FocusNode();
+  final FocusNode _pwd = FocusNode();
+  final FocusNode _confirmPwd = FocusNode();
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  fl.FacebookLogin fbLogin = new fl.FacebookLogin();
-  bool isFacebookLoginIn = false;
-  String errorMessage = '';
-  String successMessage = '';
-
+  //final FocusNode _signup = FoucsNode();
   @override
   initState() {
     firstNameInputController = new TextEditingController();
@@ -47,40 +46,6 @@ class _BodyState extends State<Body> {
     pwdInputController = new TextEditingController();
     confirmPwdInputController = new TextEditingController();
     super.initState();
-  }
-
-
-  Future<FirebaseUser> facebookLogin(BuildContext context) async {
-    FirebaseUser currentUser;
-    // fbLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
-    // if you remove above comment then facebook login will take username and pasword for login in Webview
-    try {
-      final FacebookLoginResult facebookLoginResult =
-      await fbLogin.logIn(['email']);
-      if (facebookLoginResult.status == FacebookLoginStatus.loggedIn) {
-        FacebookAccessToken facebookAccessToken =
-            facebookLoginResult.accessToken;
-        final AuthCredential credential = FacebookAuthProvider.getCredential(
-            accessToken: facebookAccessToken.token);
-        final AuthResult user = await auth.signInWithCredential(credential);
-        assert(user.user.email != null);
-        assert(user.user.displayName != null);
-        assert(!user.user.isAnonymous);
-        assert(await user.user.getIdToken() != null);
-        currentUser = await auth.currentUser();
-        assert(user.user.uid == currentUser.uid);
-        return currentUser;
-      }
-    } catch (e) {
-      print(e);
-    }
-    return currentUser;
-  }
-
-  Future<bool> facebookLoginout() async {
-    await auth.signOut();
-    await fbLogin.logOut();
-    return true;
   }
 
   String emailValidator(String value) {
@@ -104,12 +69,27 @@ class _BodyState extends State<Body> {
 
   String validateMobile(String value) {
 // Indian Mobile number are of 10 digit only
-    if (value.length != 10)
+
+    if (value.length == null)
+      return null;
+
+    else if (value.length > 0 && value.length != 10)
       return 'Mobile Number must be of 10 digit';
+
+
     else
       return null;
   }
 
+  String passwordmatchValidator(String value) {
+// Indian Mobile number are of 10 digit only
+    if (_pwd != _confirmPwd) {
+      return 'passwords do not match';
+    }
+    else {
+      return null;
+    }
+  }
 
   Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
     FirebaseUser currentUser;
@@ -117,6 +97,7 @@ class _BodyState extends State<Body> {
       consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
       consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
     );
+
 
     final TwitterLoginResult result = await twitterLogin.authorize();
 
@@ -129,8 +110,7 @@ class _BodyState extends State<Body> {
             authToken: session.token,
             authTokenSecret: session.secret
         );
-        FirebaseUser firebaseUser = (await auth.signInWithCredential(
-            credential)).user;
+        final FirebaseAuth auth = FirebaseAuth.instance;
         final AuthResult user = await auth.signInWithCredential(credential);
         assert(user.user.email == null);
         assert(user.user.displayName != null);
@@ -157,6 +137,8 @@ class _BodyState extends State<Body> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -172,69 +154,137 @@ class _BodyState extends State<Body> {
                   "SIGNUP",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: size.height * 0.03),
+                SizedBox(height: size.height * 0.005),
                 SvgPicture.asset(
                   "assets/icons/signup.svg",
-                  height: size.height * 0.15,
+                  height: size.height * 0.20,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 0.0),
+                  padding: const EdgeInsets.only(
+                      right: 10.0, top: 1.0, bottom: 1.0, left: 10.0),
                   child: Container(
-                    height: 70.0,
+                    height: 50.0,
+                    width: 250.0,
                     child: TextFieldContainer(
                       child: TextFormField(
+
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            height: 2.0,
+                            color: Colors.black
+                        ),
+                        textInputAction: TextInputAction.next,
+                        focusNode: _firstName,
+                        onFieldSubmitted: (term) {
+                          _fieldFocusChange(context, _firstName, _lastName);
+                        },
+//                            style: TextStyle(
+//                                fontSize: 20.0,
+//                                height: 2.0,
+//                                color: Colors.black
+//                            ),
                         cursorColor: kPrimaryColor,
 
+
                         decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.person,
-                              color: kPrimaryColor,
-                            ),
-                            fillColor: Colors.deepPurple.shade50,
-                            filled: true,
-                            hintText: "first name"),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(
+                              left: 0, right: 3, top: 10, bottom: 8),
+                          errorStyle: TextStyle(
+
+                            fontSize: 10.0,
+                            height: 0.3,
+                          ),
+                          icon: Icon(
+                            Icons.person,
+                            //  size: 12.0,
+                            color: kPrimaryColor,
+                          ),
+                          fillColor: Colors.deepPurple.shade50,
+                          filled: true,
+                          hintText: "first name",
+                        ),
                         controller: firstNameInputController,
-//                        keyboardType: TextInputType.name,
+                        // keyboardType: TextInputType.name,
 //                      validator: emailValidator,
                       ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
+                  padding: const EdgeInsets.only(
+                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
                   child: Container(
-                    height: 70.0,
+                    height: 50.0,
+                    width: 250.0,
                     child: TextFieldContainer(
                       child: TextFormField(
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            height: 2.0,
+                            color: Colors.black
+                        ),
+                        textInputAction: TextInputAction.next,
+                        focusNode: _lastName,
+                        onFieldSubmitted: (term) {
+                          _fieldFocusChange(context, _lastName, _phoneNumber);
+                        },
                         cursorColor: kPrimaryColor,
 
+
                         decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: Icon(
-                              Icons.input,
-                              color: kPrimaryColor,
-                            ),
-                            fillColor: Colors.deepPurple.shade50,
-                            filled: true,
-                            hintText: "last name"),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(
+                              left: 0, right: 3, top: 10, bottom: 8),
+                          errorStyle: TextStyle(
+
+                            fontSize: 10.0,
+                            height: 0.3,
+                          ),
+                          icon: Icon(
+                            Icons.input,
+                            color: kPrimaryColor,
+                          ),
+                          fillColor: Colors.deepPurple.shade50,
+                          filled: true,
+                          hintText: "last name",),
                         controller: lastNameInputController,
-//                        keyboardType: TextInputType.name,
+                        //  keyboardType: TextInputType.name,
 //                      validator: emailValidator,
                       ),
                     ),
                   ),
                 ),
+
                 Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
+                  padding: const EdgeInsets.only(
+                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
                   child: Container(
-                    height: 70.0,
+                    height: 50.0,
+                    width: 250.0,
                     child: TextFieldContainer(
                       child: TextFormField(
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            height: 2.0,
+                            color: Colors.black
+                        ),
+                        textInputAction: TextInputAction.next,
+                        focusNode: _phoneNumber,
+                        onFieldSubmitted: (term) {
+                          _fieldFocusChange(context, _phoneNumber, _email);
+                        },
                         cursorColor: kPrimaryColor,
 
                         decoration: InputDecoration(
                             border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(
+                                left: 0, right: 3, top: 10, bottom: 8),
+                            errorStyle: TextStyle(
+
+                              fontSize: 10.0,
+                              height: 0.3,
+                            ),
                             icon: Icon(
                               Icons.phone_android,
                               color: kPrimaryColor,
@@ -244,22 +294,41 @@ class _BodyState extends State<Body> {
                             hintText: "phone number"),
                         controller: phoneNumberController,
                         validator: validateMobile,
-//                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.number,
 //                      validator: emailValidator,
                       ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
+                  padding: const EdgeInsets.only(
+                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
                   child: Container(
-                    height: 70.0,
+                    height: 50.0,
+                    width: 250.0,
                     child: TextFieldContainer(
                       child: TextFormField(
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            height: 2.0,
+                            color: Colors.black
+                        ),
+                        textInputAction: TextInputAction.next,
+                        focusNode: _email,
+                        onFieldSubmitted: (term) {
+                          _fieldFocusChange(context, _email, _pwd);
+                        },
                         cursorColor: kPrimaryColor,
 
                         decoration: InputDecoration(
                             border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(
+                                left: 0, right: 3, top: 10, bottom: 8),
+                            errorStyle: TextStyle(
+
+                              fontSize: 10.0,
+                              height: 0.3,
+                            ),
                             icon: Icon(
                               Icons.email,
                               color: kPrimaryColor,
@@ -269,22 +338,42 @@ class _BodyState extends State<Body> {
                             hintText: "email"),
                         controller: emailInputController,
                         validator: emailValidator,
-//                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
                       ),
                     ),
                   ),
                 ),
+
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
+                  padding: const EdgeInsets.only(
+                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
                   child: Container(
-                    height: 70.0,
+                    height: 50.0,
+                    width: 250.0,
                     child: TextFieldContainer(
                       child: TextFormField(
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            height: 2.0,
+                            color: Colors.black
+                        ),
+                        textInputAction: TextInputAction.next,
+                        focusNode: _pwd,
+                        onFieldSubmitted: (term) {
+                          _fieldFocusChange(context, _pwd, _confirmPwd);
+                        },
                         cursorColor: kPrimaryColor,
 
                         decoration: InputDecoration(
                             border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(
+                                left: 0, right: 3, top: 10, bottom: 8),
+                            errorStyle: TextStyle(
+
+                              fontSize: 9.0,
+                              height: 0.3,
+                            ),
                             icon: Icon(
                               Icons.lock,
                               color: kPrimaryColor,
@@ -300,16 +389,37 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                 ),
+
                 Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
+                  padding: const EdgeInsets.only(
+                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
                   child: Container(
-                    height: 70.0,
+                    height: 50.0,
+                    width: 250.0,
                     child: TextFieldContainer(
                       child: TextFormField(
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            height: 2.0,
+                            color: Colors.black
+                        ),
+                        textInputAction: TextInputAction.done,
+                        focusNode: _confirmPwd,
+                        onFieldSubmitted: (value) {
+                          _confirmPwd.unfocus();
+                          RoundedButton;
+                        },
                         cursorColor: kPrimaryColor,
 
                         decoration: InputDecoration(
                             border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(
+                                left: 0, right: 3, top: 10, bottom: 8),
+                            errorStyle: TextStyle(
+
+                              fontSize: 10.0,
+                              height: 0.3,
+                            ),
                             icon: Icon(
                               Icons.lock,
                               color: kPrimaryColor,
@@ -319,12 +429,15 @@ class _BodyState extends State<Body> {
                             hintText: "confirm password"),
                         controller: confirmPwdInputController,
                         obscureText: true,
+                        validator: passwordmatchValidator,
 //                      validator: emailValidator,
                       ),
                     ),
                   ),
                 ),
+
                 RoundedButton(
+
                   text: "SIGNUP",
                   press: () {
                     if (_registerFormKey.currentState.validate()) {
@@ -406,7 +519,7 @@ class _BodyState extends State<Body> {
                         iconSrc: "assets/icons/google-icon.svg",
                         press: () {
                           signInWithGoogle(success).whenComplete(() {
-//                            if (success == true)
+                            if (success == true)
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) {
@@ -416,47 +529,31 @@ class _BodyState extends State<Body> {
                                   },
                                 ),
                               );
+                            else
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return Body();
+                                  },
+                                ),
+                              );
                           });
                         }),
                     SocalIcon(
                       iconSrc: "assets/icons/facebook.svg",
                       press: () {
-                        facebookLogin(context).then((user) {
-                          if (user != null) {
-                            print('Logged in successfully.');
-
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        HomePage(title:
-
-                                        "huhu",
-                                          uid: "h",
-                                        )),
-                                    (_) => false);
-
-                            setState(() {
-                              isFacebookLoginIn = true;
-                              successMessage =
-                              'Logged in successfully.\nEmail : ${user
-                                  .email}\nYou can now navigate to Home Page.';
-                            });
-                          } else {
-                            print('Error while Login.');
-                          }
-                        });
+                        Navigator.pushReplacementNamed(context, "/Fblogin");
                       },
                     ),
                     SocalIcon(
                       iconSrc: "assets/icons/twitter.svg",
                       press: () {
+//                        Navigator.pushReplacementNamed(context, "/Twit");
                         loginWithTwitter(context).then((user) {
                           print('Logged in successfully.');
-                        });
-
-                      },
-                    ),
+                        },
+                        );
+                      })
                   ],
                 )
               ],
@@ -466,4 +563,10 @@ class _BodyState extends State<Body> {
       ),
     );
   }
+}
+
+_fieldFocusChange(BuildContext context, FocusNode currentFocus,
+    FocusNode nextFocus) {
+  currentFocus.unfocus();
+  FocusScope.of(context).requestFocus(nextFocus);
 }
