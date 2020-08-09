@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:techstagram/Login/login_screen.dart';
@@ -48,6 +50,35 @@ class _BodyState extends State<Body> {
     super.initState();
   }
 
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  Future<FirebaseUser> facebookLogin(BuildContext context) async {
+    FirebaseUser currentUser;
+    // fbLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
+    // if you remove above comment then facebook login will take username and pasword for login in Webview
+    try {
+      final FacebookLoginResult facebookLoginResult =
+      await fbLogin.logIn(['email']);
+      if (facebookLoginResult.status == FacebookLoginStatus.loggedIn) {
+        FacebookAccessToken facebookAccessToken =
+            facebookLoginResult.accessToken;
+        final AuthCredential credential = FacebookAuthProvider.getCredential(
+            accessToken: facebookAccessToken.token);
+        final AuthResult user = await auth.signInWithCredential(credential);
+        assert(user.user.email != null);
+        assert(user.user.displayName != null);
+        assert(!user.user.isAnonymous);
+        assert(await user.user.getIdToken() != null);
+        currentUser = await auth.currentUser();
+        assert(user.user.uid == currentUser.uid);
+        return currentUser;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return currentUser;
+  }
+
   String emailValidator(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -91,6 +122,12 @@ class _BodyState extends State<Body> {
     }
   }
 
+  fl.FacebookLogin fbLogin = new fl.FacebookLogin();
+  bool isFacebookLoginIn = false;
+  String errorMessage = '';
+  String successMessage = '';
+
+
   Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
     FirebaseUser currentUser;
     var twitterLogin = new TwitterLogin(
@@ -110,7 +147,7 @@ class _BodyState extends State<Body> {
             authToken: session.token,
             authTokenSecret: session.secret
         );
-        final FirebaseAuth auth = FirebaseAuth.instance;
+
         final AuthResult user = await auth.signInWithCredential(credential);
         assert(user.user.email == null);
         assert(user.user.displayName != null);
@@ -519,30 +556,42 @@ class _BodyState extends State<Body> {
                         iconSrc: "assets/icons/google-icon.svg",
                         press: () {
                           signInWithGoogle(success).whenComplete(() {
-                            if (success == true)
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return HomePage(
+//                            if (success == true)
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return HomePage(
 //                                    title: "Welcome",
-                                    );
-                                  },
-                                ),
-                              );
-                            else
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return Body();
-                                  },
-                                ),
-                              );
+                                  );
+                                },
+                              ),
+                            );
                           });
                         }),
                     SocalIcon(
                       iconSrc: "assets/icons/facebook.svg",
                       press: () {
-                        Navigator.pushReplacementNamed(context, "/Fblogin");
+                        facebookLogin(context).then((user) {
+                          print('Logged in successfully.');
+
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      HomePage(title:
+
+                                      "huhu",
+                                        uid: "h",
+                                      )),
+                                  (_) => false);
+
+                          setState(() {
+                            isFacebookLoginIn = true;
+                            successMessage =
+                            'Logged in successfully.\nEmail : ${user
+                                .email}\nYou can now navigate to Home Page.';
+                          });
+                        },);
                       },
                     ),
                     SocalIcon(

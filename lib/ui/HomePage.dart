@@ -118,69 +118,72 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return new WillPopScope(
+      onWillPop: () async => false,
+      child: GestureDetector(
 
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Hashtag", style: TextStyle(color: Colors.deepPurple)),
-          backgroundColor: Colors.white,
-          //  backgroundColor: Colors.white,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 12,),
-            child: IconButton(
-              icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
-                onPressed: () {
-                  _opencamera();
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Hashtag", style: TextStyle(color: Colors.deepPurple)),
+            backgroundColor: Colors.white,
+            //  backgroundColor: Colors.white,
+            leading: Padding(
+              padding: EdgeInsets.only(left: 12,),
+              child: IconButton(
+                  icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
+                  onPressed: () {
+                    _opencamera();
 
 //                  Navigator.push(
 //                    context,
 //                    MaterialPageRoute(builder: (context) =>CameraExampleHome()),
 //                  );
-                }
+                  }
+
+              ),
 
             ),
+            // title: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: <Widget>[
+            //       Text('Hashtag',
+            //         style: TextStyle(color: Colors.white,),),
+            //     ]
+            // ),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.search, color: Colors.deepPurple,),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SearchListExample()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.message, color: Colors.deepPurple,),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ConversationPage()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.exit_to_app, color: Colors.deepPurple,),
+                onPressed: () {
+                  _signOut();
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                  );
+                },
+              ),
+            ],
 
           ),
-          // title: Row(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: <Widget>[
-          //       Text('Hashtag',
-          //         style: TextStyle(color: Colors.white,),),
-          //     ]
-          // ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.search, color: Colors.deepPurple,),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SearchListExample()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.message, color: Colors.deepPurple,),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ConversationPage()),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.exit_to_app, color: Colors.deepPurple,),
-              onPressed: () {
-                _signOut();
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WelcomeScreen()),
-                );
-              },
-            ),
-          ],
-
-        ),
 //      appBar: AppBar(
 //        title: Text(widget.title),
 //        actions: <Widget>[
@@ -207,10 +210,11 @@ class _HomePageState extends State<HomePage> {
 ////            child: Text("Welcome")),
 ////
 ////      ),
-        body: ResponsiveLayoutBuilder(
-            builder: (context, size) =>
-            new TabLayoutDemo()),
+          body: ResponsiveLayoutBuilder(
+              builder: (context, size) =>
+              new TabLayoutDemo()),
 
+        ),
       ),
     );
   }
