@@ -5,6 +5,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:techstagram/Login/components/background.dart';
 import 'package:techstagram/Signup/components/or_divider.dart';
@@ -33,10 +34,15 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
 
+  bool _obscureText = true;
+
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
   bool success = false;
+
+  final FocusNode _email = FocusNode();
+  final FocusNode _pwd = FocusNode();
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   fl.FacebookLogin fbLogin = new fl.FacebookLogin();
@@ -149,6 +155,12 @@ class _BodyState extends State<Body> {
     return true;
   }
 
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -187,6 +199,11 @@ class _BodyState extends State<Body> {
                             child: TextFieldContainer(
                               child: TextFormField(
                                 cursorColor: kPrimaryColor,
+                                textInputAction: TextInputAction.next,
+                                focusNode: _email,
+                                onFieldSubmitted: (term) {
+                                  _fieldFocusChange(context, _email, _pwd);
+                                },
 
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
@@ -198,6 +215,7 @@ class _BodyState extends State<Body> {
                                     filled: true,
                                     hintText: "email"),
                                 controller: emailInputController,
+                                keyboardType: TextInputType.emailAddress,
 //                          keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
                               ),
@@ -216,6 +234,21 @@ class _BodyState extends State<Body> {
                             child: TextFieldContainer(
                               child: TextFormField(
                                 decoration: InputDecoration(
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        _toggle();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 5.0),
+                                        child: new Icon(
+                                          _obscureText ? FontAwesomeIcons
+                                              .eyeSlash : FontAwesomeIcons
+                                              .solidEyeSlash, size: 15.0,
+                                          color: Colors.deepPurple,),
+
+                                      ),
+                                    ),
                                     icon: Icon(
                                       Icons.lock,
                                       color: kPrimaryColor,
@@ -228,7 +261,7 @@ class _BodyState extends State<Body> {
                                     filled: true,
                                     hintText: "password"),
                                 controller: pwdInputController,
-                                obscureText: true,
+                                obscureText: _obscureText,
 //                      validator: pwdValidator,
                               ),
                             ),
@@ -354,11 +387,38 @@ class _BodyState extends State<Body> {
                       )
                     ],
                   ),
+                ),
+              ),
             ),
-          ),
-        ),
       ),
     );
   }
 }
 
+class Errors {
+  static String show(String errorCode) {
+    switch (errorCode) {
+      case 'ERROR_EMAIL_ALREADY_IN_USE':
+        return "This e-mail address is already in use, please use a different e-mail address.";
+
+      case 'ERROR_INVALID_EMAIL':
+        return "The email address is badly formatted.";
+
+      case 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
+        return "The e-mail address in your Facebook account has been registered in the system before. Please login by trying other methods with this e-mail address.";
+
+      case 'ERROR_WRONG_PASSWORD':
+        return "E-mail address or password is incorrect.";
+
+      default:
+        return "An error has occurred";
+    }
+  }
+}
+
+
+_fieldFocusChange(BuildContext context, FocusNode currentFocus,
+    FocusNode nextFocus) {
+  currentFocus.unfocus();
+  FocusScope.of(context).requestFocus(nextFocus);
+}

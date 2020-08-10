@@ -7,13 +7,13 @@ class CheckMail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "               Verification email sent !",
-          style: TextStyle(color: Colors.white),
+          "Verification email sent !",
+          style: TextStyle(color: Colors.deepPurple),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 80.0, left: 30.0, right: 30.0),
+        padding: const EdgeInsets.only(top: 40.0, left: 40.0, right: 30.0),
         child: Container(
           height: 100.0,
           width: 400.0,

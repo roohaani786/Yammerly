@@ -24,12 +24,17 @@ class _ForgotScreen extends State<ForgotScreen> {
       child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
+
 //        backgroundColor: Color(0xFF6F35A5),
             title: Text(
               "Forgot Password",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.deepPurple),
             ),
-            backgroundColor: Color(0xFF6F35A5),
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.deepPurple),
+              onPressed: () => Navigator.of(context).pop(),
+          ),
           ),
           body: Center(
             child: Padding(
@@ -57,6 +62,7 @@ class _ForgotScreen extends State<ForgotScreen> {
                             }
                             return null;
                           },
+                          keyboardType: TextInputType.emailAddress,
                           style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
                             icon: Icon(

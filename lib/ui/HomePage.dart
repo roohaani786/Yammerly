@@ -249,10 +249,9 @@ class TabLayoutDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return new MaterialApp(
-      color: Colors.yellow,
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
+
+    return Scaffold(
+      body: DefaultTabController(
         length: 4,
         child: new Scaffold(
           body: TabBarView(
@@ -298,6 +297,7 @@ class TabLayoutDemo extends StatelessWidget {
         ),
       ),
     );
+
   }
 }
 

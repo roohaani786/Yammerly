@@ -5,6 +5,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Signup/components/background.dart';
 import 'package:techstagram/Signup/components/or_divider.dart';
@@ -37,6 +38,9 @@ class _BodyState extends State<Body> {
   final FocusNode _email = FocusNode();
   final FocusNode _pwd = FocusNode();
   final FocusNode _confirmPwd = FocusNode();
+
+  bool _obscureText = true;
+
 
   //final FocusNode _signup = FoucsNode();
   @override
@@ -112,15 +116,7 @@ class _BodyState extends State<Body> {
       return null;
   }
 
-  String passwordmatchValidator(String value) {
-// Indian Mobile number are of 10 digit only
-    if (_pwd != _confirmPwd) {
-      return 'passwords do not match';
-    }
-    else {
-      return null;
-    }
-  }
+
 
   fl.FacebookLogin fbLogin = new fl.FacebookLogin();
   bool isFacebookLoginIn = false;
@@ -174,7 +170,11 @@ class _BodyState extends State<Body> {
     }
   }
 
-
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -390,6 +390,7 @@ class _BodyState extends State<Body> {
                     width: 250.0,
                     child: TextFieldContainer(
                       child: TextFormField(
+
                         style: TextStyle(
                             fontSize: 12.0,
                             height: 2.0,
@@ -401,9 +402,24 @@ class _BodyState extends State<Body> {
                           _fieldFocusChange(context, _pwd, _confirmPwd);
                         },
                         cursorColor: kPrimaryColor,
+                        obscureText: _obscureText,
 
                         decoration: InputDecoration(
                             border: InputBorder.none,
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                _toggle();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: new Icon(_obscureText
+                                    ? FontAwesomeIcons.eyeSlash
+                                    : FontAwesomeIcons.solidEyeSlash,
+                                  size: 15.0, color: Colors.deepPurple,),
+
+                              ),
+                            ),
+
                             contentPadding: EdgeInsets.only(
                                 left: 0, right: 3, top: 10, bottom: 8),
                             errorStyle: TextStyle(
@@ -420,10 +436,12 @@ class _BodyState extends State<Body> {
                             hintText: "create password"),
                         controller: pwdInputController,
                         validator: pwdValidator,
-                        obscureText: true,
+
 //                      validator: emailValidator,
                       ),
                     ),
+
+
                   ),
                 ),
 
@@ -450,6 +468,19 @@ class _BodyState extends State<Body> {
 
                         decoration: InputDecoration(
                             border: InputBorder.none,
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                _toggle();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: new Icon(_obscureText
+                                    ? FontAwesomeIcons.eyeSlash
+                                    : FontAwesomeIcons.solidEyeSlash,
+                                  size: 15.0, color: Colors.deepPurple,),
+
+                              ),
+                            ),
                             contentPadding: EdgeInsets.only(
                                 left: 0, right: 3, top: 10, bottom: 8),
                             errorStyle: TextStyle(
@@ -465,8 +496,8 @@ class _BodyState extends State<Body> {
                             filled: true,
                             hintText: "confirm password"),
                         controller: confirmPwdInputController,
-                        obscureText: true,
-                        validator: passwordmatchValidator,
+                        obscureText: _obscureText,
+
 //                      validator: emailValidator,
                       ),
                     ),
@@ -511,8 +542,9 @@ class _BodyState extends State<Body> {
                               pwdInputController.clear(),
                               confirmPwdInputController.clear()
                             })
-                                .catchError((err) => print(err)))
-                            .catchError((err) => print(err));
+                                .catchError((err) =>
+                                print(Errors.show(err.code))))
+                            .catchError((err) => print(Errors.show(err)));
                       } else {
                         showDialog(
                             context: context,
@@ -618,4 +650,26 @@ _fieldFocusChange(BuildContext context, FocusNode currentFocus,
     FocusNode nextFocus) {
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
+}
+
+
+class Errors {
+  static String show(String errorCode) {
+    switch (errorCode) {
+      case 'ERROR_EMAIL_ALREADY_IN_USE':
+        return "This e-mail address is already in use, please use a different e-mail address.";
+
+      case 'ERROR_INVALID_EMAIL':
+        return "The email address is badly formatted.";
+
+      case 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
+        return "The e-mail address in your Facebook account has been registered in the system before. Please login by trying other methods with this e-mail address.";
+
+      case 'ERROR_WRONG_PASSWORD':
+        return "E-mail address or password is incorrect.";
+
+      default:
+        return "An error has occurred";
+    }
+  }
 }
