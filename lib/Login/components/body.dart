@@ -168,228 +168,239 @@ class _BodyState extends State<Body> {
     Size size = MediaQuery
         .of(context)
         .size;
-    return Scaffold(
-      body: ResponsiveLayoutBuilder(
-        builder: (context, size) =>
-            Background(
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _loginFormKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "LOGIN",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10.0),
-                      SvgPicture.asset(
-                        "assets/icons/login.svg",
-                        height: 300.0,
-                      ),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Container(
-                          height: 70.0,
-                          child: new Theme(
-                            data: new ThemeData(
-                              primaryColor: Colors.deepPurple,
-                            ),
-                            child: TextFieldContainer(
-                              child: TextFormField(
-                                cursorColor: kPrimaryColor,
-                                textInputAction: TextInputAction.next,
-                                focusNode: _email,
-                                onFieldSubmitted: (term) {
-                                  _fieldFocusChange(context, _email, _pwd);
-                                },
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: ResponsiveLayoutBuilder(
+          builder: (context, size) =>
+              Background(
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _loginFormKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+//                      Text(
+//                        "LOGIN",
+//                        style: TextStyle(fontWeight: FontWeight.bold),
+//                      ),
+//                      SizedBox(height: 10.0),
+                        SvgPicture.asset(
+                          "assets/icons/login.svg",
+                          height: 300.0,
+                        ),
+                        SizedBox(height: 10.0),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Container(
+                            height: 70.0,
+                            child: new Theme(
+                              data: new ThemeData(
+                                primaryColor: Colors.deepPurple,
+                              ),
+                              child: TextFieldContainer(
+                                child: TextFormField(
+                                  cursorColor: kPrimaryColor,
+                                  textInputAction: TextInputAction.next,
+                                  focusNode: _email,
+                                  onFieldSubmitted: (term) {
+                                    _fieldFocusChange(context, _email, _pwd);
+                                  },
 
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    icon: Icon(
-                                      widget.icon,
-                                      color: kPrimaryColor,
-                                    ),
-                                    fillColor: Colors.deepPurple.shade50,
-                                    filled: true,
-                                    hintText: "email"),
-                                controller: emailInputController,
-                                keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      icon: Icon(
+                                        widget.icon,
+                                        color: kPrimaryColor,
+                                      ),
+                                      fillColor: Colors.deepPurple.shade50,
+                                      filled: true,
+                                      hintText: "Email"),
+                                  controller: emailInputController,
+//                                keyboardType: TextInputType.emailAddress,
 //                          keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Container(
-                          height: 70.0,
-                          child: new Theme(
-                            data: new ThemeData(
-                              primaryColor: Colors.deepPurple,
-                            ),
-                            child: TextFieldContainer(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                    suffixIcon: GestureDetector(
-                                      onTap: () {
-                                        _toggle();
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 5.0),
-                                        child: new Icon(
-                                          _obscureText ? FontAwesomeIcons
-                                              .eyeSlash : FontAwesomeIcons
-                                              .solidEyeSlash, size: 15.0,
-                                          color: Colors.deepPurple,),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Container(
+                            height: 70.0,
+                            child: new Theme(
+                              data: new ThemeData(
+                                primaryColor: Colors.deepPurple,
+                              ),
+                              child: TextFieldContainer(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                      errorBorder:
+                                      OutlineInputBorder(borderSide: BorderSide(
+                                          color: Colors.red)),
+                                      suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          _toggle();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 5.0),
+                                          child: new Icon(
+                                            _obscureText ? FontAwesomeIcons
+                                                .eyeSlash : FontAwesomeIcons
+                                                .solidEyeSlash, size: 15.0,
+                                            color: Colors.deepPurple,),
 
+                                        ),
                                       ),
-                                    ),
-                                    icon: Icon(
-                                      Icons.lock,
-                                      color: kPrimaryColor,
-                                    ),
-                                    border: InputBorder.none,
-                                    fillColor: Colors.deepPurple.shade50,
-                                    errorText: loginfail
-                                        ? 'password not match'
-                                        : null,
-                                    filled: true,
-                                    hintText: "password"),
-                                controller: pwdInputController,
-                                obscureText: _obscureText,
+                                      icon: Icon(
+                                        Icons.lock,
+                                        color: kPrimaryColor,
+                                      ),
+                                      border: InputBorder.none,
+                                      fillColor: Colors.deepPurple.shade50,
+                                      errorText: loginfail
+                                          ? 'password not match'
+                                          : null,
+                                      filled: true,
+                                      hintText: "Password"),
+                                  controller: pwdInputController,
+                                  obscureText: _obscureText,
+                                  focusNode: _pwd,
+                                  onFieldSubmitted: (value) {
+                                    _pwd.unfocus();
+                                    RoundedButton;
+                                  },
 //                      validator: pwdValidator,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      RoundedButton(
-                          text: "LOGIN",
-                          press: () {
-                            if (_loginFormKey.currentState.validate()) {
-                              FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                  email: emailInputController.text,
-                                  password: pwdInputController.text)
-                                  .then((authResult) =>
-                                  Firestore.instance
-                                      .collection("users")
-                                      .document(authResult.user.uid)
-                                      .get()
-                                      .then((DocumentSnapshot result) =>
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomePage(
-                                                    title: "hello",
-                                                    uid: authResult.user.uid,
-                                                  ))))
-                                      .catchError((err) => print(err)))
-                                  .catchError((err) => print(err));
-                            }
-                          }),
-                      SizedBox(height: 20.0),
-                      AlreadyHaveAnAccountCheck(
-                        press: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return SignUpScreen();
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 0.0, top: 10.0),
-                        child: Container(
-                          width: double.infinity,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          ForgotScreen()));
-                            },
-                            child: Text(
-                              "Forgot password ?",
-                              style: TextStyle(color: Color(0xFF6F35A5)),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      OrDivider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          SocalIcon(
-                              iconSrc: "assets/icons/google-icon.svg",
-                              press: () {
-                                signInWithGoogle(success).whenComplete(() {
-//                            if (success == true)
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return HomePage(
-//                                    title: "Welcome",
-                                        );
-                                      },
-                                    ),
-                                  );
-                                });
-                              }),
-                          SocalIcon(
-                            iconSrc: "assets/icons/facebook.svg",
+                        RoundedButton(
+                            text: "LOGIN",
                             press: () {
-                              facebookLogin(context).then((user) {
-                                print('Logged in successfully.');
-
-                                Navigator.pushAndRemoveUntil(
+                              if (_loginFormKey.currentState.validate()) {
+                                FirebaseAuth.instance
+                                    .signInWithEmailAndPassword(
+                                    email: emailInputController.text,
+                                    password: pwdInputController.text)
+                                    .then((authResult) =>
+                                    Firestore.instance
+                                        .collection("users")
+                                        .document(authResult.user.uid)
+                                        .get()
+                                        .then((DocumentSnapshot result) =>
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    HomePage(
+                                                      title: "hello",
+                                                      uid: authResult.user.uid,
+                                                    ))))
+                                        .catchError((err) => print(err)))
+                                    .catchError((err) => print(err));
+                              }
+                            }),
+                        SizedBox(height: 20.0),
+                        AlreadyHaveAnAccountCheck(
+                          press: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return SignUpScreen();
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 0.0, top: 10.0),
+                          child: Container(
+                            width: double.infinity,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            HomePage(title:
-
-                                            "huhu",
-                                              uid: "h",
-                                            )),
-                                        (_) => false);
-
-                                setState(() {
-                                  isFacebookLoginIn = true;
-                                  successMessage =
-                                  'Logged in successfully.\nEmail : ${user
-                                      .email}\nYou can now navigate to Home Page.';
-                                });
-                              },);
-                            },
+                                        builder: (BuildContext context) =>
+                                            ForgotScreen()));
+                              },
+                              child: Text(
+                                "Forgot password ?",
+                                style: TextStyle(color: Color(0xFF6F35A5)),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           ),
-                          SocalIcon(
-                            iconSrc: "assets/icons/twitter.svg",
-                            press: () {
-                              loginWithTwitter(context).then((user) {
-                                print('Logged in successfully.');
+                        ),
+                        OrDivider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SocalIcon(
+                                iconSrc: "assets/icons/google-icon.svg",
+                                press: () {
+                                  signInWithGoogle(success).whenComplete(() {
+//                            if (success == true)
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return HomePage(
+//                                    title: "Welcome",
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  });
+                                }),
+                            SocalIcon(
+                              iconSrc: "assets/icons/facebook.svg",
+                              press: () {
+                                facebookLogin(context).then((user) {
+                                  print('Logged in successfully.');
+
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              HomePage(title:
+
+                                              "huhu",
+                                                uid: "h",
+                                              )),
+                                          (_) => false);
+
+                                  setState(() {
+                                    isFacebookLoginIn = true;
+                                    successMessage =
+                                    'Logged in successfully.\nEmail : ${user
+                                        .email}\nYou can now navigate to Home Page.';
+                                  });
+                                },);
+                              },
+                            ),
+                            SocalIcon(
+                              iconSrc: "assets/icons/twitter.svg",
+                              press: () {
+                                loginWithTwitter(context).then((user) {
+                                  print('Logged in successfully.');
 
 //
-                              });
-                            },
-                          ),
-                        ],
-                      )
-                    ],
+                                });
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:techstagram/Login/components/background.dart';
+import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/constants.dart';
 
 import 'checkmail.dart';
@@ -33,7 +34,11 @@ class _ForgotScreen extends State<ForgotScreen> {
             backgroundColor: Colors.white,
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.deepPurple),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () =>
+                  Navigator.push(context, new MaterialPageRoute(
+                      builder: (context) =>
+                      new LoginScreen())
+                  ),
           ),
           ),
           body: Center(

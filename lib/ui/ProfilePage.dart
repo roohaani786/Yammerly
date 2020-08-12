@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'ProfileEdit.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/models/user.dart';
+
+import 'ProfileEdit.dart';
 
 class AccountBottomIconScreen extends StatefulWidget {
   final User user;
@@ -106,6 +108,21 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                       icon: new Icon(Icons.format_list_bulleted),
                       iconSize: 25.0,
                       onPressed: () {}),
+                  new IconButton(
+                      icon: new Icon(
+                        Icons.exit_to_app,
+                        size: 30.0,
+                      ),
+                      onPressed: () {
+                        FirebaseAuth.instance
+                            .signOut()
+                            .then((result) =>
+                            Navigator.push(context, new MaterialPageRoute(
+                                builder: (context) =>
+                                new LoginScreen())
+                            ))
+                            .catchError((err) => print(err));
+                      }),
                 ],
               )
             ],
@@ -198,7 +215,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
               new Column(
                 children: <Widget>[
                   new Image.asset(
-                    "assets/insta_logo.png",
+                    "assets/cod.png",
                     height: 100.0,
                   ),
                   new Container(
@@ -217,7 +234,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                   children: <Widget>[
                     new Container(
                       child: new Row(
-                        children: <Widget>[_post(), _followers(), _following()],
+                        children: <Widget>[_post(), _followers(), _following(),
+                        ],
                       ),
                     ),
                     new GestureDetector(
@@ -288,6 +306,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     size: 30.0,
                   ),
                   onPressed: () {}),
+
             ],
           ),
           new Container(

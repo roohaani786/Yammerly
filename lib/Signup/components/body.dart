@@ -83,24 +83,39 @@ class _BodyState extends State<Body> {
     return currentUser;
   }
 
+  bool errordikhao = false;
+
   String emailValidator(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value)) {
-      return 'Email format is invalid';
+      setState(() {
+        errordikhao = true;
+      });
     } else {
-      return null;
+      setState(() {
+        errordikhao = false;
+      });
     }
   }
 
+  bool errordikhaoP = false;
+
   String pwdValidator(String value) {
     if (value.length < 8) {
-      return 'Password must be longer than 8 characters';
+//      return 'Password must be longer than 8 characters';
+      setState(() {
+        errordikhaoP = true;
+      });
     } else {
-      return null;
+      setState(() {
+        errordikhaoP = false;
+      });
     }
   }
+
+  bool errordikhaoN = false;
 
   String validateMobile(String value) {
 // Indian Mobile number are of 10 digit only
@@ -109,7 +124,10 @@ class _BodyState extends State<Body> {
       return null;
 
     else if (value.length > 0 && value.length != 10)
-      return 'Mobile Number must be of 10 digit';
+      setState(() {
+        errordikhaoN = true;
+      });
+    // return 'Mobile Number must be of 10 digit';
 
 
     else
@@ -187,11 +205,11 @@ class _BodyState extends State<Body> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  "SIGNUP",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: size.height * 0.005),
+//                Text(
+//                  "SIGNUP",
+//                  style: TextStyle(fontWeight: FontWeight.bold),
+//                ),
+//                SizedBox(height: size.height * 0.001),
                 SvgPicture.asset(
                   "assets/icons/signup.svg",
                   height: size.height * 0.20,
@@ -239,7 +257,7 @@ class _BodyState extends State<Body> {
                           ),
                           fillColor: Colors.deepPurple.shade50,
                           filled: true,
-                          hintText: "first name",
+                          hintText: "First name",
                         ),
                         controller: firstNameInputController,
                         // keyboardType: TextInputType.name,
@@ -279,12 +297,12 @@ class _BodyState extends State<Body> {
                             height: 0.3,
                           ),
                           icon: Icon(
-                            Icons.input,
+                            Icons.person,
                             color: kPrimaryColor,
                           ),
                           fillColor: Colors.deepPurple.shade50,
                           filled: true,
-                          hintText: "last name",),
+                          hintText: "Last name",),
                         controller: lastNameInputController,
                         //  keyboardType: TextInputType.name,
 //                      validator: emailValidator,
@@ -299,7 +317,20 @@ class _BodyState extends State<Body> {
                   child: Container(
                     height: 50.0,
                     width: 250.0,
-                    child: TextFieldContainer(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      width: size.width * 0.8,
+                      decoration: BoxDecoration(
+                        color: kPrimaryLightColor,
+                        borderRadius: BorderRadius.circular(29),
+                        border: Border.all(
+                          color: (errordikhaoN == true)
+                              ? Colors.red
+                              : kPrimaryLightColor,
+                        ),
+                      ),
                       child: TextFormField(
                         style: TextStyle(
                             fontSize: 12.0,
@@ -328,10 +359,10 @@ class _BodyState extends State<Body> {
                             ),
                             fillColor: Colors.deepPurple.shade50,
                             filled: true,
-                            hintText: "phone number"),
+                            hintText: "Phone number (optional)"),
                         controller: phoneNumberController,
                         validator: validateMobile,
-                        keyboardType: TextInputType.number,
+//                        keyboardType: TextInputType.number,
 //                      validator: emailValidator,
                       ),
                     ),
@@ -343,7 +374,20 @@ class _BodyState extends State<Body> {
                   child: Container(
                     height: 50.0,
                     width: 250.0,
-                    child: TextFieldContainer(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      width: size.width * 0.8,
+                      decoration: BoxDecoration(
+                        color: kPrimaryLightColor,
+                        borderRadius: BorderRadius.circular(29),
+                        border: Border.all(
+                          color: (errordikhao == true)
+                              ? Colors.red
+                              : kPrimaryLightColor,
+                        ),
+                      ),
                       child: TextFormField(
                         style: TextStyle(
                             fontSize: 12.0,
@@ -359,6 +403,9 @@ class _BodyState extends State<Body> {
 
                         decoration: InputDecoration(
                             border: InputBorder.none,
+                            errorBorder:
+                            OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red,)),
                             contentPadding: EdgeInsets.only(
                                 left: 0, right: 3, top: 10, bottom: 8),
                             errorStyle: TextStyle(
@@ -372,10 +419,10 @@ class _BodyState extends State<Body> {
                             ),
                             fillColor: Colors.deepPurple.shade50,
                             filled: true,
-                            hintText: "email"),
+                            hintText: "Email"),
                         controller: emailInputController,
                         validator: emailValidator,
-                        keyboardType: TextInputType.emailAddress,
+//                        keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
                       ),
                     ),
@@ -388,7 +435,20 @@ class _BodyState extends State<Body> {
                   child: Container(
                     height: 50.0,
                     width: 250.0,
-                    child: TextFieldContainer(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      width: size.width * 0.8,
+                      decoration: BoxDecoration(
+                        color: kPrimaryLightColor,
+                        borderRadius: BorderRadius.circular(29),
+                        border: Border.all(
+                          color: (errordikhaoP == true)
+                              ? Colors.red
+                              : kPrimaryLightColor,
+                        ),
+                      ),
                       child: TextFormField(
 
                         style: TextStyle(
@@ -433,7 +493,7 @@ class _BodyState extends State<Body> {
                             ),
                             fillColor: Colors.deepPurple.shade50,
                             filled: true,
-                            hintText: "create password"),
+                            hintText: "Create password"),
                         controller: pwdInputController,
                         validator: pwdValidator,
 
@@ -494,7 +554,7 @@ class _BodyState extends State<Body> {
                             ),
                             fillColor: Colors.deepPurple.shade50,
                             filled: true,
-                            hintText: "confirm password"),
+                            hintText: "Confirm password"),
                         controller: confirmPwdInputController,
                         obscureText: _obscureText,
 

@@ -3,10 +3,12 @@ import 'package:techstagram/constants.dart';
 
 class TextFieldContainer extends StatelessWidget {
   final Widget child;
+  bool errordikhao;
+  BoxDecoration boxDecoration;
 
-  const TextFieldContainer({
+  TextFieldContainer({
     Key key,
-    this.child,
+    this.child, this.errordikhao, this.boxDecoration
   }) : super(key: key);
 
   @override
@@ -19,8 +21,14 @@ class TextFieldContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: kPrimaryLightColor,
         borderRadius: BorderRadius.circular(29),
+        border: Border.all(
+          color: (errordikhao == true) ? Colors.red : kPrimaryLightColor,
+        ),
       ),
       child: child,
     );
   }
 }
+
+
+

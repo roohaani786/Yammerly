@@ -2,8 +2,8 @@
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
-import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
@@ -102,6 +102,7 @@ class _HomePageState extends State<HomePage> {
 
 //  List<CameraDescription> cameras = [];
 
+
   Future<void> _opencamera() async {
     // Fetch the available cameras before initializing the app.
     try {
@@ -116,6 +117,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  List<CameraDescription> cameras = [];
+
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
@@ -124,25 +127,39 @@ class _HomePageState extends State<HomePage> {
 
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Hashtag", style: TextStyle(color: Colors.deepPurple)),
+            title: Padding(
+              padding: const EdgeInsets.only(left: 200.0),
+              child: Text(
+                  "Hashtag", style: TextStyle(color: Colors.deepPurple)),
+            ),
             backgroundColor: Colors.white,
             //  backgroundColor: Colors.white,
-            leading: Padding(
-              padding: EdgeInsets.only(left: 12,),
-              child: IconButton(
-                  icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
-                  onPressed: () {
-                    _opencamera();
-
-//                  Navigator.push(
-//                    context,
-//                    MaterialPageRoute(builder: (context) =>CameraExampleHome()),
-//                  );
-                  }
-
-              ),
-
+            leading: IconButton(
+              icon: Icon(Icons.search, color: Colors.deepPurple,),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SearchListExample()),
+                );
+              },
             ),
+//            leading: Padding(
+//              padding: EdgeInsets.only(left: 12,),
+//              child: IconButton(
+//                  icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
+//                  onPressed: () {
+//                    _opencamera();
+//
+////                  Navigator.push(
+////                    context,
+////                    MaterialPageRoute(builder: (context) =>CameraExampleHome()),
+////                  );
+//                  }
+//
+//              ),
+//
+//            ),
             // title: Row(
             //     mainAxisAlignment: MainAxisAlignment.center,
             //     children: <Widget>[
@@ -151,15 +168,12 @@ class _HomePageState extends State<HomePage> {
             //     ]
             // ),
             actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.search, color: Colors.deepPurple,),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SearchListExample()),
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.only(right: 220.0, top: 15.0),
+                child: Text('Hashtag',
+                  style: TextStyle(color: Colors.deepPurple,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold),),
               ),
               IconButton(
                 icon: Icon(Icons.message, color: Colors.deepPurple,),
@@ -170,17 +184,17 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              IconButton(
-                icon: Icon(Icons.exit_to_app, color: Colors.deepPurple,),
-                onPressed: () {
-                  _signOut();
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
-                  );
-                },
-              ),
+//              IconButton(
+//                icon: Icon(Icons.exit_to_app, color: Colors.deepPurple,),
+//                onPressed: () {
+//                  _signOut();
+//
+//                  Navigator.push(
+//                    context,
+//                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
+//                  );
+//                },
+//              ),
             ],
 
           ),
@@ -252,34 +266,42 @@ class TabLayoutDemo extends StatelessWidget {
 
     return Scaffold(
       body: DefaultTabController(
-        length: 4,
+        length: 5,
+        initialIndex: 2,
         child: new Scaffold(
           body: TabBarView(
             children: [
               new Container(
-                child: FeedsPage(),
+                  child: CameraExampleHome()
               ),
               new Container(
                 child: ChatsPage(),
               ),
+              new Container(
+                child: FeedsPage(),
+              ),
+
               new Container(
                 child: NotificationsPage(),
               ),
               new Container(
                   child: AccountBottomIconScreen()
               ),
+
             ],
           ),
           bottomNavigationBar: new Container(
             height: 60.0,
             child: new TabBar(
               tabs: [
-                Tab(
-                  icon: new Icon(Icons.home, size: 30),
-                ),
+                Tab(icon: new Icon(FontAwesomeIcons.camera, size: 25),),
                 Tab(
                   icon: new Icon(Icons.blur_circular, size: 30),
                 ),
+                Tab(
+                  icon: new Icon(Icons.home, size: 30),
+                ),
+
                 Tab(
                   icon: new Icon(Icons.notifications, size: 30),
                 ),

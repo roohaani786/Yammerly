@@ -1,10 +1,50 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:techstagram/resources/opencamera.dart';
+import 'package:techstagram/ui/HomePage.dart';
 
-class ChatsPage extends StatelessWidget {
+class ChatsPage extends StatefulWidget {
+
+
+//  List<CameraDescription> cameras = [];
+
+  @override
+  _ChatsPageState createState() => _ChatsPageState();
+}
+
+class _ChatsPageState extends State<ChatsPage> {
+
+  void _onHorizontalDrag(DragEndDetails details) {
+    if (details.primaryVelocity == 0)
+      return; // user have just tapped on screen (no dragging)
+
+    if (details.primaryVelocity.compareTo(0) == -1)
+      HomePage();
+    else
+      _opencamera();
+  }
+
+  Future<void> _opencamera() async {
+    // Fetch the available cameras before initializing the app.
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
+      cameras = await availableCameras();
+    } on CameraException catch (e) {
+      logError(e.code, e.description);
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CameraApp()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final deviceWidth = MediaQuery.of(context).size.width;
+    final deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
 
     final pageTitle = Padding(
       padding: EdgeInsets.only(top: 1.0, bottom: 20.0),
@@ -81,9 +121,12 @@ class ChatsPage extends StatelessWidget {
 //      ),
 //    );
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(child: Text("Pending implementation")),
+    return GestureDetector(
+      onHorizontalDragEnd: (DragEndDetails details) =>
+          _onHorizontalDrag(details),
+      child: Scaffold(
+          body: SingleChildScrollView(
+            child: Container(child: Text("Pending implementation")),
 //        child: Container(
 //          padding: EdgeInsets.only(top: 40.0),
 //          width: deviceWidth,
@@ -253,6 +296,7 @@ class ChatsPage extends StatelessWidget {
 //        children: <Widget>[userImage, userNameMessage],
 //      ),
 //    );
-      ));
+          )),
+    );
   }
 }
