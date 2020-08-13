@@ -28,19 +28,6 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
 
-//        builder: (context, widget) => ResponsiveWrapper.builder(
-//            .builder(context, widget),
-//            maxWidth: 1200,
-//            minWidth: 450,
-//            defaultScale: true,
-//            breakpoints: [
-//              ResponsiveBreakpoint.resize(450, name: MOBILE),
-//              ResponsiveBreakpoint.autoScale(800, name: TABLET),
-//              ResponsiveBreakpoint.autoScale(1000, name: TABLET),
-//              ResponsiveBreakpoint.resize(1200, name: DESKTOP),
-//              ResponsiveBreakpoint.autoScale(2460, name: "4K"),
-//            ],
-//            background: Container(color: Color(0xFFF5F5F5))),
         title: 'Hashtag',
         debugShowCheckedModeBanner: false,
 
@@ -75,17 +62,6 @@ class MyAppState extends State<MyApp> {
             }
           },
         )
-
-//        var ref = new Firebase("https://<YOUR-FIREBASE-APP>.firebaseio.com");
-//    ref.onAuth(function(authData) {
-//    if (authData) {
-//    console.log("User " + authData.uid + " is logged in with " + authData.provider);
-//    } else {
-//    console.log("User is logged out");
-//    }
-//    });
-
-
     );
   }
 }

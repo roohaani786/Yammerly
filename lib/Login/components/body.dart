@@ -57,23 +57,7 @@ class _BodyState extends State<Body> {
     super.initState();
   }
 
-  static const Map<LayoutSize, String> layoutSizeEnumToString = {
-    LayoutSize.watch: 'Wristwatch',
-    LayoutSize.mobile: 'Mobile',
-    LayoutSize.tablet: 'Tablet',
-    LayoutSize.desktop: 'Desktop',
-    LayoutSize.tv: 'TV',
-  };
-  static const Map<MobileLayoutSize, String> mobileLayoutSizeEnumToString = {
-    MobileLayoutSize.small: 'Small',
-    MobileLayoutSize.medium: 'Medium',
-    MobileLayoutSize.large: 'Large',
-  };
-  static const Map<TabletLayoutSize, String> tabletLayoutSizeEnumToString = {
-    TabletLayoutSize.small: 'Small',
-    TabletLayoutSize.large: 'Large',
-  };
-
+  //twitter Login method
 
   Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
     FirebaseUser currentUser;
@@ -86,10 +70,9 @@ class _BodyState extends State<Body> {
     final TwitterLoginResult result = await twitterLogin.authorize();
 
     switch (result.status) {
+
       case TwitterLoginStatus.loggedIn:
         var session = result.session;
-//        final FacebookLoginResult facebookLoginResult =
-//        await fbLogin.logIn(['email']);
         final AuthCredential credential = TwitterAuthProvider.getCredential(
             authToken: session.token,
             authTokenSecret: session.secret
@@ -121,6 +104,7 @@ class _BodyState extends State<Body> {
     }
   }
 
+  //facebook login method
 
   Future<FirebaseUser> facebookLogin(BuildContext context) async {
     FirebaseUser currentUser;
@@ -149,11 +133,15 @@ class _BodyState extends State<Body> {
     return currentUser;
   }
 
+  //facebook logout method
+
   Future<bool> facebookLoginout() async {
     await auth.signOut();
     await fbLogin.logOut();
     return true;
   }
+
+  //Password padlock toggle
 
   void _toggle() {
     setState(() {
@@ -180,11 +168,7 @@ class _BodyState extends State<Body> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-//                      Text(
-//                        "LOGIN",
-//                        style: TextStyle(fontWeight: FontWeight.bold),
-//                      ),
-//                      SizedBox(height: 10.0),
+
                         SvgPicture.asset(
                           "assets/icons/login.svg",
                           height: 300.0,
@@ -218,8 +202,6 @@ class _BodyState extends State<Body> {
                                       hintText: "Email"),
                                   controller: emailInputController,
 //                                keyboardType: TextInputType.emailAddress,
-//                          keyboardType: TextInputType.emailAddress,
-//                      validator: emailValidator,
                                 ),
                               ),
                             ),
@@ -272,12 +254,13 @@ class _BodyState extends State<Body> {
                                     _pwd.unfocus();
                                     RoundedButton;
                                   },
-//                      validator: pwdValidator,
                                 ),
                               ),
                             ),
                           ),
                         ),
+
+
                         RoundedButton(
                             text: "LOGIN",
                             press: () {
@@ -304,7 +287,10 @@ class _BodyState extends State<Body> {
                                     .catchError((err) => print(err));
                               }
                             }),
+
+
                         SizedBox(height: 20.0),
+
                         AlreadyHaveAnAccountCheck(
                           press: () {
                             Navigator.push(
@@ -317,6 +303,8 @@ class _BodyState extends State<Body> {
                             );
                           },
                         ),
+
+
                         Padding(
                           padding: EdgeInsets.only(right: 0.0, top: 10.0),
                           child: Container(
@@ -338,6 +326,8 @@ class _BodyState extends State<Body> {
                           ),
                         ),
                         OrDivider(),
+
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -357,6 +347,7 @@ class _BodyState extends State<Body> {
                                     );
                                   });
                                 }),
+
                             SocalIcon(
                               iconSrc: "assets/icons/facebook.svg",
                               press: () {
@@ -383,13 +374,12 @@ class _BodyState extends State<Body> {
                                 },);
                               },
                             ),
+
                             SocalIcon(
                               iconSrc: "assets/icons/twitter.svg",
                               press: () {
                                 loginWithTwitter(context).then((user) {
                                   print('Logged in successfully.');
-
-//
                                 });
                               },
                             ),
@@ -403,27 +393,6 @@ class _BodyState extends State<Body> {
         ),
       ),
     );
-  }
-}
-
-class Errors {
-  static String show(String errorCode) {
-    switch (errorCode) {
-      case 'ERROR_EMAIL_ALREADY_IN_USE':
-        return "This e-mail address is already in use, please use a different e-mail address.";
-
-      case 'ERROR_INVALID_EMAIL':
-        return "The email address is badly formatted.";
-
-      case 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
-        return "The e-mail address in your Facebook account has been registered in the system before. Please login by trying other methods with this e-mail address.";
-
-      case 'ERROR_WRONG_PASSWORD':
-        return "E-mail address or password is incorrect.";
-
-      default:
-        return "An error has occurred";
-    }
   }
 }
 

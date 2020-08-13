@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
             title: Padding(
               padding: const EdgeInsets.only(left: 200.0),
               child: Text(
-                  "Hashtag", style: TextStyle(color: Colors.deepPurple)),
+                  "techstagram", style: TextStyle(color: Colors.deepPurple)),
             ),
             backgroundColor: Colors.white,
             //  backgroundColor: Colors.white,
@@ -331,7 +331,7 @@ class SearchListExample extends StatefulWidget {
 
 class _SearchListExampleState extends State<SearchListExample> {
   Widget appBarTitle = new Text(
-    "Hashtag",
+    "Techstagram",
     style: new TextStyle(color: Colors.deepPurple),
   );
   Icon icon = new Icon(

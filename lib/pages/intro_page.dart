@@ -61,10 +61,10 @@ class _IntroPageState extends State<IntroPage> {
           Padding(
             padding: const EdgeInsets.only(left: 25.0),
             child: Text(
-              "Welcome to Hashtag",
+              "Welcome to Techstagram",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 15,
                 color: Colors.deepPurple,
               ),
             ),

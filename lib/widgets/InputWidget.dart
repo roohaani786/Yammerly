@@ -13,6 +13,7 @@ class InputWidget extends StatelessWidget {
             child: new Container(
               margin: new EdgeInsets.symmetric(horizontal: 1.0),
               child: new IconButton(
+                onPressed: () {},
                 icon: new Icon(Icons.face),
                 color: Colors.deepPurple,
               ),
