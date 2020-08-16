@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/opencamera.dart';
@@ -11,15 +12,16 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'messagingsystem.dart';
 //import 'package:techstagram/pages/home.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title = "Hashtag", this.uid,})
-      : super(key: key); //update this to include the uid in the constructor
+  HomePage({
+    Key key,
+    this.title = "Hashtag",
+    this.uid,
+  }) : super(key: key); //update this to include the uid in the constructor
   final String title;
   final String uid;
   FirebaseUser user;
@@ -64,7 +66,6 @@ class _HomePageState extends State<HomePage> {
     await _firebaseAuth.signOut();
   }
 
-
   static const Map<LayoutSize, String> layoutSizeEnumToString = {
     LayoutSize.watch: 'Wristwatch',
     LayoutSize.mobile: 'Mobile',
@@ -81,6 +82,7 @@ class _HomePageState extends State<HomePage> {
     TabletLayoutSize.small: 'Small',
     TabletLayoutSize.large: 'Large',
   };
+
 //  List<CameraDescription> cameras = [];
 //
 //  Future<void> main() async {
@@ -115,7 +117,6 @@ class _HomePageState extends State<HomePage> {
 
 //  List<CameraDescription> cameras = [];
 
-
   Future<void> _opencamera() async {
     // Fetch the available cameras before initializing the app.
     try {
@@ -137,23 +138,24 @@ class _HomePageState extends State<HomePage> {
     return new WillPopScope(
       onWillPop: () async => false,
       child: GestureDetector(
-
         child: Scaffold(
           appBar: AppBar(
             title: Padding(
               padding: const EdgeInsets.only(left: 200.0),
-              child: Text(
-                  "techstagram", style: TextStyle(color: Colors.deepPurple)),
+              child: Text("techstagram",
+                  style: TextStyle(color: Colors.deepPurple)),
             ),
             backgroundColor: Colors.white,
             //  backgroundColor: Colors.white,
             leading: IconButton(
-              icon: Icon(Icons.search, color: Colors.deepPurple,),
+              icon: Icon(
+                Icons.search,
+                color: Colors.deepPurple,
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => SearchListExample()),
+                  MaterialPageRoute(builder: (context) => SearchListExample()),
                 );
               },
             ),
@@ -182,14 +184,20 @@ class _HomePageState extends State<HomePage> {
             // ),
             actions: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(right: 220.0, top: 15.0),
-                child: Text('Hashtag',
-                  style: TextStyle(color: Colors.deepPurple,
+                padding: const EdgeInsets.only(right: 180.0, top: 15.0),
+                child: Text(
+                  'Hashtag',
+                  style: TextStyle(
+                      color: Colors.deepPurple,
                       fontSize: 20.0,
-                      fontWeight: FontWeight.bold),),
+                      fontWeight: FontWeight.bold),
+                ),
               ),
               IconButton(
-                icon: Icon(Icons.message, color: Colors.deepPurple,),
+                icon: Icon(
+                  Icons.message,
+                  color: Colors.deepPurple,
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -209,7 +217,6 @@ class _HomePageState extends State<HomePage> {
 //                },
 //              ),
             ],
-
           ),
 //      appBar: AppBar(
 //        title: Text(widget.title),
@@ -238,14 +245,11 @@ class _HomePageState extends State<HomePage> {
 ////
 ////      ),
           body: ResponsiveLayoutBuilder(
-              builder: (context, size) =>
-              new TabLayoutDemo()),
-
+              builder: (context, size) => new TabLayoutDemo()),
         ),
       ),
     );
   }
-
 
 //  Future<void> _opencamera() async {
 //    // Ensure that plugin services are initialized so that `availableCameras()`
@@ -271,7 +275,6 @@ class _HomePageState extends State<HomePage> {
 //  }
 }
 
-
 class TabLayoutDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -284,41 +287,38 @@ class TabLayoutDemo extends StatelessWidget {
         child: new Scaffold(
           body: TabBarView(
             children: [
-              new Container(
-                  child: CameraExampleHome()
-              ),
+              new Container(child: CameraExampleHome()),
               new Container(
                 child: ChatsPage(),
               ),
               new Container(
                 child: FeedsPage(),
               ),
-
               new Container(
                 child: NotificationsPage(),
               ),
-              new Container(
-                  child: AccountBottomIconScreen()
-              ),
-
+              new Container(child: AccountBottomIconScreen()),
             ],
           ),
           bottomNavigationBar: new Container(
             height: 60.0,
             child: new TabBar(
               tabs: [
-                Tab(icon: new Icon(FontAwesomeIcons.camera, size: 25),),
+                Tab(
+                  icon: new Icon(FontAwesomeIcons.camera, size: 25),
+                ),
                 Tab(
                   icon: new Icon(Icons.blur_circular, size: 30),
                 ),
                 Tab(
                   icon: new Icon(Icons.home, size: 30),
                 ),
-
                 Tab(
                   icon: new Icon(Icons.notifications, size: 30),
                 ),
-                Tab(icon: new Icon(Icons.account_circle, size: 30),)
+                Tab(
+                  icon: new Icon(Icons.account_circle, size: 30),
+                )
               ],
               labelColor: Colors.purple,
               unselectedLabelColor: Colors.deepPurple,
@@ -332,10 +332,8 @@ class TabLayoutDemo extends StatelessWidget {
         ),
       ),
     );
-
   }
 }
-
 
 class SearchListExample extends StatefulWidget {
   @override
@@ -434,36 +432,38 @@ class _SearchListExampleState extends State<SearchListExample> {
   Widget buildAppBar(BuildContext context) {
     return new AppBar(
         backgroundColor: Colors.white,
-        centerTitle: true, title: appBarTitle, actions: <Widget>[
-      new IconButton(
-        icon: icon,
-        onPressed: () {
-          setState(() {
-            if (this.icon.icon == Icons.search) {
-              this.icon = new Icon(
-                Icons.close,
-                color: Colors.black,
-              );
-              this.appBarTitle = new TextField(
-                controller: _controller,
-                style: new TextStyle(
-                  color: Colors.deepPurple,
-                ),
-                decoration: new InputDecoration(
-                    prefixIcon: new Icon(
-                        Icons.search, color: Colors.deepPurple),
-                    hintText: "Search...",
-                    hintStyle: new TextStyle(color: Colors.white)),
-                onChanged: searchOperation,
-              );
-              _handleSearchStart();
-            } else {
-              _handleSearchEnd();
-            }
-          });
-        },
-      ),
-    ]);
+        centerTitle: true,
+        title: appBarTitle,
+        actions: <Widget>[
+          new IconButton(
+            icon: icon,
+            onPressed: () {
+              setState(() {
+                if (this.icon.icon == Icons.search) {
+                  this.icon = new Icon(
+                    Icons.close,
+                    color: Colors.black,
+                  );
+                  this.appBarTitle = new TextField(
+                    controller: _controller,
+                    style: new TextStyle(
+                      color: Colors.deepPurple,
+                    ),
+                    decoration: new InputDecoration(
+                        prefixIcon:
+                        new Icon(Icons.search, color: Colors.deepPurple),
+                        hintText: "Search...",
+                        hintStyle: new TextStyle(color: Colors.white)),
+                    onChanged: searchOperation,
+                  );
+                  _handleSearchStart();
+                } else {
+                  _handleSearchEnd();
+                }
+              });
+            },
+          ),
+        ]);
   }
 
   void _handleSearchStart() {

@@ -40,8 +40,8 @@ class _BodyState extends State<Body> {
   final FocusNode _confirmPwd = FocusNode();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   bool _obscureText = true;
+  bool _obscureText1 = true;
   bool isUserSignedIn = false;
-
 
   //final FocusNode _signup = FoucsNode();
   @override
@@ -74,11 +74,10 @@ class _BodyState extends State<Body> {
 
     if (isUserSignedIn) {
       user = await auth.currentUser();
-    }
-    else {
+    } else {
       final GoogleSignInAccount googleUser = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser
-          .authentication;
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.getCredential(
         accessToken: googleAuth.accessToken,
@@ -180,25 +179,20 @@ class _BodyState extends State<Body> {
 
     if (value.length == null)
       return null;
-
     else if (value.length > 0 && value.length != 10)
       setState(() {
         errordikhaoN = true;
       });
     // return 'Mobile Number must be of 10 digit';
 
-
     else
       return null;
   }
-
-
 
   fl.FacebookLogin fbLogin = new fl.FacebookLogin();
   bool isFacebookLoginIn = false;
   String errorMessage = '';
   String successMessage = '';
-
 
   Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
     FirebaseUser currentUser;
@@ -206,7 +200,6 @@ class _BodyState extends State<Body> {
       consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
       consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
     );
-
 
     final TwitterLoginResult result = await twitterLogin.authorize();
 
@@ -216,9 +209,7 @@ class _BodyState extends State<Body> {
 //        final FacebookLoginResult facebookLoginResult =
 //        await fbLogin.logIn(['email']);
         final AuthCredential credential = TwitterAuthProvider.getCredential(
-            authToken: session.token,
-            authTokenSecret: session.secret
-        );
+            authToken: session.token, authTokenSecret: session.secret);
 
         final AuthResult user = await auth.signInWithCredential(credential);
         assert(user.user.email == null);
@@ -231,11 +222,11 @@ class _BodyState extends State<Body> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  HomePage(title:
-
-                  "huhu",
+                  HomePage(
+                    title: "huhu",
                     uid: "h",
-                  )),);
+                  )),
+        );
         return currentUser;
 
         break;
@@ -249,6 +240,12 @@ class _BodyState extends State<Body> {
   void _toggle() {
     setState(() {
       _obscureText = !_obscureText;
+    });
+  }
+
+  void _toggle2() {
+    setState(() {
+      _obscureText1 = !_obscureText1;
     });
   }
 
@@ -280,12 +277,8 @@ class _BodyState extends State<Body> {
                     width: 250.0,
                     child: TextFieldContainer(
                       child: TextFormField(
-
                         style: TextStyle(
-                            fontSize: 12.0,
-                            height: 2.0,
-                            color: Colors.black
-                        ),
+                            fontSize: 12.0, height: 2.0, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _firstName,
                         onFieldSubmitted: (term) {
@@ -298,13 +291,11 @@ class _BodyState extends State<Body> {
 //                            ),
                         cursorColor: kPrimaryColor,
 
-
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(
                               left: 0, right: 3, top: 10, bottom: 8),
                           errorStyle: TextStyle(
-
                             fontSize: 10.0,
                             height: 0.3,
                           ),
@@ -333,10 +324,7 @@ class _BodyState extends State<Body> {
                     child: TextFieldContainer(
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0,
-                            height: 2.0,
-                            color: Colors.black
-                        ),
+                            fontSize: 12.0, height: 2.0, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _lastName,
                         onFieldSubmitted: (term) {
@@ -344,13 +332,11 @@ class _BodyState extends State<Body> {
                         },
                         cursorColor: kPrimaryColor,
 
-
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(
                               left: 0, right: 3, top: 10, bottom: 8),
                           errorStyle: TextStyle(
-
                             fontSize: 10.0,
                             height: 0.3,
                           ),
@@ -360,7 +346,8 @@ class _BodyState extends State<Body> {
                           ),
                           fillColor: Colors.deepPurple.shade50,
                           filled: true,
-                          hintText: "Last name",),
+                          hintText: "Last name",
+                        ),
                         controller: lastNameInputController,
                         //  keyboardType: TextInputType.name,
 //                      validator: emailValidator,
@@ -377,8 +364,8 @@ class _BodyState extends State<Body> {
                     width: 250.0,
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 5),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       width: size.width * 0.8,
                       decoration: BoxDecoration(
                         color: kPrimaryLightColor,
@@ -391,10 +378,7 @@ class _BodyState extends State<Body> {
                       ),
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0,
-                            height: 2.0,
-                            color: Colors.black
-                        ),
+                            fontSize: 12.0, height: 2.0, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _phoneNumber,
                         onFieldSubmitted: (term) {
@@ -407,7 +391,6 @@ class _BodyState extends State<Body> {
                             contentPadding: EdgeInsets.only(
                                 left: 0, right: 3, top: 10, bottom: 8),
                             errorStyle: TextStyle(
-
                               fontSize: 10.0,
                               height: 0.3,
                             ),
@@ -434,8 +417,8 @@ class _BodyState extends State<Body> {
                     width: 250.0,
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 5),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       width: size.width * 0.8,
                       decoration: BoxDecoration(
                         color: kPrimaryLightColor,
@@ -448,10 +431,7 @@ class _BodyState extends State<Body> {
                       ),
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0,
-                            height: 2.0,
-                            color: Colors.black
-                        ),
+                            fontSize: 12.0, height: 2.0, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _email,
                         onFieldSubmitted: (term) {
@@ -461,13 +441,13 @@ class _BodyState extends State<Body> {
 
                         decoration: InputDecoration(
                             border: InputBorder.none,
-                            errorBorder:
-                            OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red,)),
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                )),
                             contentPadding: EdgeInsets.only(
                                 left: 0, right: 3, top: 10, bottom: 8),
                             errorStyle: TextStyle(
-
                               fontSize: 10.0,
                               height: 0.3,
                             ),
@@ -495,8 +475,8 @@ class _BodyState extends State<Body> {
                     width: 250.0,
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 5),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       width: size.width * 0.8,
                       decoration: BoxDecoration(
                         color: kPrimaryLightColor,
@@ -508,12 +488,8 @@ class _BodyState extends State<Body> {
                         ),
                       ),
                       child: TextFormField(
-
                         style: TextStyle(
-                            fontSize: 12.0,
-                            height: 2.0,
-                            color: Colors.black
-                        ),
+                            fontSize: 12.0, height: 2.0, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _pwd,
                         onFieldSubmitted: (term) {
@@ -530,18 +506,18 @@ class _BodyState extends State<Body> {
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 5.0),
-                                child: new Icon(_obscureText
-                                    ? FontAwesomeIcons.eyeSlash
-                                    : FontAwesomeIcons.solidEyeSlash,
-                                  size: 15.0, color: Colors.deepPurple,),
-
+                                child: new Icon(
+                                  _obscureText
+                                      ? FontAwesomeIcons.eyeSlash
+                                      : FontAwesomeIcons.eye,
+                                  size: 15.0,
+                                  color: Colors.deepPurple,
+                                ),
                               ),
                             ),
-
                             contentPadding: EdgeInsets.only(
                                 left: 0, right: 3, top: 10, bottom: 8),
                             errorStyle: TextStyle(
-
                               fontSize: 9.0,
                               height: 0.3,
                             ),
@@ -558,8 +534,6 @@ class _BodyState extends State<Body> {
 //                      validator: emailValidator,
                       ),
                     ),
-
-
                   ),
                 ),
 
@@ -572,10 +546,7 @@ class _BodyState extends State<Body> {
                     child: TextFieldContainer(
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0,
-                            height: 2.0,
-                            color: Colors.black
-                        ),
+                            fontSize: 12.0, height: 2.0, color: Colors.black),
                         textInputAction: TextInputAction.done,
                         focusNode: _confirmPwd,
                         onFieldSubmitted: (value) {
@@ -588,21 +559,22 @@ class _BodyState extends State<Body> {
                             border: InputBorder.none,
                             suffixIcon: GestureDetector(
                               onTap: () {
-                                _toggle();
+                                _toggle2();
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 5.0),
-                                child: new Icon(_obscureText
-                                    ? FontAwesomeIcons.eyeSlash
-                                    : FontAwesomeIcons.solidEyeSlash,
-                                  size: 15.0, color: Colors.deepPurple,),
-
+                                child: new Icon(
+                                  _obscureText1
+                                      ? FontAwesomeIcons.eyeSlash
+                                      : FontAwesomeIcons.eye,
+                                  size: 15.0,
+                                  color: Colors.deepPurple,
+                                ),
                               ),
                             ),
                             contentPadding: EdgeInsets.only(
                                 left: 0, right: 3, top: 10, bottom: 8),
                             errorStyle: TextStyle(
-
                               fontSize: 10.0,
                               height: 0.3,
                             ),
@@ -614,7 +586,7 @@ class _BodyState extends State<Body> {
                             filled: true,
                             hintText: "Confirm password"),
                         controller: confirmPwdInputController,
-                        obscureText: _obscureText,
+                        obscureText: _obscureText1,
 
 //                      validator: emailValidator,
                       ),
@@ -623,7 +595,6 @@ class _BodyState extends State<Body> {
                 ),
 
                 RoundedButton(
-
                   text: "SIGNUP",
                   press: () {
                     if (_registerFormKey.currentState.validate()) {
@@ -649,9 +620,7 @@ class _BodyState extends State<Body> {
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          HomePage(
-                                          )),
+                                      builder: (context) => HomePage()),
                                       (_) => false),
                               firstNameInputController.clear(),
                               lastNameInputController.clear(),
@@ -660,10 +629,9 @@ class _BodyState extends State<Body> {
                               pwdInputController.clear(),
                               confirmPwdInputController.clear()
                             })
-                                .catchError((err) =>
-                                print(Errors.show(err.code))))
+                                .catchError(
+                                    (err) => print(Errors.show(err.code))))
                             .catchError((err) => print(Errors.show(err)));
-
                       } else {
                         showDialog(
                             context: context,
@@ -723,38 +691,40 @@ class _BodyState extends State<Body> {
                     SocalIcon(
                       iconSrc: "assets/icons/facebook.svg",
                       press: () {
-                        facebookLogin(context).then((user) {
-                          print('Logged in successfully.');
+                        facebookLogin(context).then(
+                              (user) {
+                            print('Logged in successfully.');
 
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      HomePage(title:
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        HomePage(
+                                          title: "huhu",
+                                          uid: "h",
+                                        )),
+                                    (_) => false);
 
-                                      "huhu",
-                                        uid: "h",
-                                      )),
-                                  (_) => false);
-
-                          setState(() {
-                            isFacebookLoginIn = true;
-                            successMessage =
-                            'Logged in successfully.\nEmail : ${user
-                                .email}\nYou can now navigate to Home Page.';
-                          });
-                        },);
+                            setState(() {
+                              isFacebookLoginIn = true;
+                              successMessage =
+                              'Logged in successfully.\nEmail : ${user
+                                  .email}\nYou can now navigate to Home Page.';
+                            });
+                          },
+                        );
                       },
                     ),
                     SocalIcon(
-                      iconSrc: "assets/icons/twitter.svg",
-                      press: () {
+                        iconSrc: "assets/icons/twitter.svg",
+                        press: () {
 //                        Navigator.pushReplacementNamed(context, "/Twit");
-                        loginWithTwitter(context).then((user) {
-                          print('Logged in successfully.');
-                        },
-                        );
-                      })
+                          loginWithTwitter(context).then(
+                                (user) {
+                              print('Logged in successfully.');
+                            },
+                          );
+                        })
                   ],
                 )
               ],
@@ -771,7 +741,6 @@ _fieldFocusChange(BuildContext context, FocusNode currentFocus,
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
 }
-
 
 class Errors {
   static String show(String errorCode) {
