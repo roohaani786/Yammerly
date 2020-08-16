@@ -40,6 +40,7 @@ class _BodyState extends State<Body> {
   final FocusNode _confirmPwd = FocusNode();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   bool _obscureText = true;
+  bool _obscureText1 = true;
   bool isUserSignedIn = false;
 
 
@@ -249,9 +250,15 @@ class _BodyState extends State<Body> {
   void _toggle() {
     setState(() {
       _obscureText = !_obscureText;
+
     });
   }
 
+  void _toggle2(){
+    setState(() {
+      _obscureText1 = !_obscureText1;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -588,11 +595,11 @@ class _BodyState extends State<Body> {
                             border: InputBorder.none,
                             suffixIcon: GestureDetector(
                               onTap: () {
-                                _toggle();
+                                _toggle2();
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 5.0),
-                                child: new Icon(_obscureText
+                                child: new Icon(_obscureText1
                                     ? FontAwesomeIcons.eyeSlash
                                     : FontAwesomeIcons.solidEyeSlash,
                                   size: 15.0, color: Colors.deepPurple,),
@@ -614,7 +621,7 @@ class _BodyState extends State<Body> {
                             filled: true,
                             hintText: "Confirm password"),
                         controller: confirmPwdInputController,
-                        obscureText: _obscureText,
+                        obscureText: _obscureText1,
 
 //                      validator: emailValidator,
                       ),

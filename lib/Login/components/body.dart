@@ -382,7 +382,20 @@ class _BodyState extends State<Body> {
                               data: new ThemeData(
                                 primaryColor: Colors.deepPurple,
                               ),
-                              child: TextFieldContainer(
+                              child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+//                              width: size.width * 0.8,
+                                decoration: BoxDecoration(
+                                  color: kPrimaryLightColor,
+                                  borderRadius: BorderRadius.circular(29),
+//                                  border: Border.all(
+//                                    color: (errordikhaoL == true)
+//                                        ? Colors.red
+//                                        : kPrimaryLightColor,
+//                                  ),
+                                ),
                                 child: TextFormField(
                                   decoration: InputDecoration(
                                       errorBorder:

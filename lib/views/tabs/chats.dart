@@ -13,6 +13,8 @@ class ChatsPage extends StatefulWidget {
   _ChatsPageState createState() => _ChatsPageState();
 }
 
+bool cameraon = true;
+
 class _ChatsPageState extends State<ChatsPage> {
 
   void _onHorizontalDrag(DragEndDetails details) {
@@ -26,6 +28,16 @@ class _ChatsPageState extends State<ChatsPage> {
     }
     else {
       _opencamera();
+      cameraon = false;
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => HomePage())).then((res) {
+        setState(() {
+          cameraon = true;
+        });
+      }
+      );
     }
   }
 
