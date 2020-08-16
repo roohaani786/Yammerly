@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -6,6 +6,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:techstagram/Login/components/background.dart';
 import 'package:techstagram/Signup/components/or_divider.dart';
@@ -14,7 +15,6 @@ import 'package:techstagram/Signup/signup_screen.dart';
 import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/components/text_field_container.dart';
-import 'package:techstagram/resources/googlesignin.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
 import '../../constants.dart';
@@ -39,7 +39,7 @@ class _BodyState extends State<Body> {
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
-  bool success = false;
+  bool isUserSignedIn = false;
 
   final FocusNode _email = FocusNode();
   final FocusNode _pwd = FocusNode();
@@ -50,12 +50,92 @@ class _BodyState extends State<Body> {
   String errorMessage = '';
   String successMessage = '';
 
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
   @override
   initState() {
     emailInputController = new TextEditingController();
     pwdInputController = new TextEditingController();
     super.initState();
+    checkIfUserIsSignedIn();
   }
+
+  void checkIfUserIsSignedIn() async {
+    var userSignedIn = await googleSignIn.isSignedIn();
+
+    setState(() {
+      isUserSignedIn = userSignedIn;
+    });
+  }
+
+  Future<FirebaseUser> _handleSignIn() async {
+    FirebaseUser user;
+    bool userSignedIn = await googleSignIn.isSignedIn();
+
+    setState(() {
+      isUserSignedIn = userSignedIn;
+    });
+
+    if (isUserSignedIn) {
+      user = await auth.currentUser();
+    }
+    else {
+      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser
+          .authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      user = (await auth.signInWithCredential(credential)).user;
+      userSignedIn = await googleSignIn.isSignedIn();
+      setState(() {
+        isUserSignedIn = userSignedIn;
+      });
+    }
+
+    return user;
+  }
+
+  void onGoogleSignIn(BuildContext context) async {
+    FirebaseUser user = await _handleSignIn();
+    var userSignedIn = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              HomePage(
+//               user,
+//                 _googleSignIn
+              )),
+    );
+
+    setState(() {
+      isUserSignedIn = userSignedIn == null ? true : false;
+    });
+  }
+
+
+  bool errordikhaoL = false;
+
+  String emailValidator(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+//    var hu = value;
+    if (!regex.hasMatch(value) && value.length == null) {
+      setState(() {
+        errordikhaoL = true;
+      });
+    } else {
+      setState(() {
+        errordikhaoL = false;
+      });
+    }
+  }
+
+
 
   //twitter Login method
 
@@ -104,6 +184,65 @@ class _BodyState extends State<Body> {
     }
   }
 
+
+  Future<String> signIn(String email, String password) async {
+    FirebaseUser user;
+    String errorMessage;
+
+    try {
+      if (_loginFormKey.currentState.validate()) {
+        AuthResult result = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: emailInputController.text,
+            password: pwdInputController.text);
+        user = result.user;
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    HomePage(
+                      title: "hello",
+                      uid: user.uid,
+                    )));
+      }
+    } catch (error) {
+      switch (error.code) {
+        case "ERROR_INVALID_EMAIL":
+          errorMessage = "Your email address appears to be malformed.";
+          break;
+        case "ERROR_WRONG_PASSWORD":
+          errorMessage = "Your password is wrong.";
+          break;
+        case "ERROR_USER_NOT_FOUND":
+          errorMessage = "User with this email doesn't exist.";
+          break;
+        case "ERROR_USER_DISABLED":
+          errorMessage = "User with this email has been disabled.";
+          break;
+        case "ERROR_TOO_MANY_REQUESTS":
+          errorMessage = "Too many requests. Try again later.";
+          break;
+        case "ERROR_OPERATION_NOT_ALLOWED":
+          errorMessage = "Signing in with Email and Password is not enabled.";
+          break;
+        default:
+          errorMessage = "An undefined Error happened.";
+      }
+
+      Future.error(errorMessage);
+    }
+
+    if (errorMessage != null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(content: Text('$errorMessage',
+              style: TextStyle(color: Colors.blue),)
+              , title: Text("Error"),);
+          });
+    }
+
+    return user.uid;
+  }
   //facebook login method
 
   Future<FirebaseUser> facebookLogin(BuildContext context) async {
@@ -175,34 +314,62 @@ class _BodyState extends State<Body> {
                         ),
                         SizedBox(height: 10.0),
                         Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
+                          padding: const EdgeInsets.only(
+                              right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
                           child: Container(
-                            height: 70.0,
-                            child: new Theme(
-                              data: new ThemeData(
-                                primaryColor: Colors.deepPurple,
-                              ),
-                              child: TextFieldContainer(
-                                child: TextFormField(
-                                  cursorColor: kPrimaryColor,
-                                  textInputAction: TextInputAction.next,
-                                  focusNode: _email,
-                                  onFieldSubmitted: (term) {
-                                    _fieldFocusChange(context, _email, _pwd);
-                                  },
-
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      icon: Icon(
-                                        widget.icon,
-                                        color: kPrimaryColor,
-                                      ),
-                                      fillColor: Colors.deepPurple.shade50,
-                                      filled: true,
-                                      hintText: "Email"),
-                                  controller: emailInputController,
-//                                keyboardType: TextInputType.emailAddress,
+                            height: 50.0,
+                            width: 250.0,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 5),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+//                              width: size.width * 0.8,
+                              decoration: BoxDecoration(
+                                color: kPrimaryLightColor,
+                                borderRadius: BorderRadius.circular(29),
+                                border: Border.all(
+                                  color: (errordikhaoL == true)
+                                      ? Colors.red
+                                      : kPrimaryLightColor,
                                 ),
+                              ),
+                              child: TextFormField(
+                                style: TextStyle(
+                                    fontSize: 12.0,
+                                    height: 2.0,
+                                    color: Colors.black
+                                ),
+                                textInputAction: TextInputAction.next,
+                                focusNode: _email,
+                                onFieldSubmitted: (term) {
+                                  _fieldFocusChange(context, _email, _pwd);
+                                },
+                                cursorColor: kPrimaryColor,
+
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    errorBorder:
+                                    OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.red,)),
+                                    contentPadding: EdgeInsets.only(
+                                        left: 0, right: 3, top: 10, bottom: 8),
+                                    errorStyle: TextStyle(
+
+                                      fontSize: 10.0,
+                                      height: 0.3,
+                                    ),
+                                    icon: Icon(
+                                      Icons.email,
+                                      color: kPrimaryColor,
+                                    ),
+                                    fillColor: Colors.deepPurple.shade50,
+                                    filled: true,
+                                    hintText: "Email"),
+                                controller: emailInputController,
+                                validator: emailValidator,
+//                        keyboardType: TextInputType.emailAddress,
+//                      validator: emailValidator,
                               ),
                             ),
                           ),
@@ -264,28 +431,33 @@ class _BodyState extends State<Body> {
                         RoundedButton(
                             text: "LOGIN",
                             press: () {
-                              if (_loginFormKey.currentState.validate()) {
-                                FirebaseAuth.instance
-                                    .signInWithEmailAndPassword(
-                                    email: emailInputController.text,
-                                    password: pwdInputController.text)
-                                    .then((authResult) =>
-                                    Firestore.instance
-                                        .collection("users")
-                                        .document(authResult.user.uid)
-                                        .get()
-                                        .then((DocumentSnapshot result) =>
-                                        Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    HomePage(
-                                                      title: "hello",
-                                                      uid: authResult.user.uid,
-                                                    ))))
-                                        .catchError((err) => print(err)))
-                                    .catchError((err) => print(err));
-                              }
+//                              if (_loginFormKey.currentState.validate()) {
+//                                FirebaseAuth.instance
+//                                    .signInWithEmailAndPassword(
+//                                    email: emailInputController.text,
+//                                    password: pwdInputController.text)
+//                                    .then((authResult) =>
+//                                    Firestore.instance
+//                                        .collection("users")
+//                                        .document(authResult.user.uid)
+//                                        .get()
+//                                        .then((DocumentSnapshot result) =>
+//                                        Navigator.pushReplacement(
+//                                            context,
+//                                            MaterialPageRoute(
+//                                                builder: (context) =>
+//                                                    HomePage(
+//                                                      title: "hello",
+//                                                      uid: authResult.user.uid,
+//                                                    ))))
+//                                        .catchError((err) => print(err)))
+//                                    .catchError((err) => print(err));
+//                              }
+                              signIn(emailInputController.text,
+                                  pwdInputController.text);
+
+
+
                             }),
 
 
@@ -334,18 +506,25 @@ class _BodyState extends State<Body> {
                             SocalIcon(
                                 iconSrc: "assets/icons/google-icon.svg",
                                 press: () {
-                                  signInWithGoogle(success).whenComplete(() {
-//                            if (success == true)
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return HomePage(
-//                                    title: "Welcome",
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  });
+//                                  signInWithGoogle(success).whenComplete(() {
+//                           if (success == true)
+//                                    Navigator.of(context).push(
+//                                      MaterialPageRoute(
+//                                        builder: (context) {
+//                                          return HomePage(
+////                                    title: "Welcome",
+//                                          );
+//                                        },
+//                                      ),
+//                                    );
+//                           else
+//                             Navigator.pop(
+//                               context
+//                             );
+//
+//                                  });
+
+                                  onGoogleSignIn(context);
                                 }),
 
                             SocalIcon(

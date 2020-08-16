@@ -6,6 +6,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Signup/components/background.dart';
 import 'package:techstagram/Signup/components/or_divider.dart';
@@ -13,7 +14,6 @@ import 'package:techstagram/Signup/components/social_icon.dart';
 import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/components/text_field_container.dart';
-import 'package:techstagram/resources/googlesignin.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
 import '../../constants.dart';
@@ -38,8 +38,9 @@ class _BodyState extends State<Body> {
   final FocusNode _email = FocusNode();
   final FocusNode _pwd = FocusNode();
   final FocusNode _confirmPwd = FocusNode();
-
+  final GoogleSignIn googleSignIn = GoogleSignIn();
   bool _obscureText = true;
+  bool isUserSignedIn = false;
 
 
   //final FocusNode _signup = FoucsNode();
@@ -52,6 +53,63 @@ class _BodyState extends State<Body> {
     pwdInputController = new TextEditingController();
     confirmPwdInputController = new TextEditingController();
     super.initState();
+    checkIfUserIsSignedIn();
+  }
+
+  void checkIfUserIsSignedIn() async {
+    var userSignedIn = await googleSignIn.isSignedIn();
+
+    setState(() {
+      isUserSignedIn = userSignedIn;
+    });
+  }
+
+  Future<FirebaseUser> _handleSignIn() async {
+    FirebaseUser user;
+    bool userSignedIn = await googleSignIn.isSignedIn();
+
+    setState(() {
+      isUserSignedIn = userSignedIn;
+    });
+
+    if (isUserSignedIn) {
+      user = await auth.currentUser();
+    }
+    else {
+      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser
+          .authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      user = (await auth.signInWithCredential(credential)).user;
+      userSignedIn = await googleSignIn.isSignedIn();
+      setState(() {
+        isUserSignedIn = userSignedIn;
+      });
+    }
+
+    return user;
+  }
+
+  void onGoogleSignIn(BuildContext context) async {
+    FirebaseUser user = await _handleSignIn();
+    var userSignedIn = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              HomePage(
+//               user,
+//                 _googleSignIn
+              )),
+    );
+
+    setState(() {
+      isUserSignedIn = userSignedIn == null ? true : false;
+    });
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -605,6 +663,7 @@ class _BodyState extends State<Body> {
                                 .catchError((err) =>
                                 print(Errors.show(err.code))))
                             .catchError((err) => print(Errors.show(err)));
+
                       } else {
                         showDialog(
                             context: context,
@@ -647,18 +706,19 @@ class _BodyState extends State<Body> {
                     SocalIcon(
                         iconSrc: "assets/icons/google-icon.svg",
                         press: () {
-                          signInWithGoogle(success).whenComplete(() {
-//                            if (success == true)
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return HomePage(
-//                                    title: "Welcome",
-                                  );
-                                },
-                              ),
-                            );
-                          });
+//                          signInWithGoogle(success).whenComplete(() {
+////                            if (success == true)
+//                            Navigator.of(context).push(
+//                              MaterialPageRoute(
+//                                builder: (context) {
+//                                  return HomePage(
+////                                    title: "Welcome",
+//                                  );
+//                                },
+//                              ),
+//                            );
+//                          });
+                          onGoogleSignIn(context);
                         }),
                     SocalIcon(
                       iconSrc: "assets/icons/facebook.svg",

@@ -17,12 +17,16 @@ class _ChatsPageState extends State<ChatsPage> {
 
   void _onHorizontalDrag(DragEndDetails details) {
     if (details.primaryVelocity == 0)
-      return; // user have just tapped on screen (no dragging)
+      // user have just tapped on screen (no dragging)
+      return;
 
-    if (details.primaryVelocity.compareTo(0) == -1)
+    if (details.primaryVelocity.compareTo(0) == -1) {
+      dispose();
       HomePage();
-    else
+    }
+    else {
       _opencamera();
+    }
   }
 
   Future<void> _opencamera() async {

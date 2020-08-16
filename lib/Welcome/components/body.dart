@@ -7,6 +7,8 @@ import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/constants.dart';
 
 class Body extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

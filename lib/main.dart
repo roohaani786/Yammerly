@@ -1,3 +1,4 @@
+import 'package:catcher/catcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
@@ -30,6 +31,7 @@ class MyAppState extends State<MyApp> {
 
         title: 'Hashtag',
         debugShowCheckedModeBanner: false,
+        navigatorKey: Catcher.navigatorKey,
 
         routes: {
           '/Login': (context) => LoginPage(),
@@ -41,14 +43,14 @@ class MyAppState extends State<MyApp> {
 
 
         theme: new ThemeData(
-            primarySwatch: Colors.blue,
-            primaryColor: Colors.black,
-            primaryIconTheme: IconThemeData(color: Colors.black),
-            primaryTextTheme: TextTheme(
-                headline6: TextStyle(
-                  color: Colors.black,)),
-            textTheme: TextTheme(headline6: TextStyle(
-              color: Colors.black,)),
+          primarySwatch: Colors.blue,
+          primaryColor: Colors.black,
+          primaryIconTheme: IconThemeData(color: Colors.black),
+          primaryTextTheme: TextTheme(
+              headline6: TextStyle(
+                color: Colors.black,)),
+          textTheme: TextTheme(headline6: TextStyle(
+            color: Colors.black,)),
         ),
 
 

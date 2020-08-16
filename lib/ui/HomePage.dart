@@ -11,6 +11,8 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'messagingsystem.dart';
 //import 'package:techstagram/pages/home.dart';
@@ -19,7 +21,18 @@ class HomePage extends StatefulWidget {
   HomePage({Key key, this.title = "Hashtag", this.uid,})
       : super(key: key); //update this to include the uid in the constructor
   final String title;
-  final String uid; //include this
+  final String uid;
+  FirebaseUser user;
+
+  //include this
+
+  GoogleSignIn _googleSignIn;
+  FirebaseUser _user;
+
+  Body(FirebaseUser user, GoogleSignIn signIn) {
+    _user = user;
+    _googleSignIn = signIn;
+  }
 
   @override
   _HomePageState createState() => _HomePageState();

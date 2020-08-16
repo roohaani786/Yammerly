@@ -33,6 +33,7 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   rxdart:
+  catcher:
   image_picker:
   file_picker:
   firebase_storage:

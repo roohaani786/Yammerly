@@ -72,38 +72,44 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.deepPurple,
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: Center(
-                  child: _cameraPreviewWidget(),
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Center(
+                      child: _cameraPreviewWidget(),
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    border: Border.all(
+                      color: controller != null &&
+                          controller.value.isRecordingVideo
+                          ? Colors.redAccent
+                          : Colors.grey,
+                      width: 0.0,
+                    ),
+                  ),
                 ),
               ),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                border: Border.all(
-                  color: controller != null && controller.value.isRecordingVideo
-                      ? Colors.redAccent
-                      : Colors.grey,
-                  width: 0.0,
+              _captureControlRowWidget(),
+              _toggleAudioWidget(),
+              _buildControlBar(),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    _cameraTogglesRowWidget(),
+                    _thumbnailWidget(),
+                  ],
                 ),
               ),
-            ),
-          ),
-          _captureControlRowWidget(),
-          _toggleAudioWidget(),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                _cameraTogglesRowWidget(),
-                _thumbnailWidget(),
-              ],
-            ),
+            ],
           ),
         ],
       ),
@@ -152,6 +158,50 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildControlBar() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        IconButton( // <-- Flash
+          color: Colors.white,
+          icon: Icon(Icons.flash_auto),
+          onPressed: () {},
+        ),
+        FlatButton( // <-- Take picture
+          onPressed:
+          controller != null &&
+              controller.value.isInitialized &&
+              !controller.value.isRecordingVideo
+              ? onTakePictureButtonPressed
+              : null,
+//          onLongPress: controller != null &&
+//    controller.value.isInitialized &&
+//    !controller.value.isRecordingVideo
+//    ? onVideoRecordButtonPressed
+//        : null,
+
+
+          child: Container(
+            height: 80.0,
+            width: 80.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white,
+                width: 5.0,
+              ),
+            ),
+          ),
+        ),
+        IconButton( // <-- Switch camera
+          color: Colors.white,
+          icon: Icon(Icons.switch_camera),
+          onPressed: () {},
+        ),
+      ],
     );
   }
 
