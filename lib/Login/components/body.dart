@@ -310,12 +310,12 @@ class _BodyState extends State<Body> {
 
                         SvgPicture.asset(
                           "assets/icons/login.svg",
-                          height: 300.0,
+                          height: 200.0,
                         ),
                         SizedBox(height: 10.0),
                         Padding(
                           padding: const EdgeInsets.only(
-                              right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
+                              right: 10.0, top: 30.0, bottom: 0.0, left: 10.0),
                           child: Container(
                             height: 50.0,
                             width: 250.0,
@@ -377,12 +377,15 @@ class _BodyState extends State<Body> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Container(
-                            height: 70.0,
+                            height: 50.0,
+                            width: 250.0,
+
                             child: new Theme(
                               data: new ThemeData(
                                 primaryColor: Colors.deepPurple,
                               ),
                               child: Container(
+
                                 margin: EdgeInsets.symmetric(vertical: 5),
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 5),
