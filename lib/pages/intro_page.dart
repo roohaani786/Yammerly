@@ -337,13 +337,9 @@ class _IntroPageState extends State<IntroPage> {
           Align(
             alignment: Alignment.center,
             child: Container(
-              width: 90,
-              height: 90,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(Colors.blue),
-                value: (initialPage + 1) / (list.length),
-                strokeWidth: 10.0,
-              ),
+              width: 70,
+              height: 70,
+
             ),
           ),
           Align(

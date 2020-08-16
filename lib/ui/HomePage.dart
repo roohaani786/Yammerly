@@ -287,7 +287,10 @@ class TabLayoutDemo extends StatelessWidget {
         child: new Scaffold(
           body: TabBarView(
             children: [
-              new Container(child: CameraExampleHome()),
+              FlatButton(
+                  onPressed: _opencameras(),
+                  child: new Container(
+                      child: CameraApp())),
               new Container(
                 child: ChatsPage(),
               ),
@@ -332,6 +335,18 @@ class TabLayoutDemo extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _opencameras() {
+    Future<void> _opencamera() async {
+      // Fetch the available cameras before initializing the app.
+      try {
+        WidgetsFlutterBinding.ensureInitialized();
+        cameras = await availableCameras();
+      } on CameraException catch (e) {
+        logError(e.code, e.description);
+      }
+    }
   }
 }
 

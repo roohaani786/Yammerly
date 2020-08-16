@@ -278,7 +278,7 @@ class _BodyState extends State<Body> {
                     child: TextFieldContainer(
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0, height: 2.0, color: Colors.black),
+                            fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _firstName,
                         onFieldSubmitted: (term) {
@@ -290,11 +290,13 @@ class _BodyState extends State<Body> {
 //                                color: Colors.black
 //                            ),
                         cursorColor: kPrimaryColor,
+                        cursorHeight: 18.0,
+
 
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(
-                              left: 0, right: 3, top: 10, bottom: 8),
+                              left: 0, right: 3, top: 13, bottom: 8),
                           errorStyle: TextStyle(
                             fontSize: 10.0,
                             height: 0.3,
@@ -309,6 +311,7 @@ class _BodyState extends State<Body> {
                           hintText: "First name",
                         ),
                         controller: firstNameInputController,
+                        enableInteractiveSelection: false,
                         // keyboardType: TextInputType.name,
 //                      validator: emailValidator,
                       ),
@@ -324,7 +327,7 @@ class _BodyState extends State<Body> {
                     child: TextFieldContainer(
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0, height: 2.0, color: Colors.black),
+                            fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _lastName,
                         onFieldSubmitted: (term) {
@@ -335,7 +338,7 @@ class _BodyState extends State<Body> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(
-                              left: 0, right: 3, top: 10, bottom: 8),
+                              left: 0, right: 3, top: 13, bottom: 8),
                           errorStyle: TextStyle(
                             fontSize: 10.0,
                             height: 0.3,
@@ -349,6 +352,7 @@ class _BodyState extends State<Body> {
                           hintText: "Last name",
                         ),
                         controller: lastNameInputController,
+                        enableInteractiveSelection: false,
                         //  keyboardType: TextInputType.name,
 //                      validator: emailValidator,
                       ),
@@ -378,7 +382,7 @@ class _BodyState extends State<Body> {
                       ),
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0, height: 2.0, color: Colors.black),
+                            fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _phoneNumber,
                         onFieldSubmitted: (term) {
@@ -389,7 +393,7 @@ class _BodyState extends State<Body> {
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 10, bottom: 8),
+                                left: 0, right: 3, top: 14, bottom: 8),
                             errorStyle: TextStyle(
                               fontSize: 10.0,
                               height: 0.3,
@@ -403,6 +407,7 @@ class _BodyState extends State<Body> {
                             hintText: "Phone number (optional)"),
                         controller: phoneNumberController,
                         validator: validateMobile,
+                        enableInteractiveSelection: false,
 //                        keyboardType: TextInputType.number,
 //                      validator: emailValidator,
                       ),
@@ -431,7 +436,7 @@ class _BodyState extends State<Body> {
                       ),
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0, height: 2.0, color: Colors.black),
+                            fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _email,
                         onFieldSubmitted: (term) {
@@ -446,7 +451,7 @@ class _BodyState extends State<Body> {
                                   color: Colors.red,
                                 )),
                             contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 10, bottom: 8),
+                                left: 0, right: 3, top: 14, bottom: 8),
                             errorStyle: TextStyle(
                               fontSize: 10.0,
                               height: 0.3,
@@ -460,6 +465,7 @@ class _BodyState extends State<Body> {
                             hintText: "Email"),
                         controller: emailInputController,
                         validator: emailValidator,
+                        enableInteractiveSelection: false,
 //                        keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
                       ),
@@ -489,7 +495,7 @@ class _BodyState extends State<Body> {
                       ),
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0, height: 2.0, color: Colors.black),
+                            fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
                         focusNode: _pwd,
                         onFieldSubmitted: (term) {
@@ -516,7 +522,7 @@ class _BodyState extends State<Body> {
                               ),
                             ),
                             contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 10, bottom: 8),
+                                left: 0, right: 3, top: 14, bottom: 8),
                             errorStyle: TextStyle(
                               fontSize: 9.0,
                               height: 0.3,
@@ -530,7 +536,7 @@ class _BodyState extends State<Body> {
                             hintText: "Create password"),
                         controller: pwdInputController,
                         validator: pwdValidator,
-
+                        enableInteractiveSelection: false,
 //                      validator: emailValidator,
                       ),
                     ),
@@ -546,7 +552,7 @@ class _BodyState extends State<Body> {
                     child: TextFieldContainer(
                       child: TextFormField(
                         style: TextStyle(
-                            fontSize: 12.0, height: 2.0, color: Colors.black),
+                            fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.done,
                         focusNode: _confirmPwd,
                         onFieldSubmitted: (value) {
@@ -573,7 +579,7 @@ class _BodyState extends State<Body> {
                               ),
                             ),
                             contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 10, bottom: 8),
+                                left: 0, right: 3, top: 14, bottom: 8),
                             errorStyle: TextStyle(
                               fontSize: 10.0,
                               height: 0.3,
@@ -587,7 +593,7 @@ class _BodyState extends State<Body> {
                             hintText: "Confirm password"),
                         controller: confirmPwdInputController,
                         obscureText: _obscureText1,
-
+                        enableInteractiveSelection: false,
 //                      validator: emailValidator,
                       ),
                     ),

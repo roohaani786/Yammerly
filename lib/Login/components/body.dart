@@ -199,7 +199,7 @@ class _BodyState extends State<Body> {
           errorMessage = "Your email address appears to be malformed.";
           break;
         case "ERROR_WRONG_PASSWORD":
-          errorMessage = "Your password is wrong.";
+          errorMessage = "Your email or password is wrong.";
           break;
         case "ERROR_USER_NOT_FOUND":
           errorMessage = "User with this email doesn't exist.";
@@ -214,7 +214,8 @@ class _BodyState extends State<Body> {
           errorMessage = "Signing in with Email and Password is not enabled.";
           break;
         default:
-          errorMessage = "An undefined Error happened.";
+          errorMessage =
+          "An error occurred, maybe due to unfilled fields, internet or other issue.";
       }
 
       Future.error(errorMessage);
@@ -227,9 +228,10 @@ class _BodyState extends State<Body> {
             return AlertDialog(
               content: Text(
                 '$errorMessage',
-                style: TextStyle(color: Colors.blue),
+                style: TextStyle(color: Colors.black),
               ),
-              title: Text("Error"),
+              title: Text("Error !", style:
+              TextStyle(color: Colors.red),),
             );
           });
     }
@@ -326,12 +328,14 @@ class _BodyState extends State<Body> {
                                 ),
                               ),
                               child: TextFormField(
+                                cursorHeight: 18.0,
                                 style: TextStyle(
                                     fontSize: 12.0,
-                                    height: 2.0,
+                                    height: 1.6,
                                     color: Colors.black),
                                 textInputAction: TextInputAction.next,
                                 focusNode: _email,
+                                enableInteractiveSelection: false,
                                 onFieldSubmitted: (term) {
                                   _fieldFocusChange(context, _email, _pwd);
                                 },
@@ -344,7 +348,7 @@ class _BodyState extends State<Body> {
                                           color: Colors.red,
                                         )),
                                     contentPadding: EdgeInsets.only(
-                                        left: 0, right: 3, top: 10, bottom: 8),
+                                        left: 0, right: 3, top: 13, bottom: 8),
                                     errorStyle: TextStyle(
                                       fontSize: 10.0,
                                       height: 0.3,
@@ -388,11 +392,14 @@ class _BodyState extends State<Body> {
 //                                  ),
                                 ),
                                 child: TextFormField(
+                                  enableInteractiveSelection: false,
+                                  cursorColor: kPrimaryColor,
+                                  cursorHeight: 18.0,
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.only(
                                           left: 0,
                                           right: 3,
-                                          top: 10,
+                                          top: 16,
                                           bottom: 8),
                                       errorBorder: OutlineInputBorder(
                                           borderSide:
@@ -432,7 +439,7 @@ class _BodyState extends State<Body> {
                                   },
                                   style: TextStyle(
                                       fontSize: 12.0,
-                                      height: 2.0,
+                                      height: 1.5,
                                       color: Colors.black),
                                 ),
                               ),
