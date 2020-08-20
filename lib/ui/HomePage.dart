@@ -1,4 +1,3 @@
-//import 'package:camera/camera.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +11,8 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
-
 import 'messagingsystem.dart';
-//import 'package:techstagram/pages/home.dart';
+
 
 class HomePage extends StatefulWidget {
   HomePage({
@@ -83,39 +81,6 @@ class _HomePageState extends State<HomePage> {
     TabletLayoutSize.large: 'Large',
   };
 
-//  List<CameraDescription> cameras = [];
-//
-//  Future<void> main() async {
-//    // Fetch the available cameras before initializing the app.
-//    try {
-//      WidgetsFlutterBinding.ensureInitialized();
-//      cameras = await availableCameras();
-//      final firstCamera = cameras.first;
-//      runApp(
-//        MaterialApp(
-//          theme: ThemeData.dark(),
-//          home: CameraExampleHome(
-//            // Pass the appropriate camera to the TakePictureScreen widget.
-//            camera: firstCamera,
-//          ),
-//        ),
-//      );
-//    } on CameraException catch (e) {
-//      logError(e.code, e.description);
-//    }
-//  }
-
-//  void _onHorizontalDrag(DragEndDetails details) {
-//    if (details.primaryVelocity == 0)
-//      return; // user have just tapped on screen (no dragging)
-//
-//    if (details.primaryVelocity.compareTo(0) == -1)
-//      _opencamera();
-//    else
-//      _opencamera();
-//  }
-
-//  List<CameraDescription> cameras = [];
 
   Future<void> _opencamera() async {
     // Fetch the available cameras before initializing the app.
@@ -159,29 +124,7 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-//            leading: Padding(
-//              padding: EdgeInsets.only(left: 12,),
-//              child: IconButton(
-//                  icon: Icon(Icons.camera_alt, color: Colors.deepPurple,),
-//                  onPressed: () {
-//                    _opencamera();
-//
-////                  Navigator.push(
-////                    context,
-////                    MaterialPageRoute(builder: (context) =>CameraExampleHome()),
-////                  );
-//                  }
-//
-//              ),
-//
-//            ),
-            // title: Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: <Widget>[
-            //       Text('Hashtag',
-            //         style: TextStyle(color: Colors.white,),),
-            //     ]
-            // ),
+
             actions: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(right: 180.0, top: 15.0),
@@ -205,74 +148,14 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-//              IconButton(
-//                icon: Icon(Icons.exit_to_app, color: Colors.deepPurple,),
-//                onPressed: () {
-//                  _signOut();
-//
-//                  Navigator.push(
-//                    context,
-//                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
-//                  );
-//                },
-//              ),
             ],
           ),
-//      appBar: AppBar(
-//        title: Text(widget.title),
-//        actions: <Widget>[
-//          FlatButton(
-//            child: Text("Log Ot"),
-//            textColor: Colors.white,
-//            onPressed: () {
-//              FirebaseAuth.instance
-//                  .signOut()
-//                  .then((result) =>
-//                  Navigator.push(context, new MaterialPageRoute(
-//                      builder: (context) =>
-//                      new LoginScreen())
-//                  ))
-//                  .catchError((err) => print(err));
-//            },
-//          )
-//        ],
-//      ),
-//
-////      body: Center(
-////        child: Container(
-////            padding: const EdgeInsets.all(20.0),
-////            child: Text("Welcome")),
-////
-////      ),
           body: ResponsiveLayoutBuilder(
               builder: (context, size) => new TabLayoutDemo()),
         ),
       ),
     );
   }
-
-//  Future<void> _opencamera() async {
-//    // Ensure that plugin services are initialized so that `availableCameras()`
-//    // can be called before `runApp()`
-//    WidgetsFlutterBinding.ensureInitialized();
-//
-//    // Obtain a list of the available cameras on the device.
-//    final cameras = await availableCameras();
-//
-//    // Get a specific camera from the list of available cameras.
-//    final firstCamera = cameras.first;
-//
-//    runApp(
-//      MaterialApp(
-//        debugShowCheckedModeBanner: false,
-//        theme: ThemeData.dark(),
-//        home: TakePictureScreen(
-//          // Pass the appropriate camera to the TakePictureScreen widget.
-//          camera: firstCamera,
-//        ),
-//      ),
-//    );
-//  }
 }
 
 class TabLayoutDemo extends StatelessWidget {

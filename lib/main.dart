@@ -1,6 +1,7 @@
 import 'package:catcher/catcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/pages/intro_page.dart';
 import 'package:techstagram/resources/repository.dart';
@@ -9,7 +10,6 @@ import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/fblogin.dart';
 
 import 'Signup/signup_screen.dart';
-import 'ui/Login.dart';
 
 void main() => runApp(MyApp());
 
@@ -34,7 +34,7 @@ class MyAppState extends State<MyApp> {
         navigatorKey: Catcher.navigatorKey,
 
         routes: {
-          '/Login': (context) => LoginPage(),
+          '/Login': (context) => LoginScreen(),
           '/Fblogin': (context) => Fblogin(),
           '/Welcome': (context) => WelcomeScreen(),
           '/nayasignup': (context) => SignUpScreen(),

@@ -42,6 +42,7 @@ class _BodyState extends State<Body> {
   bool _obscureText = true;
   bool _obscureText1 = true;
   bool isUserSignedIn = false;
+  bool facebooksuccess = false;
 
   //final FocusNode _signup = FoucsNode();
   @override
@@ -121,6 +122,9 @@ class _BodyState extends State<Body> {
       final FacebookLoginResult facebookLoginResult =
       await fbLogin.logIn(['email']);
       if (facebookLoginResult.status == FacebookLoginStatus.loggedIn) {
+        this.setState(() {
+          facebooksuccess = true;
+        });
         FacebookAccessToken facebookAccessToken =
             facebookLoginResult.accessToken;
         final AuthCredential credential = FacebookAuthProvider.getCredential(
@@ -173,6 +177,7 @@ class _BodyState extends State<Body> {
   }
 
   bool errordikhaoN = false;
+  bool isLoading = false;
 
   String validateMobile(String value) {
 // Indian Mobile number are of 10 digit only
@@ -249,12 +254,171 @@ class _BodyState extends State<Body> {
     });
   }
 
+
+  Future<String> signup(String email, String password, String firstname,
+      String lastname, String phonenumber) async {
+    FirebaseUser user;
+    String errorMessage;
+
+
+    try {
+      if (_registerFormKey.currentState.validate()) {
+        if (pwdInputController.text ==
+            confirmPwdInputController.text && isLoading == false) {
+//          this.setState(() {
+//            isLoading = true;
+//          });
+
+
+          FirebaseAuth.instance
+              .createUserWithEmailAndPassword(
+              email: emailInputController.text,
+              password: pwdInputController.text)
+
+              .then((authResult) =>
+              Firestore.instance
+                  .collection("users")
+                  .document(authResult.user.uid)
+                  .setData({
+                "uid": authResult.user.uid,
+                "fname": firstNameInputController.text,
+                "surname": lastNameInputController.text,
+                "phonenumber": phoneNumberController.text,
+                "email": emailInputController.text,
+              })
+                  .then((result) =>
+              {
+
+
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomePage(uid: "hh",)),
+                        (_) => false),
+                firstNameInputController.clear(),
+                lastNameInputController.clear(),
+                phoneNumberController.clear(),
+                emailInputController.clear(),
+                pwdInputController.clear(),
+                confirmPwdInputController.clear()
+              })
+                  .catchError(
+                    (err) =>
+//                          print(err.code),
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Error"),
+                        content: Text(err.code),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text("Close"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
+                      );
+                    }),
+
+
+              ))
+              .catchError((err) =>
+              showDialog(
+
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Error"),
+                      content: Text(err.code),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text("Close"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    );
+                  }),
+          );
+        } else {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Error"),
+                  content: Text("The passwords do not match"),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text("Close"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              });
+        }
+      }
+    }
+
+    catch (error) {
+      switch (error.code) {
+        case "ERROR_INVALID_EMAIL":
+          errorMessage = "Your email address appears to be malformed.";
+          break;
+        case "ERROR_WRONG_PASSWORD":
+          errorMessage = "Your email or password is wrong.";
+          break;
+        case "ERROR_USER_EXISTS":
+          errorMessage = "User with this email already exist.";
+          break;
+        case "ERROR_USER_DISABLED":
+          errorMessage = "User with this email has been disabled.";
+          break;
+        case "ERROR_TOO_MANY_REQUESTS":
+          errorMessage = "Too many requests. Try again later.";
+          break;
+        case "ERROR_OPERATION_NOT_ALLOWED":
+          errorMessage = "Signing in with Email and Password is not enabled.";
+          break;
+        default:
+          errorMessage =
+          "An error occurred, maybe due to unfilled fields, internet or other issue.";
+      }
+
+      Future.error(errorMessage);
+    }
+
+
+    if (errorMessage != null) {
+      this.setState(() {
+        isLoading = false;
+      });
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: Text(
+                'sd',
+                style: TextStyle(color: Colors.black),
+              ),
+              title: Text("Error !", style:
+              TextStyle(color: Colors.red),),
+            );
+          });
+    }
+    return user.uid;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Background(
-        child: SingleChildScrollView(
+        child: (isLoading == false) ? SingleChildScrollView(
           child: Form(
             key: _registerFormKey,
             child: Column(
@@ -603,60 +767,65 @@ class _BodyState extends State<Body> {
                 RoundedButton(
                   text: "SIGNUP",
                   press: () {
-                    if (_registerFormKey.currentState.validate()) {
-                      if (pwdInputController.text ==
-                          confirmPwdInputController.text) {
-                        FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                            email: emailInputController.text,
-                            password: pwdInputController.text)
-                            .then((authResult) =>
-                            Firestore.instance
-                                .collection("users")
-                                .document(authResult.user.uid)
-                                .setData({
-                              "uid": authResult.user.uid,
-                              "fname": firstNameInputController.text,
-                              "surname": lastNameInputController.text,
-                              "phonenumber": phoneNumberController.text,
-                              "email": emailInputController.text,
-                            })
-                                .then((result) =>
-                            {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomePage()),
-                                      (_) => false),
-                              firstNameInputController.clear(),
-                              lastNameInputController.clear(),
-                              phoneNumberController.clear(),
-                              emailInputController.clear(),
-                              pwdInputController.clear(),
-                              confirmPwdInputController.clear()
-                            })
-                                .catchError(
-                                    (err) => print(Errors.show(err.code))))
-                            .catchError((err) => print(Errors.show(err)));
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("Error"),
-                                content: Text("The passwords do not match"),
-                                actions: <Widget>[
-                                  FlatButton(
-                                    child: Text("Close"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              );
-                            });
-                      }
-                    }
+                    signup(emailInputController.text, pwdInputController.text,
+                        firstNameInputController.text,
+                        lastNameInputController.text,
+                        phoneNumberController.text);
+
+//                    if (_registerFormKey.currentState.validate()) {
+//                      if (pwdInputController.text ==
+//                          confirmPwdInputController.text) {
+//                        FirebaseAuth.instance
+//                            .createUserWithEmailAndPassword(
+//                            email: emailInputController.text,
+//                            password: pwdInputController.text)
+//                            .then((authResult) =>
+//                            Firestore.instance
+//                                .collection("users")
+//                                .document(authResult.user.uid)
+//                                .setData({
+//                              "uid": authResult.user.uid,
+//                              "fname": firstNameInputController.text,
+//                              "surname": lastNameInputController.text,
+//                              "phonenumber": phoneNumberController.text,
+//                              "email": emailInputController.text,
+//                            })
+//                                .then((result) =>
+//                            {
+//                              Navigator.pushAndRemoveUntil(
+//                                  context,
+//                                  MaterialPageRoute(
+//                                      builder: (context) => HomePage()),
+//                                      (_) => false),
+//                              firstNameInputController.clear(),
+//                              lastNameInputController.clear(),
+//                              phoneNumberController.clear(),
+//                              emailInputController.clear(),
+//                              pwdInputController.clear(),
+//                              confirmPwdInputController.clear()
+//                            })
+//                                .catchError(
+//                                    (err) => print(Errors.show(err.code))))
+//                            .catchError((err) => print(Errors.show(err)));
+//                      } else {
+//                        showDialog(
+//                            context: context,
+//                            builder: (BuildContext context) {
+//                              return AlertDialog(
+//                                title: Text("Error"),
+//                                content: Text("The passwords do not match"),
+//                                actions: <Widget>[
+//                                  FlatButton(
+//                                    child: Text("Close"),
+//                                    onPressed: () {
+//                                      Navigator.of(context).pop();
+//                                    },
+//                                  )
+//                                ],
+//                              );
+//                            });
+//                      }
+//                    }
                   },
                 ),
                 SizedBox(height: size.height * 0.01),
@@ -701,7 +870,7 @@ class _BodyState extends State<Body> {
                               (user) {
                             print('Logged in successfully.');
 
-                            Navigator.pushAndRemoveUntil(
+                            facebooksuccess ? Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
@@ -709,7 +878,8 @@ class _BodyState extends State<Body> {
                                           title: "huhu",
                                           uid: "h",
                                         )),
-                                    (_) => false);
+                                    (_) => false) : Navigator.pushNamed(
+                                context, "/nayasignup");
 
                             setState(() {
                               isFacebookLoginIn = true;
@@ -736,11 +906,18 @@ class _BodyState extends State<Body> {
               ],
             ),
           ),
+        ) : CircularProgressIndicator(
+          strokeWidth: 5.0,
+          semanticsLabel: 'loading...',
+          semanticsValue: 'loading...',
+          backgroundColor: Colors.deepPurpleAccent,
+          valueColor: new AlwaysStoppedAnimation<Color>(Colors.deepPurple),
         ),
       ),
     );
   }
 }
+
 
 _fieldFocusChange(BuildContext context, FocusNode currentFocus,
     FocusNode nextFocus) {

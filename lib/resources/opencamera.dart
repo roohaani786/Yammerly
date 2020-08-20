@@ -177,11 +177,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               !controller.value.isRecordingVideo
               ? onTakePictureButtonPressed
               : null,
-//          onLongPress: controller != null &&
-//    controller.value.isInitialized &&
-//    !controller.value.isRecordingVideo
-//    ? onVideoRecordButtonPressed
-//        : null,
 
 
           child: Container(

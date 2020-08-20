@@ -46,6 +46,8 @@ class _BodyState extends State<Body> {
   bool isFacebookLoginIn = false;
   String errorMessage = '';
   String successMessage = '';
+  bool isLoading = false;
+  bool facebooksuccess = false;
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -177,6 +179,10 @@ class _BodyState extends State<Body> {
     FirebaseUser user;
     String errorMessage;
 
+    this.setState(() {
+      isLoading = true;
+    });
+
     try {
       if (_loginFormKey.currentState.validate()) {
         AuthResult result = await FirebaseAuth.instance
@@ -222,6 +228,9 @@ class _BodyState extends State<Body> {
     }
 
     if (errorMessage != null) {
+      this.setState(() {
+        isLoading = false;
+      });
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -249,6 +258,9 @@ class _BodyState extends State<Body> {
       final FacebookLoginResult facebookLoginResult =
       await fbLogin.logIn(['email']);
       if (facebookLoginResult.status == FacebookLoginStatus.loggedIn) {
+        this.setState(() {
+          facebooksuccess = true;
+        });
         FacebookAccessToken facebookAccessToken =
             facebookLoginResult.accessToken;
         final AuthCredential credential = FacebookAuthProvider.getCredential(
@@ -260,7 +272,9 @@ class _BodyState extends State<Body> {
         assert(await user.user.getIdToken() != null);
         currentUser = await auth.currentUser();
         assert(user.user.uid == currentUser.uid);
+
         return currentUser;
+
       }
     } catch (e) {
       print(e);
@@ -296,7 +310,7 @@ class _BodyState extends State<Body> {
         body: ResponsiveLayoutBuilder(
           builder: (context, size) =>
               Background(
-                child: SingleChildScrollView(
+                child: !isLoading ? SingleChildScrollView(
                   child: Form(
                     key: _loginFormKey,
                     child: Column(
@@ -541,7 +555,8 @@ class _BodyState extends State<Body> {
                                       (user) {
                                     print('Logged in successfully.');
 
-                                    Navigator.pushAndRemoveUntil(
+                                    facebooksuccess ? Navigator
+                                        .pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
@@ -549,7 +564,8 @@ class _BodyState extends State<Body> {
                                                   title: "huhu",
                                                   uid: "h",
                                                 )),
-                                            (_) => false);
+                                            (_) => false) : Navigator.pushNamed(
+                                        context, "/Login");
 
                                     setState(() {
                                       isFacebookLoginIn = true;
@@ -574,6 +590,13 @@ class _BodyState extends State<Body> {
                       ],
                     ),
                   ),
+                ) : CircularProgressIndicator(
+                  strokeWidth: 5.0,
+                  semanticsLabel: 'loading...',
+                  semanticsValue: 'loading...',
+                  backgroundColor: Colors.deepPurpleAccent,
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                      Colors.deepPurple),
                 ),
               ),
         ),
