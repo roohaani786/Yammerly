@@ -260,11 +260,13 @@ class _BodyState extends State<Body> {
     FirebaseUser user;
     String errorMessage;
 
-
+    this.setState(() {
+      isLoading = true;
+    });
     try {
       if (_registerFormKey.currentState.validate()) {
         if (pwdInputController.text ==
-            confirmPwdInputController.text && isLoading == false) {
+            confirmPwdInputController.text) {
 //          this.setState(() {
 //            isLoading = true;
 //          });
@@ -303,14 +305,18 @@ class _BodyState extends State<Body> {
                 confirmPwdInputController.clear()
               })
                   .catchError(
+
                     (err) =>
 //                          print(err.code),
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
+
                       return AlertDialog(
                         title: Text("Error"),
-                        content: Text(err.code),
+                        content: Text(err.code, style: TextStyle(
+                            color: Colors.deepPurple
+                        )),
                         actions: <Widget>[
                           FlatButton(
                             child: Text("Close"),
@@ -331,7 +337,10 @@ class _BodyState extends State<Body> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text("Error"),
-                      content: Text(err.code),
+                      content: Text(err.code,
+                          style: TextStyle(
+                              color: Colors.deepPurple
+                          )),
                       actions: <Widget>[
                         FlatButton(
                           child: Text("Close"),
@@ -410,6 +419,10 @@ class _BodyState extends State<Body> {
             );
           });
     }
+    this.setState(() {
+      isLoading = false;
+    });
+
     return user.uid;
   }
 

@@ -37,6 +37,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   VideoPlayerController videoController;
   VoidCallback videoPlayerListener;
   bool enableAudio = true;
+  double scale = 1.0; //add this
 
   @override
   void initState() {
@@ -71,47 +72,62 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.deepPurple,
-      body: Stack(
-        children: [
-          Column(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Center(
-                      child: _cameraPreviewWidget(),
+      backgroundColor: Colors.black,
+      body: GestureDetector(
+        onScaleUpdate: (one) {
+          print(one.scale);
+          scale = one.scale;
+          setState(() {});
+        },
+        child: Stack(
+          children: [
+            Column(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(1.0),
+
+
+                      child: Transform.scale(
+                        scale: scale,
+
+                        child: Center(
+                          child: _cameraPreviewWidget(),
+                        ),
+
+                      ),
+
                     ),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    border: Border.all(
-                      color: controller != null &&
-                          controller.value.isRecordingVideo
-                          ? Colors.redAccent
-                          : Colors.grey,
-                      width: 0.0,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(
+                        color: controller != null &&
+                            controller.value.isRecordingVideo
+                            ? Colors.redAccent
+                            : Colors.grey,
+                        width: 0.0,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              _captureControlRowWidget(),
-              _toggleAudioWidget(),
-//              _buildControlBar(),
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    _cameraTogglesRowWidget(),
-                    _thumbnailWidget(),
-                  ],
+                _captureControlRowWidget(),
+                _toggleAudioWidget(),
+                _buildControlBar(),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      _cameraTogglesRowWidget(),
+                      _thumbnailWidget(),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -148,6 +164,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             ),
           ),
           Switch(
+
+            inactiveTrackColor: Colors.greenAccent,
+            activeTrackColor: Colors.deepPurpleAccent,
+            activeColor: Colors.greenAccent,
+            inactiveThumbColor: Colors.deepPurpleAccent,
             value: enableAudio,
             onChanged: (bool value) {
               enableAudio = value;
@@ -165,11 +186,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        IconButton( // <-- Flash
-          color: Colors.white,
-          icon: Icon(Icons.flash_auto),
-          onPressed: () {},
-        ),
+//        IconButton( // <-- Flash
+//          color: Colors.white,
+//          icon: Icon(Icons.flash_auto),
+//          onPressed: () {},
+//        ),
         FlatButton( // <-- Take picture
           onPressed:
           controller != null &&
@@ -180,22 +201,22 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
 
           child: Container(
-            height: 80.0,
-            width: 80.0,
+            height: 70.0,
+            width: 70.0,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.white,
+                color: Colors.greenAccent,
                 width: 5.0,
               ),
             ),
           ),
         ),
-        IconButton( // <-- Switch camera
-          color: Colors.white,
-          icon: Icon(Icons.switch_camera),
-          onPressed: () {},
-        ),
+//        IconButton( // <-- Switch camera
+//          color: Colors.white,
+//          icon: Icon(Icons.switch_camera),
+//          onPressed: () {},
+//        ),
       ],
     );
   }
@@ -240,18 +261,18 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        IconButton(
-          icon: const Icon(
-            Icons.camera_alt,
-            color: Colors.white,
-          ),
-          color: Colors.blue,
-          onPressed: controller != null &&
-                  controller.value.isInitialized &&
-                  !controller.value.isRecordingVideo
-              ? onTakePictureButtonPressed
-              : null,
-        ),
+//        IconButton(
+//          icon: const Icon(
+//            Icons.camera_alt,
+//            color: Colors.yellowAccent,
+//          ),
+//          color: Colors.blue,
+//          onPressed: controller != null &&
+//                  controller.value.isInitialized &&
+//                  !controller.value.isRecordingVideo
+//              ? onTakePictureButtonPressed
+//              : null,
+//        ),
         IconButton(
           icon: const Icon(
             Icons.videocam,
@@ -302,18 +323,25 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     } else {
       for (CameraDescription cameraDescription in cameras) {
         toggles.add(
-          SizedBox(
-            width: 90.0,
-            child: RadioListTile<CameraDescription>(
-              title: Icon(
-                getCameraLensIcon(cameraDescription.lensDirection),
-                color: Colors.white,
+          Theme(
+            data: Theme.of(context).copyWith(
+                unselectedWidgetColor: Colors.deepPurple,
+                disabledColor: Colors.blue),
+            child: SizedBox(
+              width: 90.0,
+              child: RadioListTile<CameraDescription>(
+                activeColor: Colors.purple,
+                title: Icon(
+                  getCameraLensIcon(cameraDescription.lensDirection,),
+                  color: Colors.white,
+                ),
+                groupValue: controller?.description,
+                value: cameraDescription,
+                onChanged: controller != null &&
+                    controller.value.isRecordingVideo
+                    ? null
+                    : onNewCameraSelected,
               ),
-              groupValue: controller?.description,
-              value: cameraDescription,
-              onChanged: controller != null && controller.value.isRecordingVideo
-                  ? null
-                  : onNewCameraSelected,
             ),
           ),
         );
