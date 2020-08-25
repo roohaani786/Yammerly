@@ -178,6 +178,7 @@ class _BodyState extends State<Body> {
 
   bool errordikhaoN = false;
   bool isLoading = false;
+  int initialindexg;
 
   String validateMobile(String value) {
 // Indian Mobile number are of 10 digit only

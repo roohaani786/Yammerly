@@ -42,6 +42,8 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  int initialindexg = 2;
+
   @override
   Widget build(BuildContext context) {
     bool loginfail = false;

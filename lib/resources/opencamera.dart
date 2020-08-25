@@ -4,9 +4,13 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/views/tabs/chats.dart';
 import 'package:video_player/video_player.dart';
 
 class CameraExampleHome extends StatefulWidget {
+  CameraExampleHome(List<CameraDescription> cameras);
+
   @override
   _CameraExampleHomeState createState() {
     return _CameraExampleHomeState();
@@ -45,6 +49,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     WidgetsBinding.instance.addObserver(this);
   }
 
+  bool cameraon = true;
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -68,9 +74,43 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  int initialindexg;
+
+
+  void _onHorizontalDrag(DragEndDetails details) {
+    if (details.primaryVelocity == 0)
+      // user have just tapped on screen (no dragging)
+      return;
+
+    if (details.primaryVelocity.compareTo(0) == -1) {
+//      dispose();
+
+      this.setState(() {
+        cameraon = false;
+      });
+//      initialindexg = 1;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+      );
+    }
+    else {
+      print("error");
+    }
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+//      onPanUpdate: (details) {
+//        if (details.delta.dx < 0) {
+//          // swiping in right direction
+//          return ChatsPage();
+//        }
+//      },
+      onHorizontalDragEnd: (DragEndDetails details) =>
+          _onHorizontalDrag(details)
+
+      , child: Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.black,
       body: GestureDetector(
@@ -128,13 +168,15 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             ),
           ],
         ),
+        ),
       ),
     );
   }
 
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
-    if (controller == null || !controller.value.isInitialized) {
+    if (controller == null ||
+        !controller.value.isInitialized && cameraon == true) {
       return const Text(
         'Choose a camera',
         style: TextStyle(
@@ -319,7 +361,10 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     final List<Widget> toggles = <Widget>[];
 
     if (cameras.isEmpty) {
-      return const Text('No camera found');
+      return const Text('No camera found', style:
+      TextStyle(
+        color: Colors.white,
+      ),);
     } else {
       for (CameraDescription cameraDescription in cameras) {
         toggles.add(
@@ -547,14 +592,5 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 }
 
-class CameraApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: CameraExampleHome(),
-    );
-  }
-}
 
-List<CameraDescription> cameras = [];
+//List<CameraDescription> cameras = [];

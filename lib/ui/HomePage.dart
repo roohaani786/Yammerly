@@ -11,6 +11,7 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
+
 import 'messagingsystem.dart';
 
 
@@ -18,16 +19,19 @@ class HomePage extends StatefulWidget {
   HomePage({
     Key key,
     this.title = "Hashtag",
-    this.uid,
+    this.uid, @required this.initialindexg,
   }) : super(key: key); //update this to include the uid in the constructor
   final String title;
   final String uid;
+  int initialindexg = 2;
   FirebaseUser user;
+
 
   //include this
 
   GoogleSignIn _googleSignIn;
   FirebaseUser _user;
+
 
   Body(FirebaseUser user, GoogleSignIn signIn) {
     _user = user;
@@ -35,7 +39,7 @@ class HomePage extends StatefulWidget {
   }
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(initialindexg);
 }
 
 class _HomePageState extends State<HomePage> {
@@ -44,6 +48,12 @@ class _HomePageState extends State<HomePage> {
   FirebaseUser currentUser;
   FirebaseProvider firebaseProvider;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  _HomePageState(this.initialindexg);
+
+  int initialindexg;
+
+
 
   @override
   initState() {
@@ -64,22 +74,8 @@ class _HomePageState extends State<HomePage> {
     await _firebaseAuth.signOut();
   }
 
-  static const Map<LayoutSize, String> layoutSizeEnumToString = {
-    LayoutSize.watch: 'Wristwatch',
-    LayoutSize.mobile: 'Mobile',
-    LayoutSize.tablet: 'Tablet',
-    LayoutSize.desktop: 'Desktop',
-    LayoutSize.tv: 'TV',
-  };
-  static const Map<MobileLayoutSize, String> mobileLayoutSizeEnumToString = {
-    MobileLayoutSize.small: 'Small',
-    MobileLayoutSize.medium: 'Medium',
-    MobileLayoutSize.large: 'Large',
-  };
-  static const Map<TabletLayoutSize, String> tabletLayoutSizeEnumToString = {
-    TabletLayoutSize.small: 'Small',
-    TabletLayoutSize.large: 'Large',
-  };
+  List<CameraDescription> cameras = [];
+
 
 
   Future<void> _opencamera() async {
@@ -92,11 +88,11 @@ class _HomePageState extends State<HomePage> {
     }
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CameraApp()),
+      MaterialPageRoute(builder: (context) => CameraExampleHome(cameras)),
     );
   }
 
-  List<CameraDescription> cameras = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -104,36 +100,59 @@ class _HomePageState extends State<HomePage> {
       onWillPop: () async => false,
       child: GestureDetector(
         child: Scaffold(
-          appBar: AppBar(
-            title: Padding(
-              padding: const EdgeInsets.only(left: 200.0),
-              child: Text("techstagram",
-                  style: TextStyle(color: Colors.deepPurple)),
-            ),
+          appBar: (hideappbar == true) ? PreferredSize(
+            child: Container(),
+            preferredSize: Size(0.0, 0.0),
+          ) : AppBar(
+
             backgroundColor: Colors.white,
             //  backgroundColor: Colors.white,
-            leading: IconButton(
-              icon: Icon(
-                Icons.search,
-                color: Colors.deepPurple,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SearchListExample()),
-                );
-              },
-            ),
+            automaticallyImplyLeading: false,
 
             actions: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(right: 180.0, top: 15.0),
-                child: Text(
-                  'Hashtag',
-                  style: TextStyle(
-                      color: Colors.deepPurple,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.only(right: 160.0),
+                child: Row(
+                  children: [
+
+                    IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.camera,
+                        color: Colors.deepPurple,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CameraExampleHome(cameras)),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        color: Colors.deepPurple,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SearchListExample()),
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 6.0),
+                      child: Text(
+                        'Hashtag',
+                        style: TextStyle(
+                            color: Colors.deepPurple,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+
+                  ],
                 ),
               ),
               IconButton(
@@ -148,32 +167,51 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
+
             ],
           ),
           body: ResponsiveLayoutBuilder(
-              builder: (context, size) => new TabLayoutDemo()),
+              builder: (context, size) => new TabLayoutDemo(initialindexg)),
         ),
       ),
     );
   }
+
+
 }
 
-class TabLayoutDemo extends StatelessWidget {
+List<CameraDescription> cameras = [];
+
+class TabLayoutDemo extends StatefulWidget {
+  TabLayoutDemo(this.initialindexg);
+
+  int initialindexg;
+  @override
+  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg);
+}
+
+bool hideappbar = false;
+bool hidebottombar = false;
+
+class _TabLayoutDemoState extends State<TabLayoutDemo> {
+  _TabLayoutDemoState(this.initialindexg);
+
+  int initialindexg;
+
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
 
     return Scaffold(
       body: DefaultTabController(
-        length: 5,
-        initialIndex: 2,
+        length: 4,
+        initialIndex: (initialindexg == null) ? 2 : initialindexg,
+
         child: new Scaffold(
           body: TabBarView(
             children: [
-              FlatButton(
-                  onPressed: _opencameras(),
-                  child: new Container(
-                      child: CameraApp())),
+
               new Container(
                 child: ChatsPage(),
               ),
@@ -186,13 +224,15 @@ class TabLayoutDemo extends StatelessWidget {
               new Container(child: AccountBottomIconScreen()),
             ],
           ),
-          bottomNavigationBar: new Container(
+          bottomNavigationBar: (hidebottombar == true) ? PreferredSize(
+            child: Container(),
+            preferredSize: Size(0.0, 0.0),
+          ) : new Container(
             height: 60.0,
             child: new TabBar(
               tabs: [
-                Tab(
-                  icon: new Icon(FontAwesomeIcons.camera, size: 25),
-                ),
+
+
                 Tab(
                   icon: new Icon(Icons.blur_circular, size: 30),
                 ),
@@ -220,16 +260,15 @@ class TabLayoutDemo extends StatelessWidget {
     );
   }
 
-  _opencameras() {
-    Future<void> _opencamera() async {
-      // Fetch the available cameras before initializing the app.
-      try {
-        WidgetsFlutterBinding.ensureInitialized();
-        cameras = await availableCameras();
-      } on CameraException catch (e) {
-        logError(e.code, e.description);
-      }
+  Future<void> _opencamera() async {
+    // Fetch the available cameras before initializing the app.
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
+      cameras = await availableCameras();
+    } on CameraException catch (e) {
+      logError(e.code, e.description);
     }
+    return CameraExampleHome(cameras);
   }
 }
 

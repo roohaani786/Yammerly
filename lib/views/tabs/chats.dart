@@ -23,21 +23,26 @@ class _ChatsPageState extends State<ChatsPage> {
       return;
 
     if (details.primaryVelocity.compareTo(0) == -1) {
-      dispose();
-      HomePage();
+//      dispose();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2)),
+      );
+
+
     }
     else {
       _opencamera();
       cameraon = false;
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => HomePage())).then((res) {
-        setState(() {
-          cameraon = true;
-        });
-      }
-      );
+//      Navigator.push(
+//          context,
+//          MaterialPageRoute(
+//              builder: (BuildContext context) => HomePage())).then((res) {
+//        setState(() {
+//          cameraon = true;
+//        });
+//      }
+//      );
     }
   }
 
@@ -51,7 +56,7 @@ class _ChatsPageState extends State<ChatsPage> {
     }
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CameraApp()),
+      MaterialPageRoute(builder: (context) => CameraExampleHome(cameras)),
     );
   }
 
@@ -108,38 +113,26 @@ class _ChatsPageState extends State<ChatsPage> {
       ),
     );
 
-//    final listOfOnlineUsers = Container(
-//      height: 100.0,
-//      child: ListView(
-//        scrollDirection: Axis.horizontal,
-//        children: users.map((user) => _buildUserCard(user, context)).toList(),
-//      ),
-//    );
 
-//    final onlineUsers = Container(
-//      margin: EdgeInsets.only(top: 20.0),
-//      child: Column(
-//        crossAxisAlignment: CrossAxisAlignment.start,
-//        children: <Widget>[
-//          onlineUsersHeading,
-//          SizedBox(
-//            height: 10.0,
-//          ),
-//          listOfOnlineUsers
-//        ],
-//      ),
-//    );
-
-//    final chatList = Container(
-//      height: 500.0,
-//      child: ListView(
-//        children: chats.map((chat) => _buildChatTile(chat, context)).toList(),
-//      ),
-//    );
 
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
+
+//      onHorizontalDragUpdate: (details){
+//        print(details.primaryDelta);
+//        if(details.primaryDelta >0){
+//          ChatsPage();
+//        }
+//        else if (details.primaryDelta <0){
+//          CameraExampleHome(cameras);
+//        }
+//        else{
+//          print("error");
+//        }
+//
+//      }
+
       child: Scaffold(
           body: SingleChildScrollView(
             child: Container(child: Text("Pending implementation")),
