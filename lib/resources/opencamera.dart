@@ -89,7 +89,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         cameraon = false;
       });
 //      initialindexg = 1;
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
       );

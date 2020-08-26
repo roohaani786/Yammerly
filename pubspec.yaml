@@ -36,6 +36,7 @@ dependencies:
   catcher:
   image_picker:
   file_picker:
+  after_layout:
   firebase_storage:
   location:
   geocoder:

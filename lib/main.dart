@@ -70,13 +70,32 @@ class MyAppState extends State<MyApp> {
           builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
             if (snapshot.hasData) {
               return HomePage();
-            } else if (initScreen == 0 || initScreen == null) {
-              return IntroPage();
             } else {
-              return WelcomeScreen();
+              return Check();
             }
           },
         )
     );
   }
+}
+
+class Check extends StatefulWidget {
+  @override
+  CheckState createState() => new CheckState();
+}
+
+class CheckState extends State<Check> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    if (initScreen == 0 || initScreen == null) {
+      return IntroPage();
+    }
+    else {
+      return WelcomeScreen();
+    }
+  }
+
+
 }

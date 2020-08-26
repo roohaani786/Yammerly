@@ -75,6 +75,8 @@ class _BodyState extends State<Body> {
 
     if (isUserSignedIn) {
       user = await auth.currentUser();
+      final uid = user.uid;
+      print(uid);
     } else {
       final GoogleSignInAccount googleUser = await googleSignIn.signIn();
       final GoogleSignInAuthentication googleAuth =
@@ -84,6 +86,7 @@ class _BodyState extends State<Body> {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+
 
       user = (await auth.signInWithCredential(credential)).user;
       userSignedIn = await googleSignIn.isSignedIn();
@@ -97,12 +100,13 @@ class _BodyState extends State<Body> {
 
   void onGoogleSignIn(BuildContext context) async {
     FirebaseUser user = await _handleSignIn();
+    print(user);
     var userSignedIn = await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) =>
               HomePage(
-//               user,
+
 //                 _googleSignIn
               )),
     );

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/models/user.dart';
+import 'package:techstagram/ui/messagingsystem.dart';
 
+import 'HomePage.dart';
 import 'ProfileEdit.dart';
 
 class AccountBottomIconScreen extends StatefulWidget {
@@ -31,6 +33,26 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   FirebaseUser currUser;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _onHorizontalDrag(DragEndDetails details) {
+    if (details.primaryVelocity == 0)
+      // user have just tapped on screen (no dragging)
+      return;
+
+    if (details.primaryVelocity.compareTo(0) == -1) {
+//      dispose();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ConversationPage()),
+      );
+    }
+    else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -64,15 +86,19 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: new Column(
-        children: <Widget>[
-          _appBar(),
-          _profile(),
-          _centerButtons(),
-          _displayImages()
-        ],
+    return GestureDetector(
+      onHorizontalDragEnd: (DragEndDetails details) =>
+          _onHorizontalDrag(details),
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: new Column(
+          children: <Widget>[
+            _appBar(),
+            _profile(),
+            _centerButtons(),
+            _displayImages()
+          ],
+        ),
       ),
     );
   }

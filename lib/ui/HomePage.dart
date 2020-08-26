@@ -205,12 +205,29 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
 
     return Scaffold(
       body: DefaultTabController(
-        length: 4,
+        length: 5,
         initialIndex: (initialindexg == null) ? 2 : initialindexg,
 
         child: new Scaffold(
           body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
             children: [
+
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      builder: (context) => CameraExampleHome(cameras),
+                    ),
+                  );
+                  setState(() {
+                    hidebottombar = true;
+                    hideappbar = true;
+                  });
+                },
+                child: CameraExampleHome(cameras),
+              ),
+
 
               new Container(
                 child: ChatsPage(),
@@ -232,7 +249,18 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
             child: new TabBar(
               tabs: [
 
+                Tab(
+                  icon: IconButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(
+                            builder: (context) => CameraExampleHome(cameras),
+                          ),
+                        );
+                      },
 
+                      icon: new Icon(FontAwesomeIcons.camera, size: 30)),
+                ),
                 Tab(
                   icon: new Icon(Icons.blur_circular, size: 30),
                 ),
