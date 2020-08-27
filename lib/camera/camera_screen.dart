@@ -23,7 +23,6 @@ class _CameraScreenState extends State {
     super.initState();
     availableCameras().then((availableCameras) {
       cameras = availableCameras;
-
       if (cameras.length > 0) {
         setState(() {
           selectedCameraIndex = 0;
