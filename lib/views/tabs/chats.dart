@@ -2,7 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:techstagram/camera/camera_screen.dart';
-import 'package:techstagram/resources/opencamera.dart';
+//import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
 class ChatsPage extends StatefulWidget {

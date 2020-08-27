@@ -13,7 +13,7 @@ import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
 
-import '../resources/opencamera.dart';
+//import '../resources/opencamera.dart';
 import 'messagingsystem.dart';
 
 
