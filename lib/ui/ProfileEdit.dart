@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:techstagram/models/user.dart';
+import 'package:techstagram/resources/auth.dart';
 
 class ProfilePage extends StatefulWidget {
   static final String pageName = "/ProfilePage";
@@ -15,6 +16,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
   bool isLoading = true;
   bool isEditable = false;
   String loadingMessage = "Loading Profile Data";
@@ -26,10 +28,18 @@ class _ProfilePageState extends State<ProfilePage> {
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
 
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Map<String, dynamic> _profile;
+  bool _loading = false;
 
   @override
-  void initState() {
+  initState() {
+    super.initState();
+
+    // Subscriptions are created here
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
     emailController = TextEditingController();
@@ -37,6 +47,12 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     fetchProfileData();
   }
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
+
+
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();

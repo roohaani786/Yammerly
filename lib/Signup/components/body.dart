@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Signup/components/background.dart';
 import 'package:techstagram/Signup/components/or_divider.dart';
@@ -14,6 +15,7 @@ import 'package:techstagram/Signup/components/social_icon.dart';
 import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/components/text_field_container.dart';
+import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
 import '../../constants.dart';
@@ -99,7 +101,7 @@ class _BodyState extends State<Body> {
   }
 
   void onGoogleSignIn(BuildContext context) async {
-    FirebaseUser user = await _handleSignIn();
+    FirebaseUser user = await authService.hellogoogleSignIn();
     print(user);
     var userSignedIn = await Navigator.push(
       context,
@@ -117,35 +119,72 @@ class _BodyState extends State<Body> {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
+  PublishSubject loading = PublishSubject();
 
   Future<FirebaseUser> facebookLogin(BuildContext context) async {
-    FirebaseUser currentUser;
-    // fbLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
-    // if you remove above comment then facebook login will take username and pasword for login in Webview
-    try {
-      final FacebookLoginResult facebookLoginResult =
-      await fbLogin.logIn(['email']);
-      if (facebookLoginResult.status == FacebookLoginStatus.loggedIn) {
+    loading.add(true);
+
+
+    var facebookLogin = FacebookLogin();
+    var facebookLoginResult =
+    await facebookLogin.logIn(['email']);
+    switch (facebookLoginResult.status) {
+      case FacebookLoginStatus.error:
+        print("Error");
+//        onLoginStatusChanged(false);
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        print("CancelledByUser");
+//        onLoginStatusChanged(false);
+        break;
+      case FacebookLoginStatus.loggedIn:
+        print("LoggedIn");
         this.setState(() {
           facebooksuccess = true;
         });
-        FacebookAccessToken facebookAccessToken =
-            facebookLoginResult.accessToken;
-        final AuthCredential credential = FacebookAuthProvider.getCredential(
-            accessToken: facebookAccessToken.token);
-        final AuthResult user = await auth.signInWithCredential(credential);
-        assert(user.user.email != null);
-        assert(user.user.displayName != null);
-        assert(!user.user.isAnonymous);
-        assert(await user.user.getIdToken() != null);
-        currentUser = await auth.currentUser();
-        assert(user.user.uid == currentUser.uid);
-        return currentUser;
-      }
-    } catch (e) {
-      print(e);
+        try {
+          FacebookAccessToken facebookAccessToken =
+              facebookLoginResult.accessToken;
+          final AuthCredential credential = FacebookAuthProvider.getCredential(
+              accessToken: facebookAccessToken.token);
+          final FirebaseUser user = (await auth.signInWithCredential(
+              credential))
+              .user;
+          (await FirebaseAuth.instance.currentUser()).uid;
+//        assert(user.email != null);
+//        assert(user.displayName != null);
+//        assert(user.isAnonymous);
+//        assert(user.getIdToken() != null);
+
+          authService.updateUserData(user);
+          loading.add(false);
+
+          print("signed in " + user.displayName);
+          return user;
+        } catch (e) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Error"),
+                  content: Text(e.code, style: TextStyle(
+                      color: Colors.deepPurple
+                  )),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text("Close"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              });
+        }
+//        onLoginStatusChanged(true);
+        break;
     }
-    return currentUser;
+
   }
 
   bool errordikhao = false;
@@ -472,7 +511,7 @@ class _BodyState extends State<Body> {
 //                                color: Colors.black
 //                            ),
                         cursorColor: kPrimaryColor,
-                        cursorHeight: 18.0,
+//                        cursorHeight: 18.0,
 
 
                         decoration: InputDecoration(

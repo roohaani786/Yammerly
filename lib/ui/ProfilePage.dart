@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/models/user.dart';
+import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/messagingsystem.dart';
 
 import 'HomePage.dart';
@@ -27,7 +28,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
+      displaynameController,
       phoneNumberController;
+
+  Map<String, dynamic> _profile;
+  bool _loading = false;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
@@ -61,8 +66,14 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     emailController = TextEditingController();
     phoneNumberController = TextEditingController();
     super.initState();
+    // Subscriptions are created here
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+
     fetchProfileData();
   }
+
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -94,7 +105,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
         body: new Column(
           children: <Widget>[
             _appBar(),
-            _profile(),
+            _profilex(),
             _centerButtons(),
             _displayImages()
           ],
@@ -115,7 +126,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
               new Padding(
                 padding: new EdgeInsets.only(left: 10.0),
                 child: new Text(
-                  firstNameController.text,
+                  emailController.text,
                   style: new TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -229,7 +240,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     );
   }
 
-  Widget _profile() {
+  Widget _profilex() {
     return new Container(
       height: 150.0,
       margin: new EdgeInsets.only(top: 5.0),
