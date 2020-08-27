@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:techstagram/camera/camera_screen.dart';
 import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
@@ -32,7 +33,10 @@ class _ChatsPageState extends State<ChatsPage> {
 
     }
     else {
-      _opencamera();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CameraScreen()),
+      );
       cameraon = false;
 //      Navigator.push(
 //          context,
@@ -46,19 +50,19 @@ class _ChatsPageState extends State<ChatsPage> {
     }
   }
 
-  Future<void> _opencamera() async {
-    // Fetch the available cameras before initializing the app.
-    try {
-      WidgetsFlutterBinding.ensureInitialized();
-      cameras = await availableCameras();
-    } on CameraException catch (e) {
-      logError(e.code, e.description);
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CameraExampleHome(cameras)),
-    );
-  }
+//  Future<void> _opencamera() async {
+//    // Fetch the available cameras before initializing the app.
+//    try {
+//      WidgetsFlutterBinding.ensureInitialized();
+//      cameras = await availableCameras();
+//    } on CameraException catch (e) {
+//      logError(e.code, e.description);
+//    }
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => CameraExampleHome(cameras)),
+//    );
+//  }
 
   @override
   Widget build(BuildContext context) {

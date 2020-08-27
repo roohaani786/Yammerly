@@ -330,7 +330,7 @@ class _BodyState extends State<Body> {
                             child: Container(
                               margin: EdgeInsets.symmetric(vertical: 5),
                               padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
 //                              width: size.width * 0.8,
                               decoration: BoxDecoration(
                                 color: kPrimaryLightColor,
@@ -342,14 +342,14 @@ class _BodyState extends State<Body> {
                                 ),
                               ),
                               child: TextFormField(
-                                cursorHeight: 18.0,
+                                //cursorHeight: 18.0,
                                 style: TextStyle(
                                     fontSize: 12.0,
                                     height: 1.6,
                                     color: Colors.black),
                                 textInputAction: TextInputAction.next,
                                 focusNode: _email,
-                                enableInteractiveSelection: false,
+                                //enableInteractiveSelection: false,
                                 onFieldSubmitted: (term) {
                                   _fieldFocusChange(context, _email, _pwd);
                                 },
@@ -362,7 +362,7 @@ class _BodyState extends State<Body> {
                                           color: Colors.red,
                                         )),
                                     contentPadding: EdgeInsets.only(
-                                        left: 0, right: 3, top: 13, bottom: 8),
+                                        left: 0, right: 3, top: 6, bottom: 12),
                                     errorStyle: TextStyle(
                                       fontSize: 10.0,
                                       height: 0.3,
@@ -393,8 +393,7 @@ class _BodyState extends State<Body> {
                               ),
                               child: Container(
                                 margin: EdgeInsets.symmetric(vertical: 5),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
+                                padding: EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
 //                              width: size.width * 0.8,
                                 decoration: BoxDecoration(
                                   color: kPrimaryLightColor,
@@ -406,15 +405,12 @@ class _BodyState extends State<Body> {
 //                                  ),
                                 ),
                                 child: TextFormField(
-                                  enableInteractiveSelection: false,
+                                  //enableInteractiveSelection: false,
                                   cursorColor: kPrimaryColor,
-                                  cursorHeight: 18.0,
+                                  //cursorHeight: 18.0,
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.only(
-                                          left: 0,
-                                          right: 3,
-                                          top: 16,
-                                          bottom: 8),
+                                          left: 0, right: 3, top: 6, bottom: 12),
                                       errorBorder: OutlineInputBorder(
                                           borderSide:
                                           BorderSide(color: Colors.red)),
