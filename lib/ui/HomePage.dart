@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
+import 'package:techstagram/camera/camera_screen.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
-import 'package:techstagram/resources/opencamera.dart';
+//import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
 
+//import '../resources/opencamera.dart';
 import 'messagingsystem.dart';
 
 
@@ -78,19 +80,19 @@ class _HomePageState extends State<HomePage> {
 
 
 
-  Future<void> _opencamera() async {
-    // Fetch the available cameras before initializing the app.
-    try {
-      WidgetsFlutterBinding.ensureInitialized();
-      cameras = await availableCameras();
-    } on CameraException catch (e) {
-      logError(e.code, e.description);
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CameraExampleHome(cameras)),
-    );
-  }
+//  Future<void> _opencamera() async {
+//    // Fetch the available cameras before initializing the app.
+//    try {
+//      WidgetsFlutterBinding.ensureInitialized();
+//      cameras = await availableCameras();
+//    } on CameraException catch (e) {
+//      logError(e.code, e.description);
+//    }
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => CameraExampleHome(cameras)),
+//    );
+//  }
 
 
 
@@ -115,19 +117,19 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   children: [
 
-                    IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.camera,
-                        color: Colors.deepPurple,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CameraExampleHome(cameras)),
-                        );
-                      },
-                    ),
+//                    IconButton(
+//                      icon: Icon(
+//                        FontAwesomeIcons.camera,
+//                        color: Colors.deepPurple,
+//                      ),
+//                      onPressed: () {
+//                        Navigator.push(
+//                          context,
+//                          MaterialPageRoute(
+//                              builder: (context) => CameraExampleHome(cameras)),
+//                        );
+//                      },
+//                    ),
                     IconButton(
                       icon: Icon(
                         Icons.search,
@@ -217,7 +219,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                 onTap: () {
                   Navigator.of(context, rootNavigator: true).push(
                     MaterialPageRoute(
-                      builder: (context) => CameraExampleHome(cameras),
+                      builder: (context) => CameraScreen(),
                     ),
                   );
                   setState(() {
@@ -225,7 +227,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                     hideappbar = true;
                   });
                 },
-                child: CameraExampleHome(cameras),
+                //child: CameraExampleHome(cameras),
               ),
 
 
@@ -254,7 +256,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                       onPressed: () {
                         Navigator.of(context, rootNavigator: true).push(
                           MaterialPageRoute(
-                            builder: (context) => CameraExampleHome(cameras),
+                            builder: (context) => CameraScreen(),
                           ),
                         );
                       },
@@ -288,16 +290,16 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
     );
   }
 
-  Future<void> _opencamera() async {
-    // Fetch the available cameras before initializing the app.
-    try {
-      WidgetsFlutterBinding.ensureInitialized();
-      cameras = await availableCameras();
-    } on CameraException catch (e) {
-      logError(e.code, e.description);
-    }
-    return CameraExampleHome(cameras);
-  }
+//  Future<void> _opencamera() async {
+//    // Fetch the available cameras before initializing the app.
+//    try {
+//      WidgetsFlutterBinding.ensureInitialized();
+//      cameras = await availableCameras();
+//    } on CameraException catch (e) {
+//      logError(e.code, e.description);
+//    }
+//    return CameraExampleHome(cameras);
+//  }
 }
 
 class SearchListExample extends StatefulWidget {

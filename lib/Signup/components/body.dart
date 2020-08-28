@@ -511,13 +511,13 @@ class _BodyState extends State<Body> {
 //                                color: Colors.black
 //                            ),
                         cursorColor: kPrimaryColor,
-//                        cursorHeight: 18.0,
+
 
 
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(
-                              left: 0, right: 3, top: 13, bottom: 8),
+                              left: 0, right: 3, top: 6, bottom: 12),
                           errorStyle: TextStyle(
                             fontSize: 10.0,
                             height: 0.3,
@@ -532,7 +532,7 @@ class _BodyState extends State<Body> {
                           hintText: "First name",
                         ),
                         controller: firstNameInputController,
-                        enableInteractiveSelection: false,
+                        //enableInteractiveSelection: false,
                         // keyboardType: TextInputType.name,
 //                      validator: emailValidator,
                       ),
@@ -559,7 +559,7 @@ class _BodyState extends State<Body> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(
-                              left: 0, right: 3, top: 13, bottom: 8),
+                              left: 0, right: 3, top: 6, bottom: 12),
                           errorStyle: TextStyle(
                             fontSize: 10.0,
                             height: 0.3,
@@ -573,7 +573,7 @@ class _BodyState extends State<Body> {
                           hintText: "Last name",
                         ),
                         controller: lastNameInputController,
-                        enableInteractiveSelection: false,
+                        //enableInteractiveSelection: false,
                         //  keyboardType: TextInputType.name,
 //                      validator: emailValidator,
                       ),
@@ -590,7 +590,7 @@ class _BodyState extends State<Body> {
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 5),
                       padding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
                       width: size.width * 0.8,
                       decoration: BoxDecoration(
                         color: kPrimaryLightColor,
@@ -614,7 +614,7 @@ class _BodyState extends State<Body> {
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 14, bottom: 8),
+                                left: 0, right: 3, top: 6, bottom: 12),
                             errorStyle: TextStyle(
                               fontSize: 10.0,
                               height: 0.3,
@@ -628,7 +628,7 @@ class _BodyState extends State<Body> {
                             hintText: "Phone number (optional)"),
                         controller: phoneNumberController,
                         validator: validateMobile,
-                        enableInteractiveSelection: false,
+                        //enableInteractiveSelection: false,
 //                        keyboardType: TextInputType.number,
 //                      validator: emailValidator,
                       ),
@@ -644,7 +644,7 @@ class _BodyState extends State<Body> {
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 5),
                       padding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
                       width: size.width * 0.8,
                       decoration: BoxDecoration(
                         color: kPrimaryLightColor,
@@ -672,7 +672,7 @@ class _BodyState extends State<Body> {
                                   color: Colors.red,
                                 )),
                             contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 14, bottom: 8),
+                                left: 0, right: 3, top: 6, bottom: 12),
                             errorStyle: TextStyle(
                               fontSize: 10.0,
                               height: 0.3,
@@ -686,7 +686,7 @@ class _BodyState extends State<Body> {
                             hintText: "Email"),
                         controller: emailInputController,
                         validator: emailValidator,
-                        enableInteractiveSelection: false,
+                        //enableInteractiveSelection: false,
 //                        keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
                       ),
@@ -703,7 +703,7 @@ class _BodyState extends State<Body> {
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 5),
                       padding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
                       width: size.width * 0.8,
                       decoration: BoxDecoration(
                         color: kPrimaryLightColor,
@@ -743,7 +743,7 @@ class _BodyState extends State<Body> {
                               ),
                             ),
                             contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 14, bottom: 8),
+                                left: 0, right: 3, top: 6, bottom: 12),
                             errorStyle: TextStyle(
                               fontSize: 9.0,
                               height: 0.3,
@@ -757,7 +757,7 @@ class _BodyState extends State<Body> {
                             hintText: "Create password"),
                         controller: pwdInputController,
                         validator: pwdValidator,
-                        enableInteractiveSelection: false,
+                       // enableInteractiveSelection: false,
 //                      validator: emailValidator,
                       ),
                     ),
@@ -800,7 +800,7 @@ class _BodyState extends State<Body> {
                               ),
                             ),
                             contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 14, bottom: 8),
+                                left: 0, right: 3, top: 6, bottom: 12),
                             errorStyle: TextStyle(
                               fontSize: 10.0,
                               height: 0.3,
@@ -814,7 +814,7 @@ class _BodyState extends State<Body> {
                             hintText: "Confirm password"),
                         controller: confirmPwdInputController,
                         obscureText: _obscureText1,
-                        enableInteractiveSelection: false,
+                        //enableInteractiveSelection: false,
 //                      validator: emailValidator,
                       ),
                     ),
