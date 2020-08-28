@@ -3,9 +3,12 @@ import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/camera/preview_screen.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../ui/HomePage.dart';
 
 class CameraScreen extends StatefulWidget {
   @override
@@ -13,10 +16,14 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State {
+
+
   CameraController controller;
   List cameras;
   int selectedCameraIndex;
   String imgPath;
+
+
 
   @override
   void initState() {
@@ -62,36 +69,75 @@ class _CameraScreenState extends State {
     }
   }
 
+  void _onHorizontalDrag(DragEndDetails details,context) {
+    if (details.primaryVelocity == 0)
+      // user have just tapped on screen (no dragging)
+      return;
+
+    if (details.primaryVelocity.compareTo(0) == -1) {
+//      dispose();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+      );
+
+
+    }
+    else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CameraScreen()),
+      );
+//      Navigator.push(
+//          context,
+//          MaterialPageRoute(
+//              builder: (BuildContext context) => HomePage())).then((res) {
+//        setState(() {
+//          cameraon = true;
+//        });
+//      }
+//      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: _cameraPreviewWidget(),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: 120,
-                  width: double.infinity,
-                  padding: EdgeInsets.all(15),
-                  color: Colors.black,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      _cameraToggleRowWidget(),
-                      _cameraControlWidget(context),
-                      Spacer()
-                    ],
-                  ),
+    return GestureDetector(
+      onHorizontalDragEnd: (DragEndDetails details) =>
+          _onHorizontalDrag(details,context),
+      child: Scaffold(
+        body: Container(
+          child: SafeArea(
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: _cameraPreviewWidget(),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 120,
+                        width: double.infinity,
+                        padding: EdgeInsets.all(15),
+                        color: Colors.black,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            _cameraToggleRowWidget(),
+                            _cameraControlWidget(context),
+                            Spacer()
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -126,16 +172,28 @@ class _CameraScreenState extends State {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            FloatingActionButton(
-              child: Icon(
-                Icons.camera,
-                color: Colors.black,
-              ),
-              backgroundColor: Colors.white,
-              onPressed: () {
-                _onCapturePressed(context);
-              },
+
+                Container(
+                    width: 100.0,
+                    height: 200.0,
+                    child: new RawMaterialButton(
+                      shape: new CircleBorder(
+                        side: BorderSide(
+                          width: 5.0,
+                          color: Colors.white
+                        )
+                      ),
+                      elevation: 2.0,
+                      child: Icon(
+                        FontAwesomeIcons.camera,
+                        color: Colors.white,
+                      ),
+                      onPressed: (){
+                        _onCapturePressed(context);
+                      },
+                    ),
             )
+
           ],
         ),
       ),
@@ -159,10 +217,12 @@ class _CameraScreenState extends State {
           icon: Icon(
             _getCameraLensIcon(lensDirection),
             color: Colors.white,
-            size: 24,
+            size: 44,
           ),
           label: Text(
-              '${lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1).toUpperCase()}',
+              ''
+//                  '${lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1).toUpperCase()}'
+                  '',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w500

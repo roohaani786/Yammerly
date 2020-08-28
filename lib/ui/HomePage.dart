@@ -102,61 +102,32 @@ class _HomePageState extends State<HomePage> {
       onWillPop: () async => false,
       child: GestureDetector(
         child: Scaffold(
-          appBar: (hideappbar == true) ? PreferredSize(
-            child: Container(),
-            preferredSize: Size(0.0, 0.0),
-          ) : AppBar(
-
-            backgroundColor: Colors.white,
-            //  backgroundColor: Colors.white,
-            automaticallyImplyLeading: false,
-
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 160.0),
-                child: Row(
-                  children: [
-
-//                    IconButton(
-//                      icon: Icon(
-//                        FontAwesomeIcons.camera,
-//                        color: Colors.deepPurple,
-//                      ),
-//                      onPressed: () {
-//                        Navigator.push(
-//                          context,
-//                          MaterialPageRoute(
-//                              builder: (context) => CameraExampleHome(cameras)),
-//                        );
-//                      },
-//                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.search,
-                        color: Colors.deepPurple,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SearchListExample()),
-                        );
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 6.0),
-                      child: Text(
+          appBar: AppBar(
+            title: Text(
                         'Hashtag',
                         style: TextStyle(
                             color: Colors.deepPurple,
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold),
                       ),
-                    ),
 
-                  ],
-                ),
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Colors.deepPurple,
               ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SearchListExample()),
+                );
+              },
+            ),
+
+              actions: <Widget>[
+
               IconButton(
                 icon: Icon(
                   Icons.message,
@@ -172,6 +143,7 @@ class _HomePageState extends State<HomePage> {
 
             ],
           ),
+//
           body: ResponsiveLayoutBuilder(
               builder: (context, size) => new TabLayoutDemo(initialindexg)),
         ),
