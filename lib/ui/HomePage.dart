@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async => true,
       child: GestureDetector(
         child: Scaffold(
           appBar: AppBar(

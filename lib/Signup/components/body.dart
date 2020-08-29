@@ -103,7 +103,7 @@ class _BodyState extends State<Body> {
   void onGoogleSignIn(BuildContext context) async {
     FirebaseUser user = await authService.hellogoogleSignIn();
     print(user);
-    var userSignedIn = await Navigator.push(
+    var userSignedIn = await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
           builder: (context) =>
