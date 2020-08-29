@@ -100,6 +100,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
+      onTap: () => Navigator.of(context).pop(true),
       child: Scaffold(
         key: _scaffoldKey,
         body: new Column(

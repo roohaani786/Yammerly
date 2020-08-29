@@ -123,6 +123,8 @@ class _ChatsPageState extends State<ChatsPage> {
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
 
+      onTap: () => Navigator.of(context).pop(true),
+
 //      onHorizontalDragUpdate: (details){
 //        print(details.primaryDelta);
 //        if(details.primaryDelta >0){
