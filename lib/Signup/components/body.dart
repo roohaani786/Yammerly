@@ -103,14 +103,10 @@ class _BodyState extends State<Body> {
   void onGoogleSignIn(BuildContext context) async {
     FirebaseUser user = await authService.hellogoogleSignIn();
     print(user);
-    var userSignedIn = await Navigator.pushReplacement(
+    var userSignedIn = await Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(
-          builder: (context) =>
-              HomePage(
-
-//                 _googleSignIn
-              )),
+      MaterialPageRoute(builder: (context) => HomePage()),
+          (Route<dynamic> route) => false,
     );
 
     setState(() {
@@ -267,14 +263,10 @@ class _BodyState extends State<Body> {
         assert(await user.user.getIdToken() != null);
         currentUser = await auth.currentUser();
         assert(user.user.uid == currentUser.uid);
-        Navigator.push(
+        Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  HomePage(
-                    title: "huhu",
-                    uid: "h",
-                  )),
+          MaterialPageRoute(builder: (context) => HomePage()),
+              (Route<dynamic> route) => false,
         );
         return currentUser;
 
@@ -336,11 +328,11 @@ class _BodyState extends State<Body> {
               {
 
 
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomePage(uid: "hh",)),
-                        (_) => false),
+              Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+              (Route<dynamic> route) => false,
+              ),
                 firstNameInputController.clear(),
                 lastNameInputController.clear(),
                 phoneNumberController.clear(),

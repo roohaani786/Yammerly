@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () => Navigator.of(context).pop(true),
+      onTap: () => Navigator.of(context).pop(HomePage()),
           child: Scaffold(
             appBar: AppBar(
               title: Text(
@@ -210,7 +210,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
     // TODO: implement build
 
     return GestureDetector(
-      onTap: () => Navigator.of(context).pop(true),
+      onTap: () => Navigator.of(context).pop(HomePage()),
       child: Scaffold(
         body: DefaultTabController(
           length: 5,

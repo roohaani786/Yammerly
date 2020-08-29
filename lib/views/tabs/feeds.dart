@@ -52,6 +52,7 @@ class _HomePageState extends State<FeedsPage> {
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
+      onTap: () => Navigator.of(context).pop(HomePage()),
 
       child: Scaffold(
         body: Container(
