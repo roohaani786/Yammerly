@@ -1,25 +1,38 @@
 
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
+import 'package:techstagram/models/user.dart';
+//import 'package:techstagram/modell/global.dart';
+import 'package:techstagram/resources/uploadimage.dart';
 
 class PreviewScreen extends StatefulWidget{
   final String imgPath;
+  final User userData;
 
-  PreviewScreen({this.imgPath});
+  PreviewScreen({this.imgPath,this.userData});
 
   @override
   _PreviewScreenState createState() => _PreviewScreenState();
 
 }
 class _PreviewScreenState extends State<PreviewScreen>{
+
+
+
+  void _startProcess() async {
+    File imageFile = File(widget.imgPath);
+  }
   @override
+
   Widget build(BuildContext context) {
+    User userData;
+    File imageFile = File(widget.imgPath);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -39,13 +52,28 @@ class _PreviewScreenState extends State<PreviewScreen>{
                 height: 60.0,
                 color: Colors.black,
                 child: Center(
-                  child: IconButton(
-                    icon: Icon(Icons.share,color: Colors.white,),
-                    onPressed: (){
-                      getBytesFromFile().then((bytes){
-                        Share.file('Share via', basename(widget.imgPath), bytes.buffer.asUint8List(),'image/path');
-                      });
-                    },
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.share,color: Colors.white,),
+                        onPressed: (){
+                          getBytesFromFile().then((bytes){
+                            Share.file('Share via', basename(widget.imgPath), bytes.buffer.asUint8List(),'image/path');
+                          });
+                        },
+                      ),
+
+                      IconButton(
+                        icon: Icon(Icons.add_circle,color: Colors.white,),
+                        onPressed: (){
+//                          _startProcess();
+//                          File imageFile = File(widget.imgPath);
+                           Navigator.push(
+                              context,
+                           MaterialPageRoute(builder: (context) => UploadImage(file: imageFile,userData: userData,)),
+                           );
+                          }),
+                    ],
                   ),
                 ),
               ),
