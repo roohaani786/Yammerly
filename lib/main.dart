@@ -1,6 +1,7 @@
 import 'package:catcher/catcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/pages/intro_page.dart';
@@ -11,7 +12,17 @@ import 'package:techstagram/ui/fblogin.dart';
 
 import 'Signup/signup_screen.dart';
 
-void main() => runApp(MyApp());
+int initScreen;
+int initialindexg;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  initScreen = await prefs.getInt("initScreen");
+  await prefs.setInt("initScreen", 1);
+  print('initScreen ${initScreen}');
+  runApp(MyApp());
+}
 
 //Main entry-point class
 
@@ -60,10 +71,31 @@ class MyAppState extends State<MyApp> {
             if (snapshot.hasData) {
               return HomePage();
             } else {
-              return IntroPage();
+              return Check();
             }
           },
         )
     );
   }
+}
+
+class Check extends StatefulWidget {
+  @override
+  CheckState createState() => new CheckState();
+}
+
+class CheckState extends State<Check> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    if (initScreen == 0 || initScreen == null) {
+      return IntroPage();
+    }
+    else {
+      return WelcomeScreen();
+    }
+  }
+
+
 }

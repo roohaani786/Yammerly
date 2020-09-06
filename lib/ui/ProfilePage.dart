@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/models/user.dart';
+import 'package:techstagram/resources/auth.dart';
+import 'package:techstagram/ui/messagingsystem.dart';
 
+import 'HomePage.dart';
 import 'ProfileEdit.dart';
 
 class AccountBottomIconScreen extends StatefulWidget {
@@ -25,12 +28,36 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
+      displaynameController,
       phoneNumberController;
+
+  Map<String, dynamic> _profile;
+  bool _loading = false;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _onHorizontalDrag(DragEndDetails details) {
+    if (details.primaryVelocity == 0)
+      // user have just tapped on screen (no dragging)
+      return;
+
+    if (details.primaryVelocity.compareTo(0) == -1) {
+//      dispose();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ConversationPage()),
+      );
+    }
+    else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -39,8 +66,14 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     emailController = TextEditingController();
     phoneNumberController = TextEditingController();
     super.initState();
+    // Subscriptions are created here
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+
     fetchProfileData();
   }
+
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -64,15 +97,20 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: new Column(
-        children: <Widget>[
-          _appBar(),
-          _profile(),
-          _centerButtons(),
-          _displayImages()
-        ],
+    return GestureDetector(
+      onHorizontalDragEnd: (DragEndDetails details) =>
+          _onHorizontalDrag(details),
+      onTap: () => Navigator.of(context).pop(true),
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: new Column(
+          children: <Widget>[
+            _appBar(),
+            _profilex(),
+            _centerButtons(),
+            _displayImages()
+          ],
+        ),
       ),
     );
   }
@@ -89,7 +127,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
               new Padding(
                 padding: new EdgeInsets.only(left: 10.0),
                 child: new Text(
-                  firstNameController.text,
+                  emailController.text,
                   style: new TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -203,7 +241,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     );
   }
 
-  Widget _profile() {
+  Widget _profilex() {
     return new Container(
       height: 150.0,
       margin: new EdgeInsets.only(top: 5.0),

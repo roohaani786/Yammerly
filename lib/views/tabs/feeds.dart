@@ -4,6 +4,7 @@ import 'package:techstagram/modell/comment.dart';
 import 'package:techstagram/modell/global.dart';
 import 'package:techstagram/modell/post.dart';
 import 'package:techstagram/modell/user.dart';
+import 'package:techstagram/ui/HomePage.dart';
 
 //import 'package:instagram/main.dart';
 //import 'package:instagram/models/appbar.dart';
@@ -17,6 +18,26 @@ class _HomePageState extends State<FeedsPage> {
   static int page = 1;
   static Post the_post = post1;
 
+  void _onHorizontalDrag(DragEndDetails details) {
+    if (details.primaryVelocity == 0)
+      // user have just tapped on screen (no dragging)
+      return;
+
+    if (details.primaryVelocity.compareTo(0) == -1) {
+//      dispose();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
+      );
+    }
+    else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<int, Widget> pageview = {
@@ -28,37 +49,43 @@ class _HomePageState extends State<FeedsPage> {
   }
 
   Widget getMain() {
-    return Scaffold(
-      body: Container(
-          child: ListView(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Container(
-                height: 50.0,
-                width: 100.0,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Hash Feed",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'Cookie-Regular',
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )),
-          ),
-          Column(
-            children: <Widget>[
-              Column(
-                children: getPosts(context),
-              )
-            ],
-          )
-        ],
-      )),
+    return GestureDetector(
+      onHorizontalDragEnd: (DragEndDetails details) =>
+          _onHorizontalDrag(details),
+      onTap: () => Navigator.of(context).pop(HomePage()),
+
+      child: Scaffold(
+        body: Container(
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Container(
+                      height: 50.0,
+                      width: 100.0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Hash Feed",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'Cookie-Regular',
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )),
+                ),
+                Column(
+                  children: <Widget>[
+                    Column(
+                      children: getPosts(context),
+                    )
+                  ],
+                )
+              ],
+            )),
+      ),
     );
   }
 

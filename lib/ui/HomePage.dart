@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
+import 'package:techstagram/camera/camera_screen.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
-import 'package:techstagram/resources/opencamera.dart';
+//import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
+
+//import '../resources/opencamera.dart';
 import 'messagingsystem.dart';
 
 
@@ -18,16 +21,19 @@ class HomePage extends StatefulWidget {
   HomePage({
     Key key,
     this.title = "Hashtag",
-    this.uid,
+    this.uid, @required this.initialindexg,
   }) : super(key: key); //update this to include the uid in the constructor
   final String title;
   final String uid;
+  int initialindexg = 2;
   FirebaseUser user;
+
 
   //include this
 
   GoogleSignIn _googleSignIn;
   FirebaseUser _user;
+
 
   Body(FirebaseUser user, GoogleSignIn signIn) {
     _user = user;
@@ -35,7 +41,7 @@ class HomePage extends StatefulWidget {
   }
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(initialindexg);
 }
 
 class _HomePageState extends State<HomePage> {
@@ -44,6 +50,12 @@ class _HomePageState extends State<HomePage> {
   FirebaseUser currentUser;
   FirebaseProvider firebaseProvider;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  _HomePageState(this.initialindexg);
+
+  int initialindexg;
+
+
 
   @override
   initState() {
@@ -64,173 +76,237 @@ class _HomePageState extends State<HomePage> {
     await _firebaseAuth.signOut();
   }
 
-  static const Map<LayoutSize, String> layoutSizeEnumToString = {
-    LayoutSize.watch: 'Wristwatch',
-    LayoutSize.mobile: 'Mobile',
-    LayoutSize.tablet: 'Tablet',
-    LayoutSize.desktop: 'Desktop',
-    LayoutSize.tv: 'TV',
-  };
-  static const Map<MobileLayoutSize, String> mobileLayoutSizeEnumToString = {
-    MobileLayoutSize.small: 'Small',
-    MobileLayoutSize.medium: 'Medium',
-    MobileLayoutSize.large: 'Large',
-  };
-  static const Map<TabletLayoutSize, String> tabletLayoutSizeEnumToString = {
-    TabletLayoutSize.small: 'Small',
-    TabletLayoutSize.large: 'Large',
-  };
+  List<CameraDescription> cameras = [];
 
 
-  Future<void> _opencamera() async {
-    // Fetch the available cameras before initializing the app.
-    try {
-      WidgetsFlutterBinding.ensureInitialized();
-      cameras = await availableCameras();
-    } on CameraException catch (e) {
-      logError(e.code, e.description);
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CameraApp()),
-    );
+  DateTime currentBackPressTime;
+
+  Future<bool> onWillPop() {
+    return showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit an App'),
+        actions: <Widget>[
+          new GestureDetector(
+            onTap: () => Navigator.of(context).pop(false),
+            child: Text("NO"),
+          ),
+          SizedBox(height: 16),
+          new GestureDetector(
+            onTap: () => Navigator.of(context).pop(true),
+            child: Text("YES"),
+          ),
+        ],
+      ),
+    ) ??
+        false;
   }
 
-  List<CameraDescription> cameras = [];
+
 
   @override
   Widget build(BuildContext context) {
-    return new WillPopScope(
-      onWillPop: () async => false,
-      child: GestureDetector(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Padding(
-              padding: const EdgeInsets.only(left: 200.0),
-              child: Text("techstagram",
-                  style: TextStyle(color: Colors.deepPurple)),
-            ),
-            backgroundColor: Colors.white,
-            //  backgroundColor: Colors.white,
-            leading: IconButton(
-              icon: Icon(
-                Icons.search,
-                color: Colors.deepPurple,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SearchListExample()),
-                );
-              },
-            ),
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(HomePage()),
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                          'Hashtag',
+                          style: TextStyle(
+                              color: Colors.deepPurple,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold),
+                        ),
 
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 180.0, top: 15.0),
-                child: Text(
-                  'Hashtag',
-                  style: TextStyle(
-                      color: Colors.deepPurple,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              IconButton(
+              backgroundColor: Colors.white,
+              leading: IconButton(
                 icon: Icon(
-                  Icons.message,
+                  Icons.search,
                   color: Colors.deepPurple,
                 ),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ConversationPage()),
+                    MaterialPageRoute(
+                        builder: (context) => SearchListExample()),
                   );
                 },
               ),
-            ],
+
+                actions: <Widget>[
+
+                IconButton(
+                  icon: Icon(
+                    Icons.message,
+                    color: Colors.deepPurple,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ConversationPage()),
+                    );
+                  },
+                ),
+
+              ],
+            ),
+//
+            body: ResponsiveLayoutBuilder(
+                  builder: (context, size) => new TabLayoutDemo(initialindexg)),
+
           ),
-          body: ResponsiveLayoutBuilder(
-              builder: (context, size) => new TabLayoutDemo()),
-        ),
-      ),
-    );
+        );
   }
+
+
 }
 
-class TabLayoutDemo extends StatelessWidget {
+List<CameraDescription> cameras = [];
+
+class TabLayoutDemo extends StatefulWidget {
+  TabLayoutDemo(this.initialindexg);
+
+  int initialindexg;
+  @override
+  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg);
+}
+
+bool hideappbar = false;
+bool hidebottombar = false;
+
+class _TabLayoutDemoState extends State<TabLayoutDemo> {
+  _TabLayoutDemoState(this.initialindexg);
+
+  int initialindexg;
+
+
+
+  Future<bool> onWillPop() {
+
+    return showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit an App'),
+        actions: <Widget>[
+          new GestureDetector(
+            onTap: () => Navigator.of(context).pop(false),
+            child: Text("NO"),
+          ),
+          SizedBox(height: 16),
+          new GestureDetector(
+            onTap: () => Navigator.of(context).pop(true),
+            child: Text("YES"),
+          ),
+        ],
+      ),
+    ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return Scaffold(
-      body: DefaultTabController(
-        length: 5,
-        initialIndex: 2,
-        child: new Scaffold(
-          body: TabBarView(
-            children: [
-              FlatButton(
-                  onPressed: _opencameras(),
-                  child: new Container(
-                      child: CameraApp())),
-              new Container(
-                child: ChatsPage(),
-              ),
-              new Container(
-                child: FeedsPage(),
-              ),
-              new Container(
-                child: NotificationsPage(),
-              ),
-              new Container(child: AccountBottomIconScreen()),
-            ],
-          ),
-          bottomNavigationBar: new Container(
-            height: 60.0,
-            child: new TabBar(
-              tabs: [
-                Tab(
-                  icon: new Icon(FontAwesomeIcons.camera, size: 25),
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(HomePage()),
+      child: Scaffold(
+        body: DefaultTabController(
+          length: 5,
+          initialIndex: (initialindexg == null) ? 2 : initialindexg,
+
+          child: new Scaffold(
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                        builder: (context) => CameraScreen(),
+                      ),
+                    );
+                    setState(() {
+                      hidebottombar = true;
+                      hideappbar = true;
+                    });
+                  },
+                  //child: CameraExampleHome(cameras),
                 ),
-                Tab(
-                  icon: new Icon(Icons.blur_circular, size: 30),
+
+
+                new Container(
+                  child: ChatsPage(),
                 ),
-                Tab(
-                  icon: new Icon(Icons.home, size: 30),
+                new Container(
+                  child: FeedsPage(),
                 ),
-                Tab(
-                  icon: new Icon(Icons.notifications, size: 30),
+                new Container(
+                  child: NotificationsPage(),
                 ),
-                Tab(
-                  icon: new Icon(Icons.account_circle, size: 30),
-                )
+                new Container(child: AccountBottomIconScreen()),
               ],
-              labelColor: Colors.purple,
-              unselectedLabelColor: Colors.deepPurple,
-              indicatorSize: TabBarIndicatorSize.label,
-              indicatorPadding: EdgeInsets.all(5.0),
-              indicatorWeight: 3.0,
-              indicatorColor: Colors.deepPurple,
             ),
+            bottomNavigationBar: (hidebottombar == true) ? PreferredSize(
+              child: Container(),
+              preferredSize: Size(0.0, 0.0),
+            ) : new Container(
+              height: 60.0,
+              child: new TabBar(
+                tabs: [
+
+                  Tab(
+                    icon: IconButton(
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(
+                              builder: (context) => CameraScreen(),
+                            ),
+                          );
+                        },
+
+                        icon: new Icon(FontAwesomeIcons.camera, size: 30)),
+                  ),
+                  Tab(
+                    icon: new Icon(Icons.blur_circular, size: 30),
+                  ),
+                  Tab(
+                    icon: new Icon(Icons.home, size: 30),
+                  ),
+                  Tab(
+                    icon: new Icon(Icons.notifications, size: 30),
+                  ),
+                  Tab(
+                    icon: new Icon(Icons.account_circle, size: 30),
+                  )
+                ],
+                labelColor: Colors.purple,
+                unselectedLabelColor: Colors.deepPurple,
+                indicatorSize: TabBarIndicatorSize.label,
+                indicatorPadding: EdgeInsets.all(5.0),
+                indicatorWeight: 3.0,
+                indicatorColor: Colors.deepPurple,
+              ),
+            ),
+            backgroundColor: Colors.white,
           ),
-          backgroundColor: Colors.white,
         ),
       ),
     );
   }
 
-  _opencameras() {
-    Future<void> _opencamera() async {
-      // Fetch the available cameras before initializing the app.
-      try {
-        WidgetsFlutterBinding.ensureInitialized();
-        cameras = await availableCameras();
-      } on CameraException catch (e) {
-        logError(e.code, e.description);
-      }
-    }
-  }
+//  Future<void> _opencamera() async {
+//    // Fetch the available cameras before initializing the app.
+//    try {
+//      WidgetsFlutterBinding.ensureInitialized();
+//      cameras = await availableCameras();
+//    } on CameraException catch (e) {
+//      logError(e.code, e.description);
+//    }
+//    return CameraExampleHome(cameras);
+//  }
 }
 
 class SearchListExample extends StatefulWidget {

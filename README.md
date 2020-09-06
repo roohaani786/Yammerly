@@ -1,6 +1,6 @@
-# techstagram
+# hashtag
 
-A new Flutter application.
+A new young oriented social application aiming to target young audience by means of different new and unique features.
 
 ## Getting Started
 

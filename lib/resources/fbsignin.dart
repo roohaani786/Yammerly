@@ -15,6 +15,7 @@ class _FbLoginPageState extends State<FbLoginPage> {
   bool isFacebookLoginIn = false;
   String errorMessage = '';
   String successMessage = '';
+  int initialindexg;
 
   @override
   Widget build(BuildContext context) {

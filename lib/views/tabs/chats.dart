@@ -1,7 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:techstagram/resources/opencamera.dart';
+import 'package:techstagram/camera/camera_screen.dart';
+//import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
 class ChatsPage extends StatefulWidget {
@@ -23,37 +24,45 @@ class _ChatsPageState extends State<ChatsPage> {
       return;
 
     if (details.primaryVelocity.compareTo(0) == -1) {
-      dispose();
-      HomePage();
+//      dispose();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2)),
+      );
+
+
     }
     else {
-      _opencamera();
-      cameraon = false;
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => HomePage())).then((res) {
-        setState(() {
-          cameraon = true;
-        });
-      }
+        context,
+        MaterialPageRoute(builder: (context) => CameraScreen()),
       );
+      cameraon = false;
+//      Navigator.push(
+//          context,
+//          MaterialPageRoute(
+//              builder: (BuildContext context) => HomePage())).then((res) {
+//        setState(() {
+//          cameraon = true;
+//        });
+//      }
+//      );
     }
   }
 
-  Future<void> _opencamera() async {
-    // Fetch the available cameras before initializing the app.
-    try {
-      WidgetsFlutterBinding.ensureInitialized();
-      cameras = await availableCameras();
-    } on CameraException catch (e) {
-      logError(e.code, e.description);
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CameraApp()),
-    );
-  }
+//  Future<void> _opencamera() async {
+//    // Fetch the available cameras before initializing the app.
+//    try {
+//      WidgetsFlutterBinding.ensureInitialized();
+//      cameras = await availableCameras();
+//    } on CameraException catch (e) {
+//      logError(e.code, e.description);
+//    }
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => CameraExampleHome(cameras)),
+//    );
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,38 +117,28 @@ class _ChatsPageState extends State<ChatsPage> {
       ),
     );
 
-//    final listOfOnlineUsers = Container(
-//      height: 100.0,
-//      child: ListView(
-//        scrollDirection: Axis.horizontal,
-//        children: users.map((user) => _buildUserCard(user, context)).toList(),
-//      ),
-//    );
 
-//    final onlineUsers = Container(
-//      margin: EdgeInsets.only(top: 20.0),
-//      child: Column(
-//        crossAxisAlignment: CrossAxisAlignment.start,
-//        children: <Widget>[
-//          onlineUsersHeading,
-//          SizedBox(
-//            height: 10.0,
-//          ),
-//          listOfOnlineUsers
-//        ],
-//      ),
-//    );
-
-//    final chatList = Container(
-//      height: 500.0,
-//      child: ListView(
-//        children: chats.map((chat) => _buildChatTile(chat, context)).toList(),
-//      ),
-//    );
 
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
+
+      onTap: () => Navigator.of(context).pop(true),
+
+//      onHorizontalDragUpdate: (details){
+//        print(details.primaryDelta);
+//        if(details.primaryDelta >0){
+//          ChatsPage();
+//        }
+//        else if (details.primaryDelta <0){
+//          CameraExampleHome(cameras);
+//        }
+//        else{
+//          print("error");
+//        }
+//
+//      }
+
       child: Scaffold(
           body: SingleChildScrollView(
             child: Container(child: Text("Pending implementation")),
