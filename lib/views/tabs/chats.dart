@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:techstagram/camera/camera_screen.dart';
+import 'package:techstagram/ComeraV/cam.dart';
 //import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
@@ -35,7 +35,7 @@ class _ChatsPageState extends State<ChatsPage> {
     else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => CameraScreen()),
+        MaterialPageRoute(builder: (context) => Camera()),
       );
       cameraon = false;
 //      Navigator.push(

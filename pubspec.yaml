@@ -56,7 +56,6 @@ dependencies:
   image_cropper:
   velocity_x:
   oauth1:
-  video_player:
   firebase_core_web:
   location_web:
   cloud_firestore_web:
@@ -64,6 +63,12 @@ dependencies:
   responsive_framework:
   responsive_layout_builder:
   esys_flutter_share: ^1.0.2
+  video_player: ^0.10.2+5
+  thumbnails:
+      git:
+        url: https://github.com/divyanshub024/Flutter_Thumbnails.git
+  torch_compat: ^1.0.2
+  lamp: ^0.0.6
 
 dev_dependencies:
   flutter_test:
@@ -97,24 +102,75 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-    - assets/insta_logo.png
-    - assets/google_icon.jpg
-    - assets/no_image.png
     - assets/blankimage.png
-    - assets/flash.png
     - assets/cod.png
-    - assets/sd.png
-    - assets/google-logo.png
     - assets/fb-logo.png
-    - assets/twitter-logo.png
+    - assets/flash.png
+    - assets/flashapp.png
     - assets/flashu.png
-    - assets/phone-icon.png
-    - assets/insta_logo.png
-    - assets/images/
-    - assets/icons/
+    - assets/fonts/Barlow-Bold.ttf
+    - assets/fonts/Barlow-Regular.ttf
+    - assets/fonts/Barlow-SemiBold.ttf
+    - assets/fonts/Cookie-Regular.ttf
+    - assets/fonts/Pacifico-Regular.ttf
+    - assets/fonts/Quicksand-Bold.ttf
+    - assets/fonts/Quicksand-Medium.ttf
+    - assets/fonts/Quicksand-Regular.ttf
+    - assets/fonts/Quicksand-SemiBold.ttf
+    - assets/google-logo.png
+    - assets/google_icon.jpg
+    - assets/icons/chat.svg
+    - assets/icons/facebook.svg
     - assets/icons/google-icon.svg
-
-
+    - assets/icons/google-plus.svg
+    - assets/icons/instagram.svg
+    - assets/icons/login.svg
+    - assets/icons/signup.svg
+    - assets/icons/twitter.svg
+    - assets/images/1.jpg
+    - assets/images/2.jpg
+    - assets/images/3.jpg
+    - assets/images/empty.png
+    - assets/images/follower2.jpg
+    - assets/images/follower3.jpeg
+    - assets/images/home_page.png
+    - assets/images/login_bottom.png
+    - assets/images/logo.png
+    - assets/images/main_bottom.png
+    - assets/images/main_top.png
+    - assets/images/man1.jpg
+    - assets/images/man2.jpg
+    - assets/images/man3.jpg
+    - assets/images/man4.jpg
+    - assets/images/man5.jpg
+    - assets/images/my_profile.jpg
+    - assets/images/photo4.jpg
+    - assets/images/photo5.jpg
+    - assets/images/photo_1.jpeg
+    - assets/images/placeholder.jpg
+    - assets/images/post2.jpg
+    - assets/images/post_banner.jpg
+    - assets/images/profile3.png
+    - assets/images/profile4.png
+    - assets/images/profile6.jpg
+    - assets/images/signup_top.png
+    - assets/images/their_profile.jpeg
+    - assets/images/woman1.jpg
+    - assets/images/woman2.jpg
+    - assets/images/woman3.jpg
+    - assets/images/woman4.jpg
+    - assets/images/woman5.jpg
+    - assets/insta_logo.png
+    - assets/intu
+    - assets/no_image.png
+    - assets/phone-icon.png
+    - assets/pmmodi1.jpg
+    - assets/pmmodi2.jpg
+    - assets/pmmodi3.jpg
+    - assets/sd.png
+    - assets/sj.png
+    - assets/twitter-logo.png
+    - assets/twitter_logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
