@@ -18,12 +18,13 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
 
   bool isLoading = true;
-  bool isEditable = false;
+  bool isEditable = true;
   String loadingMessage = "Loading Profile Data";
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      phoneNumberController;
+      phoneNumberController,
+  bioController;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
@@ -44,6 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
     lastNameController = TextEditingController();
     emailController = TextEditingController();
     phoneNumberController = TextEditingController();
+    bioController = TextEditingController();
     super.initState();
     fetchProfileData();
   }
@@ -65,9 +67,10 @@ class _ProfilePageState extends State<ProfilePage> {
       lastNameController.text = docSnap.data["surname"];
       phoneNumberController.text = docSnap.data["phonenumber"];
       emailController.text = docSnap.data["email"];
+      bioController.text = docSnap.data["bio"];
       setState(() {
         isLoading = false;
-        isEditable = false;
+        isEditable = true;
       });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
@@ -77,6 +80,102 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text("Edit Profile"),
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.close,
+          color: Colors.redAccent,),
+        ),
+        actions: [
+          IconButton(
+          onPressed: () async {
+    if (!isEditable)
+    setState(() => isEditable = true);
+    else {
+    bool isChanged = false;
+    if (docSnap.data["fname"].toString().trim() !=
+    firstNameController.text.trim()) {
+    print("First Name Changed");
+    isChanged = true;
+    } else if (docSnap.data["surname"].toString().trim() !=
+    lastNameController.text.trim()) {
+    print("Last Name Changed");
+    isChanged = true;
+    } else if (docSnap.data["email"].toString().trim() !=
+    emailController.text.trim()) {
+    print("Email Changed");
+    isChanged = true;
+    } else if (docSnap.data["phonenumber"].toString().trim() !=
+    phoneNumberController.text.trim()) {
+    print("Phone Number Changed");
+    isChanged = true;
+    } else if (docSnap.data["bio"].toString().trim() !=
+        bioController.text.trim()) {
+      print("Phone Number Changed");
+      isChanged = true;
+    }
+
+    if (isChanged) {
+    String snackbarContent = "";
+    setState(() => isLoading = true);
+    try {
+    Map<String, dynamic> data = {};
+    data["fname"] = firstNameController.text.trim();
+    data["surname"] = lastNameController.text.trim();
+    data["phonenumber"] = phoneNumberController.text.trim();
+    data["email"] = emailController.text.trim();
+    data["bio"] = bioController.text.trim();
+    Firestore.instance
+        .collection("users")
+        .document(currUser.uid)
+        .setData(data, merge: true);
+    snackbarContent = "Profile Updated";
+    if(snackbarContent == "Profile Updated"){
+
+      Navigator.pushNamed(context, '/Profile');
+    }
+    try {
+    await currUser.updateEmail(data["email"]);
+    snackbarContent =
+    snackbarContent + ". Login Email Also Updated";
+    } on PlatformException catch (e) {
+    print(
+    "AUTHEXCEPTION. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
+    e.message.toString());
+    snackbarContent = snackbarContent +
+    ". Login Email Not Changed (As Not Recently Logged In)";
+    } catch (e) {
+    print("ERROR. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
+    e.toString());
+    snackbarContent = snackbarContent +
+    ". Login Email Not Changed (As Not Recently Logged In)";
+    }
+    fetchProfileData();
+    } on PlatformException catch (e) {
+    print("PlatformException in fetching user profile. E  = " +
+    e.message);
+    snackbarContent = "Failed To Update Profile";
+    }
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+    content: Text(snackbarContent),
+    duration: Duration(milliseconds: 3000),
+    behavior: SnackBarBehavior.floating,
+    ));
+    } else {
+    setState(() => isEditable = false);
+    }
+    }
+
+    }
+            ,icon: Icon(Icons.done,
+            color: Colors.deepPurple,),
+          ),
+        ],
+      ),
       key: _scaffoldKey,
       backgroundColor: Colors.white,
 //      appBar: AppBar(
@@ -99,11 +198,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(
                     height: 8,
                   ),
-                  Text(loadingMessage)
+                  Text(loadingMessage,
+                  style: TextStyle(
+                    color: Colors.deepPurple,
+                  ),)
                 ],
               ))
             : SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 4),
+                padding: EdgeInsets.symmetric(horizontal: 4,vertical: 8),
                 child: Column(
                   children: [
                     Text(
@@ -140,6 +242,22 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(
                       height: 16,
                     ),
+
+                    TextFormField(
+                      controller: bioController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                          labelText: "Bio",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
                     TextFormField(
                       controller: emailController,
                       enabled: isEditable,
@@ -169,93 +287,84 @@ class _ProfilePageState extends State<ProfilePage> {
                               borderSide:
                                   BorderSide(color: Colors.black, width: 1))),
                     ),
-                    RaisedButton(
-                      color: Colors.deepPurple,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        "Go back",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
+//
                   ],
                 ),
               ),
       ),
-      floatingActionButton: FloatingActionButton(
-          child:
-              Icon(isEditable ? Icons.check : Icons.edit, color: Colors.white),
-          backgroundColor: Colors.black,
-          onPressed: () async {
-            if (!isEditable)
-              setState(() => isEditable = true);
-            else {
-              bool isChanged = false;
-              if (docSnap.data["fname"].toString().trim() !=
-                  firstNameController.text.trim()) {
-                print("First Name Changed");
-                isChanged = true;
-              } else if (docSnap.data["surname"].toString().trim() !=
-                  lastNameController.text.trim()) {
-                print("Last Name Changed");
-                isChanged = true;
-              } else if (docSnap.data["email"].toString().trim() !=
-                  emailController.text.trim()) {
-                print("Email Changed");
-                isChanged = true;
-              } else if (docSnap.data["phonenumber"].toString().trim() !=
-                  phoneNumberController.text.trim()) {
-                print("Phone Number Changed");
-                isChanged = true;
-              }
-
-              if (isChanged) {
-                String snackbarContent = "";
-                setState(() => isLoading = true);
-                try {
-                  Map<String, dynamic> data = {};
-                  data["fname"] = firstNameController.text.trim();
-                  data["surname"] = lastNameController.text.trim();
-                  data["phonenumber"] = phoneNumberController.text.trim();
-                  data["email"] = emailController.text.trim();
-                  Firestore.instance
-                      .collection("users")
-                      .document(currUser.uid)
-                      .setData(data, merge: true);
-                  snackbarContent = "Profile Updated";
-                  try {
-                    await currUser.updateEmail(data["email"]);
-                    snackbarContent =
-                        snackbarContent + ". Login Email Also Updated";
-                  } on PlatformException catch (e) {
-                    print(
-                        "AUTHEXCEPTION. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
-                            e.message.toString());
-                    snackbarContent = snackbarContent +
-                        ". Login Email Not Changed (As Not Recently Logged In)";
-                  } catch (e) {
-                    print("ERROR. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
-                        e.toString());
-                    snackbarContent = snackbarContent +
-                        ". Login Email Not Changed (As Not Recently Logged In)";
-                  }
-                  fetchProfileData();
-                } on PlatformException catch (e) {
-                  print("PlatformException in fetching user profile. E  = " +
-                      e.message);
-                  snackbarContent = "Failed To Update Profile";
-                }
-                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                  content: Text(snackbarContent),
-                  duration: Duration(milliseconds: 3000),
-                  behavior: SnackBarBehavior.floating,
-                ));
-              } else {
-                setState(() => isEditable = false);
-              }
-            }
-          }),
+//      floatingActionButton: FloatingActionButton(
+//          child:
+//              Icon(isEditable ? Icons.check : Icons.edit, color: Colors.white),
+//          backgroundColor: Colors.black,
+//          onPressed: () async {
+//            if (!isEditable)
+//              setState(() => isEditable = true);
+//            else {
+//              bool isChanged = false;
+//              if (docSnap.data["fname"].toString().trim() !=
+//                  firstNameController.text.trim()) {
+//                print("First Name Changed");
+//                isChanged = true;
+//              } else if (docSnap.data["surname"].toString().trim() !=
+//                  lastNameController.text.trim()) {
+//                print("Last Name Changed");
+//                isChanged = true;
+//              } else if (docSnap.data["email"].toString().trim() !=
+//                  emailController.text.trim()) {
+//                print("Email Changed");
+//                isChanged = true;
+//              } else if (docSnap.data["phonenumber"].toString().trim() !=
+//                  phoneNumberController.text.trim()) {
+//                print("Phone Number Changed");
+//                isChanged = true;
+//              }
+//
+//              if (isChanged) {
+//                String snackbarContent = "";
+//                setState(() => isLoading = true);
+//                try {
+//                  Map<String, dynamic> data = {};
+//                  data["fname"] = firstNameController.text.trim();
+//                  data["surname"] = lastNameController.text.trim();
+//                  data["phonenumber"] = phoneNumberController.text.trim();
+//                  data["email"] = emailController.text.trim();
+//                  Firestore.instance
+//                      .collection("users")
+//                      .document(currUser.uid)
+//                      .setData(data, merge: true);
+//                  snackbarContent = "Profile Updated";
+//                  try {
+//                    await currUser.updateEmail(data["email"]);
+//                    snackbarContent =
+//                        snackbarContent + ". Login Email Also Updated";
+//                  } on PlatformException catch (e) {
+//                    print(
+//                        "AUTHEXCEPTION. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
+//                            e.message.toString());
+//                    snackbarContent = snackbarContent +
+//                        ". Login Email Not Changed (As Not Recently Logged In)";
+//                  } catch (e) {
+//                    print("ERROR. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
+//                        e.toString());
+//                    snackbarContent = snackbarContent +
+//                        ". Login Email Not Changed (As Not Recently Logged In)";
+//                  }
+//                  fetchProfileData();
+//                } on PlatformException catch (e) {
+//                  print("PlatformException in fetching user profile. E  = " +
+//                      e.message);
+//                  snackbarContent = "Failed To Update Profile";
+//                }
+//                _scaffoldKey.currentState.showSnackBar(SnackBar(
+//                  content: Text(snackbarContent),
+//                  duration: Duration(milliseconds: 3000),
+//                  behavior: SnackBarBehavior.floating,
+//                ));
+//              } else {
+//                setState(() => isEditable = false);
+//              }
+//            }
+//          }),
     );
   }
 }
