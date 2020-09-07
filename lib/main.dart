@@ -63,7 +63,7 @@ class MyAppState extends State<MyApp> {
           primaryIconTheme: IconThemeData(color: Colors.black),
           primaryTextTheme: TextTheme(
               headline6: TextStyle(
-                color: Colors.black,)),
+                color: Colors.deepPurple,)),
           textTheme: TextTheme(headline6: TextStyle(
             color: Colors.black,)),
         ),
