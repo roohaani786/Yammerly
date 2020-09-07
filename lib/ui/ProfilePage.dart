@@ -29,7 +29,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       lastNameController,
       emailController,
       displaynameController,
-      phoneNumberController;
+      phoneNumberController,
+  bioController;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -65,6 +66,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     lastNameController = TextEditingController();
     emailController = TextEditingController();
     phoneNumberController = TextEditingController();
+    bioController = TextEditingController();
     super.initState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -86,6 +88,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       lastNameController.text = docSnap.data["surname"];
       phoneNumberController.text = docSnap.data["phonenumber"];
       emailController.text = docSnap.data["email"];
+      bioController.text = docSnap.data["bio"];
       setState(() {
         isLoading = false;
         isEditable = false;

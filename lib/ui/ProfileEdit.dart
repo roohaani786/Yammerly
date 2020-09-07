@@ -23,7 +23,8 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      phoneNumberController;
+      phoneNumberController,
+  bioController;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
@@ -44,6 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
     lastNameController = TextEditingController();
     emailController = TextEditingController();
     phoneNumberController = TextEditingController();
+    bioController = TextEditingController();
     super.initState();
     fetchProfileData();
   }
@@ -65,6 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
       lastNameController.text = docSnap.data["surname"];
       phoneNumberController.text = docSnap.data["phonenumber"];
       emailController.text = docSnap.data["email"];
+      bioController.text = docSnap.data["bio"];
       setState(() {
         isLoading = false;
         isEditable = true;
@@ -110,6 +113,10 @@ class _ProfilePageState extends State<ProfilePage> {
     phoneNumberController.text.trim()) {
     print("Phone Number Changed");
     isChanged = true;
+    } else if (docSnap.data["bio"].toString().trim() !=
+        bioController.text.trim()) {
+      print("Phone Number Changed");
+      isChanged = true;
     }
 
     if (isChanged) {
@@ -121,11 +128,16 @@ class _ProfilePageState extends State<ProfilePage> {
     data["surname"] = lastNameController.text.trim();
     data["phonenumber"] = phoneNumberController.text.trim();
     data["email"] = emailController.text.trim();
+    data["bio"] = bioController.text.trim();
     Firestore.instance
         .collection("users")
         .document(currUser.uid)
         .setData(data, merge: true);
     snackbarContent = "Profile Updated";
+    if(snackbarContent == "Profile Updated"){
+
+      Navigator.pushNamed(context, '/Profile');
+    }
     try {
     await currUser.updateEmail(data["email"]);
     snackbarContent =
@@ -157,6 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() => isEditable = false);
     }
     }
+
     }
             ,icon: Icon(Icons.done,
             color: Colors.deepPurple,),
@@ -225,6 +238,22 @@ class _ProfilePageState extends State<ProfilePage> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
                                   BorderSide(color: Colors.black, width: 1))),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+
+                    TextFormField(
+                      controller: bioController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                          labelText: "Bio",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
                     ),
                     SizedBox(
                       height: 16,
