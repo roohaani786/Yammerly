@@ -69,6 +69,9 @@ dependencies:
         url: https://github.com/divyanshub024/Flutter_Thumbnails.git
   torch_compat: ^1.0.2
   lamp: ^0.0.6
+  firebase_core: ^0.4.0+9
+  provider: ^4.0.5
+  holding_gesture: ^0.0.3
 
 dev_dependencies:
   flutter_test:

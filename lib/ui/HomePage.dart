@@ -407,34 +407,29 @@ class _SearchListExampleState extends State<SearchListExample> {
     return new AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: appBarTitle,
+        title: new TextField(
+          controller: _controller,
+          style: new TextStyle(
+            color: Colors.deepPurple,
+          ),
+          decoration: new InputDecoration(
+              // prefixIcon:
+              // new Icon(Icons.search, color: Colors.deepPurple),
+              hintText: "Search...",
+              hintStyle: new TextStyle(color: Colors.white)),
+          onChanged: searchOperation,
+        ),
         actions: <Widget>[
           new IconButton(
             icon: icon,
             onPressed: () {
               setState(() {
-                if (this.icon.icon == Icons.search) {
-                  this.icon = new Icon(
-                    Icons.close,
-                    color: Colors.black,
-                  );
-                  this.appBarTitle = new TextField(
-                    controller: _controller,
-                    style: new TextStyle(
-                      color: Colors.deepPurple,
-                    ),
-                    decoration: new InputDecoration(
-                        prefixIcon:
-                        new Icon(Icons.search, color: Colors.deepPurple),
-                        hintText: "Search...",
-                        hintStyle: new TextStyle(color: Colors.white)),
-                    onChanged: searchOperation,
-                  );
-                  _handleSearchStart();
-                } else {
-                  _handleSearchEnd();
-                }
+                _isSearching = true;
               });
+                //  else {
+                //   _handleSearchEnd();
+                // }
+
             },
           ),
         ]);

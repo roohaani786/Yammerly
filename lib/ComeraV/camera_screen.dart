@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:thumbnails/thumbnails.dart';
 import 'package:lamp/lamp.dart';
+import 'package:holding_gesture/holding_gesture.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key key}) : super(key: key);
@@ -26,12 +27,21 @@ class CameraScreenState extends State<CameraScreen>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isRecordingMode = false;
   bool _isRecording = false;
+  bool _isButtonPressed = false;
   final _timerKey = GlobalKey<VideoTimerState>();
+  bool _hasFlash = false;
 
   @override
   void initState() {
     _initCamera();
     super.initState();
+    initPlatformState();
+  }
+
+  initPlatformState() async {
+    bool hasFlash = await Lamp.hasLamp;
+    print("Device has flash ? $hasFlash");
+    setState(() { _hasFlash = hasFlash; });
   }
 
   Future<void> _initCamera() async {
@@ -109,6 +119,15 @@ class CameraScreenState extends State<CameraScreen>
         onHorizontalDragEnd: (DragEndDetails details) =>
             _onHorizontalDrag(details,context),
       child: Scaffold(
+        floatingActionButton: HoldDetector(
+          onHold: startVideoRecording,
+          holdTimeout: Duration(milliseconds: 200),
+          enableHapticFeedback: true,
+          child: FloatingActionButton(
+            child: Icon(Icons.camera),
+            onPressed: _captureImage,
+          ),
+        ),
         backgroundColor: Theme.of(context).backgroundColor,
         key: _scaffoldKey,
         extendBody: true,
@@ -137,16 +156,18 @@ class CameraScreenState extends State<CameraScreen>
                 color: Colors.white,
               ),
               onPressed: () {
-                setState(() {
-                  flashOn = !flashOn;
-                });
-                if (!flashOn) {
-                  //Lamp.turnOff();
-                  TorchCompat.turnOff();
-                } else {
-                  TorchCompat.turnOn();
-                  //Lamp.turnOn();
-                }
+                _turnFlash();
+
+                // setState(() {
+                //   flashOn = !flashOn;
+                // });
+                // if (!flashOn) {
+                //   //Lamp.turnOff();
+                //   TorchCompat.turnOff();
+                // } else {
+                //   TorchCompat.turnOn();
+                //   //Lamp.turnOn();
+                // }
               },
               //onPressed: () => TorchCompat.turnOff(),
             ),
@@ -222,33 +243,36 @@ class CameraScreenState extends State<CameraScreen>
               );
             },
           ),
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 28.0,
-//            child: InkWell(
-//              onTap: () => _captureImage(),
-//              onLongPress: () => startVideoRecording(),
-              child: IconButton(
-                icon: Icon(
-                  (_isRecordingMode)
-                      ? (_isRecording) ? Icons.stop : Icons.videocam
-                      : Icons.camera_alt,
-                  size: 28.0,
-                  color: (_isRecording) ? Colors.red : Colors.black,
-                ),
-                onPressed: () {
-                  if (!_isRecordingMode) {
-                    _captureImage();
-                  } else {
-                    if (_isRecording) {
-                      stopVideoRecording();
+
+          RaisedButton(
+            color: Colors.transparent,
+          onPressed: () async => await Lamp.flash(new Duration(seconds: 2)),
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 28.0,
+                child: IconButton(
+                  icon: Icon(
+                    (_isRecordingMode)
+                        ? (_isRecording) ? Icons.stop : Icons.videocam
+                        : Icons.camera_alt,
+                    size: 28.0,
+                    color: (_isRecording) ? Colors.red : Colors.black,
+                  ),
+                  onPressed: () {
+                    if (!_isRecordingMode) {
+                      _captureImage();
+
                     } else {
-                      startVideoRecording();
+                      if (_isRecording) {
+                        stopVideoRecording();
+                      } else {
+                        startVideoRecording();
+                      }
                     }
-                  }
-                },
-              ),
-           // ),
+                  },
+                ),
+
+            ),
           ),
           IconButton(
             icon: Icon(
@@ -264,6 +288,15 @@ class CameraScreenState extends State<CameraScreen>
         ],
       ),
     );
+  }
+
+  Future _turnFlash() async {
+    flashOn ? Lamp.turnOn() : Lamp.turnOff();
+    var f = await Lamp.hasLamp;
+    setState((){
+      _hasFlash = f;
+      flashOn = !flashOn;
+    });
   }
 
   Future<FileSystemEntity> getLastImage() async {
