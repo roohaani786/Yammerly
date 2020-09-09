@@ -46,7 +46,7 @@ class CameraScreenState extends State<CameraScreen>
 
   Future<void> _initCamera() async {
     _cameras = await availableCameras();
-    _controller = CameraController(_cameras[0], ResolutionPreset.medium);
+    _controller = CameraController(_cameras[0], ResolutionPreset.veryHigh);
     _controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -207,7 +207,7 @@ class CameraScreenState extends State<CameraScreen>
 
   Widget _buildBottomNavigationBar() {
     return Container(
-      color: Theme.of(context).bottomAppBarColor,
+      color: Colors.transparent,
       height: 100.0,
       width: double.infinity,
       child: Row(
@@ -244,7 +244,7 @@ class CameraScreenState extends State<CameraScreen>
             },
           ),
 
-          RaisedButton(
+          FlatButton(
             color: Colors.transparent,
           onPressed: () async => await Lamp.flash(new Duration(seconds: 2)),
             child: CircleAvatar(
