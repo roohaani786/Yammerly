@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
-import 'package:techstagram/camera/camera_screen.dart';
+import 'package:techstagram/ComeraV/cam.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 //import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
@@ -225,7 +225,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                   onTap: () {
                     Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(
-                        builder: (context) => CameraScreen(),
+                        builder: (context) => Camera(),
                       ),
                     );
                     setState(() {
@@ -262,7 +262,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                         onPressed: () {
                           Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute(
-                              builder: (context) => CameraScreen(),
+                              builder: (context) => Camera(),
                             ),
                           );
                         },
@@ -407,34 +407,29 @@ class _SearchListExampleState extends State<SearchListExample> {
     return new AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: appBarTitle,
+        title: new TextField(
+          controller: _controller,
+          style: new TextStyle(
+            color: Colors.deepPurple,
+          ),
+          decoration: new InputDecoration(
+              // prefixIcon:
+              // new Icon(Icons.search, color: Colors.deepPurple),
+              hintText: "Search...",
+              hintStyle: new TextStyle(color: Colors.white)),
+          onChanged: searchOperation,
+        ),
         actions: <Widget>[
           new IconButton(
             icon: icon,
             onPressed: () {
               setState(() {
-                if (this.icon.icon == Icons.search) {
-                  this.icon = new Icon(
-                    Icons.close,
-                    color: Colors.black,
-                  );
-                  this.appBarTitle = new TextField(
-                    controller: _controller,
-                    style: new TextStyle(
-                      color: Colors.deepPurple,
-                    ),
-                    decoration: new InputDecoration(
-                        prefixIcon:
-                        new Icon(Icons.search, color: Colors.deepPurple),
-                        hintText: "Search...",
-                        hintStyle: new TextStyle(color: Colors.white)),
-                    onChanged: searchOperation,
-                  );
-                  _handleSearchStart();
-                } else {
-                  _handleSearchEnd();
-                }
+                _isSearching = true;
               });
+                //  else {
+                //   _handleSearchEnd();
+                // }
+
             },
           ),
         ]);
