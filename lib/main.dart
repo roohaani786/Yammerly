@@ -8,7 +8,10 @@ import 'package:techstagram/pages/intro_page.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/resources/twittersignin.dart';
 import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/ui/ProfileEdit.dart';
+import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/ui/fblogin.dart';
+import 'package:techstagram/views/tabs/profile.dart';
 
 import 'Signup/signup_screen.dart';
 
@@ -50,6 +53,7 @@ class MyAppState extends State<MyApp> {
           '/Welcome': (context) => WelcomeScreen(),
           '/nayasignup': (context) => SignUpScreen(),
           '/Twit': (context) => TwitterLoginScreen(),
+          '/Profile': (context) => HomePage(initialindexg: 4,),
         },
 
 
