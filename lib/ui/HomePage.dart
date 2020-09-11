@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).pop(HomePage()),
+//      onTap: () => Navigator.of(context).pop(HomePage()),
           child: Scaffold(
             appBar: AppBar(
               title: Text(

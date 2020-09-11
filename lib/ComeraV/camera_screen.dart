@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:thumbnails/thumbnails.dart';
 import 'package:lamp/lamp.dart';
+import 'package:torch/torch.dart';
 import 'package:holding_gesture/holding_gesture.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -97,6 +98,9 @@ class CameraScreenState extends State<CameraScreen>
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     super.build(context);
     if (_controller != null) {
       if (!_controller.value.isInitialized) {
@@ -147,31 +151,36 @@ class CameraScreenState extends State<CameraScreen>
                 },
               ),
             ),
-          Positioned(
-            top: 24.0,
-            right: 12.0,
-            child: IconButton(
-              icon: Icon(
-                (flashOn) ? Icons.flash_on : Icons.flash_off,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                _turnFlash();
+          Padding(
+            padding: const EdgeInsets.only(top: 24.0),
+            child: Container(
+//            top: 24.0,
+              width: width,
+              child: IconButton(
+                icon: Icon(
+                  (flashOn) ? Icons.flash_on : Icons.flash_off,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _turnFlash();
 
-                // setState(() {
-                //   flashOn = !flashOn;
-                // });
-                // if (!flashOn) {
-                //   //Lamp.turnOff();
-                //   TorchCompat.turnOff();
-                // } else {
-                //   TorchCompat.turnOn();
-                //   //Lamp.turnOn();
-                // }
-              },
-              //onPressed: () => TorchCompat.turnOff(),
+                  // setState(() {
+                  //   flashOn = !flashOn;
+                  // });
+                  // if (!flashOn) {
+                  //   //Lamp.turnOff();
+                  //   TorchCompat.turnOff();
+                  // } else {
+                  //   TorchCompat.turnOn();
+                  //   //Lamp.turnOn();
+                  // }
+                },
+                //onPressed: () => TorchCompat.turnOff(),
+              ),
             ),
           ),
+
+
             if (_isRecordingMode)
               Positioned(
                 left: 0,
@@ -291,12 +300,16 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   Future _turnFlash() async {
-    flashOn ? Lamp.turnOn() : Lamp.turnOff();
-    var f = await Lamp.hasLamp;
-    setState((){
-      _hasFlash = f;
-      flashOn = !flashOn;
-    });
+    bool hasTorch = await Torch.hasTorch;
+    if(hasTorch){
+      flashOn ? Torch.turnOn() : Torch.turnOff();
+      var f = await Torch.hasTorch;
+      Torch.flash(Duration(milliseconds: 300));
+      setState((){
+        _hasFlash = f;
+        flashOn = !flashOn;
+      });
+    }
   }
 
   Future<FileSystemEntity> getLastImage() async {
