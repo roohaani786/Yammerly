@@ -1,13 +1,20 @@
 import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+//import 'package:firebase/firebase.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:techstagram/ComeraV/cam.dart';
+import 'package:techstagram/models/user.dart';
+import 'package:techstagram/models/wiggle.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 //import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
+import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
@@ -27,6 +34,7 @@ class HomePage extends StatefulWidget {
   final String uid;
   int initialindexg = 2;
   FirebaseUser user;
+
 
 
   //include this
@@ -329,6 +337,9 @@ class _SearchListExampleState extends State<SearchListExample> {
   bool _isSearching;
   String _searchText = "";
   List searchresult = new List();
+  QuerySnapshot searchSnapshot;
+  bool isLoading = false;
+  bool haveUserSearched = false;
 
   _SearchListExampleState() {
     _controller.addListener(() {
@@ -407,31 +418,35 @@ class _SearchListExampleState extends State<SearchListExample> {
     return new AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: new TextField(
-          controller: _controller,
-          style: new TextStyle(
-            color: Colors.deepPurple,
+        title: GestureDetector(
+
+          child: new TextField(
+            controller: _controller,
+            style: new TextStyle(
+              color: Colors.deepPurple,
+            ),
+            decoration: new InputDecoration(
+                // prefixIcon:
+                // new Icon(Icons.search, color: Colors.deepPurple),
+                hintText: "Search...",
+                hintStyle: new TextStyle(color: Colors.white)),
+
+
           ),
-          decoration: new InputDecoration(
-              // prefixIcon:
-              // new Icon(Icons.search, color: Colors.deepPurple),
-              hintText: "Search...",
-              hintStyle: new TextStyle(color: Colors.white)),
-          onChanged: searchOperation,
         ),
         actions: <Widget>[
           new IconButton(
-            icon: icon,
+            icon: !_isSearching?Icon(Icons.search):Icon(Icons.close),
             onPressed: () {
               setState(() {
                 _isSearching = true;
               });
-                //  else {
-                //   _handleSearchEnd();
-                // }
-
-            },
-          ),
+//                //  else {
+//                //   _handleSearchEnd();
+//                // }
+//
+//            },
+            }),
         ]);
   }
 
@@ -460,11 +475,59 @@ class _SearchListExampleState extends State<SearchListExample> {
     searchresult.clear();
     if (_isSearching != null) {
       for (int i = 0; i < _list.length; i++) {
-        String data = _list[i];
+        String data = _controller as String;
         if (data.toLowerCase().contains(searchText.toLowerCase())) {
           searchresult.add(data);
         }
       }
     }
+
+   initiateSearch() async {
+    if (_controller.text.isNotEmpty) {
+      setState(() {
+        isLoading = true;
+      });
+      await DatabaseService()
+          .getUserByUsername(_controller.text)
+          .then((val) {
+        searchSnapshot = val;
+        setState(() {
+          isLoading = false;
+          haveUserSearched = true;
+        });
+      });
+    }
   }
+
+//  void searchOperation(String searchText) {
+//    DatabaseReference searchRef = FirebaseDatabase.instance.reference().child("users");
+//    return FutureBuilder(
+//
+//    );
+//    searchRef.once().then((DataSnapshot snapshot) {
+//      searchresult.clear();
+//      var keys = snapshot.value.keys;
+//      var values = snapshot.value;
+//
+//      for(var key in keys){
+//        List _list = new List(
+//          values [key] ['name'],
+//        );
+//      }
+//    });
+////    searchresult.clear();
+//    if (_isSearching != null) {
+//      for (int i = 0; i < _list.length; i++) {
+//        String data = _list[i];
+//        if (data.toLowerCase().contains(searchText.toLowerCase())) {
+//          searchresult.add(data);
+//        }
+//      }
+//    }
+//  }
+
+
+}
+
+
 }
