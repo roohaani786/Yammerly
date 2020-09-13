@@ -53,7 +53,7 @@ dependencies:
   flutter_svg: 0.18.0
   flutter_twitter_login:
   twitter_login:
-  camera:
+  camera: ^0.5.8+5
   torch:
   path_provider:
   path:

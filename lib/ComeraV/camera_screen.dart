@@ -123,15 +123,15 @@ class CameraScreenState extends State<CameraScreen>
         onHorizontalDragEnd: (DragEndDetails details) =>
             _onHorizontalDrag(details,context),
       child: Scaffold(
-        floatingActionButton: HoldDetector(
-          onHold: startVideoRecording,
-          holdTimeout: Duration(milliseconds: 200),
-          enableHapticFeedback: true,
-          child: FloatingActionButton(
-            child: Icon(Icons.camera),
-            onPressed: _captureImage,
-          ),
-        ),
+        // floatingActionButton: HoldDetector(
+        //   onHold: startVideoRecording,
+        //   holdTimeout: Duration(milliseconds: 200),
+        //   enableHapticFeedback: true,
+        //   child: FloatingActionButton(
+        //     child: Icon(Icons.camera),
+        //     onPressed: _captureImage,
+        //   ),
+        // ),
         backgroundColor: Theme.of(context).backgroundColor,
         key: _scaffoldKey,
         extendBody: true,
@@ -151,32 +151,47 @@ class CameraScreenState extends State<CameraScreen>
                 },
               ),
             ),
-          Padding(
-            padding: const EdgeInsets.only(top: 24.0),
-            child: Container(
-//            top: 24.0,
-              width: width,
+            Positioned(
+              top: 24.0,
+              right: 12.0,
               child: IconButton(
                 icon: Icon(
-                  (flashOn) ? Icons.flash_on : Icons.flash_off,
+                  Icons.close,
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  _turnFlash();
-
-                  // setState(() {
-                  //   flashOn = !flashOn;
-                  // });
-                  // if (!flashOn) {
-                  //   //Lamp.turnOff();
-                  //   TorchCompat.turnOff();
-                  // } else {
-                  //   TorchCompat.turnOn();
-                  //   //Lamp.turnOn();
-                  // }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+                  );
                 },
-                //onPressed: () => TorchCompat.turnOff(),
               ),
+            ),
+          Positioned(
+            top: 340.0,
+            right: 12.0,
+            child: IconButton(
+              icon: Icon(
+                (flashOn) ? Icons.flash_on : Icons.flash_off,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                setState(() {
+                  flashOn = !flashOn;
+                });
+
+                // setState(() {
+                //   flashOn = !flashOn;
+                // });
+                // if (!flashOn) {
+                //   //Lamp.turnOff();
+                //   TorchCompat.turnOff();
+                // } else {
+                //   TorchCompat.turnOn();
+                //   //Lamp.turnOn();
+                // }
+              },
+              //onPressed: () => TorchCompat.turnOff(),
             ),
           ),
 
@@ -270,7 +285,9 @@ class CameraScreenState extends State<CameraScreen>
                   onPressed: () {
                     if (!_isRecordingMode) {
                       _captureImage();
-
+                      if(flashOn){
+                        _turnFlash();
+                      }
                     } else {
                       if (_isRecording) {
                         stopVideoRecording();
@@ -307,7 +324,7 @@ class CameraScreenState extends State<CameraScreen>
       Torch.flash(Duration(milliseconds: 300));
       setState((){
         _hasFlash = f;
-        flashOn = !flashOn;
+        //flashOn = !flashOn;
       });
     }
   }
