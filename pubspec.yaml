@@ -142,7 +142,7 @@ flutter:
     - assets/images/empty.png
     - assets/images/follower2.jpg
     - assets/images/follower3.jpeg
-    - assets/images/home_page.png
+    - assets/images/p.jpg
     - assets/images/login_bottom.png
     - assets/images/logo.png
     - assets/images/main_bottom.png
@@ -158,7 +158,7 @@ flutter:
     - assets/images/photo_1.jpeg
     - assets/images/placeholder.jpg
     - assets/images/post2.jpg
-    - assets/images/post_banner.jpg
+    - assets/images/home_page.png
     - assets/images/profile3.png
     - assets/images/profile4.png
     - assets/images/profile6.jpg

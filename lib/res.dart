@@ -31,7 +31,7 @@
 //  static const String empty = "assets/images/empty.png";
 //  static const String follower2 = "assets/images/follower2.jpg";
 //  static const String follower3 = "assets/images/follower3.jpeg";
-//  static const String home_page = "assets/images/home_page.png";
+//  static const String home_page = "assets/images/p.jpg";
 //  static const String login_bottom = "assets/images/login_bottom.png";
 //  static const String logo = "assets/images/logo.png";
 //  static const String main_bottom = "assets/images/main_bottom.png";
@@ -47,7 +47,7 @@
 //  static const String photo_1 = "assets/images/photo_1.jpeg";
 //  static const String placeholder = "assets/images/placeholder.jpg";
 //  static const String post2 = "assets/images/post2.jpg";
-//  static const String post_banner = "assets/images/post_banner.jpg";
+//  static const String post_banner = "assets/images/home_page.png";
 //  static const String profile3 = "assets/images/profile3.png";
 //  static const String profile4 = "assets/images/profile4.png";
 //  static const String profile6 = "assets/images/profile6.jpg";

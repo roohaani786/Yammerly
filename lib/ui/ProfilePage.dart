@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:techstagram/Login/login_screen.dart';
+import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/messagingsystem.dart';
@@ -29,9 +30,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       lastNameController,
       emailController,
       phoneNumberController,
-      bioController,linkController,photoUrlController,
+      bioController,genderController,linkController,photoUrlController,
       displayNameController,workController,educationController,
-      currentCityController,homeTownController,relationshipController;
+      currentCityController,homeTownController,relationshipController,
+  followersController,followingController;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -68,6 +70,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     emailController = TextEditingController();
     phoneNumberController = TextEditingController();
     bioController = TextEditingController();
+    genderController = TextEditingController();
     linkController = TextEditingController();
     photoUrlController = TextEditingController();
     displayNameController = TextEditingController();
@@ -76,6 +79,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     currentCityController = TextEditingController();
     homeTownController = TextEditingController();
     relationshipController = TextEditingController();
+
+    followersController = TextEditingController();
+    followingController = TextEditingController();
 
 
     super.initState();
@@ -99,15 +105,19 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       lastNameController.text = docSnap.data["surname"];
       phoneNumberController.text = docSnap.data["phonenumber"];
       emailController.text = docSnap.data["email"];
-//      bioController.text = docSnap.data["bio"];
-//      linkController.text = docSnap.data["link"];
-//      photoUrlController = docSnap.data["photoUrl"];
-////      displayNameController = docSnap.data["displayName"];
-////      workController = docSnap.data["work"];
-//      educationController = docSnap.data["education"];
-//      currentCityController = docSnap.data["currentCity"];
-//      homeTownController = docSnap.data["homeTown"];
-//      relationshipController = docSnap.data["relationship"];
+      bioController.text = docSnap.data["bio"];
+      genderController.text = docSnap.data["gender"];
+      linkController.text = docSnap.data["link"];
+      photoUrlController.text = docSnap.data["photoURL"];
+      displayNameController.text = docSnap.data["displayName"];
+      workController.text = docSnap.data["work"];
+      educationController.text = docSnap.data["education"];
+      currentCityController.text = docSnap.data["currentCity"];
+      homeTownController.text = docSnap.data["homeTown"];
+      relationshipController.text = docSnap.data["relationship"];
+
+      followersController.text = docSnap.data["followers"];
+      followingController.text = docSnap.data["following"];
       setState(() {
         isLoading = false;
         isEditable = true;
@@ -125,274 +135,416 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       onTap: () => Navigator.of(context).pop(true),
       child: Scaffold(
         key: _scaffoldKey,
-        body: new Column(
-          children: <Widget>[
-            _appBar(),
-            _profilex(),
-            _centerButtons(),
-            _displayImages()
-          ],
-        ),
-      ),
-    );
-  }
+        backgroundColor: Colors.deepPurple,
+        body:  SafeArea(
+          child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50.0),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 300.0,
+                          width: 340.0,
+                          child: Card(
+                            elevation: 5.0,
+                            color: Colors.white,
+                            // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
 
-  Widget _appBar() {
-    return new Container(
-      color: Colors.white,
-      padding: new EdgeInsets.only(top: 25.0),
-      child: new Column(
-        children: <Widget>[
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              new Padding(
-                padding: new EdgeInsets.only(left: 10.0),
-                child: new Text(
-                  emailController.text,
-                  style: new TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              new Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  new IconButton(
-                      icon: new Icon(Icons.update),
-                      iconSize: 25.0,
-                      onPressed: () {}),
-                  new IconButton(
-                      icon: new Icon(Icons.person_add),
-                      iconSize: 25.0,
-                      onPressed: () {}),
-                  new IconButton(
-                      icon: new Icon(Icons.format_list_bulleted),
-                      iconSize: 25.0,
-                      onPressed: () {}),
-                  new IconButton(
-                      icon: new Icon(
-                        Icons.exit_to_app,
-                        size: 30.0,
-                      ),
-                      onPressed: () {
-                        FirebaseAuth.instance
-                            .signOut()
-                            .then((result) =>
-                            Navigator.push(context, new MaterialPageRoute(
-                                builder: (context) =>
-                                new LoginScreen())
-                            ))
-                            .catchError((err) => print(err));
-                      }),
-                ],
-              )
-            ],
-          ),
-          new Container(
-            margin: new EdgeInsets.only(top: 2.0),
-            height: 1.5,
-            color: Colors.grey[300],
-          ),
-        ],
-      ),
-    );
-  }
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Text(
+                                    displayNameController.text,
+                                    style: TextStyle(
+                                      fontSize: 26.0,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Pacifico',
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Text(
+                                    bioController.text,
+                                    style: TextStyle(
+                                      fontFamily: 'Source Sans Pro',
+                                      fontSize: 15.0,
+                                      color: Colors.grey,
+                                      letterSpacing: 2.5,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                  width: 200,
+                                  child: Divider(
+                                    color: Colors.teal.shade700,
+                                  ),
+                                ),
+                                Container(
+                                  height: 60.0,
+                                  margin: EdgeInsets.only(top: 8.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      _buildStatItem("FOLLOWERS", followersController.text),
+                                      _buildStatItem("POSTS", _posts),
+                                      _buildStatItem("FOLLOWING", followingController.text),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                        SizedBox(
+                                          width: 120,
+                                          child: RaisedButton(
+                                              color: Color(0xffed1e79),
+                                              child: new Text(
+                                                "Follow",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                print("Follow");
+                                                // Navigator.push(
+                                                //   context,
+                                                //   MaterialPageRoute(builder: (context) => ProfileScreen()),
+                                                // );
+                                              },
+                                              shape: RoundedRectangleBorder(
+                                                //side: BorderSide(color: Colors.white, width: 2),
+                                                borderRadius: BorderRadius.circular(30.0),
+                                              )),
+                                        ),
 
-  Widget _post() {
-    return new GestureDetector(
-      child: new Column(
-        children: <Widget>[
-          new Text(
-            "72",
-            style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-          ),
-          new Padding(
-            padding: new EdgeInsets.only(top: 3.0),
-            child: new Text(
-              "posts",
-              style: new TextStyle(color: Colors.grey, fontSize: 16.0),
-            ),
-          )
-        ],
-      ),
-    );
-  }
+                                        SizedBox(
+                                          width: 120,
+                                          child: RaisedButton(
 
-  Widget _followers() {
-    return new Container(
-      margin: new EdgeInsets.only(left: 10.0),
-      child: new GestureDetector(
-        child: new Column(
-          children: <Widget>[
-            new Text(
-              "352",
-              style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-            ),
-            new Padding(
-              padding: new EdgeInsets.only(top: 3.0),
-              child: new Text(
-                "followers",
-                style: new TextStyle(color: Colors.grey, fontSize: 16.0),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
+                                              color: Colors.white,
+                                              child: new Text(
+                                                "Message",
+                                                style: TextStyle(
+                                                  color: Color(0xffed1e79),
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                print("Follow");
+                                                // Navigator.push(
+                                                //   context,
+                                                //   MaterialPageRoute(builder: (context) => ProfileScreen()),
+                                                // );
+                                              },
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(color: Color(0xffed1e79), width: 2),
+                                                borderRadius: BorderRadius.circular(30.0),
+                                              )),
+                                        ),
+                                      ]
+                                  ),
+                                )
 
-  Widget _following() {
-    return new Container(
-      margin: new EdgeInsets.only(left: 10.0),
-      child: new GestureDetector(
-        child: new Column(
-          children: <Widget>[
-            new Text(
-              "580",
-              style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-            ),
-            new Padding(
-              padding: new EdgeInsets.only(top: 3.0),
-              child: new Text(
-                "following",
-                style: new TextStyle(color: Colors.grey, fontSize: 16.0),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _profilex() {
-    return new Container(
-      height: 150.0,
-      margin: new EdgeInsets.only(top: 5.0),
-      child: new Column(
-        children: <Widget>[
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              new Column(
-                children: <Widget>[
-                  new Image.asset(
-                    "assets/cod.png",
-                    height: 100.0,
-                  ),
-                  new Container(
-                    margin: EdgeInsets.only(top: 10.0, bottom: 5.0),
-                    alignment: Alignment.bottomLeft,
-                    child: new Text(
-                      firstNameController.text,
-                      style: new TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-              new Container(
-                margin: EdgeInsets.only(bottom: 25.0),
-                child: new Column(
-                  children: <Widget>[
-                    new Container(
-                      child: new Row(
-                        children: <Widget>[_post(), _followers(), _following(),
-                        ],
-                      ),
-                    ),
-                    new GestureDetector(
-                      child: new Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey, width: 1.0),
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(5.0))),
-                        margin: EdgeInsets.only(top: 7.0),
-                        height: 30.0,
-                        width: 200.0,
-                        child: new Text(
-                          "Edit Profile",
-                          style: new TextStyle(fontWeight: FontWeight.bold),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (
-                            context) {
-                          return ProfilePage();
-                        },));
-                      },
+
+                        Container(
+                          height: 300.0,
+                          width: 340.0,
+                          child: Card(
+                            elevation: 5.0,
+                            color: Colors.white,
+                            // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+
+
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 20.0,top: 10.0),
+                                      child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        " Account Information",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Pacifico',
+                                        ),
+                                      ),
+
+                                    ),
+                                  ),
+
+
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10.0,left: 25.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text("First Name",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(firstNameController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Padding(padding: const EdgeInsets.all(2)),
+
+                                        Row(
+                                          children: [
+                                            Text("Last Name",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(lastNameController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(padding: const EdgeInsets.all(2)),
+                                        Row(
+                                          children: [
+                                            Text("Username",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(displayNameController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Padding(padding: const EdgeInsets.all(2)),
+                                        Row(
+                                          children: [
+                                            Text("Phonenumber",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(phoneNumberController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Padding(padding: const EdgeInsets.all(2)),
+                                        Row(
+                                          children: [
+                                            Text("Username",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(displayNameController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Padding(padding: const EdgeInsets.all(2)),
+                                        Row(
+                                          children: [
+                                            Text("Gender",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(genderController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(padding: const EdgeInsets.all(2)),
+                                        Row(
+                                          children: [
+                                            Text("Relationship",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(relationshipController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Padding(padding: const EdgeInsets.all(2)),
+                                        Row(
+                                          children: [
+                                            Text("Work",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(workController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(padding: const EdgeInsets.all(2)),
+                                        Row(
+                                          children: [
+                                            Text("Education",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(educationController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Padding(padding: const EdgeInsets.all(2)),
+                                        Row(
+                                          children: [
+                                            Text("Current City",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(currentCityController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Padding(padding: const EdgeInsets.all(2)),
+                                        Row(
+                                          children: [
+                                            Text("HomeTown",style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 100.0),
+                                              child: Text(homeTownController.text,style: TextStyle(
+                                                color: kPrimaryColor,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+
+
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 10,left: 145.0,right: 130.0),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage:
+                    NetworkImage(photoUrlController.text),
+                    backgroundColor: Colors.transparent,
+                  ),
+                ),
+              ]
           ),
-          new Container(
-            margin: new EdgeInsets.only(top: 10.0),
-            height: 0.5,
-            color: Colors.grey[300],
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _centerButtons() {
-    return Container(
-      child: new Column(
-        children: <Widget>[
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              new IconButton(
-                  icon: new Icon(
-                    Icons.grid_on,
-                    size: 30.0,
-                  ),
-                  onPressed: () {}),
-              new IconButton(
-                  icon: new Icon(
-                    Icons.crop_original,
-                    size: 30.0,
-                  ),
-                  onPressed: () {}),
-              new IconButton(
-                  icon: new Icon(
-                    Icons.perm_contact_calendar,
-                    size: 30.0,
-                  ),
-                  onPressed: () {}),
-              new IconButton(
-                  icon: new Icon(
-                    Icons.bookmark_border,
-                    size: 30.0,
-                  ),
-                  onPressed: () {}),
 
-            ],
-          ),
-          new Container(
-            height: 0.5,
-            color: Colors.grey[300],
-          )
-        ],
-      ),
-    );
-  }
+  final String _followers = "17K";
+  final String _posts = "24";
+  final String _following = "45K";
 
-  Widget _displayImages() {
-    return Flexible(
-        child: new Container(
-          child: new GridView.builder(
-              itemCount: 16,
-              gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-              itemBuilder: (BuildContext context, int index) {
-                return new Container(
-                  margin: EdgeInsets.all(2.0),
-                  color: Colors.grey,
-                  child: new Image.asset("assets/cod.png"),
-//                    $picindex
-                );
-              }),
-        ));
-  }
+
 }
+
+Widget _buildStatItem(String label, String count) {
+  TextStyle _statLabelTextStyle = TextStyle(
+    fontFamily: 'Roboto',
+    color: Colors.grey,
+    fontSize: 10.0,
+    fontWeight: FontWeight.w500,
+  );
+
+  TextStyle _statCountTextStyle = TextStyle(
+    color: Colors.black,
+    fontSize: 22.0,
+    fontWeight: FontWeight.bold,
+  );
+
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      Text(
+        label,
+        style: _statLabelTextStyle,
+      ),
+      Text(
+        count,
+        style: _statCountTextStyle,
+      ),
+
+    ],
+  );
+  }
+
