@@ -28,9 +28,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      displaynameController,
       phoneNumberController,
-  bioController;
+      bioController,linkController,photoUrlController,
+      displayNameController,workController,educationController,
+      currentCityController,homeTownController,relationshipController;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -67,6 +68,16 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     emailController = TextEditingController();
     phoneNumberController = TextEditingController();
     bioController = TextEditingController();
+    linkController = TextEditingController();
+    photoUrlController = TextEditingController();
+    displayNameController = TextEditingController();
+    workController = TextEditingController();
+    educationController = TextEditingController();
+    currentCityController = TextEditingController();
+    homeTownController = TextEditingController();
+    relationshipController = TextEditingController();
+
+
     super.initState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -88,10 +99,18 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       lastNameController.text = docSnap.data["surname"];
       phoneNumberController.text = docSnap.data["phonenumber"];
       emailController.text = docSnap.data["email"];
-      bioController.text = docSnap.data["bio"];
+//      bioController.text = docSnap.data["bio"];
+//      linkController.text = docSnap.data["link"];
+//      photoUrlController = docSnap.data["photoUrl"];
+////      displayNameController = docSnap.data["displayName"];
+////      workController = docSnap.data["work"];
+//      educationController = docSnap.data["education"];
+//      currentCityController = docSnap.data["currentCity"];
+//      homeTownController = docSnap.data["homeTown"];
+//      relationshipController = docSnap.data["relationship"];
       setState(() {
         isLoading = false;
-        isEditable = false;
+        isEditable = true;
       });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);

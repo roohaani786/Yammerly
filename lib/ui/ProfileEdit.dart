@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
+import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/ui/ProfilePage.dart';
 
 class ProfilePage extends StatefulWidget {
   static final String pageName = "/ProfilePage";
@@ -24,7 +26,9 @@ class _ProfilePageState extends State<ProfilePage> {
       lastNameController,
       emailController,
       phoneNumberController,
-  bioController;
+  bioController,genderController,linkController,photoUrlController,
+  displayNameController,workController,educationController,
+  currentCityController,homeTownController,relationshipController;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
@@ -46,6 +50,17 @@ class _ProfilePageState extends State<ProfilePage> {
     emailController = TextEditingController();
     phoneNumberController = TextEditingController();
     bioController = TextEditingController();
+    genderController = TextEditingController();
+    linkController = TextEditingController();
+    photoUrlController = TextEditingController();
+    displayNameController = TextEditingController();
+    workController = TextEditingController();
+    educationController = TextEditingController();
+    currentCityController = TextEditingController();
+    homeTownController = TextEditingController();
+    relationshipController = TextEditingController();
+
+
     super.initState();
     fetchProfileData();
   }
@@ -68,6 +83,15 @@ class _ProfilePageState extends State<ProfilePage> {
       phoneNumberController.text = docSnap.data["phonenumber"];
       emailController.text = docSnap.data["email"];
       bioController.text = docSnap.data["bio"];
+      genderController.text = docSnap.data["gender"];
+      linkController.text = docSnap.data["link"];
+//      photoUrlController = docSnap.data["photoUrl"];
+      displayNameController.text = docSnap.data["displayName"];
+      workController.text = docSnap.data["work"];
+      educationController.text = docSnap.data["education"];
+      currentCityController.text = docSnap.data["currentCity"];
+      homeTownController.text = docSnap.data["homeTown"];
+      relationshipController.text = docSnap.data["relationship"];
       setState(() {
         isLoading = false;
         isEditable = true;
@@ -76,6 +100,8 @@ class _ProfilePageState extends State<ProfilePage> {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +141,59 @@ class _ProfilePageState extends State<ProfilePage> {
     isChanged = true;
     } else if (docSnap.data["bio"].toString().trim() !=
         bioController.text.trim()) {
-      print("Phone Number Changed");
+      print("Bio Changed");
+      isChanged = true;
+    }   else if (docSnap.data["gender"].toString().trim() !=
+        genderController.text.trim()) {
+      print("Gender Changed");
       isChanged = true;
     }
+    else if (docSnap.data["link"].toString().trim() !=
+        linkController.text.trim()) {
+      print("Link Changed");
+      isChanged = true;
+    }
+
+//    else if (docSnap.data["photoUrl"].toString().trim() !=
+//        photoUrlController.text.trim()) {
+//      print("photoUrl Changed");
+//      isChanged = true;
+//    }
+    else if (docSnap.data["displayName"].toString().trim() !=
+        displayNameController.text.trim()) {
+      print("displayName Changed");
+      isChanged = true;
+    } //displayName
+
+    else if (docSnap.data["work"].toString().trim() !=
+        workController.text.trim()) {
+      print("work Changed");
+      isChanged = true;
+    }//work
+
+    else if (docSnap.data["education"].toString().trim() !=
+        educationController.text.trim()) {
+      print("education Changed");
+      isChanged = true;
+    }//education
+
+    else if (docSnap.data["currentCity"].toString().trim() !=
+        currentCityController.text.trim()) {
+      print("currentCity Changed");
+      isChanged = true;
+    }//currentCity
+
+    else if (docSnap.data["homeTown"].toString().trim() !=
+        homeTownController.text.trim()) {
+      print("homeTown Changed");
+      isChanged = true;
+    }//homeTown
+
+    else if (docSnap.data["relationship"].toString().trim() !=
+        relationshipController.text.trim()) {
+      print("relationship Changed");
+      isChanged = true;
+    }//relationship
 
     if (isChanged) {
     String snackbarContent = "";
@@ -129,6 +205,15 @@ class _ProfilePageState extends State<ProfilePage> {
     data["phonenumber"] = phoneNumberController.text.trim();
     data["email"] = emailController.text.trim();
     data["bio"] = bioController.text.trim();
+    data["gender"] = genderController.text.trim();
+    data["link"] = linkController.text.trim();
+//    data["photoUrl"] = photoUrlController.text.trim();
+    data["displayName"] = displayNameController.text.trim();
+    data["work"] = workController.text.trim();//work
+    data["education"] = educationController.text.trim();//education
+    data["currentCity"] = currentCityController.text.trim();//currentCity
+    data["homeTown"] = homeTownController.text.trim();//hometown
+    data["relationship"] = relationshipController.text.trim();//relationship
     Firestore.instance
         .collection("users")
         .document(currUser.uid)
@@ -136,7 +221,7 @@ class _ProfilePageState extends State<ProfilePage> {
     snackbarContent = "Profile Updated";
     if(snackbarContent == "Profile Updated"){
 
-      Navigator.pushNamed(context, '/Profile');
+      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(initialindexg: 4)));
     }
     try {
     await currUser.updateEmail(data["email"]);
@@ -244,20 +329,25 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
 
                     TextFormField(
-                      controller: bioController,
+                      controller: phoneNumberController,
                       enabled: isEditable,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 5,
+                      maxLength: 10,
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          labelText: "Bio",
+                          labelText: "Phone Number",
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
                               BorderSide(color: Colors.black, width: 1))),
                     ),
+
                     SizedBox(
                       height: 16,
                     ),
+
                     TextFormField(
                       controller: emailController,
                       enabled: isEditable,
@@ -272,99 +362,153 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(
                       height: 16,
                     ),
+
                     TextFormField(
-                      controller: phoneNumberController,
+                      controller: bioController,
                       enabled: isEditable,
-                      maxLength: 10,
-                      inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
                       decoration: InputDecoration(
-                          labelText: "Phone Number",
+                          labelText: "Bio",
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
-                                  BorderSide(color: Colors.black, width: 1))),
+                              BorderSide(color: Colors.black, width: 1))),
                     ),
-//
+                    SizedBox(
+                      height: 16,
+                    ),
+                    TextFormField(
+                      controller: genderController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.text,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          labelText: "Gender",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+
+                    TextFormField(
+                      controller: linkController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.text,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          labelText: "link",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+
+
+                    TextFormField(
+                      controller: displayNameController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.text,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          labelText: "Display Name",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+
+                    TextFormField(
+                      controller: workController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          labelText: "work",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+
+                    TextFormField(
+                      controller: educationController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          labelText: "education",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+
+                    TextFormField(
+                      controller: currentCityController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          labelText: "currentCity",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+
+                    TextFormField(
+                      controller: homeTownController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          labelText: "homeTown",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+
+                    TextFormField(
+                      controller: relationshipController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          labelText: "relationship",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+
+
                   ],
                 ),
               ),
       ),
-//      floatingActionButton: FloatingActionButton(
-//          child:
-//              Icon(isEditable ? Icons.check : Icons.edit, color: Colors.white),
-//          backgroundColor: Colors.black,
-//          onPressed: () async {
-//            if (!isEditable)
-//              setState(() => isEditable = true);
-//            else {
-//              bool isChanged = false;
-//              if (docSnap.data["fname"].toString().trim() !=
-//                  firstNameController.text.trim()) {
-//                print("First Name Changed");
-//                isChanged = true;
-//              } else if (docSnap.data["surname"].toString().trim() !=
-//                  lastNameController.text.trim()) {
-//                print("Last Name Changed");
-//                isChanged = true;
-//              } else if (docSnap.data["email"].toString().trim() !=
-//                  emailController.text.trim()) {
-//                print("Email Changed");
-//                isChanged = true;
-//              } else if (docSnap.data["phonenumber"].toString().trim() !=
-//                  phoneNumberController.text.trim()) {
-//                print("Phone Number Changed");
-//                isChanged = true;
-//              }
-//
-//              if (isChanged) {
-//                String snackbarContent = "";
-//                setState(() => isLoading = true);
-//                try {
-//                  Map<String, dynamic> data = {};
-//                  data["fname"] = firstNameController.text.trim();
-//                  data["surname"] = lastNameController.text.trim();
-//                  data["phonenumber"] = phoneNumberController.text.trim();
-//                  data["email"] = emailController.text.trim();
-//                  Firestore.instance
-//                      .collection("users")
-//                      .document(currUser.uid)
-//                      .setData(data, merge: true);
-//                  snackbarContent = "Profile Updated";
-//                  try {
-//                    await currUser.updateEmail(data["email"]);
-//                    snackbarContent =
-//                        snackbarContent + ". Login Email Also Updated";
-//                  } on PlatformException catch (e) {
-//                    print(
-//                        "AUTHEXCEPTION. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
-//                            e.message.toString());
-//                    snackbarContent = snackbarContent +
-//                        ". Login Email Not Changed (As Not Recently Logged In)";
-//                  } catch (e) {
-//                    print("ERROR. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
-//                        e.toString());
-//                    snackbarContent = snackbarContent +
-//                        ". Login Email Not Changed (As Not Recently Logged In)";
-//                  }
-//                  fetchProfileData();
-//                } on PlatformException catch (e) {
-//                  print("PlatformException in fetching user profile. E  = " +
-//                      e.message);
-//                  snackbarContent = "Failed To Update Profile";
-//                }
-//                _scaffoldKey.currentState.showSnackBar(SnackBar(
-//                  content: Text(snackbarContent),
-//                  duration: Duration(milliseconds: 3000),
-//                  behavior: SnackBarBehavior.floating,
-//                ));
-//              } else {
-//                setState(() => isEditable = false);
-//              }
-//            }
-//          }),
     );
   }
 }

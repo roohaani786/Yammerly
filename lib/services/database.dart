@@ -8,10 +8,10 @@ class DatabaseService {
 
   DatabaseService({this.uid});
 
-  getUserByUsername(String name) async {
+  getUserByUsername(String displayName) async {
     return Firestore.instance
         .collection('users')
-        .where("name", isGreaterThanOrEqualTo: name)
+        .where("displayName", isGreaterThanOrEqualTo: displayName)
         .getDocuments();
   }
 

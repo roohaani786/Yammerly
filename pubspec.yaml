@@ -76,6 +76,8 @@ dependencies:
   firebase_core: ^0.4.0+9
   provider: ^4.0.5
   holding_gesture: ^0.0.3
+  flutter_search_bar:
+  firebase_messaging:
 
 dev_dependencies:
   flutter_test:

@@ -13,7 +13,15 @@ class User {
    String phone;
    String gender;
 
-   User({this.uid, this.email, this.photoUrl, this.displayName, this.followers, this.following, this.bio, this.posts, this.phone,this.link, gender});
+   String work;
+   String education;
+   String currentCity;
+   String homeTown;
+   String relationship;
+
+
+   User({this.uid, this.email, this.photoUrl, this.displayName, this.followers, this.following, this.bio, this.posts, this.phone,this.link, this.gender,
+   this.work,this.education,this.currentCity,this.homeTown,this.relationship});
 
     Map toMap(User user) {
     var data = Map<String, dynamic>();
@@ -28,6 +36,12 @@ class User {
     data['link'] = user.link;
     data['posts'] = user.posts;
     data['phone'] = user.phone;
+
+    data['work'] = user.work;
+    data['education'] = user.education;
+    data['currentCity'] = user.currentCity;
+    data['homeTown'] = user.homeTown;
+    data['relationship'] = user.relationship;
     return data;
   }
 
@@ -42,7 +56,13 @@ class User {
     this.following = mapData['following'];
     this.bio = mapData['bio'];
     this.posts = mapData['posts'];
-    this.phone = mapData['phone']; 
+    this.phone = mapData['phone'];
+
+    this.work = mapData['work'];
+    this.education = mapData['education'];
+    this.currentCity = mapData['currentCity'];
+    this.homeTown = mapData['homeTown'];
+    this.relationship = mapData['relationship'];
   }
 }
 
