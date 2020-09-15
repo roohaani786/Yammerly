@@ -1,10 +1,16 @@
 import 'dart:io';
 
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:techstagram/ComeraV/video_preview.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart'; // For Image Picker
+import 'package:path/path.dart' as Path;
+import 'dart:io';
+
+import 'package:techstagram/resources/uploadimage.dart';
 
 class Gallery extends StatefulWidget {
   @override
@@ -88,7 +94,13 @@ class _GalleryState extends State<Gallery> {
                     icon: Icon(Icons.add,color: Colors.white),
                     onPressed: (){
                       //add post space
-                  },
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
+                      );
+
+                    },
                   ),
                 ),
               ),
@@ -115,6 +127,22 @@ class _GalleryState extends State<Gallery> {
     print('deleted');
     setState(() {});
   }
+
+
+//  Future uploadFile() async {
+//
+//    StorageReference storageReference = FirebaseStorage.instance
+//        .ref()
+//        .child('posts/${Path.basename(currentFilePath)}}');
+//    StorageUploadTask uploadTask = storageReference.putFile(File(currentFilePath));
+//    await uploadTask.onComplete;
+//    print('File Uploaded');
+//    storageReference.getDownloadURL().then((fileURL) {
+//      setState(() {
+//        currentFilePath = fileURL;
+//      });
+//    });
+//  }
 
   Future<List<FileSystemEntity>> _getAllImages() async {
     final Directory extDir = await getApplicationDocumentsDirectory();
