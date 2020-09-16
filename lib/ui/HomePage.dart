@@ -17,6 +17,7 @@ import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
+import 'package:techstagram/ui/other_profile.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
@@ -149,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => DisplayCourse()),
+                        builder: (context) => CloudFirestoreSearch()),
                   );
                 },
               ),
@@ -264,7 +265,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                   child: FeedsPage(),
                 ),
                 new Container(
-                  child: NotificationsPage(),
+                  child: OthersProfile(),
                 ),
                 new Container(child: AccountBottomIconScreen()),
               ],

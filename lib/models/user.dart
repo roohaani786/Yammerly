@@ -1,5 +1,15 @@
 
+import 'dart:collection';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class Datauser{
+  final String uid;
+  Datauser({this.uid});
+}
+
 class User {
+
 
    String uid;
    String email;
@@ -64,5 +74,11 @@ class User {
     this.homeTown = mapData['homeTown'];
     this.relationship = mapData['relationship'];
   }
+
+
+
 }
+
+
+
 

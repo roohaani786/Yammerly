@@ -95,10 +95,16 @@ class _UploadImageState extends State<UploadImage>
   displayUploadFormScreen() {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple,),
+            onPressed: (){
+          Navigator.pop(context);
+        }),
         title: Text(
           "New Post",
           style: TextStyle(
-              color: Colors.red, fontSize: 24, fontWeight: FontWeight.bold),
+              color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         actions: <Widget>[
           // uploading ? linearProgress() : Text(''),
@@ -109,7 +115,7 @@ class _UploadImageState extends State<UploadImage>
             child: Text(
               "Share",
               style: TextStyle(
-                  color: Colors.redAccent,
+                  color: Colors.blueAccent,
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
             ),
@@ -124,14 +130,15 @@ class _UploadImageState extends State<UploadImage>
           : ListView(
         children: <Widget>[
           Container(
-            height: 230,
+            height: 330,
             width: MediaQuery.of(context).size.width * 0.8,
             child: Center(
               child: AspectRatio(
-                aspectRatio: 16 / 9,
+                aspectRatio: 6 / 5,
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
+
                         image: FileImage(file), fit: BoxFit.cover),
                   ),
                 ),
@@ -141,33 +148,25 @@ class _UploadImageState extends State<UploadImage>
           Padding(
             padding: EdgeInsets.only(top: 12),
           ),
-//          ListTile(
-//            leading: CircleAvatar(
-//              radius: 27,
-//              child: ClipOval(
-//                child: SizedBox(
-//                  width: 180,
-//                  height: 180,
-//                  child: Image.network(
-//                    widget.userData.photoUrl,
-//                    fit: BoxFit.cover,
-//                  ),
-//                ),
-//              ),
-//            ),
-//            title: Container(
-//              child: TextFormField(
-//                style: TextStyle(color: Colors.white),
-//                controller: descriptionTextEditingController,
-//                decoration: textFieldInputDecoration(
-//                    ' Say something about your image'),
-//                // decoration: InputDecoration(
-//                //   hintText: 'Say something about your image',
-//                //   hintStyle: TextStyle(color: Colors.grey),
-//                //   border: InputBorder.none,
-//              ),
-//            ),
-//          )
+
+          Container(
+//            color: Colors.white,
+            child:  Align(
+              alignment: Alignment.topLeft,
+              child: Column(
+                children: [
+                  Text("Caption",style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),),
+                  Text("djsjfsgfhghdfghdfh",style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );

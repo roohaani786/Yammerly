@@ -550,6 +550,14 @@ class DatabaseService {
         .snapshots();
   }
 
+//  getUsers() async {
+//    return Firestore.instance
+//        .collection("users").document("CAzDoTErEKNnHywL1CAEaZy1F7A")
+//        .snapshots();
+//  }
+
+
+
   getMyCompatibilityResults(wiggle, userData, compatibilityRoomID) async {
     return await Firestore.instance
         .collection("compatibility")
