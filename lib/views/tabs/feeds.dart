@@ -71,229 +71,209 @@ class _FeedsPageState extends State<FeedsPage> {
     // TODO: implement build
     return Scaffold(
       key: _scaffoldKey,
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0,bottom: 20.0,right: 170.0),
-            child: Container(
-              child: RichText(
-                softWrap: true,
-                overflow: TextOverflow.visible,
-                text: TextSpan(
-                  text: "My Feed",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Barlow-Bold',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 40.0,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          StreamBuilder(
-            stream: postsStream,
-            builder: (context, snapshot) {
-              return snapshot.hasData
-                  ? ListView.builder(
-                  controller: scrollController,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) {
-                    String email = snapshot.data.documents[index]['email'];
-                    String description =
-                    snapshot.data.documents[index]['description'];
-                    Timestamp timestamp =
-                    snapshot.data.documents[index]['timestamp'];
-                    String url = snapshot.data.documents[index]['url'];
-                    String postId = snapshot.data.documents[index]['postId'];
-                    int likes = snapshot.data.documents[index]['likes'];
+      body: StreamBuilder(
+        stream: postsStream,
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+              controller: scrollController,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) {
+                String email = snapshot.data.documents[index]['email'];
+                String description =
+                snapshot.data.documents[index]['description'];
+                Timestamp timestamp =
+                snapshot.data.documents[index]['timestamp'];
+                String url = snapshot.data.documents[index]['url'];
+                String postId = snapshot.data.documents[index]['postId'];
+                int likes = snapshot.data.documents[index]['likes'];
 
-                    print(email);
+                print(email);
 //                for (int i = 0; i < posts.length; i++) {
 //                  if (posts[i].email == email) {
 //                    currentpost = posts[i];
 //                  }
 //                }
-                    return Container(
-                      child: Container(
-                        color: Colors.white,
-                        child: Column(
-                          children: <Widget>[
+                return Container(
+                  child: Container(
+                    color: Colors.white,
+                    child: Column(
+                      children: <Widget>[
 
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 10,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
                                 children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(40),
-                                        child: Image(
-                                          image: NetworkImage(url),
-                                          width: 40,
-                                          height: 40,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text("posts[i].username"),
-                                    ],
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(40),
+                                    child: Image(
+                                      image: NetworkImage(url),
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                  IconButton(
-                                    icon: Icon(SimpleLineIcons.options),
-                                    onPressed: () {},
+                                  SizedBox(
+                                    width: 10,
                                   ),
+                                  Text("posts[i].username"),
                                 ],
                               ),
-                            ),
-                            //Image.network(url),
+                              IconButton(
+                                icon: Icon(SimpleLineIcons.options),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                        ),
+                        //Image.network(url),
 
-                            FadeInImage(
-                              image: NetworkImage(url),
-                              //image: NetworkImage("posts[i].postImage"),
-                              placeholder: AssetImage("assets/images/empty.png"),
-                              width: MediaQuery.of(context).size.width,
-                            ),
+                        FadeInImage(
+                          image: NetworkImage(url),
+                          //image: NetworkImage("posts[i].postImage"),
+                          placeholder: AssetImage("assets/images/empty.png"),
+                          width: MediaQuery.of(context).size.width,
+                        ),
 
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(FontAwesome.heart_o),
-                                    ),
-                                    Text("123"),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(FontAwesome.comment_o),
-                                    ),
-                                    Text("23"),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(FontAwesome.send_o),
-                                    ),
-                                  ],
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(FontAwesome.heart_o),
                                 ),
-                                // IconButton(
-                                //   onPressed: () {},
-                                //   icon: Icon(FontAwesome.bookmark_o),
+                                Text("123"),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(FontAwesome.comment_o),
+                                ),
+                                Text("23"),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(FontAwesome.send_o),
+                                ),
+                              ],
+                            ),
+                            // IconButton(
+                            //   onPressed: () {},
+                            //   icon: Icon(FontAwesome.bookmark_o),
+                            // ),
+                          ],
+                        ),
+
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 14,
+                          ),
+                          child: RichText(
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            text: TextSpan(
+                              text: "Vampire of new orleans do recall that i am an original.",
+                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                            ),
+                          )
+                          // child: RichText(
+                          //   softWrap: true,
+                          //   overflow: TextOverflow.visible,
+                          //   text: TextSpan(
+                          //     children: [
+                          //       TextSpan(
+                          //         text: "Liked By ",
+                          //         style: TextStyle(color: Colors.black),
+                          //       ),
+                          //       TextSpan(
+                          //         text: "Sigmund,",
+                          //         style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             color: Colors.black),
+                          //       ),
+                          //       TextSpan(
+                          //         text: " Yessenia,",
+                          //         style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             color: Colors.black),
+                          //       ),
+                          //       TextSpan(
+                          //         text: " Dayana",
+                          //         style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             color: Colors.black),
+                          //       ),
+                          //       TextSpan(
+                          //         text: " and",
+                          //         style: TextStyle(
+                          //           color: Colors.black,
+                          //         ),
+                          //       ),
+                          //       TextSpan(
+                          //         text: " 1263 others",
+                          //         style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             color: Colors.black),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                        ),
+
+                        // caption
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 5,
+                          ),
+                          child: RichText(
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "posts[i].username",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black),
+                                ),
+                                // TextSpan(
+                                //   text: " mlkl",
+                                //   style: TextStyle(color: Colors.black),
                                 // ),
                               ],
                             ),
-
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.symmetric(
-                                horizontal: 14,
-                              ),
-                              child: RichText(
-                                softWrap: true,
-                                overflow: TextOverflow.visible,
-                                text: TextSpan(
-                                  text: "Vampire of new orleans do recall that i am an original.",
-                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
-                                ),
-                              )
-                              // child: RichText(
-                              //   softWrap: true,
-                              //   overflow: TextOverflow.visible,
-                              //   text: TextSpan(
-                              //     children: [
-                              //       TextSpan(
-                              //         text: "Liked By ",
-                              //         style: TextStyle(color: Colors.black),
-                              //       ),
-                              //       TextSpan(
-                              //         text: "Sigmund,",
-                              //         style: TextStyle(
-                              //             fontWeight: FontWeight.bold,
-                              //             color: Colors.black),
-                              //       ),
-                              //       TextSpan(
-                              //         text: " Yessenia,",
-                              //         style: TextStyle(
-                              //             fontWeight: FontWeight.bold,
-                              //             color: Colors.black),
-                              //       ),
-                              //       TextSpan(
-                              //         text: " Dayana",
-                              //         style: TextStyle(
-                              //             fontWeight: FontWeight.bold,
-                              //             color: Colors.black),
-                              //       ),
-                              //       TextSpan(
-                              //         text: " and",
-                              //         style: TextStyle(
-                              //           color: Colors.black,
-                              //         ),
-                              //       ),
-                              //       TextSpan(
-                              //         text: " 1263 others",
-                              //         style: TextStyle(
-                              //             fontWeight: FontWeight.bold,
-                              //             color: Colors.black),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                            ),
-
-                            // caption
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 5,
-                              ),
-                              child: RichText(
-                                softWrap: true,
-                                overflow: TextOverflow.visible,
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: "posts[i].username",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black),
-                                    ),
-                                    // TextSpan(
-                                    //   text: " mlkl",
-                                    //   style: TextStyle(color: Colors.black),
-                                    // ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            // post date
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                horizontal: 14,
-                              ),
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "2 days ago",
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                      // height: 150.0,
-                      // width: 150.0,
-                      //child: Image.network(url),
-                    );
+
+                        // post date
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 14,
+                          ),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "2 days ago",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // height: 150.0,
+                  // width: 150.0,
+                  //child: Image.network(url),
+                );
 
 //                return FeedTile(
 //                  wiggle: currentpost,
@@ -304,13 +284,11 @@ class _FeedsPageState extends State<FeedsPage> {
 //                  postId: postId,
 //                  likes: likes,
 //                );
-                  })
-                  : Container();
+              })
+              : Container();
 
-            },
-            ),
-        ],
-      ),
+        },
+        ),
       );
   }
 }
