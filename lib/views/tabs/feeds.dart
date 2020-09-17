@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:techstagram/models/wiggle.dart';
 import 'package:techstagram/services/database.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 import '../../constants3.dart';
 
@@ -94,9 +95,184 @@ class _FeedsPageState extends State<FeedsPage> {
 //                  }
 //                }
                 return Container(
-                  height: 150.0,
-                  width: 150.0,
-                  child: Image.network(url),
+                  child: Container(
+                    color: Colors.white,
+                    child: Column(
+                      children: <Widget>[
+
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(40),
+                                    child: Image(
+                                      image: NetworkImage(url),
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("posts[i].username"),
+                                ],
+                              ),
+                              IconButton(
+                                icon: Icon(SimpleLineIcons.options),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                        ),
+                        //Image.network(url),
+
+                        FadeInImage(
+                          image: NetworkImage(url),
+                          //image: NetworkImage("posts[i].postImage"),
+                          placeholder: AssetImage("assets/images/empty.png"),
+                          width: MediaQuery.of(context).size.width,
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(FontAwesome.heart_o),
+                                ),
+                                Text("123"),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(FontAwesome.comment_o),
+                                ),
+                                Text("23"),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(FontAwesome.send_o),
+                                ),
+                              ],
+                            ),
+                            // IconButton(
+                            //   onPressed: () {},
+                            //   icon: Icon(FontAwesome.bookmark_o),
+                            // ),
+                          ],
+                        ),
+
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 14,
+                          ),
+                          child: RichText(
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            text: TextSpan(
+                              text: "Vampire of new orleans do recall that i am an original.",
+                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                            ),
+                          )
+                          // child: RichText(
+                          //   softWrap: true,
+                          //   overflow: TextOverflow.visible,
+                          //   text: TextSpan(
+                          //     children: [
+                          //       TextSpan(
+                          //         text: "Liked By ",
+                          //         style: TextStyle(color: Colors.black),
+                          //       ),
+                          //       TextSpan(
+                          //         text: "Sigmund,",
+                          //         style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             color: Colors.black),
+                          //       ),
+                          //       TextSpan(
+                          //         text: " Yessenia,",
+                          //         style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             color: Colors.black),
+                          //       ),
+                          //       TextSpan(
+                          //         text: " Dayana",
+                          //         style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             color: Colors.black),
+                          //       ),
+                          //       TextSpan(
+                          //         text: " and",
+                          //         style: TextStyle(
+                          //           color: Colors.black,
+                          //         ),
+                          //       ),
+                          //       TextSpan(
+                          //         text: " 1263 others",
+                          //         style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             color: Colors.black),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                        ),
+
+                        // caption
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 5,
+                          ),
+                          child: RichText(
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: "posts[i].username",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black),
+                                ),
+                                // TextSpan(
+                                //   text: " mlkl",
+                                //   style: TextStyle(color: Colors.black),
+                                // ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // post date
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 14,
+                          ),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "2 days ago",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // height: 150.0,
+                  // width: 150.0,
+                  //child: Image.network(url),
                 );
 
 //                return FeedTile(

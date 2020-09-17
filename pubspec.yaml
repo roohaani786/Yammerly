@@ -78,6 +78,7 @@ dependencies:
   holding_gesture: ^0.0.3
   flutter_search_bar:
   firebase_messaging:
+  flutter_icons: ^1.0.0+1
 
 dev_dependencies:
   flutter_test:
