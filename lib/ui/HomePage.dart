@@ -265,7 +265,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                   child: FeedsPage(),
                 ),
                 new Container(
-                  child: OthersProfile(),
+                  child: NotificationsPage(),
                 ),
                 new Container(child: AccountBottomIconScreen()),
               ],

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
@@ -85,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
       bioController.text = docSnap.data["bio"];
       genderController.text = docSnap.data["gender"];
       linkController.text = docSnap.data["link"];
-//      photoUrlController = docSnap.data["photoUrl"];
+      photoUrlController.text = docSnap.data["photoURL"];
       displayNameController.text = docSnap.data["displayName"];
       workController.text = docSnap.data["work"];
       educationController.text = docSnap.data["education"];
@@ -154,11 +155,11 @@ class _ProfilePageState extends State<ProfilePage> {
       isChanged = true;
     }
 
-//    else if (docSnap.data["photoUrl"].toString().trim() !=
-//        photoUrlController.text.trim()) {
-//      print("photoUrl Changed");
-//      isChanged = true;
-//    }
+    else if (docSnap.data["photoUrl"].toString().trim() !=
+        photoUrlController.text.trim()) {
+      print("photoUrl Changed");
+      isChanged = true;
+    }
     else if (docSnap.data["displayName"].toString().trim() !=
         displayNameController.text.trim()) {
       print("displayName Changed");
@@ -207,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
     data["bio"] = bioController.text.trim();
     data["gender"] = genderController.text.trim();
     data["link"] = linkController.text.trim();
-//    data["photoUrl"] = photoUrlController.text.trim();
+    data["photoUrl"] = photoUrlController.text.trim();
     data["displayName"] = displayNameController.text.trim();
     data["work"] = workController.text.trim();//work
     data["education"] = educationController.text.trim();//education
@@ -301,11 +302,22 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(
                       height: 16,
                     ),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage:
+                      NetworkImage(photoUrlController.text),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
                     TextFormField(
                       controller: firstNameController,
                       enabled: isEditable,
                       decoration: InputDecoration(
-                          labelText: "First Name",
+                          labelText: "First Name",labelStyle: TextStyle(
+                        color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -318,7 +330,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       controller: lastNameController,
                       enabled: isEditable,
                       decoration: InputDecoration(
-                          labelText: "Last Name",
+                          labelText: "Last Name",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -337,7 +351,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          labelText: "Phone Number",
+                          labelText: "Phone Number",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -353,7 +369,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       enabled: isEditable,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                          labelText: "Email Id",
+                          labelText: "Email Id",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -369,7 +387,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
                       decoration: InputDecoration(
-                          labelText: "Bio",
+                          labelText: "Bio",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -384,7 +404,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.text,
                       maxLines: 1,
                       decoration: InputDecoration(
-                          labelText: "Gender",
+                          labelText: "Gender",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -400,7 +422,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.text,
                       maxLines: 1,
                       decoration: InputDecoration(
-                          labelText: "link",
+                          labelText: "Link",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -417,7 +441,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.text,
                       maxLines: 1,
                       decoration: InputDecoration(
-                          labelText: "Display Name",
+                          labelText: "Display Name",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -433,7 +459,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.multiline,
                       maxLines: 1,
                       decoration: InputDecoration(
-                          labelText: "work",
+                          labelText: "Work",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -449,7 +477,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.multiline,
                       maxLines: 1,
                       decoration: InputDecoration(
-                          labelText: "education",
+                          labelText: "Education",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -465,7 +495,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.multiline,
                       maxLines: 1,
                       decoration: InputDecoration(
-                          labelText: "currentCity",
+                          labelText: "Current City",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -481,7 +513,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.multiline,
                       maxLines: 1,
                       decoration: InputDecoration(
-                          labelText: "homeTown",
+                          labelText: "Home Town",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
@@ -497,7 +531,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.multiline,
                       maxLines: 1,
                       decoration: InputDecoration(
-                          labelText: "relationship",
+                          labelText: "Relationship",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:
