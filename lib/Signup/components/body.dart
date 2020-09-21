@@ -550,6 +550,8 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                 ),
+
+
                 Padding(
                   padding: const EdgeInsets.only(
                       right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
@@ -592,59 +594,45 @@ class _BodyState extends State<Body> {
                   ),
                 ),
 
+
           Padding(
             padding: const EdgeInsets.only(
                 right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
             child: Container(
               height: 50.0,
               width: 250.0,
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
-                padding:
-                EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
-                width: size.width * 0.8,
-                decoration: BoxDecoration(
-                  color: kPrimaryLightColor,
-                  borderRadius: BorderRadius.circular(29),
-                  border: Border.all(
-                    color: (errordikhaoDN == true)
-                        ? Colors.red
-                        : kPrimaryLightColor,
-                  ),
-                ),
-                child: TextFieldContainer(
-                  child: TextFormField(
-                    style: TextStyle(
-                        fontSize: 12.0, height: 1.5, color: Colors.black),
-                    textInputAction: TextInputAction.next,
-                    focusNode: _displayName,
-                    onFieldSubmitted: (term) {
-                      _fieldFocusChange(context, _displayName, _phoneNumber);
-                    },
-                    cursorColor: kPrimaryColor,
+              child: TextFieldContainer(
+                child: TextFormField(
+                  style: TextStyle(
+                      fontSize: 12.0, height: 1.5, color: Colors.black),
+                  textInputAction: TextInputAction.next,
+                  focusNode: _displayName,
+                  onFieldSubmitted: (term) {
+                    _fieldFocusChange(context, _displayName, _phoneNumber);
+                  },
+                  cursorColor: kPrimaryColor,
 
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(
-                          left: 0, right: 3, top: 6, bottom: 12),
-                      errorStyle: TextStyle(
-                        fontSize: 10.0,
-                        height: 0.3,
-                      ),
-                      icon: Icon(
-                        Icons.person,
-                        color: kPrimaryColor,
-                      ),
-                      fillColor: Colors.deepPurple.shade50,
-                      filled: true,
-                      hintText: "Display name",
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.only(
+                        left: 0, right: 3, top: 6, bottom: 12),
+                    errorStyle: TextStyle(
+                      fontSize: 10.0,
+                      height: 0.3,
                     ),
-                    controller: displayNameInputController,
-                    validator: validateDisplayName,
-                    //enableInteractiveSelection: false,
-                    //  keyboardType: TextInputType.name,
-//                      validator: emailValidator,
+                    icon: Icon(
+                      Icons.person,
+                      color: kPrimaryColor,
+                    ),
+                    fillColor: Colors.deepPurple.shade50,
+                    filled: true,
+                    hintText: "Display name",
                   ),
+                  controller: displayNameInputController,
+                  validator: validateDisplayName,
+                  //enableInteractiveSelection: false,
+                  //  keyboardType: TextInputType.name,
+//                      validator: emailValidator,
                 ),
               ),
             ),

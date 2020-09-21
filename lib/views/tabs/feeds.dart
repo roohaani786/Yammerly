@@ -16,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:techstagram/models/wiggle.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:techstagram/views/tabs/comments_screen.dart';
 
 import '../../constants3.dart';
 
@@ -341,7 +342,15 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       ),
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: ((context) => CommentsScreen(
+                                                    // documentReference: list[index].reference,
+                                                    // user: currentUser,
+                                                  ))));
+                                        },
                                         icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
                                       ),
                                       Text("23"),
