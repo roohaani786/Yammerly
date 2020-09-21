@@ -35,7 +35,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       bioController,genderController,linkController,photoUrlController,
       displayNameController,workController,educationController,
       currentCityController,homeTownController,relationshipController,
-  followersController,followingController;
+  followersController,followingController,pinCodeController;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -71,6 +71,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     lastNameController = TextEditingController();
     emailController = TextEditingController();
     phoneNumberController = TextEditingController();
+    pinCodeController = TextEditingController();
     bioController = TextEditingController();
     genderController = TextEditingController();
     linkController = TextEditingController();
@@ -81,7 +82,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     currentCityController = TextEditingController();
     homeTownController = TextEditingController();
     relationshipController = TextEditingController();
-
+    pinCodeController = TextEditingController();
     followersController = TextEditingController();
     followingController = TextEditingController();
 
@@ -117,7 +118,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       currentCityController.text = docSnap.data["currentCity"];
       homeTownController.text = docSnap.data["homeTown"];
       relationshipController.text = docSnap.data["relationship"];
-
+      pinCodeController.text = docSnap.data["pincode"];
       followersController.text = docSnap.data["followers"];
       followingController.text = docSnap.data["following"];
       setState(() {
@@ -314,6 +315,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
             ),
           ),
         ),
+        
+//        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+//        floatingActionButton: FloatingActionButton(
+//        child: Icon(Icons.add),onPressed: null),
       ),
     );
   }

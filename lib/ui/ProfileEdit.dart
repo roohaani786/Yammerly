@@ -1,12 +1,23 @@
+import 'dart:io';
+import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
+import 'package:image/image.dart' as ImD;
+
+import '../constants3.dart';
 
 class ProfilePage extends StatefulWidget {
   static final String pageName = "/ProfilePage";
@@ -26,10 +37,10 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      phoneNumberController,
+      phoneNumberController,uidController,
   bioController,genderController,linkController,photoUrlController,
   displayNameController,workController,educationController,
-  currentCityController,homeTownController,relationshipController;
+  currentCityController,homeTownController,relationshipController,pincodeController ;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
@@ -60,7 +71,9 @@ class _ProfilePageState extends State<ProfilePage> {
     currentCityController = TextEditingController();
     homeTownController = TextEditingController();
     relationshipController = TextEditingController();
+    pincodeController = TextEditingController();
 
+    uidController = TextEditingController();
 
     super.initState();
     fetchProfileData();
@@ -93,6 +106,10 @@ class _ProfilePageState extends State<ProfilePage> {
       currentCityController.text = docSnap.data["currentCity"];
       homeTownController.text = docSnap.data["homeTown"];
       relationshipController.text = docSnap.data["relationship"];
+      pincodeController.text = docSnap.data["pincode"];
+
+      uidController.text = docSnap.data["uid"];
+
       setState(() {
         isLoading = false;
         isEditable = true;
@@ -101,6 +118,124 @@ class _ProfilePageState extends State<ProfilePage> {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
+
+  File profileImageFile;
+
+  File _image;
+  String _uploadedFileURL;
+
+  Future pickImage() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+
+//    uploadFile();
+    uploadPhoto(_image);
+
+    print("Done..");
+  }
+
+  Future<String> uploadPhoto(mImageFile) async {
+    StorageUploadTask mStorageUploadTask =
+    storageReference.child("dp_$uidController.jpg").putFile(mImageFile);
+    StorageTaskSnapshot storageTaskSnapshot =
+    await mStorageUploadTask.onComplete;
+    String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  bool uploading = false;
+
+  controlUploadAndSave() async {
+    setState(() {
+      uploading = true;
+    });
+
+   await compressPhoto();
+
+    String downloadUrl = await uploadPhoto(_image);
+    savePostInfoToFirestore(downloadUrl);
+
+    setState(() {
+      // file = null;
+      uploading = false;
+    });
+//    Navigator.pop(context);
+  }
+
+  compressPhoto() async {
+    final directory = await getTemporaryDirectory();
+    final path = directory.path;
+    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
+    final compressedImage = File('$path/img_$uidController.jpg')
+      ..writeAsBytesSync(
+        ImD.encodeJpg(mImageFile, quality: 60),
+      );
+    setState(() {
+      _image = compressedImage;
+    });
+  }
+
+  final StorageReference storageReference =
+  FirebaseStorage.instance.ref().child("Display Pictures");
+  final postReference = Firestore.instance.collection("users");
+
+  savePostInfoToFirestore(String url) {
+    postReference.document(currUser.uid).setData({
+      "uid": currUser.uid,
+      "photoURL": url,
+//      "photourl": widget.userData.photoUrl,
+    });
+  }
+
+  Future uploadFile() async {
+    StorageReference storageReference =
+
+    FirebaseStorage.instance
+        .ref()
+        .child('users').child('photoURL');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        _uploadedFileURL = fileURL;
+        photoUrlController.text = _uploadedFileURL;
+      });
+    });
+  }
+
+
+//  savePostInfoToFirestore(String url, String description) {
+//    storageReference.document(currUser).setData({
+//
+//      "photoURL": photoUrlController.text,
+////      "photourl": widget.userData.photoUrl,
+//    });
+//  }
+
+
+  Future pickImagefromCamera() async {
+    profileImageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+
+  }
+
+
+
+  Future<void> updateProfilePicture(File profilePictureUrl) async {
+    String uid = uidController.text;
+    DocumentReference ref = Firestore.instance.collection("users").document(
+        uid); //reference of the user's document node in database/users. This node is created using uid
+    var data = {
+      'photoUrL': profilePictureUrl,
+    };
+    await ref.setData(data, merge: true); // set the photoURL
+  }
+
+
+
 
 
 
@@ -155,16 +290,18 @@ class _ProfilePageState extends State<ProfilePage> {
       isChanged = true;
     }
 
-    else if (docSnap.data["photoUrl"].toString().trim() !=
-        photoUrlController.text.trim()) {
-      print("photoUrl Changed");
-      isChanged = true;
-    }
+
     else if (docSnap.data["displayName"].toString().trim() !=
         displayNameController.text.trim()) {
       print("displayName Changed");
       isChanged = true;
-    } //displayName
+    }
+
+//    else if (docSnap.data["photoUrlController"].toString().trim() !=
+//        photoUrlController.text.trim()) {
+//      print("displayName Changed");
+//      isChanged = true;
+//    } //displayName
 
     else if (docSnap.data["work"].toString().trim() !=
         workController.text.trim()) {
@@ -194,12 +331,25 @@ class _ProfilePageState extends State<ProfilePage> {
         relationshipController.text.trim()) {
       print("relationship Changed");
       isChanged = true;
+    }
+
+//    else if (docSnap.data["photoURL"].toString().trim() !=
+//        photoUrlController.text.trim()) {
+//      print("photoURL Changed");
+//      isChanged = true;
+//    }
+
+    else if (docSnap.data["pincode"].toString().trim() !=
+        pincodeController.text.trim()) {
+      print("Pincode Changed");
+      isChanged = true;
     }//relationship
 
     if (isChanged) {
     String snackbarContent = "";
     setState(() => isLoading = true);
     try {
+
     Map<String, dynamic> data = {};
     data["fname"] = firstNameController.text.trim();
     data["surname"] = lastNameController.text.trim();
@@ -210,6 +360,7 @@ class _ProfilePageState extends State<ProfilePage> {
     data["link"] = linkController.text.trim();
     data["photoUrl"] = photoUrlController.text.trim();
     data["displayName"] = displayNameController.text.trim();
+    data["pincode"] = pincodeController.text.trim();
     data["work"] = workController.text.trim();//work
     data["education"] = educationController.text.trim();//education
     data["currentCity"] = currentCityController.text.trim();//currentCity
@@ -302,15 +453,81 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(
                       height: 16,
                     ),
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage:
-                      NetworkImage(photoUrlController.text),
-                      backgroundColor: Colors.transparent,
+                    GestureDetector(
+                      onTap: (){
+    showDialog<void>(
+    context: context,// THIS WAS MISSING// user must tap button!
+    builder: (BuildContext context) {
+    return AlertDialog(
+    title: Text('Select image from :-',style: TextStyle(
+      fontSize: 15.0,
+    ),),
+    content: SingleChildScrollView(
+    child: ListBody(
+    children: <Widget>[
+    GestureDetector(
+      onTap: (){
+        pickImagefromCamera();
+      },
+      child: Row(
+        children: [
+          Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text('Camera'),
+          ),
+        ],
+      ),
+    ),
+    Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: GestureDetector(
+        onTap: (){
+          pickImage();
+        },
+        child: Row(
+            children: [
+              Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Text('Gallery'),
+              ),
+            ],
+          ),
+      ),
+    ),
+    ],
+    ),
+    ),
+    );
+
+                      });
+                      },
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage:
+                        NetworkImage(photoUrlController.text),
+                        backgroundColor: Colors.transparent,
+                      ),
                     ),
                     SizedBox(
                       height: 16,
                     ),
+
+                    TextFormField(
+                      controller: photoUrlController,
+                      enabled: isEditable,
+
+                      decoration: InputDecoration(
+                          labelText: "First Name",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+
                     TextFormField(
                       controller: firstNameController,
                       enabled: isEditable,
@@ -503,6 +720,26 @@ class _ProfilePageState extends State<ProfilePage> {
                               borderSide:
                               BorderSide(color: Colors.black, width: 1))),
                     ),
+
+                    SizedBox(
+                      height: 16,
+                    ),
+
+                    TextFormField(
+                      controller: pincodeController,
+                      enabled: isEditable,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          labelText: "Pin Code",labelStyle: TextStyle(
+                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                      ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+
                     SizedBox(
                       height: 16,
                     ),

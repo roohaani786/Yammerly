@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/models/posts.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
@@ -30,6 +31,7 @@ class _FeedsPageState extends State<FeedsPage> {
   bool isEditable = false;
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
+  displayNameController,photoUrlController,
   timestampController,likesController;
   List<Posts> posts;
 
@@ -66,6 +68,36 @@ class _FeedsPageState extends State<FeedsPage> {
       });
     });
   }
+
+  var time = "s";
+
+  String readTimestamp(int timestamp) {
+    var now = DateTime.now();
+    var format = DateFormat('HH:mm a');
+    var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    var diff = now.difference(date);
+    var time = '';
+
+    if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
+      time = format.format(date);
+    } else if (diff.inDays > 0 && diff.inDays < 7) {
+      if (diff.inDays == 1) {
+        time = diff.inDays.toString() + ' DAY AGO';
+      } else {
+        time = diff.inDays.toString() + ' DAYS AGO';
+      }
+    } else {
+      if (diff.inDays == 7) {
+        time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
+      } else {
+
+        time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
+      }
+    }
+
+    return time;
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -77,13 +109,48 @@ class _FeedsPageState extends State<FeedsPage> {
           return snapshot.hasData
               ? Column(
                 children: [
-//                  Text("Hash Feed",style: TextStyle(
-//                    color: Colors.deepPurple,
-//                    backgroundColor: Colors.transparent,
-//                    fontWeight: FontWeight.bold,
-//                    fontSize: 30.0,
-//                    fontFamily: "Cursive"
-//                  ),),
+                Container(
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(onPressed: (){},
+                        color: Colors.transparent,
+                          child: Row(
+                            children: [
+                              Icon(FontAwesomeIcons.plug,color: Colors.deepPurpleAccent,),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Add Post",style:
+                                  TextStyle(
+                                    color: Colors.deepPurpleAccent,
+                                  ),),
+                              ),
+                            ],
+                          ),
+                          ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(left: 100.0),
+                      ),
+                      FlatButton(onPressed: (){},
+                        color: Colors.transparent,
+                        child: Row(
+                          children: [
+                            Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Rate us",style:
+                              TextStyle(
+                                color: Colors.deepPurpleAccent,
+                              ),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                   new Expanded(
                     child: ListView.builder(
                     controller: scrollController,
@@ -92,13 +159,21 @@ class _FeedsPageState extends State<FeedsPage> {
                       String email = snapshot.data.documents[index]['email'];
                       String description =
                       snapshot.data.documents[index]['description'];
+                      String displayName =
+                      snapshot.data.documents[index]['displayName'];
+                      String photoUrl =
+                      snapshot.data.documents[index]['photoURL'];
                       Timestamp timestamp =
                       snapshot.data.documents[index]['timestamp'];
                       String url = snapshot.data.documents[index]['url'];
                       String postId = snapshot.data.documents[index]['postId'];
                       int likes = snapshot.data.documents[index]['likes'];
 
+                      readTimestamp(timestamp.seconds);
+
+
                       print(email);
+                      print(displayName);
 //                for (int i = 0; i < posts.length; i++) {
 //                  if (posts[i].email == email) {
 //                    currentpost = posts[i];
@@ -123,7 +198,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(40),
                                           child: Image(
-                                            image: NetworkImage(url),
+                                            image: NetworkImage(photoUrl),
                                             width: 40,
                                             height: 40,
                                             fit: BoxFit.cover,
@@ -132,7 +207,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        Text("posts[i].username"),
+                                        Text(displayName),
                                       ],
                                     ),
                                     IconButton(
@@ -157,7 +232,9 @@ class _FeedsPageState extends State<FeedsPage> {
                                   Row(
                                     children: <Widget>[
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+
+                                        },
                                         icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
                                       ),
                                       Text("123"),
@@ -188,52 +265,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                   softWrap: true,
                                   overflow: TextOverflow.visible,
                                   text: TextSpan(
-                                    text: "Vampire of new orleans do recall that i am an original.",
-                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                    text: description,
+                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,),
                                   ),
                                 )
-                                // child: RichText(
-                                //   softWrap: true,
-                                //   overflow: TextOverflow.visible,
-                                //   text: TextSpan(
-                                //     children: [
-                                //       TextSpan(
-                                //         text: "Liked By ",
-                                //         style: TextStyle(color: Colors.black),
-                                //       ),
-                                //       TextSpan(
-                                //         text: "Sigmund,",
-                                //         style: TextStyle(
-                                //             fontWeight: FontWeight.bold,
-                                //             color: Colors.black),
-                                //       ),
-                                //       TextSpan(
-                                //         text: " Yessenia,",
-                                //         style: TextStyle(
-                                //             fontWeight: FontWeight.bold,
-                                //             color: Colors.black),
-                                //       ),
-                                //       TextSpan(
-                                //         text: " Dayana",
-                                //         style: TextStyle(
-                                //             fontWeight: FontWeight.bold,
-                                //             color: Colors.black),
-                                //       ),
-                                //       TextSpan(
-                                //         text: " and",
-                                //         style: TextStyle(
-                                //           color: Colors.black,
-                                //         ),
-                                //       ),
-                                //       TextSpan(
-                                //         text: " 1263 others",
-                                //         style: TextStyle(
-                                //             fontWeight: FontWeight.bold,
-                                //             color: Colors.black),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
                               ),
 
                               // caption
@@ -243,24 +278,24 @@ class _FeedsPageState extends State<FeedsPage> {
                                   horizontal: 14,
                                   vertical: 5,
                                 ),
-                                child: RichText(
-                                  softWrap: true,
-                                  overflow: TextOverflow.visible,
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: "posts[i].username",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
-                                      ),
-                                      // TextSpan(
-                                      //   text: " mlkl",
-                                      //   style: TextStyle(color: Colors.black),
-                                      // ),
-                                    ],
-                                  ),
-                                ),
+//                                child: RichText(
+//                                  softWrap: true,
+//                                  overflow: TextOverflow.visible,
+//                                  text: TextSpan(
+//                                    children: [
+//                                      TextSpan(
+//                                        text: displayName,
+//                                        style: TextStyle(
+//                                            fontWeight: FontWeight.bold,
+//                                            color: Colors.black),
+//                                      ),
+//                                      // TextSpan(
+//                                      //   text: " mlkl",
+//                                      //   style: TextStyle(color: Colors.black),
+//                                      // ),
+//                                    ],
+//                                  ),
+//                                ),
                               ),
 
                               // post date
@@ -270,10 +305,11 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ),
                                 alignment: Alignment.topLeft,
                                 child: Text(
-                                  "2 days ago",
+                                  readTimestamp(timestamp.seconds),
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
                                     color: Colors.grey,
+                                    fontSize: 10.0,
                                   ),
                                 ),
                               ),

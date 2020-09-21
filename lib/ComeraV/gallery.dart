@@ -1,13 +1,19 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:techstagram/ComeraV/video_preview.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart'; // For Image Picker
 import 'package:path/path.dart' as Path;
+import 'package:techstagram/model/user.dart';
+import 'package:techstagram/models/user.dart';
+import 'package:techstagram/resources/auth.dart';
 import 'dart:io';
 
 import 'package:techstagram/resources/uploadimage.dart';
@@ -19,6 +25,22 @@ class Gallery extends StatefulWidget {
 
 class _GalleryState extends State<Gallery> {
   String currentFilePath;
+
+
+
+
+
+  @override
+  void initState() {
+
+
+
+    super.initState();
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

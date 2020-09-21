@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: Colors.white,
               leading: IconButton(
                 icon: Icon(
-                  Icons.search,
+                  FontAwesomeIcons.searchengin,
                   color: Colors.deepPurple,
                 ),
                 onPressed: () {
@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
 
                 IconButton(
                   icon: Icon(
-                    Icons.message,
+                    FontAwesomeIcons.teamspeak,
                     color: Colors.deepPurple,
                   ),
                   onPressed: () {

@@ -1,7 +1,7 @@
 import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:techstagram/models/user.dart';
-import 'package:techstagram/models/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as ImD;
+
+import 'auth.dart';
 
 class UploadImage extends StatefulWidget {
   final User userData;
@@ -22,9 +24,24 @@ class UploadImage extends StatefulWidget {
 
 class _UploadImageState extends State<UploadImage>
     with AutomaticKeepAliveClientMixin<UploadImage> {
+
+  TextEditingController
+  emailController,
+      uidController,
+      displayNameController,photoUrlController,
+  descriptionController;
+
+
+  Map<String, dynamic> _profile;
+  bool _loading = false;
+
+  DocumentSnapshot docSnap;
+  FirebaseUser currUser;
+
+
   File file;
-  TextEditingController descriptionTextEditingController =
-  TextEditingController();
+//  TextEditingController descriptionTextEditingController =
+//  TextEditingController();
   bool uploading = false;
   final StorageReference storageReference =
   FirebaseStorage.instance.ref().child("Post Pictures");
@@ -68,9 +85,9 @@ class _UploadImageState extends State<UploadImage>
     await compressPhoto();
 
     String downloadUrl = await uploadPhoto(file);
-    savePostInfoToFirestore(downloadUrl, descriptionTextEditingController.text);
+    savePostInfoToFirestore(downloadUrl, descriptionController.text);
 
-    descriptionTextEditingController.clear();
+    descriptionController.clear();
     setState(() {
       // file = null;
       uploading = false;
@@ -82,10 +99,13 @@ class _UploadImageState extends State<UploadImage>
   savePostInfoToFirestore(String url, String description) {
     postReference.document(postId).setData({
       "postId": postId,
-//      "name": widget.userData.displayName,
+      "uid" : uidController.text,
+      "displayName": displayNameController.text,
       "timestamp": Timestamp.now(),
+      "email": emailController.text,
+      "photoURL" :photoUrlController.text,
 //      "email": widget.userData.email,
-//      "description": description,
+      "description": descriptionController.text,
       "likes": 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
@@ -94,6 +114,7 @@ class _UploadImageState extends State<UploadImage>
 
   displayUploadFormScreen() {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -159,10 +180,23 @@ class _UploadImageState extends State<UploadImage>
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),),
-                  Text("djsjfsgfhghdfghdfh",style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                  ),),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: descriptionController,
+                      enabled: true,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+//                          labelText: "#Hashpost",labelStyle: TextStyle(
+//                          color: Colors.grey,fontWeight: FontWeight.bold
+//                      ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -175,7 +209,38 @@ class _UploadImageState extends State<UploadImage>
   @override
   void initState() {
     file = widget.file;
+    uidController = TextEditingController();
+    emailController = TextEditingController();
+    photoUrlController = TextEditingController();
+    displayNameController = TextEditingController();
+    descriptionController = TextEditingController();
+
+    // Subscriptions are created here
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+
     super.initState();
+    fetchProfileData();
+  }
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  fetchProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(currUser.uid)
+          .get();
+      uidController.text = docSnap.data["uid"];
+      emailController.text = docSnap.data["email"];
+      displayNameController.text = docSnap.data["displayName"];
+      photoUrlController.text = docSnap.data["photoURL"];
+
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
   }
 
   @override
