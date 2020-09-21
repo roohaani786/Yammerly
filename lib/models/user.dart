@@ -22,7 +22,7 @@ class User {
    String link;
    String phone;
    String gender;
-
+   String description;
    String work;
    String education;
    String currentCity;
