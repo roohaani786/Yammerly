@@ -29,6 +29,7 @@ class _BodyState extends State<Body> {
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
   TextEditingController firstNameInputController;
   TextEditingController lastNameInputController;
+  TextEditingController displayNameInputController;
   TextEditingController phoneNumberController;
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
@@ -36,6 +37,7 @@ class _BodyState extends State<Body> {
   bool success = false;
   final FocusNode _firstName = FocusNode();
   final FocusNode _lastName = FocusNode();
+  final FocusNode _displayName = FocusNode();
   final FocusNode _phoneNumber = FocusNode();
   final FocusNode _email = FocusNode();
   final FocusNode _pwd = FocusNode();
@@ -51,6 +53,7 @@ class _BodyState extends State<Body> {
   initState() {
     firstNameInputController = new TextEditingController();
     lastNameInputController = new TextEditingController();
+    displayNameInputController = new TextEditingController();
     phoneNumberController = new TextEditingController();
     emailInputController = new TextEditingController();
     pwdInputController = new TextEditingController();
@@ -216,8 +219,23 @@ class _BodyState extends State<Body> {
   }
 
   bool errordikhaoN = false;
+  bool errordikhaoDN = false;
   bool isLoading = false;
   int initialindexg;
+
+  String validateDisplayName(String value) {
+// Indian Mobile number are of 10 digit only
+
+    if (value.length == null){
+      errordikhaoDN = true;
+    }
+
+
+    // return 'Mobile Number must be of 10 digit';
+
+    else
+      return null;
+  }
 
   String validateMobile(String value) {
 // Indian Mobile number are of 10 digit only
@@ -292,7 +310,7 @@ class _BodyState extends State<Body> {
 
 
   Future<String> signup(String email, String password, String firstname,
-      String lastname, String phonenumber) async {
+      String lastname, String phonenumber, String displayname) async {
     FirebaseUser user;
     String errorMessage;
 
@@ -323,6 +341,7 @@ class _BodyState extends State<Body> {
                 "surname": lastNameInputController.text,
                 "phonenumber": phoneNumberController.text,
                 "email": emailInputController.text,
+                "displayname": displayNameInputController.text,
               })
                   .then((result) =>
               {
@@ -544,7 +563,7 @@ class _BodyState extends State<Body> {
                         textInputAction: TextInputAction.next,
                         focusNode: _lastName,
                         onFieldSubmitted: (term) {
-                          _fieldFocusChange(context, _lastName, _phoneNumber);
+                          _fieldFocusChange(context, _lastName, _displayName);
                         },
                         cursorColor: kPrimaryColor,
 
@@ -572,6 +591,64 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                 ),
+
+          Padding(
+            padding: const EdgeInsets.only(
+                right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
+            child: Container(
+              height: 50.0,
+              width: 250.0,
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 5),
+                padding:
+                EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+                width: size.width * 0.8,
+                decoration: BoxDecoration(
+                  color: kPrimaryLightColor,
+                  borderRadius: BorderRadius.circular(29),
+                  border: Border.all(
+                    color: (errordikhaoDN == true)
+                        ? Colors.red
+                        : kPrimaryLightColor,
+                  ),
+                ),
+                child: TextFieldContainer(
+                  child: TextFormField(
+                    style: TextStyle(
+                        fontSize: 12.0, height: 1.5, color: Colors.black),
+                    textInputAction: TextInputAction.next,
+                    focusNode: _displayName,
+                    onFieldSubmitted: (term) {
+                      _fieldFocusChange(context, _displayName, _phoneNumber);
+                    },
+                    cursorColor: kPrimaryColor,
+
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.only(
+                          left: 0, right: 3, top: 6, bottom: 12),
+                      errorStyle: TextStyle(
+                        fontSize: 10.0,
+                        height: 0.3,
+                      ),
+                      icon: Icon(
+                        Icons.person,
+                        color: kPrimaryColor,
+                      ),
+                      fillColor: Colors.deepPurple.shade50,
+                      filled: true,
+                      hintText: "Display name",
+                    ),
+                    controller: displayNameInputController,
+                    validator: validateDisplayName,
+                    //enableInteractiveSelection: false,
+                    //  keyboardType: TextInputType.name,
+//                      validator: emailValidator,
+                  ),
+                ),
+              ),
+            ),
+          ),
 
                 Padding(
                   padding: const EdgeInsets.only(
@@ -819,7 +896,7 @@ class _BodyState extends State<Body> {
                     signup(emailInputController.text, pwdInputController.text,
                         firstNameInputController.text,
                         lastNameInputController.text,
-                        phoneNumberController.text);
+                        phoneNumberController.text,displayNameInputController.text);
 
 //                    if (_registerFormKey.currentState.validate()) {
 //                      if (pwdInputController.text ==

@@ -39,7 +39,7 @@ class _ChatsPageState extends State<ChatsPage> {
     else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Camera()),
+        MaterialPageRoute(builder: (context) => CameraS()),
       );
       cameraon = false;
 //      Navigator.push(

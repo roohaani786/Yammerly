@@ -5,7 +5,7 @@ import 'package:techstagram/ComeraV/camera_screen.dart';
 const Color barColor = const Color(0x20000000);
 
 
-class Camera extends StatelessWidget {
+class CameraS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

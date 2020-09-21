@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:techstagram/Login/login_screen.dart';
 
 class ProfileSettings extends StatefulWidget {
   @override
@@ -34,7 +36,21 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             tiles: [
               SettingsTile(title: 'Phone number', leading: Icon(Icons.phone)),
               SettingsTile(title: 'Email', leading: Icon(Icons.email)),
-              SettingsTile(title: 'Log out', leading: Icon(Icons.exit_to_app)),
+              SettingsTile(title: 'Log out', leading: IconButton(
+                  icon: new Icon(
+                    Icons.exit_to_app,
+                    size: 30.0,
+                  ),
+                  onPressed: () {
+                    FirebaseAuth.instance
+                        .signOut()
+                        .then((result) =>
+                        Navigator.push(context, new MaterialPageRoute(
+                            builder: (context) =>
+                            new LoginScreen())
+                        ))
+                        .catchError((err) => print(err));
+                  }),),
             ],
           ),
 
