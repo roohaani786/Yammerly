@@ -314,7 +314,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             liked = false;
                                             //var userData;
                                             DatabaseService().unlikepost(
-                                                likes, postId, email);
+                                                likes, postId, displayName);
                                           });
                                         }
                                             : () {
@@ -322,7 +322,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             liked = true;
                                             //var userData;
                                             DatabaseService().likepost(
-                                                likes,postId,email);
+                                                likes,postId,displayName);
                                           });
                                         },
                                         icon: liked
