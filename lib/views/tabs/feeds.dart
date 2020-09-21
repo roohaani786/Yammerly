@@ -53,6 +53,7 @@ class _FeedsPageState extends State<FeedsPage> {
   displayNameController,photoUrlController,
   timestampController,likesController;
   List<Posts> posts;
+  List<DocumentSnapshot> list;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -64,6 +65,8 @@ class _FeedsPageState extends State<FeedsPage> {
   Posts currentpost;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
 
   @override
   void initState() {
@@ -92,6 +95,8 @@ class _FeedsPageState extends State<FeedsPage> {
       });
     });
   }
+
+
 
   getlikes() {
     DatabaseService()
@@ -146,6 +151,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   bool liked = false;
   var time = "s";
+  User currentUser;
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
@@ -341,14 +347,15 @@ class _FeedsPageState extends State<FeedsPage> {
                                       ),
 
                                       ),
+
                                       IconButton(
                                         onPressed: () {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: ((context) => CommentsScreen(
-                                                    // documentReference: list[index].reference,
-                                                    // user: currentUser,
+                                                     documentReference: list[index].reference,
+                                                     user: currentUser,
                                                   ))));
                                         },
                                         icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
