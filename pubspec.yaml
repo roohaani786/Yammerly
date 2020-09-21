@@ -79,10 +79,11 @@ dependencies:
   flutter_search_bar:
   firebase_messaging:
   settings_ui:
+  fluro:
   flutter_icons: ^1.0.0+1
   sliding_up_panel:
   ext_storage:
-  fluro:
+
   permission_handler:
 
 dev_dependencies:

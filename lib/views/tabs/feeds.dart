@@ -106,6 +106,7 @@ class _FeedsPageState extends State<FeedsPage> {
         });
       }
     });
+
   }
 
   fetchLikes() async {
@@ -115,7 +116,6 @@ class _FeedsPageState extends State<FeedsPage> {
           .collection("posts")
           .document(currUser.uid)
           .get();
-      likesController.text = docSnap.data["likes"];
       setState(() {
         isLoading = false;
         isEditable = true;
@@ -133,6 +133,7 @@ class _FeedsPageState extends State<FeedsPage> {
           .document(currUser.uid)
           .get();
       emailController.text = docSnap.data["email"];
+      likesController.text = docSnap.data["likes"];
       setState(() {
         isLoading = false;
         isEditable = true;
@@ -237,6 +238,7 @@ class _FeedsPageState extends State<FeedsPage> {
                       snapshot.data.documents[index]['displayName'];
                       String photoUrl =
                       snapshot.data.documents[index]['photoURL'];
+
                       Timestamp timestamp =
                       snapshot.data.documents[index]['timestamp'];
                       String url = snapshot.data.documents[index]['url'];
@@ -312,7 +314,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             liked = false;
                                             //var userData;
                                             DatabaseService().unlikepost(
-                                                widget.likes, widget.postId, email);
+                                                likes, postId, email);
                                           });
                                         }
                                             : () {
@@ -320,7 +322,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             liked = true;
                                             //var userData;
                                             DatabaseService().likepost(
-                                                widget.likes, widget.postId, email);
+                                                likes,postId,email);
                                           });
                                         },
                                         icon: liked
@@ -333,7 +335,9 @@ class _FeedsPageState extends State<FeedsPage> {
                                         // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
                                       ),
                                       Text(
-                                        '${likesController.text}',
+                                        likes.toString(),style: TextStyle(
+                                        color: Colors.black,
+                                      ),
 
                                       ),
                                       IconButton(
