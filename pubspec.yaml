@@ -80,6 +80,10 @@ dependencies:
   firebase_messaging:
   settings_ui:
   flutter_icons: ^1.0.0+1
+  sliding_up_panel:
+  ext_storage:
+  fluro:
+  permission_handler:
 
 dev_dependencies:
   flutter_test:

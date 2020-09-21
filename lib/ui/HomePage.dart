@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:camera/new/src/support_android/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -246,7 +247,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                   onTap: () {
                     Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(
-                        builder: (context) => Camera(),
+                        builder: (context) => CameraS(),
                       ),
                     );
                     setState(() {
@@ -283,7 +284,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                         onPressed: () {
                           Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute(
-                              builder: (context) => Camera(),
+                              builder: (context) => CameraS(),
                             ),
                           );
                         },

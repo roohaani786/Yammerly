@@ -21,6 +21,24 @@ import '../../constants3.dart';
 
 
 class FeedsPage extends StatefulWidget {
+
+  final Wiggle wiggle;
+  final List<Wiggle> wiggles;
+  final Timestamp timestamp;
+  final String description;
+  final String url;
+  final String postId;
+  final int likes;
+
+  FeedsPage(
+      {this.wiggles,
+        this.wiggle,
+        this.timestamp,
+        this.description,
+        this.url,
+        this.postId,
+        this.likes});
+
   @override
   _FeedsPageState createState() => _FeedsPageState();
 }
@@ -49,12 +67,17 @@ class _FeedsPageState extends State<FeedsPage> {
   @override
   void initState() {
 
+    emailController = TextEditingController();
+    likesController = TextEditingController();
+
     super.initState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
+    fetchProfileData();
+    fetchLikes();
   }
 
   Stream<QuerySnapshot> postsStream;
@@ -69,6 +92,57 @@ class _FeedsPageState extends State<FeedsPage> {
     });
   }
 
+  getlikes() {
+    DatabaseService()
+        .postReference
+        .document(widget.postId)
+        .collection('likes')
+        .document(Constants.myEmail)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        setState(() {
+          liked = true;
+        });
+      }
+    });
+  }
+
+  fetchLikes() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("posts")
+          .document(currUser.uid)
+          .get();
+      likesController.text = docSnap.data["likes"];
+      setState(() {
+        isLoading = false;
+        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
+
+  fetchProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(currUser.uid)
+          .get();
+      emailController.text = docSnap.data["email"];
+      setState(() {
+        isLoading = false;
+        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
+
+  bool liked = false;
   var time = "s";
 
   String readTimestamp(int timestamp) {
@@ -232,12 +306,36 @@ class _FeedsPageState extends State<FeedsPage> {
                                   Row(
                                     children: <Widget>[
                                       IconButton(
-                                        onPressed: () {
-
+                                        onPressed: liked
+                                            ? () {
+                                          setState(() {
+                                            liked = false;
+                                            //var userData;
+                                            DatabaseService().unlikepost(
+                                                widget.likes, widget.postId, email);
+                                          });
+                                        }
+                                            : () {
+                                          setState(() {
+                                            liked = true;
+                                            //var userData;
+                                            DatabaseService().likepost(
+                                                widget.likes, widget.postId, email);
+                                          });
                                         },
-                                        icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
+                                        icon: liked
+                                            ? Icon(FontAwesome.thumbs_up)
+                                            : Icon(FontAwesome.thumbs_up),
+                                        iconSize: 25,
+                                        color: liked ? Colors.redAccent : Colors.purple,
+                                        // onPressed: () {
+                                        // },
+                                        // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
                                       ),
-                                      Text("123"),
+                                      Text(
+                                        '${likesController.text}',
+
+                                      ),
                                       IconButton(
                                         onPressed: () {},
                                         icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
@@ -245,7 +343,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                       Text("23"),
                                       IconButton(
                                         onPressed: () {},
-                                        icon: Icon(Icons.share,color: Colors.lightBlue),
+                                        icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
                                       ),
                                     ],
                                   ),
@@ -341,4 +439,6 @@ class _FeedsPageState extends State<FeedsPage> {
       );
   }
 }
+
+
 
