@@ -550,11 +550,12 @@ class DatabaseService {
         .snapshots();
   }
 
-//  getUsers() async {
-//    return Firestore.instance
-//        .collection("users").document("CAzDoTErEKNnHywL1CAEaZy1F7A")
-//        .snapshots();
-//  }
+  getUsers() async {
+    return Firestore.instance
+        .collection("users")
+        .orderBy("timestamp", descending: true)
+        .snapshots();
+  }
 
 
 

@@ -200,7 +200,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         color: Colors.transparent,
                           child: Row(
                             children: [
-                              Icon(FontAwesomeIcons.plug,color: Colors.deepPurpleAccent,),
+                              Icon(FontAwesomeIcons.plus,color: Colors.deepPurpleAccent,),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text("Add Post",style:
