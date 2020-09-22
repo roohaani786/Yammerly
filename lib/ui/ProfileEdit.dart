@@ -134,6 +134,8 @@ class _ProfilePageState extends State<ProfilePage> {
     print("Done..");
   }
 
+
+
 //  Future<String> uploadPhoto(mImageFile) async {
 //    StorageUploadTask mStorageUploadTask =
 //    storageReference.child("dp_$uidController.jpg").putFile(mImageFile);
@@ -161,6 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
 //    });
 ////    Navigator.pop(context);
 //  }
+
 
   compressPhoto() async {
     final directory = await getTemporaryDirectory();
@@ -212,6 +215,8 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     savePostInfoToFirestore(photoUrlController.text);
   }
+
+
 
 
 //  savePostInfoToFirestore(String url, String description) {
@@ -270,7 +275,7 @@ bool isChanged = false;
     if (!isEditable)
     setState(() => isEditable = true);
     else {
-    bool isChanged = false;
+    bool isChanged = true;
     if (docSnap.data["fname"].toString().trim() !=
     firstNameController.text.trim()) {
     print("First Name Changed");
