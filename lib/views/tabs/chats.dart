@@ -76,9 +76,9 @@ class _ChatsPageState extends State<ChatsPage> {
         .width;
 
     final pageTitle = Padding(
-      padding: EdgeInsets.only(top: 1.0, bottom: 20.0),
+      padding: EdgeInsets.only(top: 0.0, bottom: 20.0),
       child: Text(
-        "Status",
+        "Status Updates",
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: Colors.black,
@@ -123,16 +123,16 @@ class _ChatsPageState extends State<ChatsPage> {
     final notificationHeader = Container(
       padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
       child: Text(
-        "No Status at the Movement",
+        "Coming Soon....",
         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
       ),
     );
 
     final notificationText = Text(
-        "You currently do not have any Status.",
+        "Status feature is coming soon on our app.",
         style: TextStyle(
           fontWeight: FontWeight.w600,
-          fontSize: 18.0,
+          fontSize: 15.0,
           color: Colors.grey.withOpacity(0.6),
         ),
     );
@@ -169,7 +169,7 @@ class _ChatsPageState extends State<ChatsPage> {
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.only(
-              top: 70.0,
+              top: 40.0,
               left: 30.0,
               right: 30.0,
               bottom: 30.0,
@@ -195,10 +195,10 @@ class _ChatsPageState extends State<ChatsPage> {
                         color: Colors.deepPurple,
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => PhoneV()),
-                        );
+//                        Navigator.push(
+//                          context,
+//                          MaterialPageRoute(builder: (context) => PhoneV()),
+//                        );
                       },
                     ),
                   ],

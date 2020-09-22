@@ -55,15 +55,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
     final notificationHeader = Container(
       padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
       child: Text(
-        "No New Notification",
+        "Coming Soon....",
         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
       ),
     );
     final notificationText = Text(
-      "You currently do not have any unread notifications.",
+      "Notification feature is coming on our app.",
       style: TextStyle(
         fontWeight: FontWeight.w600,
-        fontSize: 18.0,
+        fontSize: 16.0,
         color: Colors.grey.withOpacity(0.6),
       ),
       textAlign: TextAlign.center,
@@ -78,7 +78,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.only(
-              top: 70.0,
+              top: 30.0,
               left: 30.0,
               right: 30.0,
               bottom: 30.0,

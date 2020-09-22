@@ -130,40 +130,40 @@ class _ProfilePageState extends State<ProfilePage> {
         _image = image;
       });
     });
-
-//    uploadFile();
-    uploadPhoto(_image);
-
+    uploadFile();
     print("Done..");
   }
 
-  Future<String> uploadPhoto(mImageFile) async {
-    StorageUploadTask mStorageUploadTask =
-    storageReference.child("dp_$uidController.jpg").putFile(mImageFile);
-    StorageTaskSnapshot storageTaskSnapshot =
-    await mStorageUploadTask.onComplete;
-    String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
-    return downloadUrl;
-  }
+
+
+//  Future<String> uploadPhoto(mImageFile) async {
+//    StorageUploadTask mStorageUploadTask =
+//    storageReference.child("dp_$uidController.jpg").putFile(mImageFile);
+//    StorageTaskSnapshot storageTaskSnapshot =
+//    await mStorageUploadTask.onComplete;
+//    String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
+//    return downloadUrl;
+//  }
 
   bool uploading = false;
 
-  controlUploadAndSave() async {
-    setState(() {
-      uploading = true;
-    });
+//  controlUploadAndSave() async {
+//    setState(() {
+//      uploading = true;
+//    });
+//
+//   await compressPhoto();
+//
+//    String downloadUrl = await uploadPhoto(_image);
+//    savePostInfoToFirestore(downloadUrl);
+//
+//    setState(() {
+//      // file = null;
+//      uploading = false;
+//    });
+////    Navigator.pop(context);
+//  }
 
-   await compressPhoto();
-
-    String downloadUrl = await uploadPhoto(_image);
-    savePostInfoToFirestore(downloadUrl);
-
-    setState(() {
-      // file = null;
-      uploading = false;
-    });
-//    Navigator.pop(context);
-  }
 
   compressPhoto() async {
     final directory = await getTemporaryDirectory();
@@ -185,27 +185,38 @@ class _ProfilePageState extends State<ProfilePage> {
   savePostInfoToFirestore(String url) {
     postReference.document(currUser.uid).setData({
       "uid": currUser.uid,
-      "photoURL": url,
+      "photoURL": photoUrlController.text,
 //      "photourl": widget.userData.photoUrl,
+
     });
+    print(photoUrlController.text);
   }
 
   Future uploadFile() async {
+
+    await compressPhoto();
+
     StorageReference storageReference =
 
     FirebaseStorage.instance
         .ref()
-        .child('users').child('photoURL');
+        .child('users');
     StorageUploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.onComplete;
     print('File Uploaded');
     storageReference.getDownloadURL().then((fileURL) {
       setState(() {
-        _uploadedFileURL = fileURL;
-        photoUrlController.text = _uploadedFileURL;
+
+//        _uploadedFileURL = fileURL;
+//        photoUrlController.text = _uploadedFileURL;
+      photoUrlController.text = fileURL;
+        isChanged = true;
       });
     });
+    savePostInfoToFirestore(photoUrlController.text);
   }
+
+
 
 
 //  savePostInfoToFirestore(String url, String description) {
@@ -218,26 +229,32 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
   Future pickImagefromCamera() async {
-    profileImageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+    await ImagePicker.pickImage(source: ImageSource.camera).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+    uploadFile();
+    print("Done..");
 
   }
 
 
 
-  Future<void> updateProfilePicture(File profilePictureUrl) async {
-    String uid = uidController.text;
-    DocumentReference ref = Firestore.instance.collection("users").document(
-        uid); //reference of the user's document node in database/users. This node is created using uid
-    var data = {
-      'photoUrL': profilePictureUrl,
-    };
-    await ref.setData(data, merge: true); // set the photoURL
-  }
+//  Future<void> updateProfilePicture(File profilePictureUrl) async {
+//    String uid = uidController.text;
+//    DocumentReference ref = Firestore.instance.collection("users").document(
+//        uid); //reference of the user's document node in database/users. This node is created using uid
+//    var data = {
+//      'photoURL': profilePictureUrl,
+//    };
+//    await ref.setData(data, merge: true); // set the photoURL
+//  }
 
 
 
 
-
+bool isChanged = false;
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +275,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (!isEditable)
     setState(() => isEditable = true);
     else {
-    bool isChanged = false;
+    bool isChanged = true;
     if (docSnap.data["fname"].toString().trim() !=
     firstNameController.text.trim()) {
     print("First Name Changed");
@@ -297,11 +314,11 @@ class _ProfilePageState extends State<ProfilePage> {
       isChanged = true;
     }
 
-//    else if (docSnap.data["photoUrlController"].toString().trim() !=
-//        photoUrlController.text.trim()) {
-//      print("displayName Changed");
-//      isChanged = true;
-//    } //displayName
+    else if (docSnap.data["photoURL"].toString().trim() !=
+        photoUrlController.text.trim()) {
+      print("photoUrl Changed");
+      isChanged = true;
+    } //displayName
 
     else if (docSnap.data["work"].toString().trim() !=
         workController.text.trim()) {
@@ -358,7 +375,7 @@ class _ProfilePageState extends State<ProfilePage> {
     data["bio"] = bioController.text.trim();
     data["gender"] = genderController.text.trim();
     data["link"] = linkController.text.trim();
-    data["photoUrl"] = photoUrlController.text.trim();
+    data["photoURL"] = photoUrlController.text.trim();
     data["displayName"] = displayNameController.text.trim();
     data["pincode"] = pincodeController.text.trim();
     data["work"] = workController.text.trim();//work
@@ -458,7 +475,7 @@ class _ProfilePageState extends State<ProfilePage> {
     showDialog<void>(
     context: context,// THIS WAS MISSING// user must tap button!
     builder: (BuildContext context) {
-    return AlertDialog(
+    return (isChanged==false)?AlertDialog(
     title: Text('Select image from :-',style: TextStyle(
       fontSize: 15.0,
     ),),
@@ -467,6 +484,10 @@ class _ProfilePageState extends State<ProfilePage> {
     children: <Widget>[
     GestureDetector(
       onTap: (){
+        _scaffoldKey.currentState.removeCurrentSnackBar();
+        setState(() {
+          isChanged = true;
+        });
         pickImagefromCamera();
       },
       child: Row(
@@ -499,7 +520,7 @@ class _ProfilePageState extends State<ProfilePage> {
     ],
     ),
     ),
-    );
+    ):Container();
 
                       });
                       },
@@ -514,19 +535,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 16,
                     ),
 
-                    TextFormField(
-                      controller: photoUrlController,
-                      enabled: isEditable,
 
-                      decoration: InputDecoration(
-                          labelText: "First Name",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
 
                     TextFormField(
                       controller: firstNameController,

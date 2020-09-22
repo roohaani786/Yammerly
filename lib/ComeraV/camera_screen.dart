@@ -1,11 +1,19 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluro/fluro.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
 import 'package:flutter/services.dart';
+import 'package:techstagram/resources/auth.dart';
+import 'package:techstagram/resources/uploadimage.dart';
 import 'package:torch_compat/torch_compat.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -13,6 +21,7 @@ import 'package:techstagram/ui/HomePage.dart';
 import 'package:thumbnails/thumbnails.dart';
 import 'package:lamp/lamp.dart';
 import 'package:torch/torch.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:holding_gesture/holding_gesture.dart';
 
 import 'application.dart';
@@ -34,12 +43,74 @@ class CameraScreenState extends State<CameraScreen>
   bool _isButtonPressed = false;
   final _timerKey = GlobalKey<VideoTimerState>();
   bool _hasFlash = false;
+  Map<String, dynamic> _profile;
+  bool _loading = false;
+
 
   @override
   void initState() {
     _initCamera();
     super.initState();
     initPlatformState();
+    // Subscriptions are created here
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+
+    firstNameController = TextEditingController();
+    lastNameController = TextEditingController();
+    emailController = TextEditingController();
+    phoneNumberController = TextEditingController();
+    bioController = TextEditingController();
+    genderController = TextEditingController();
+    linkController = TextEditingController();
+    photoUrlController = TextEditingController();
+    displayNameController = TextEditingController();
+    workController = TextEditingController();
+    educationController = TextEditingController();
+    currentCityController = TextEditingController();
+    homeTownController = TextEditingController();
+    relationshipController = TextEditingController();
+    pincodeController = TextEditingController();
+
+    uidController = TextEditingController();
+    fetchProfileData();
+  }
+
+  DocumentSnapshot docSnap;
+
+  fetchProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(currUser.uid)
+          .get();
+      firstNameController.text = docSnap.data["fname"];
+      lastNameController.text = docSnap.data["surname"];
+      phoneNumberController.text = docSnap.data["phonenumber"];
+      emailController.text = docSnap.data["email"];
+      bioController.text = docSnap.data["bio"];
+      genderController.text = docSnap.data["gender"];
+      linkController.text = docSnap.data["link"];
+      photoUrlController.text = docSnap.data["photoURL"];
+      displayNameController.text = docSnap.data["displayName"];
+      workController.text = docSnap.data["work"];
+      educationController.text = docSnap.data["education"];
+      currentCityController.text = docSnap.data["currentCity"];
+      homeTownController.text = docSnap.data["homeTown"];
+      relationshipController.text = docSnap.data["relationship"];
+      pincodeController.text = docSnap.data["pincode"];
+
+      uidController.text = docSnap.data["uid"];
+
+      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
   }
 
   initPlatformState() async {
@@ -97,6 +168,95 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   bool flashOn=true;
+  File _image;
+  FirebaseUser currUser;
+
+  TextEditingController firstNameController,
+      lastNameController,
+      emailController,
+      phoneNumberController,uidController,
+      bioController,genderController,linkController,photoUrlController,
+      displayNameController,workController,educationController,
+      currentCityController,homeTownController,relationshipController,pincodeController ;
+
+  Future pickImage() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+    controlUploadAndSave();
+    print("Done..");
+  }
+  String url;
+
+  controlUploadAndSave() async {
+    setState(() {
+//      uploading = true;
+    });
+
+    await compressPhoto();
+
+    String downloadUrl = await uploadPhoto(_image);
+    savePostInfoToFirestore(downloadUrl);
+
+    setState(() {
+      // file = null;
+//      uploading = false;
+      postId = Uuid().v4();
+    });
+    Navigator.pop(context);
+  }
+  final StorageReference storageReference =
+  FirebaseStorage.instance.ref().child("Post Pictures");
+
+  Future<String> uploadPhoto(mImageFile) async {
+    StorageUploadTask mStorageUploadTask =
+    storageReference.child("post_$postId.jpg").putFile(mImageFile);
+    StorageTaskSnapshot storageTaskSnapshot =
+    await mStorageUploadTask.onComplete;
+    String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  String postId = Uuid().v4();
+
+  final postReference = Firestore.instance.collection("posts");
+
+  savePostInfoToFirestore(String url) {
+    postReference.document(postId).setData({
+      "postId": postId,
+      "uid" : uidController.text,
+      "displayName": displayNameController.text,
+      "timestamp": Timestamp.now(),
+      "email": emailController.text,
+      "photoURL" :photoUrlController.text,
+//      "email": widget.userData.email,
+//      "description": descriptionController.text,
+      "likes": 0,
+      "url": url,
+//      "photourl": widget.userData.photoUrl,
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2)),
+    );
+  }
+
+  compressPhoto() async {
+    final directory = await getTemporaryDirectory();
+    final path = directory.path;
+    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
+    final compressedImage = File('$path/img_$uidController.jpg')
+      ..writeAsBytesSync(
+        ImD.encodeJpg(mImageFile, quality: 60),
+      );
+    setState(() {
+      _image = compressedImage;
+    });
+  }
+
+
 
 
   @override
@@ -174,7 +334,6 @@ class CameraScreenState extends State<CameraScreen>
   //           ),
 
             _buildCameraPreview(),
-           // _gallerygrid(),
             Positioned(
               top: 24.0,
               left: 12.0,
@@ -231,6 +390,19 @@ class CameraScreenState extends State<CameraScreen>
               //onPressed: () => TorchCompat.turnOff(),
             ),
           ),
+
+            Positioned(
+              top: 335.0,
+              left: 12.0,
+              child: IconButton(
+
+                  icon: Icon(FontAwesomeIcons.photoVideo,
+                  color: Colors.white60,), onPressed:
+              (){
+                    pickImage();
+              }
+
+              ),),
 
 
 

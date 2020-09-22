@@ -16,6 +16,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:techstagram/models/wiggle.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/views/tabs/comments_screen.dart';
 
 import '../../constants3.dart';
 
@@ -29,6 +31,7 @@ class FeedsPage extends StatefulWidget {
   final String url;
   final String postId;
   final int likes;
+  final int uid;
 
   FeedsPage(
       {this.wiggles,
@@ -36,6 +39,7 @@ class FeedsPage extends StatefulWidget {
         this.timestamp,
         this.description,
         this.url,
+        this.uid,
         this.postId,
         this.likes});
 
@@ -50,8 +54,9 @@ class _FeedsPageState extends State<FeedsPage> {
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
   displayNameController,photoUrlController,
-  timestampController,likesController;
+  timestampController,likesController,uidController;
   List<Posts> posts;
+  List<DocumentSnapshot> list;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -64,11 +69,15 @@ class _FeedsPageState extends State<FeedsPage> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+
+
   @override
   void initState() {
 
     emailController = TextEditingController();
     likesController = TextEditingController();
+    uidController = TextEditingController();
+    displayNameController = TextEditingController();
 
     super.initState();
     // Subscriptions are created here
@@ -92,17 +101,43 @@ class _FeedsPageState extends State<FeedsPage> {
     });
   }
 
+  void _onHorizontalDrag(DragEndDetails details) {
+    if (details.primaryVelocity == 0)
+      // user have just tapped on screen (no dragging)
+      return;
+
+    if (details.primaryVelocity.compareTo(0) == -1) {
+//      dispose();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
+      );
+    }
+    else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+      );
+    }
+  }
+
+
   getlikes() {
-    DatabaseService()
-        .postReference
+    Firestore.instance.collection('posts')
         .document(widget.postId)
         .collection('likes')
-        .document(Constants.myEmail)
+        .document(displayNameController.text)
         .get()
         .then((value) {
       if (value.exists) {
         setState(() {
           liked = true;
+          print(liked);
+        });
+      }
+      else{
+        setState(() {
+          liked = false;
         });
       }
     });
@@ -134,6 +169,8 @@ class _FeedsPageState extends State<FeedsPage> {
           .get();
       emailController.text = docSnap.data["email"];
       likesController.text = docSnap.data["likes"];
+      uidController.text =  docSnap.data["uid"];
+      displayNameController.text = docSnap.data["uid"];
       setState(() {
         isLoading = false;
         isEditable = true;
@@ -145,6 +182,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   bool liked = false;
   var time = "s";
+  User currentUser;
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
@@ -173,213 +211,244 @@ class _FeedsPageState extends State<FeedsPage> {
     return time;
   }
 
+//  File _image;
+//
+//  Future pickImage() async {
+//    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+//      setState(() {
+//        _image = image;
+//      });
+//    });
+//    uploadFile();
+//    print("Done..");
+//  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      key: _scaffoldKey,
-      body: StreamBuilder(
-        stream: postsStream,
-        builder: (context, snapshot) {
-          return snapshot.hasData
-              ? Column(
-                children: [
-                Container(
-                  color: Colors.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FlatButton(onPressed: (){},
-                        color: Colors.transparent,
+    return GestureDetector(
+      onHorizontalDragEnd: (DragEndDetails details) =>
+          _onHorizontalDrag(details),
+      onTap: () => Navigator.of(context).pop(true),
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: StreamBuilder(
+          stream: postsStream,
+          builder: (context, snapshot) {
+            return snapshot.hasData
+                ? Column(
+                  children: [
+                  Container(
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FlatButton(onPressed: (){
+//                          pickImage();
+                        },
+                          color: Colors.transparent,
+                            child: Row(
+                              children: [
+                                Icon(FontAwesomeIcons.plus,color: Colors.deepPurpleAccent,),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("Add Post",style:
+                                    TextStyle(
+                                      color: Colors.deepPurpleAccent,
+                                    ),),
+                                ),
+                              ],
+                            ),
+                            ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 100.0),
+                        ),
+                        FlatButton(onPressed: (){},
+                          color: Colors.transparent,
                           child: Row(
                             children: [
-                              Icon(FontAwesomeIcons.plug,color: Colors.deepPurpleAccent,),
+                              Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text("Add Post",style:
-                                  TextStyle(
-                                    color: Colors.deepPurpleAccent,
-                                  ),),
+                                child: Text("Rate us",style:
+                                TextStyle(
+                                  color: Colors.deepPurpleAccent,
+                                ),),
                               ),
                             ],
                           ),
-                          ),
-
-                      Padding(
-                        padding: const EdgeInsets.only(left: 100.0),
-                      ),
-                      FlatButton(onPressed: (){},
-                        color: Colors.transparent,
-                        child: Row(
-                          children: [
-                            Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text("Rate us",style:
-                              TextStyle(
-                                color: Colors.deepPurpleAccent,
-                              ),),
-                            ),
-                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                  new Expanded(
-                    child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) {
-                      String email = snapshot.data.documents[index]['email'];
-                      String description =
-                      snapshot.data.documents[index]['description'];
-                      String displayName =
-                      snapshot.data.documents[index]['displayName'];
-                      String photoUrl =
-                      snapshot.data.documents[index]['photoURL'];
+                    new Expanded(
+                      child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index) {
+                        String email = snapshot.data.documents[index]['email'];
+                        String description =
+                        snapshot.data.documents[index]['description'];
+                        String displayName =
+                        snapshot.data.documents[index]['displayName'];
+                        String photoUrl =
+                        snapshot.data.documents[index]['photoURL'];
 
-                      Timestamp timestamp =
-                      snapshot.data.documents[index]['timestamp'];
-                      String url = snapshot.data.documents[index]['url'];
-                      String postId = snapshot.data.documents[index]['postId'];
-                      int likes = snapshot.data.documents[index]['likes'];
+                        Timestamp timestamp =
+                        snapshot.data.documents[index]['timestamp'];
+                        String url = snapshot.data.documents[index]['url'];
+                        String postId = snapshot.data.documents[index]['postId'];
+                        int likes = snapshot.data.documents[index]['likes'];
 
-                      readTimestamp(timestamp.seconds);
+                        readTimestamp(timestamp.seconds);
 
 
-                      print(email);
-                      print(displayName);
+                        print(email);
+                        print(displayName);
 //                for (int i = 0; i < posts.length; i++) {
 //                  if (posts[i].email == email) {
 //                    currentpost = posts[i];
 //                  }
 //                }
-                      return Container(
-                        child: Container(
-                          color: Colors.white,
-                          child: Column(
-                            children: <Widget>[
+                        return Container(
+                          child: Container(
+                            color: Colors.white,
+                            child: Column(
+                              children: <Widget>[
 
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 10,
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 10,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(40),
+                                            child: Image(
+                                              image: NetworkImage(photoUrl),
+                                              width: 40,
+                                              height: 40,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(displayName),
+                                        ],
+                                      ),
+                                      IconButton(
+                                        icon: Icon(SimpleLineIcons.options),
+                                        onPressed: () {},
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                child: Row(
+                                //Image.network(url),
+
+                                FadeInImage(
+                                  image: NetworkImage(url),
+                                  //image: NetworkImage("posts[i].postImage"),
+                                  placeholder: AssetImage("assets/images/empty.png"),
+                                  width: MediaQuery.of(context).size.width,
+                                ),
+
+                                Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Row(
                                       children: <Widget>[
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(40),
-                                          child: Image(
-                                            image: NetworkImage(photoUrl),
-                                            width: 40,
-                                            height: 40,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(displayName),
-                                      ],
-                                    ),
-                                    IconButton(
-                                      icon: Icon(SimpleLineIcons.options),
-                                      onPressed: () {},
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              //Image.network(url),
+                                        (!liked)?IconButton(
+                                          onPressed: () {
+                                            DatabaseService().likepost(
+                                                likes, postId, displayName);
+                                            setState(() {
+                                              liked = true;
+                                            });
+                                          },
+                                          icon: Icon(FontAwesome.thumbs_up),
+                                          iconSize: 25,
+                                          color: Colors.grey,
+                                          // onPressed: () {
+                                          // },
+                                          // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
+                                        ):IconButton(
 
-                              FadeInImage(
-                                image: NetworkImage(url),
-                                //image: NetworkImage("posts[i].postImage"),
-                                placeholder: AssetImage("assets/images/empty.png"),
-                                width: MediaQuery.of(context).size.width,
-                              ),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      IconButton(
-                                        onPressed: liked
-                                            ? () {
-                                          setState(() {
-                                            liked = false;
-                                            //var userData;
+                                          onPressed: () {
                                             DatabaseService().unlikepost(
                                                 likes, postId, displayName);
-                                          });
-                                        }
-                                            : () {
-                                          setState(() {
-                                            liked = true;
-                                            //var userData;
-                                            DatabaseService().likepost(
-                                                likes,postId,displayName);
-                                          });
-                                        },
-                                        icon: liked
-                                            ? Icon(FontAwesome.thumbs_up)
-                                            : Icon(FontAwesome.thumbs_up),
-                                        iconSize: 25,
-                                        color: liked ? Colors.redAccent : Colors.purple,
-                                        // onPressed: () {
-                                        // },
-                                        // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                      ),
-                                      Text(
-                                        likes.toString(),style: TextStyle(
-                                        color: Colors.black,
-                                      ),
+                                            setState(() {
+                                              liked = false;
+                                            });
+                                          },
 
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
-                                      ),
-                                      Text("23"),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
-                                      ),
-                                    ],
-                                  ),
-                                  // IconButton(
-                                  //   onPressed: () {},
-                                  //   icon: Icon(FontAwesome.bookmark_o),
-                                  // ),
-                                ],
-                              ),
+                                          icon: Icon(FontAwesome.thumbs_up),
+                                          iconSize: 25,
+                                          color: Colors.deepPurple,
+                                          // onPressed: () {
+                                          // },
+                                          // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
+                                        ),
+                                        Text(
+                                          likes.toString(),style: TextStyle(
+                                          color: Colors.black,
+                                        ),
 
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
+                                        ),
+
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: ((context) => CommentsScreen(
+                                                      documentReference: list[index].reference,
+                                                      user: currentUser,
+                                                    ))));
+                                          },
+                                          icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
+                                        ),
+                                        Text("23"),
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
+                                        ),
+                                      ],
+                                    ),
+                                    // IconButton(
+                                    //   onPressed: () {},
+                                    //   icon: Icon(FontAwesome.bookmark_o),
+                                    // ),
+                                  ],
                                 ),
-                                child: RichText(
-                                  softWrap: true,
-                                  overflow: TextOverflow.visible,
-                                  text: TextSpan(
-                                    text: description,
-                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,),
-                                  ),
-                                )
-                              ),
 
-                              // caption
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 5,
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                  ),
+                                  child: RichText(
+                                    softWrap: true,
+                                    overflow: TextOverflow.visible,
+                                    text: TextSpan(
+                                      text: description,
+                                      style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,),
+                                    ),
+                                  )
                                 ),
+
+                                // caption
+                                Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 5,
+                                  ),
 //                                child: RichText(
 //                                  softWrap: true,
 //                                  overflow: TextOverflow.visible,
@@ -398,30 +467,30 @@ class _FeedsPageState extends State<FeedsPage> {
 //                                    ],
 //                                  ),
 //                                ),
-                              ),
-
-                              // post date
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
                                 ),
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  readTimestamp(timestamp.seconds),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10.0,
+
+                                // post date
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                  ),
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    readTimestamp(timestamp.seconds),
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 10.0,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        // height: 150.0,
-                        // width: 150.0,
-                        //child: Image.network(url),
-                      );
+                          // height: 150.0,
+                          // width: 150.0,
+                          //child: Image.network(url),
+                        );
 
 //                return FeedTile(
 //                  wiggle: currentpost,
@@ -432,15 +501,16 @@ class _FeedsPageState extends State<FeedsPage> {
 //                  postId: postId,
 //                  likes: likes,
 //                );
-                    }),
-                  ),
-                ],
-              )
-              : Container();
+                      }),
+                    ),
+                  ],
+                )
+                : Container();
 
-        },
+          },
+          ),
         ),
-      );
+    );
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:techstagram/modell/global.dart';
 
 class AuthService {
   // Dependencies
@@ -75,7 +76,13 @@ class AuthService {
       'email': user.email,
       'photoURL': user.photoUrl,
       'displayName': user.displayName,
-      'lastSeen': DateTime.now()
+      'lastSeen': DateTime.now(),
+      'followers': 0,
+      'following': 0,
+      'posts': 0,
+      'bio' : "Proud Hashtager",
+      'emailVerified': true,
+
     }, merge: true);
   }
 

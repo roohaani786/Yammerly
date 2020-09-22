@@ -344,6 +344,7 @@ class DatabaseService {
         .updateData({'likes': initialvalue + 1});
   }
 
+
   Future unlikepost(int initialvalue, String postId, String userEmail) async {
     await Firestore.instance
         .collection("posts")
@@ -356,6 +357,34 @@ class DatabaseService {
         .collection("posts")
         .document(postId)
         .updateData({'likes': initialvalue - 1});
+  }
+
+  Future followUser(int followers, String uid, String displayName) async {
+    await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .collection('followers')
+        .document(displayName)
+        .setData({'followedby': displayName,});
+
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'followers': followers + 1});
+  }
+
+  Future unfollowUser(int followers, String uid, String displayName) async {
+    await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .collection('followers')
+        .document(displayName)
+        .delete();
+
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'followers': followers - 1});
   }
 
   Future decreaseFame(
@@ -550,11 +579,12 @@ class DatabaseService {
         .snapshots();
   }
 
-//  getUsers() async {
-//    return Firestore.instance
-//        .collection("users").document("CAzDoTErEKNnHywL1CAEaZy1F7A")
-//        .snapshots();
-//  }
+  getUsers() async {
+    return Firestore.instance
+        .collection("users")
+        .orderBy("timestamp", descending: true)
+        .snapshots();
+  }
 
 
 
