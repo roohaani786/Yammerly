@@ -30,6 +30,7 @@ class FeedsPage extends StatefulWidget {
   final String url;
   final String postId;
   final int likes;
+  final int uid;
 
   FeedsPage(
       {this.wiggles,
@@ -37,6 +38,7 @@ class FeedsPage extends StatefulWidget {
         this.timestamp,
         this.description,
         this.url,
+        this.uid,
         this.postId,
         this.likes});
 
@@ -51,7 +53,7 @@ class _FeedsPageState extends State<FeedsPage> {
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
   displayNameController,photoUrlController,
-  timestampController,likesController;
+  timestampController,likesController,uidController;
   List<Posts> posts;
   List<DocumentSnapshot> list;
 
@@ -73,6 +75,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
     emailController = TextEditingController();
     likesController = TextEditingController();
+    uidController = TextEditingController();
+    displayNameController = TextEditingController();
 
     super.initState();
     // Subscriptions are created here
@@ -99,16 +103,21 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
   getlikes() {
-    DatabaseService()
-        .postReference
+    Firestore.instance.collection('posts')
         .document(widget.postId)
         .collection('likes')
-        .document(Constants.myEmail)
+        .document(displayNameController.text)
         .get()
         .then((value) {
       if (value.exists) {
         setState(() {
           liked = true;
+          print(liked);
+        });
+      }
+      else{
+        setState(() {
+          liked = false;
         });
       }
     });
@@ -140,6 +149,8 @@ class _FeedsPageState extends State<FeedsPage> {
           .get();
       emailController.text = docSnap.data["email"];
       likesController.text = docSnap.data["likes"];
+      uidController.text =  docSnap.data["uid"];
+      displayNameController.text = docSnap.data["uid"];
       setState(() {
         isLoading = false;
         isEditable = true;
@@ -314,29 +325,33 @@ class _FeedsPageState extends State<FeedsPage> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      IconButton(
-                                        onPressed: liked
-                                            ? () {
-                                          setState(() {
-                                            liked = false;
-                                            //var userData;
-                                            DatabaseService().unlikepost(
-                                                likes, postId, displayName);
-                                          });
-                                        }
-                                            : () {
+                                      (!liked)?IconButton(
+                                        onPressed: () {
+                                          DatabaseService().likepost(
+                                              likes, postId, displayName);
                                           setState(() {
                                             liked = true;
-                                            //var userData;
-                                            DatabaseService().likepost(
-                                                likes,postId,displayName);
                                           });
                                         },
-                                        icon: liked
-                                            ? Icon(FontAwesome.thumbs_up)
-                                            : Icon(FontAwesome.thumbs_up),
+                                        icon: Icon(FontAwesome.thumbs_up),
                                         iconSize: 25,
-                                        color: liked ? Colors.redAccent : Colors.purple,
+                                        color: Colors.grey,
+                                        // onPressed: () {
+                                        // },
+                                        // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
+                                      ):IconButton(
+
+                                        onPressed: () {
+                                          DatabaseService().unlikepost(
+                                              likes, postId, displayName);
+                                          setState(() {
+                                            liked = false;
+                                          });
+                                        },
+
+                                        icon: Icon(FontAwesome.thumbs_up),
+                                        iconSize: 25,
+                                        color: Colors.deepPurple,
                                         // onPressed: () {
                                         // },
                                         // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
@@ -354,8 +369,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: ((context) => CommentsScreen(
-                                                     documentReference: list[index].reference,
-                                                     user: currentUser,
+                                                    documentReference: list[index].reference,
+                                                    user: currentUser,
                                                   ))));
                                         },
                                         icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
