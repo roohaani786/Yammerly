@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
     currentUser = await FirebaseAuth.instance.currentUser();
     firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
     setState(() {});
+    print(currentUser.displayName);
   }
 
   _signOut() async {
@@ -151,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CloudFirestoreSearch()),
+                        builder: (context) => CloudFirestoreSearch(displayNamecurrentUser: currentUser.displayName,)),
                   );
                 },
               ),

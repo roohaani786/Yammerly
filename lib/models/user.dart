@@ -15,9 +15,9 @@ class User {
    String email;
    String photoUrl;
    String displayName;
-   String followers;
-   String following;
-   String posts;
+   int followers;
+   int following;
+   int posts;
    String bio;
    String link;
    String phone;

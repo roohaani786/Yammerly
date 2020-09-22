@@ -69,35 +69,35 @@ class _BodyState extends State<Body> {
     });
   }
 
-  Future<FirebaseUser> _handleSignIn() async {
-    FirebaseUser user;
-    bool userSignedIn = await googleSignIn.isSignedIn();
-
-    setState(() {
-      isUserSignedIn = userSignedIn;
-    });
-
-    if (isUserSignedIn) {
-      user = await auth.currentUser();
-    } else {
-      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      user = (await auth.signInWithCredential(credential)).user;
-      userSignedIn = await googleSignIn.isSignedIn();
-      setState(() {
-        isUserSignedIn = userSignedIn;
-      });
-    }
-
-    return user;
-  }
+//  Future<FirebaseUser> _handleSignIn() async {
+//    FirebaseUser user;
+//    bool userSignedIn = await googleSignIn.isSignedIn();
+//
+//    setState(() {
+//      isUserSignedIn = userSignedIn;
+//    });
+//
+//    if (isUserSignedIn) {
+//      user = await auth.currentUser();
+//    } else {
+//      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
+//      final GoogleSignInAuthentication googleAuth =
+//      await googleUser.authentication;
+//
+//      final AuthCredential credential = GoogleAuthProvider.getCredential(
+//        accessToken: googleAuth.accessToken,
+//        idToken: googleAuth.idToken,
+//      );
+//
+//      user = (await auth.signInWithCredential(credential)).user;
+//      userSignedIn = await googleSignIn.isSignedIn();
+//      setState(() {
+//        isUserSignedIn = userSignedIn;
+//      });
+//    }
+//
+//    return user;
+//  }
 
   void onGoogleSignIn(BuildContext context) async {
     FirebaseUser user = await authService.hellogoogleSignIn();

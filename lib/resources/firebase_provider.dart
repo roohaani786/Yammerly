@@ -35,10 +35,10 @@ class FirebaseProvider {
         email: currentUser.email,
         displayName: currentUser.displayName,
         photoUrl: currentUser.photoUrl,
-        followers: '0',
-        following: '0',
+        followers: 0,
+        following: 0,
         bio: '',
-        posts: '0',
+        posts: 0,
         phone: '');
 
     //  Map<String, String> mapdata = Map<String, dynamic>();

@@ -342,6 +342,12 @@ class _BodyState extends State<Body> {
                 "phonenumber": phoneNumberController.text,
                 "email": emailInputController.text,
                 "displayname": displayNameInputController.text,
+                'followers': 0,
+                'following': 0,
+                'posts': 0,
+                'bio' : "Proud Hashtager",
+                'emailVerified': false,
+                'phoneVerified': false,
               })
                   .then((result) =>
               {
