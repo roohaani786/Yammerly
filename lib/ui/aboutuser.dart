@@ -92,8 +92,8 @@ class _AboutUserState extends State<AboutUser> {
       pinCodeController.text = docSnap.data["pincode"];
       relationshipController.text = docSnap.data["relationship"];
 
-      followersController.text = docSnap.data["followers"];
-      followingController.text = docSnap.data["following"];
+//      followersController.text = docSnap.data["followers"];
+//      followingController.text = docSnap.data["following"];
       setState(() {
         isLoading = false;
         isEditable = true;

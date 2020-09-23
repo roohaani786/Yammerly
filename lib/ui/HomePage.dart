@@ -83,7 +83,10 @@ class _HomePageState extends State<HomePage> {
     firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
     setState(() {});
     print(currentUser.displayName);
+    print(currentUser.email);
+    print(currentUser.uid);
   }
+
 
   _signOut() async {
     await _firebaseAuth.signOut();
@@ -175,8 +178,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
 //
-            body: ResponsiveLayoutBuilder(
-                  builder: (context, size) => new TabLayoutDemo(initialindexg)),
+            body: TabLayoutDemo(initialindexg),
 
           ),
         );
@@ -302,7 +304,14 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                     icon: new Icon(Icons.notifications, size: 30),
                   ),
                   Tab(
-                    icon: new Icon(Icons.account_circle, size: 30),
+                    icon: GestureDetector(
+                        onTap: (){
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(initialindexg: 4),
+                            ),
+                          );
+                        },child: new Icon(Icons.account_circle, size: 30)),
                   )
                 ],
                 labelColor: Colors.purple,

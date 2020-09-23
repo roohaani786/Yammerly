@@ -356,6 +356,7 @@ bool isChanged = false;
 //      isChanged = true;
 //    }
 
+
     else if (docSnap.data["pincode"].toString().trim() !=
         pincodeController.text.trim()) {
       print("Pincode Changed");
@@ -524,12 +525,7 @@ bool isChanged = false;
 
                       });
                       },
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage:
-                        NetworkImage(photoUrlController.text),
-                        backgroundColor: Colors.transparent,
-                      ),
+                      child: Image.network(photoUrlController.text)
                     ),
                     SizedBox(
                       height: 16,

@@ -49,10 +49,6 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
               streamQuery = Firestore.instance.collection('users')
                   .where('displayName', isGreaterThanOrEqualTo: searchKey)
                   .where('displayName', isLessThan: searchKey +'z')
-//                  .where('displayName', isGreaterThanOrEqualTo: searchKey.toUpperCase())
-//                  .where('displayName', isGreaterThanOrEqualTo: searchKey.toLowerCase())
-//                  .where('displayName', isLessThan: searchKey.toUpperCase() +'Z')
-//                  .where('displayName', isLessThan: searchKey.toLowerCase() +'z')
                   .snapshots();
               });
             },
