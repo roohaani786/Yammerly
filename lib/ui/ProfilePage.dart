@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
@@ -15,18 +16,21 @@ import 'profilesettings.dart';
 
 class AccountBottomIconScreen extends StatefulWidget {
   final User user;
+  final String uid;
 
-  const AccountBottomIconScreen({this.user, Key key}) : super(key: key);
+  const AccountBottomIconScreen({this.user,this.uid, Key key}) : super(key: key);
 
   @override
   _AccountBottomIconScreenState createState() =>
-      _AccountBottomIconScreenState();
+      _AccountBottomIconScreenState(uid: uid);
 }
 
 class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   bool isLoading = true;
   bool isEditable = false;
+  final String uid;
+  _AccountBottomIconScreenState({this.uid});
   String loadingMessage = "Loading Profile Data";
   TextEditingController firstNameController,
       lastNameController,
@@ -87,6 +91,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     followingController = TextEditingController();
 
 
+
     super.initState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -96,6 +101,14 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     fetchProfileData();
   }
 
+//  String displayName;
+//  String photoUrl;
+//  String bio;
+  int followers;
+  int following;
+  int posts;
+
+
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -104,31 +117,24 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
           .collection("users")
           .document(currUser.uid)
           .get();
-      firstNameController.text = docSnap.data["fname"];
-      lastNameController.text = docSnap.data["surname"];
-      phoneNumberController.text = docSnap.data["phonenumber"];
-      emailController.text = docSnap.data["email"];
-      bioController.text = docSnap.data["bio"];
-      genderController.text = docSnap.data["gender"];
-      linkController.text = docSnap.data["link"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      displayNameController.text = docSnap.data["displayName"];
-      workController.text = docSnap.data["work"];
-      educationController.text = docSnap.data["education"];
-      currentCityController.text = docSnap.data["currentCity"];
-      homeTownController.text = docSnap.data["homeTown"];
-      relationshipController.text = docSnap.data["relationship"];
-      pinCodeController.text = docSnap.data["pincode"];
-      followersController.text = docSnap.data["followers"];
-      followingController.text = docSnap.data["following"];
+
+       displayNameController.text = docSnap.data["displayName"];
+       photoUrlController.text = docSnap.data["photoURL"];
+       bioController.text = docSnap.data["bio"];
+       followers = docSnap.data["followers"];
+       following  = docSnap.data["following"];
+       posts  = docSnap.data["posts"];
+
       setState(() {
         isLoading = false;
-        isEditable = true;
+        isEditable = false;
       });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -204,9 +210,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: <Widget>[
-                                          _buildStatItem("FOLLOWERS", followersController.text),
-                                          _buildStatItem("POSTS", _posts),
-                                          _buildStatItem("FOLLOWING", followingController.text),
+                                          _buildStatItem("FOLLOWERS", followers.toString()),
+                                          _buildStatItem("POSTS", posts.toString()),
+                                          _buildStatItem("FOLLOWING", following.toString()),
                                         ],
                                       ),
                                     ),
@@ -303,10 +309,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 110,left: 145.0,right: 130.0),
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage:
-                        NetworkImage(photoUrlController.text),
+                      child:(photoUrlController.text!=null)?Image.network(photoUrlController.text): CircleAvatar(
+                        radius: 20,
+                        child: IconButton(icon:
+                        Icon(FontAwesomeIcons.userCircle,
+                          color: Colors.deepPurple,), onPressed: null),
                         backgroundColor: Colors.transparent,
                       ),
                     ),
@@ -315,7 +322,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
             ),
           ),
         ),
-        
+
 //        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 //        floatingActionButton: FloatingActionButton(
 //        child: Icon(Icons.add),onPressed: null),
@@ -325,7 +332,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
 
   final String _followers = "17K";
-  final String _posts = "24";
+//  final String _posts = "24";
   final String _following = "45K";
 
 
