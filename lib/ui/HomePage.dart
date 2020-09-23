@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 //import 'package:firebase/firebase.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:techstagram/ComeraV/cam.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/models/wiggle.dart';
+import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 //import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
@@ -66,7 +68,34 @@ class _HomePageState extends State<HomePage> {
   _HomePageState(this.initialindexg);
 
   int initialindexg;
+  TextEditingController emailController,urlController,descriptionController,
+      displayNameController;
 
+  Map<String, dynamic> _profile;
+  bool _loading = false;
+
+  DocumentSnapshot docSnap;
+  FirebaseUser currUser;
+
+
+
+  fetchProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(currUser.uid)
+          .get();
+      emailController.text = docSnap.data["email"];
+      displayNameController.text = docSnap.data["displayName"];
+      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
 
 
   @override
@@ -74,6 +103,16 @@ class _HomePageState extends State<HomePage> {
     firebaseProvider = FirebaseProvider();
     taskTitleInputController = new TextEditingController();
     taskDescripInputController = new TextEditingController();
+    emailController = TextEditingController();
+    displayNameController = TextEditingController();
+
+    super.initState();
+    // Subscriptions are created here
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+//    fetchPosts();
+    fetchProfileData();
     this.getCurrentUser();
     super.initState();
   }
@@ -155,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CloudFirestoreSearch(displayNamecurrentUser: currentUser.displayName,)),
+                        builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text ,)),
                   );
                 },
               ),

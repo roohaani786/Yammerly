@@ -86,7 +86,6 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
-    fetchLikes();
   }
 
   Stream<QuerySnapshot> postsStream;
@@ -122,43 +121,48 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
 
-  getlikes() {
+  getlikes( String displayNameController) {
+    print("dhar");
+    print(displayNameController);
     Firestore.instance.collection('posts')
         .document(widget.postId)
         .collection('likes')
-        .document(displayNameController.text)
+        .document(displayNameController)
         .get()
         .then((value) {
-      if (value.exists) {
+      if (value!=null) {
         setState(() {
           liked = true;
-          print(liked);
+          print("haa");
         });
       }
       else{
         setState(() {
           liked = false;
+          print("nhi");
         });
       }
     });
 
   }
 
-  fetchLikes() async {
-    currUser = await FirebaseAuth.instance.currentUser();
-    try {
-      docSnap = await Firestore.instance
-          .collection("posts")
-          .document(currUser.uid)
-          .get();
-      setState(() {
-        isLoading = false;
-        isEditable = true;
-      });
-    } on PlatformException catch (e) {
-      print("PlatformException in fetching user profile. E  = " + e.message);
-    }
-  }
+//  fetchLikes() async {
+//    print("oi");
+//    currUser = await FirebaseAuth.instance.currentUser();
+//    try {
+//      docSnap = await Firestore.instance
+//          .collection("likes")
+//          .document(currUser.uid)
+//          .get();
+//      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+//      });
+//      getlikes();
+//    } on PlatformException catch (e) {
+//      print("PlatformException in fetching user profile. E  = " + e.message);
+//    }
+//  }
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -170,11 +174,12 @@ class _FeedsPageState extends State<FeedsPage> {
       emailController.text = docSnap.data["email"];
       likesController.text = docSnap.data["likes"];
       uidController.text =  docSnap.data["uid"];
-      displayNameController.text = docSnap.data["uid"];
+      displayNameController.text = docSnap.data["displayName"];
       setState(() {
         isLoading = false;
         isEditable = true;
       });
+      getlikes(displayNameController.text);
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
@@ -225,6 +230,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(displayNameController.text);
+
     // TODO: implement build
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
@@ -366,7 +373,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         (!liked)?IconButton(
                                           onPressed: () {
                                             DatabaseService().likepost(
-                                                likes, postId, displayName);
+                                                likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = true;
                                             });
@@ -381,7 +388,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                           onPressed: () {
                                             DatabaseService().unlikepost(
-                                                likes, postId, displayName);
+                                                likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = false;
                                             });

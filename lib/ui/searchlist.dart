@@ -24,6 +24,7 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
   @override
   Widget build(BuildContext context) {
     print(displayNamecurrentUser);
+    print("434");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

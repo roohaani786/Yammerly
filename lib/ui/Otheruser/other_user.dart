@@ -53,6 +53,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    print(uid);
 
     Stream userQuery;
 
