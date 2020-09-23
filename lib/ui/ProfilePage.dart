@@ -269,7 +269,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                                                       color: Colors.white,
                                                       child: new Text(
-                                                        "Settings",
+                                                          photoUrlController.text,
                                                         style: TextStyle(
                                                           color: Color(0xffed1e79),
                                                         ),
@@ -303,12 +303,24 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 110,left: 145.0,right: 130.0),
-                      child: CircleAvatar(
-                        radius: 50,
+                      child: (photoUrlController!=null)?CircleAvatar(
+                        radius: 20,
                         backgroundImage:
                         NetworkImage(photoUrlController.text),
                         backgroundColor: Colors.transparent,
+                      ): CircleAvatar(
+                        radius: 20,
+                        child: IconButton(icon:
+                        Icon(Icons.supervised_user_circle,
+                          color: Colors.deepPurple,), onPressed: null),
+                        backgroundColor: Colors.transparent,
                       ),
+                      // child: CircleAvatar(
+                      //   radius: 50,
+                      //   backgroundImage:
+                      //   NetworkImage(photoUrlController.text),
+                      //   backgroundColor: Colors.transparent,
+                      // ),
                     ),
                   ]
               ),

@@ -483,7 +483,7 @@ class _AboutUserState extends State<AboutUser> {
                   children: [
                     Container(
                     height: 50.0,
-                    width: 250.0,
+                    width: 230.0,
                     child: TextFieldContainer(
                       child: TextFormField(
                         style: TextStyle(
@@ -560,7 +560,7 @@ class _AboutUserState extends State<AboutUser> {
                     children: [
                       Container(
                         height: 50.0,
-                        width: 250.0,
+                        width: 230.0,
                         child: TextFieldContainer(
                           child: TextFormField(
                             style: TextStyle(
