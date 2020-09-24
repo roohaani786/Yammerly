@@ -353,10 +353,8 @@ print("jhj");
                               ),
                             ),
 
-                            Container(
-                              height: 500.0,
-                              width: 500.0,
-                              child: Card(
+
+                              Card(
                                 child: StreamBuilder(
                                   stream: userPostsStream,
                                   builder: (context, snapshot) {
@@ -391,7 +389,6 @@ print("jhj");
                                 ),
                                   //child: Image.network(uidCurrUser),
                               )
-                            )
 
                           ],
                         ),
