@@ -40,7 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
       phoneNumberController,uidController,
   bioController,genderController,linkController,photoUrlController,
   displayNameController,workController,educationController,
-  currentCityController,homeTownController,relationshipController,pincodeController ;
+  currentCityController,homeTownController,relationshipController,pincodeController;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
@@ -88,6 +88,8 @@ class _ProfilePageState extends State<ProfilePage> {
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
+
+
       docSnap = await Firestore.instance
           .collection("users")
           .document(currUser.uid)
@@ -527,7 +529,11 @@ bool isChanged = false;
 
                       });
                       },
-                      child: Image.network(photoUrlController.text)
+                      child: Container(
+                          child: Stack(
+                              children: [
+                              Image.network(photoUrlController.text),
+                              ]))
                     ),
                     SizedBox(
                       height: 16,

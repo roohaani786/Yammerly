@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/models/posts.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
+import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -228,6 +231,23 @@ class _FeedsPageState extends State<FeedsPage> {
 //    print("Done..");
 //  }
 
+  File _image;
+  bool upload;
+
+  Future pickImage() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+        upload = true;
+      });
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+    );
+    print("Done..");
+  }
+
   @override
   Widget build(BuildContext context) {
     print(displayNameController.text);
@@ -250,9 +270,18 @@ class _FeedsPageState extends State<FeedsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FlatButton(onPressed: (){
-//                          pickImage();
-                        },
+                        FlatButton(
+                          onPressed:
+                              (){
+                            pickImage();
+                            if (upload == true){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                            }else{
+                              return null;
+                            }
+                          },
                           color: Colors.transparent,
                             child: Row(
                               children: [
