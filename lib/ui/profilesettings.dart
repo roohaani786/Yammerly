@@ -11,6 +11,7 @@ class ProfileSettings extends StatefulWidget {
 class _ProfileSettingsState extends State<ProfileSettings> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
+  bool valuef = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +35,31 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             title: 'Account',titleTextStyle: TextStyle(color: Colors.deepPurple,
           fontWeight: FontWeight.bold),
             tiles: [
-              SettingsTile(title: 'Phone number', leading: Icon(Icons.phone,color: Colors.green,)),
+              SettingsTile(title: 'Phone number', leading: GestureDetector(
+                onTap: (){
+
+                },
+                  child: Icon(Icons.phone,color: Colors.green,))),
               SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.blue,)),
-              SettingsTile(title: 'Log out', leading: GestureDetector(
+              SettingsTile(
+                onTap: (){
+                  FirebaseAuth.instance
+                      .signOut()
+                      .then((result) =>
+                      Navigator.push(context, new MaterialPageRoute(
+                          builder: (context) =>
+                          new LoginScreen())
+                      ))
+                      .catchError((err) => print(err));
+                print("loggedout");
+                },
+                title: 'Log out', leading: GestureDetector(
                   child: new Icon(
                     Icons.exit_to_app,
                     color: Colors.redAccent,
                   ),
                   onTap: () {
+
                     FirebaseAuth.instance
                         .signOut()
                         .then((result) =>
@@ -50,6 +68,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             new LoginScreen())
                         ))
                         .catchError((err) => print(err));
+                    print("loggedout");
                   }),),
             ],
           ),
@@ -68,9 +87,19 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             fontWeight: FontWeight.bold),
             tiles: [
 
-              SettingsTile(
+              SettingsTile.switchTile(
                   title: 'Use fingerprint',
                   leading: Icon(Icons.fingerprint,color: Colors.green.shade800,),
+                switchValue: false,
+                switchActiveColor: Colors.deepPurple,
+                onToggle: (value) {
+                   if(valuef == true){
+                     valuef = false;
+                   }
+                   else{
+                     valuef = true;
+                   }
+                },
                   ),
               SettingsTile(
                 title: 'Change password',
@@ -81,6 +110,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 //                enabled: notificationsEnabled,
                 leading: Icon(Icons.notifications_active,color: Colors.brown,),
                 switchValue: true,
+                switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {},
               ),
             ],
@@ -101,12 +131,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 22, bottom: 8),
-                  child: Image.asset(
-                    'assets/settings.png',
-                    height: 50,
-                    width: 50,
-                    color: Color(0xFF777777),
-                  ),
+                  child: Icon(Icons.build),
                 ),
                 Text(
                   'Version: 1.0.0 (10)',
