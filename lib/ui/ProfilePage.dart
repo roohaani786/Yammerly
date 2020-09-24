@@ -7,6 +7,7 @@ import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
+import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/aboutuser.dart';
 import 'package:techstagram/ui/messagingsystem.dart';
 
@@ -39,12 +40,13 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       bioController,genderController,linkController,photoUrlController,
       displayNameController,workController,educationController,
       currentCityController,homeTownController,relationshipController,
-  followersController,followingController,pinCodeController;
+  followersController,followingController,pinCodeController,userPostsController,uidController;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
 
   DocumentSnapshot docSnap;
+  DocumentSnapshot postSnap;
   FirebaseUser currUser;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -69,6 +71,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     }
   }
 
+  ScrollController scrollController = new ScrollController();
+
   @override
   void initState() {
     firstNameController = TextEditingController();
@@ -89,6 +93,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     pinCodeController = TextEditingController();
     followersController = TextEditingController();
     followingController = TextEditingController();
+    userPostsController = TextEditingController();
+    uidController = TextEditingController();
 
 
 
@@ -99,6 +105,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     authService.loading.listen((state) => setState(() => _loading = state));
 
     fetchProfileData();
+    getUserPosts();
   }
 
 //  String displayName;
@@ -107,6 +114,38 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   int followers;
   int following;
   int posts;
+  String uidCurrUser;
+
+  Stream<QuerySnapshot> userPostsStream;
+
+  getUserPosts() async {
+    getPostsUser().then((val){
+      setState(() {
+        userPostsStream = val;
+      });
+    });
+  }
+
+  getPostsUser() async {
+    return Firestore.instance.collection('users')
+        .document(uidController.text)
+        .collection('posts')
+        .orderBy("timestamp", descending: true)
+        .snapshots();
+  }
+
+
+  // fetchUserPost() async{
+  //   currUser = await FirebaseAuth.instance.currentUser();
+  //   try {
+  //     postSnap = Firestore.instance.collection('posts')
+  //         .where('uid', isEqualTo: uidController)
+  //         .getDocuments() as DocumentSnapshot;
+  //     uidCurrUser = postSnap.data["url"];
+  //   }  on PlatformException catch (e) {
+  //     print("PlatformException in fetching user profile. E  = " + e.message);
+  //   }
+  // }
 
 
 
@@ -119,6 +158,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
           .get();
 
        displayNameController.text = docSnap.data["displayName"];
+       uidController.text = docSnap.data["uid"];
        photoUrlController.text = docSnap.data["photoURL"];
        bioController.text = docSnap.data["bio"];
        followers = docSnap.data["followers"];
@@ -172,6 +212,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 10.0),
                                       child: Text(
+
                                         displayNameController.text,
                                         style: TextStyle(
                                           fontSize: 26.0,
@@ -184,6 +225,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 10.0),
                                       child: Text(
+
                                         bioController.text,
                                         style: TextStyle(
                                           fontFamily: 'Source Sans Pro',
@@ -302,6 +344,46 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                 ),
                               ),
                             ),
+
+                            Container(
+                              height: 500.0,
+                              width: 500.0,
+                              child: Card(
+                                child: StreamBuilder(
+                                  stream: userPostsStream,
+                                  builder: (context, snapshot) {
+                                    return snapshot.hasData
+                                        ? Column(
+                                      children: [
+                                        new Expanded(
+                                            child: ListView.builder(
+                                              controller: scrollController,
+                                              itemCount: snapshot.data.documents.length,
+                                              itemBuilder: (context, index) {
+                                                String url = snapshot.data.documents[index]['url'];
+                                                return Column(
+                                                  children: [
+                                                    Text(url),
+                                                    Container(
+                                                      child: FadeInImage(
+                                                        image: NetworkImage(url),
+                                                        //image: NetworkImage("posts[i].postImage"),
+                                                        placeholder: AssetImage("assets/images/empty.png"),
+                                                        width: MediaQuery.of(context).size.width,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              }
+                                            )
+                                        ),
+                                      ],
+                                    ): Container();
+                                  }
+                                ),
+                                  //child: Image.network(uidCurrUser),
+                              )
+                            )
 
                           ],
                         ),

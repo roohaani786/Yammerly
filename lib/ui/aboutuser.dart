@@ -68,17 +68,17 @@ class _AboutUserState extends State<AboutUser> {
     authService.loading.listen((state) => setState(() => _loading = state));
 
     fetchProfileData();
+
   }
+
+
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
 
       //var database;
-      var PostSnap = Firestore.instance.collection('posts')
-          .document(currUser.uid)
-          .get();
-      userPostsController.text = PostSnap.data["url"];
+
 
 
       docSnap = await Firestore.instance
