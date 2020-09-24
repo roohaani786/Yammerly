@@ -1,33 +1,80 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:techstagram/models/user.dart';
+import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/services/database.dart';
+import 'package:techstagram/ui/ProfileEdit.dart';
 
 class OtherUserProfile extends StatefulWidget{
   
   final String uid;
+  final String uidX;
   final String displayNamecurrentUser;
   final String displayName;
   
-  OtherUserProfile({this.uid,this.displayNamecurrentUser,this.displayName});
+  OtherUserProfile({this.uid,this.displayNamecurrentUser,this.displayName,this.uidX});
   @override
   _OtherUserProfileState createState() => _OtherUserProfileState(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName);
 }
 
 class _OtherUserProfileState extends State<OtherUserProfile> {
   final String uid;
+  final String uidX;
   final String displayNamecurrentUser;
   final String displayName;
-  _OtherUserProfileState({this.uid,this.displayNamecurrentUser,this.displayName});
+  _OtherUserProfileState({this.uid,this.displayNamecurrentUser,this.displayName,this.uidX});
 
   bool followed = false;
+
+  TextEditingController uidControllerX,followingControllerX;
+
+  DocumentSnapshot docSnap;
+  User user;
+  FirebaseUser currUser;
+
+  Map<String, dynamic> _profile;
+  bool _loading = false;
 
   @override
   void initState() {
     getFollowers();
     // TODO: implement initState
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+
+    uidControllerX = TextEditingController();
     super.initState();
+    fetchProfileData();
   }
+
+  int followingX;
+
+  fetchProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(currUser.uid)
+          .get();
+
+      uidControllerX.text = docSnap.data["uid"];
+      followingX = docSnap.data["following"];
+      print("fg");
+      print(followingX);
+
+      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
+
 
   getFollowers() {
 
@@ -53,7 +100,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    print(uid);
+    print("HAHA");
+    print(uidControllerX.text);
+
 
     Stream userQuery;
 
@@ -84,6 +133,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       String bio = snapshot.data.documents[index]["bio"];
       int followers = snapshot.data.documents[index]["followers"];
       int following = snapshot.data.documents[index]["following"];
+      print(following);
       int posts = snapshot.data.documents[index]["posts"];
       return (uid != null) ?
       SingleChildScrollView(
@@ -156,6 +206,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                         _buildStatItem("POSTS", posts.toString()),
                                         _buildStatItem("FOLLOWING",
                                             following.toString()),
+
                                       ],
                                     ),
                                   ),
@@ -178,10 +229,13 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       ),
                                                     ),
                                                     onPressed: () {
+
+
                                                       setState(() {
                                                         followed = true;
                                                       });
                                                    DatabaseService().followUser(followers, uid, displayNamecurrentUser);
+                                                   DatabaseService().increaseFollowing(followingX,displayNamecurrentUser,displayNameX,uidControllerX.text);
                                                     },
                                                     shape: RoundedRectangleBorder(
                                                       side: BorderSide(
@@ -206,7 +260,28 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       setState(() {
                                                         followed = false;
                                                       });
-                                                      DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
+                                                      DatabaseService()
+                                                          .unfollowUser(
+                                                          followers, uid,
+                                                          displayNamecurrentUser);
+                                                      if (followingX == 1) {
+                                                        followingX = 0;
+                                                        DatabaseService()
+                                                            .decreaseFollowing(
+                                                            followingX,
+                                                            displayNamecurrentUser,
+                                                            displayNameX,
+                                                            uidControllerX
+                                                                .text);
+                                                      } else {
+                                                        DatabaseService()
+                                                            .decreaseFollowing(
+                                                            followingX,
+                                                            displayNamecurrentUser,
+                                                            displayNameX,
+                                                            uidControllerX
+                                                                .text);
+                                                      }
                                                     },
                                                     shape: RoundedRectangleBorder(
                                                       side: BorderSide(

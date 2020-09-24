@@ -31,7 +31,7 @@ class FeedsPage extends StatefulWidget {
   final String url;
   final String postId;
   final int likes;
-  final int uid;
+  final String uid;
 
   FeedsPage(
       {this.wiggles,
@@ -50,6 +50,7 @@ class FeedsPage extends StatefulWidget {
 class _FeedsPageState extends State<FeedsPage> {
 
   bool isLoading = true;
+  bool liked = false;
   bool isEditable = false;
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
@@ -86,6 +87,7 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
+    getlikes(widget.uid);
   }
 
   Stream<QuerySnapshot> postsStream;
@@ -130,16 +132,10 @@ class _FeedsPageState extends State<FeedsPage> {
         .document(displayNameController)
         .get()
         .then((value) {
-      if (value!=null) {
+      if (value.exists) {
         setState(() {
           liked = true;
           print("haa");
-        });
-      }
-      else{
-        setState(() {
-          liked = false;
-          print("nhi");
         });
       }
     });
@@ -158,7 +154,6 @@ class _FeedsPageState extends State<FeedsPage> {
 //        isLoading = false;
 //        isEditable = true;
 //      });
-//      getlikes();
 //    } on PlatformException catch (e) {
 //      print("PlatformException in fetching user profile. E  = " + e.message);
 //    }
@@ -175,17 +170,16 @@ class _FeedsPageState extends State<FeedsPage> {
       likesController.text = docSnap.data["likes"];
       uidController.text =  docSnap.data["uid"];
       displayNameController.text = docSnap.data["displayName"];
+
       setState(() {
         isLoading = false;
         isEditable = true;
       });
-      getlikes(displayNameController.text);
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
 
-  bool liked = false;
   var time = "s";
   User currentUser;
 
@@ -370,7 +364,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                   children: <Widget>[
                                     Row(
                                       children: <Widget>[
-                                        (!liked)?IconButton(
+                                        (liked == false && liked == null)?IconButton(
                                           onPressed: () {
                                             DatabaseService().likepost(
                                                 likes, postId, displayNameController.text);
@@ -394,9 +388,9 @@ class _FeedsPageState extends State<FeedsPage> {
                                             });
                                           },
 
-                                          icon: Icon(FontAwesome.thumbs_up),
+                                          icon: Icon(FontAwesome.thumbs_down),
                                           iconSize: 25,
-                                          color: Colors.deepPurple,
+                                          color: Colors.green,
                                           // onPressed: () {
                                           // },
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),

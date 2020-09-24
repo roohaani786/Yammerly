@@ -6,9 +6,10 @@ import 'Otheruser/other_user.dart';
 
 class CloudFirestoreSearch extends StatefulWidget {
   final displayNamecurrentUser;
-  CloudFirestoreSearch({this.displayNamecurrentUser});
+  final uidX;
+  CloudFirestoreSearch({this.displayNamecurrentUser,this.uidX});
   @override
-  _CloudFirestoreSearchState createState() => _CloudFirestoreSearchState(displayNamecurrentUser: displayNamecurrentUser);
+  _CloudFirestoreSearchState createState() => _CloudFirestoreSearchState(displayNamecurrentUser: displayNamecurrentUser,uidX: uidX);
 }
 
 class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
@@ -17,13 +18,15 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
   String searchKey;
   Stream streamQuery;
   final String displayNamecurrentUser;
+  final String uidX;
 
-  _CloudFirestoreSearchState({this.displayNamecurrentUser});
+  _CloudFirestoreSearchState({this.displayNamecurrentUser,this.uidX});
 
-
+String uidf = CloudFirestoreSearch().uidX;
   @override
   Widget build(BuildContext context) {
-    print(displayNamecurrentUser);
+    print("cv");
+    print(uidf);
     print("434");
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +93,7 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                                  builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX)),
                             );
                           },
                           child: Row(
