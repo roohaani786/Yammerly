@@ -178,14 +178,18 @@ class CameraScreenState extends State<CameraScreen>
       bioController,genderController,linkController,photoUrlController,
       displayNameController,workController,educationController,
       currentCityController,homeTownController,relationshipController,pincodeController ;
-
+  bool upload = false;
   Future pickImage() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
         _image = image;
+        upload = true;
       });
     });
-    controlUploadAndSave();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+    );
     print("Done..");
   }
   String url;
@@ -400,6 +404,13 @@ class CameraScreenState extends State<CameraScreen>
                   color: Colors.white60,), onPressed:
               (){
                     pickImage();
+                    if (upload == true){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                    }else{
+                      return null;
+                    }
               }
 
               ),),

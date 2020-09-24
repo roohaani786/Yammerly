@@ -8,6 +8,8 @@ import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/ProfileEdit.dart';
 
+import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
+
 class OtherUserProfile extends StatefulWidget{
   
   final String uid;
@@ -327,12 +329,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                 ),
                                               ),
                                               onPressed: () {
-//                                                Navigator.push(
-//                                                  context,
-//                                                  MaterialPageRoute(
-//                                                      builder: (context) =>
-//                                                          AboutUser()),
-//                                                );
+                                               Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => AboutOtherUser(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                                                );
                                               },
                                               shape: RoundedRectangleBorder(
                                                 //side: BorderSide(color: Colors.white, width: 2),
@@ -364,7 +364,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                     ),
                   ):Padding(
                     padding: const EdgeInsets.only(
-                        top: 70, left: 115.0, right: 130.0),
+                        top: 70, left: 100.0,right: 100.0),
                     child: CircleAvatar(
                       radius: 50,
                       child: IconButton(icon:

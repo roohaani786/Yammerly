@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/models/posts.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
+import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +21,15 @@ import 'package:techstagram/services/database.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
+import 'package:techstagram/services/database.dart';
+import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 
 import '../../constants3.dart';
 
 
 class FeedsPage extends StatefulWidget {
+  final displayNamecurrentUser;
+  @override
 
   final Wiggle wiggle;
   final List<Wiggle> wiggles;
@@ -41,10 +48,11 @@ class FeedsPage extends StatefulWidget {
         this.url,
         this.uid,
         this.postId,
+        this.displayNamecurrentUser,
         this.likes});
 
   @override
-  _FeedsPageState createState() => _FeedsPageState();
+  _FeedsPageState createState() => _FeedsPageState(displayNamecurrentUser: displayNamecurrentUser);
 }
 
 class _FeedsPageState extends State<FeedsPage> {
@@ -52,6 +60,9 @@ class _FeedsPageState extends State<FeedsPage> {
   bool isLoading = true;
   bool liked = false;
   bool isEditable = false;
+  final String displayNamecurrentUser;
+
+  _FeedsPageState({this.displayNamecurrentUser});
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
   displayNameController,photoUrlController,
@@ -229,6 +240,23 @@ class _FeedsPageState extends State<FeedsPage> {
 //    print("Done..");
 //  }
 
+  File _image;
+  bool upload;
+
+  Future pickImage() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+        upload = true;
+      });
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+    );
+    print("Done..");
+  }
+
   @override
   Widget build(BuildContext context) {
     print(displayNameController.text);
@@ -251,9 +279,18 @@ class _FeedsPageState extends State<FeedsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FlatButton(onPressed: (){
-//                          pickImage();
-                        },
+                        FlatButton(
+                          onPressed:
+                              (){
+                            pickImage();
+                            if (upload == true){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                            }else{
+                              return null;
+                            }
+                          },
                           color: Colors.transparent,
                             child: Row(
                               children: [
@@ -304,6 +341,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         snapshot.data.documents[index]['displayName'];
                         String photoUrl =
                         snapshot.data.documents[index]['photoURL'];
+                        String uid = snapshot.data.documents[index]["uid"];
 
                         Timestamp timestamp =
                         snapshot.data.documents[index]['timestamp'];
@@ -329,36 +367,42 @@ class _FeedsPageState extends State<FeedsPage> {
                             child: Column(
                               children: <Widget>[
 
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 10,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(40),
-                                            child: Image(
-                                              image: NetworkImage(photoUrl),
-                                              width: 40,
-                                              height: 40,
-                                              fit: BoxFit.cover,
+                                GestureDetector(
+                                  onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => AboutOtherUser(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                          ),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 10,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Row(
+                                          children: <Widget>[
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(40),
+                                              child: Image(
+                                                image: NetworkImage(photoUrl),
+                                                width: 40,
+                                                height: 40,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(displayName),
-                                        ],
-                                      ),
-                                      IconButton(
-                                        icon: Icon(SimpleLineIcons.options),
-                                        onPressed: () {},
-                                      ),
-                                    ],
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(displayName),
+                                          ],
+                                        ),
+                                        IconButton(
+                                          icon: Icon(SimpleLineIcons.options),
+                                          onPressed: () {},
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 //Image.network(url),

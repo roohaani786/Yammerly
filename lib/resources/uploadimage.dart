@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:techstagram/ui/HomePage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as ImD;
 
@@ -86,6 +87,7 @@ class _UploadImageState extends State<UploadImage>
 
     String downloadUrl = await uploadPhoto(file);
     savePostInfoToFirestore(downloadUrl, descriptionController.text);
+    savePostinfoToUser(downloadUrl, descriptionController.text);
 
     descriptionController.clear();
     setState(() {
@@ -93,7 +95,31 @@ class _UploadImageState extends State<UploadImage>
       uploading = false;
       postId = Uuid().v4();
     });
-    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
+  }
+
+  savePostinfoToUser(String url, String description){
+    Firestore.instance
+        .collection("users")
+        .document(uidController.text)
+        .collection('posts')
+        .document(postId)
+        .setData({
+      "postId": postId,
+      "uid" : uidController.text,
+      "displayName": displayNameController.text,
+      "timestamp": Timestamp.now(),
+      "email": emailController.text,
+      "photoURL" :photoUrlController.text,
+//      "email": widget.userData.email,
+      "description": descriptionController.text,
+      "likes": 0,
+      "url": url,
+//      "photourl": widget.userData.photoUrl,
+    });
   }
 
   savePostInfoToFirestore(String url, String description) {
@@ -110,6 +136,7 @@ class _UploadImageState extends State<UploadImage>
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
+
   }
 
   displayUploadFormScreen() {
