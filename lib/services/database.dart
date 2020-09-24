@@ -367,11 +367,11 @@ class DatabaseService {
 //        .updateData({'following': following + 1});
 //  }
 
-    Future increaseFollowing(int following,String displayNameX, String displayName, String uidX) async {
+    Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
       await Firestore.instance
           .collection("users")
           .document(uidX)
-          .updateData({'followingname': uidX,});
+          .updateData({'followingname': uid,});
 
       return await Firestore.instance
           .collection("users")
@@ -379,13 +379,27 @@ class DatabaseService {
           .updateData({'following': following + 1});
     }
 
-  Future decreaseFollowing(int following,String displayNameX, String displayName, String uidX) async {
+  Future decreaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
 
-
-    return await Firestore.instance
+    await Firestore.instance
         .collection("users")
         .document(uidX)
-        .updateData({'following': following - 1});
+        .updateData({'followingname': null});
+
+
+//        if(following == 1 && following == 0){
+//          return await Firestore.instance
+//        .collection("users")
+//        .document(uidX)
+//        .updateData({'following': 0});
+//        }
+
+//        else {
+          return await Firestore.instance
+              .collection("users")
+              .document(uidX)
+              .updateData({'following': following - 1});
+//        }
   }
 
   Future followUser(int followers, String uid, String displayName) async {

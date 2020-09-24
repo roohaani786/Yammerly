@@ -147,13 +147,19 @@ print("jhj");
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         key: _scaffoldKey,
-        backgroundColor: Colors.grey.shade200,
+        backgroundColor: Colors.grey.shade300,
         body:  SingleChildScrollView(
           child: SafeArea(
             child: Align(
               alignment: Alignment.center,
               child: Stack(
                   children: [
+                    Image.asset(
+                      "assets/images/social.jpg",
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.fitHeight,
+                    ),
                     Align(
                       alignment: Alignment.center,
                       child: Padding(

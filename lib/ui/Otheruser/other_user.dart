@@ -235,7 +235,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                         followed = true;
                                                       });
                                                    DatabaseService().followUser(followers, uid, displayNamecurrentUser);
-                                                   DatabaseService().increaseFollowing(followingX,displayNamecurrentUser,displayNameX,uidControllerX.text);
+                                                   DatabaseService().increaseFollowing(uid,followingX,displayNamecurrentUser,displayNameX,uidControllerX.text);
                                                     },
                                                     shape: RoundedRectangleBorder(
                                                       side: BorderSide(
@@ -264,24 +264,14 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                           .unfollowUser(
                                                           followers, uid,
                                                           displayNamecurrentUser);
-                                                      if (followingX == 1) {
-                                                        followingX = 0;
+
                                                         DatabaseService()
-                                                            .decreaseFollowing(
+                                                            .decreaseFollowing(uid,
                                                             followingX,
                                                             displayNamecurrentUser,
                                                             displayNameX,
                                                             uidControllerX
                                                                 .text);
-                                                      } else {
-                                                        DatabaseService()
-                                                            .decreaseFollowing(
-                                                            followingX,
-                                                            displayNamecurrentUser,
-                                                            displayNameX,
-                                                            uidControllerX
-                                                                .text);
-                                                      }
                                                     },
                                                     shape: RoundedRectangleBorder(
                                                       side: BorderSide(

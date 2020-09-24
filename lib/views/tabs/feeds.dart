@@ -87,11 +87,16 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
-    getlikes(widget.uid);
+//    fetchLikes();
+
+    print("widget bhaiyya");
+    print(widget.uid);
   }
+
 
   Stream<QuerySnapshot> postsStream;
   final timelineReference = Firestore.instance.collection('posts');
+  String postIdX;
 
   fetchPosts() async {
 
@@ -123,13 +128,14 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
 
-  getlikes( String displayNameController) {
-    print("dhar");
-    print(displayNameController);
+  getlikes( String displayName, String postId) {
+
+    print("postid");
+    print(postId);
     Firestore.instance.collection('posts')
-        .document(widget.postId)
+        .document(postId)
         .collection('likes')
-        .document(displayNameController)
+        .document(displayName)
         .get()
         .then((value) {
       if (value.exists) {
@@ -142,22 +148,22 @@ class _FeedsPageState extends State<FeedsPage> {
 
   }
 
-//  fetchLikes() async {
-//    print("oi");
-//    currUser = await FirebaseAuth.instance.currentUser();
-//    try {
-//      docSnap = await Firestore.instance
-//          .collection("likes")
-//          .document(currUser.uid)
-//          .get();
-//      setState(() {
-//        isLoading = false;
-//        isEditable = true;
-//      });
-//    } on PlatformException catch (e) {
-//      print("PlatformException in fetching user profile. E  = " + e.message);
-//    }
-//  }
+  fetchLikes() async {
+    print("oi");
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("likes")
+          .document(currUser.uid)
+          .get();
+      setState(() {
+        isLoading = false;
+        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -170,6 +176,7 @@ class _FeedsPageState extends State<FeedsPage> {
       likesController.text = docSnap.data["likes"];
       uidController.text =  docSnap.data["uid"];
       displayNameController.text = docSnap.data["displayName"];
+
 
       setState(() {
         isLoading = false;
@@ -288,6 +295,8 @@ class _FeedsPageState extends State<FeedsPage> {
                       controller: scrollController,
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
+
+                        postIdX = snapshot.data.documents[index]['email'];
                         String email = snapshot.data.documents[index]['email'];
                         String description =
                         snapshot.data.documents[index]['description'];
@@ -303,6 +312,8 @@ class _FeedsPageState extends State<FeedsPage> {
                         int likes = snapshot.data.documents[index]['likes'];
 
                         readTimestamp(timestamp.seconds);
+
+                        getlikes(displayNameController.text,postId);
 
 
                         print(email);
@@ -364,7 +375,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                   children: <Widget>[
                                     Row(
                                       children: <Widget>[
-                                        (liked == false && liked == null)?IconButton(
+                                        (liked == false)?IconButton(
                                           onPressed: () {
                                             DatabaseService().likepost(
                                                 likes, postId, displayNameController.text);
@@ -372,9 +383,9 @@ class _FeedsPageState extends State<FeedsPage> {
                                               liked = true;
                                             });
                                           },
-                                          icon: Icon(FontAwesome.thumbs_up),
+                                          icon: Icon(FontAwesomeIcons.thumbsUp),
                                           iconSize: 25,
-                                          color: Colors.grey,
+                                          color: Colors.deepPurple,
                                           // onPressed: () {
                                           // },
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
@@ -388,9 +399,9 @@ class _FeedsPageState extends State<FeedsPage> {
                                             });
                                           },
 
-                                          icon: Icon(FontAwesome.thumbs_down),
+                                          icon: Icon(FontAwesomeIcons.solidThumbsUp),
                                           iconSize: 25,
-                                          color: Colors.green,
+                                          color: Colors.deepPurple,
                                           // onPressed: () {
                                           // },
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),

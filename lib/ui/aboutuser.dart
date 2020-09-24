@@ -198,6 +198,7 @@ class _AboutUserState extends State<AboutUser> {
               height: 350.0,
               width: 450.0,
 
+
                 // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,

@@ -443,12 +443,15 @@ bool isChanged = false;
         height: double.maxFinite,
         width: double.maxFinite,
         padding: EdgeInsets.all(12),
+
         child: isLoading
             ? Center(
                 child: Column(
+                  
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  
                   CircularProgressIndicator(),
                   SizedBox(
                     height: 8,

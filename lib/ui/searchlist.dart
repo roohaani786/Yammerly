@@ -70,7 +70,15 @@ String uidf = CloudFirestoreSearch().uidX;
 //            : Firestore.instance.collection("users").snapshots(),
         builder: (context, snapshot) {
           return (snapshot.connectionState == ConnectionState.waiting)
-              ? Center(child: CircularProgressIndicator())
+              ? Center(child: Container(
+              decoration:  BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                      'assets/images/profileedit.png'),
+                  fit: BoxFit.cover,
+                ),
+          shape: BoxShape.circle,
+              ),child: CircularProgressIndicator()))
               : ListView.builder(
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
