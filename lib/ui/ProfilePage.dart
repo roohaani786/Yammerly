@@ -178,20 +178,28 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   @override
   Widget build(BuildContext context) {
+print("jhj");
+    print(followersController.text);
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
-      onTap: () => Navigator.of(context).pop(true),
+//      onTap: () => Navigator.of(context).pop(true),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         key: _scaffoldKey,
-        backgroundColor: Colors.grey.shade200,
+        backgroundColor: Colors.grey.shade300,
         body:  SingleChildScrollView(
           child: SafeArea(
             child: Align(
               alignment: Alignment.center,
               child: Stack(
                   children: [
+                    Image.asset(
+                      "assets/images/social.jpg",
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.fitHeight,
+                    ),
                     Align(
                       alignment: Alignment.center,
                       child: Padding(
@@ -391,7 +399,12 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 110,left: 145.0,right: 130.0),
-                      child:(photoUrlController.text!=null)?Image.network(photoUrlController.text): CircleAvatar(
+                      child:(photoUrlController.text!=null)?CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(photoUrlController.text),
+
+                        backgroundColor: Colors.transparent,
+                      ): CircleAvatar(
                         radius: 20,
                         child: IconButton(icon:
                         Icon(FontAwesomeIcons.userCircle,

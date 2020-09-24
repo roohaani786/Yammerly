@@ -11,6 +11,7 @@ class ProfileSettings extends StatefulWidget {
 class _ProfileSettingsState extends State<ProfileSettings> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
+  bool valuef = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +35,31 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             title: 'Account',titleTextStyle: TextStyle(color: Colors.deepPurple,
           fontWeight: FontWeight.bold),
             tiles: [
-              SettingsTile(title: 'Phone number', leading: Icon(Icons.phone)),
-              SettingsTile(title: 'Email', leading: Icon(Icons.email)),
-              SettingsTile(title: 'Log out', leading: IconButton(
-                  icon: new Icon(
+              SettingsTile(title: 'Phone number', leading: GestureDetector(
+                onTap: (){
+
+                },
+                  child: Icon(Icons.phone,color: Colors.green,))),
+              SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.blue,)),
+              SettingsTile(
+                onTap: (){
+                  FirebaseAuth.instance
+                      .signOut()
+                      .then((result) =>
+                      Navigator.push(context, new MaterialPageRoute(
+                          builder: (context) =>
+                          new LoginScreen())
+                      ))
+                      .catchError((err) => print(err));
+                print("loggedout");
+                },
+                title: 'Log out', leading: GestureDetector(
+                  child: new Icon(
                     Icons.exit_to_app,
-                    size: 30.0,
+                    color: Colors.redAccent,
                   ),
-                  onPressed: () {
+                  onTap: () {
+
                     FirebaseAuth.instance
                         .signOut()
                         .then((result) =>
@@ -50,6 +68,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             new LoginScreen())
                         ))
                         .catchError((err) => print(err));
+                    print("loggedout");
                   }),),
             ],
           ),
@@ -58,9 +77,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             title: 'Notification Settings',titleTextStyle: TextStyle(color: Colors.deepPurple,
               fontWeight: FontWeight.bold),
             tiles: [
-              SettingsTile(title: 'Comments', leading: Icon(Icons.comment)),
-              SettingsTile(title: 'Tags', leading: Icon(Icons.tag_faces)),
-              SettingsTile(title: 'Reminders', leading: Icon(Icons.calendar_today)),
+              SettingsTile(title: 'Comments', leading: Icon(Icons.comment,color: Colors.lightBlueAccent,)),
+              SettingsTile(title: 'Tags', leading: Icon(Icons.tag_faces,color: Colors.teal,)),
+              SettingsTile(title: 'Reminders', leading: Icon(Icons.calendar_today,color: Colors.blue.shade800,)),
             ],
           ),
           SettingsSection(
@@ -68,32 +87,43 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             fontWeight: FontWeight.bold),
             tiles: [
 
-              SettingsTile(
+              SettingsTile.switchTile(
                   title: 'Use fingerprint',
-                  leading: Icon(Icons.fingerprint),
+                  leading: Icon(Icons.fingerprint,color: Colors.green.shade800,),
+                switchValue: false,
+                switchActiveColor: Colors.deepPurple,
+                onToggle: (value) {
+                   if(valuef == true){
+                     valuef = false;
+                   }
+                   else{
+                     valuef = true;
+                   }
+                },
                   ),
               SettingsTile(
                 title: 'Change password',
-                leading: Icon(Icons.lock),
+                leading: Icon(Icons.lock,color: Colors.redAccent.shade100,),
               ),
               SettingsTile.switchTile(
                 title: 'Enable Notifications',
 //                enabled: notificationsEnabled,
-                leading: Icon(Icons.notifications_active),
+                leading: Icon(Icons.notifications_active,color: Colors.brown,),
                 switchValue: true,
+                switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {},
               ),
             ],
           ),
           SettingsSection(
-            title: 'Misc',titleTextStyle: TextStyle(color: Colors.deepPurple,
+            title: 'Miscellaneous',titleTextStyle: TextStyle(color: Colors.deepPurple,
               fontWeight: FontWeight.bold),
             tiles: [
               SettingsTile(
-                  title: 'Terms of Service', leading: Icon(Icons.description)),
+                  title: 'Terms of Service', leading: Icon(Icons.description,color: Colors.brown.shade700,)),
               SettingsTile(
                   title: 'Privacy Policy',
-                  leading: Icon(Icons.collections_bookmark)),
+                  leading: Icon(Icons.collections_bookmark,color: Colors.brown.shade700)),
             ],
           ),
           CustomSection(
@@ -101,16 +131,11 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 22, bottom: 8),
-                  child: Image.asset(
-                    'assets/settings.png',
-                    height: 50,
-                    width: 50,
-                    color: Color(0xFF777777),
-                  ),
+                  child: Icon(Icons.build),
                 ),
                 Text(
                   'Version: 1.0.0 (10)',
-                  style: TextStyle(color: Color(0xFF777777)),
+                  style: TextStyle(color: Colors.deepPurple),
                 ),
               ],
             ),

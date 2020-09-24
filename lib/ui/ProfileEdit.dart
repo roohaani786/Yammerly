@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -185,11 +186,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final postReference = Firestore.instance.collection("users");
 
   savePostInfoToFirestore(String url) {
-    postReference.document(currUser.uid).setData({
-      "uid": currUser.uid,
+    postReference.document(currUser.uid).updateData({
       "photoURL": photoUrlController.text,
-//      "photourl": widget.userData.photoUrl,
-
     });
     print(photoUrlController.text);
   }
@@ -447,12 +445,15 @@ bool isChanged = false;
         height: double.maxFinite,
         width: double.maxFinite,
         padding: EdgeInsets.all(12),
+
         child: isLoading
             ? Center(
                 child: Column(
+                  
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  
                   CircularProgressIndicator(),
                   SizedBox(
                     height: 8,
@@ -529,11 +530,13 @@ bool isChanged = false;
 
                       });
                       },
-                      child: Container(
-                          child: Stack(
-                              children: [
-                              Image.network(photoUrlController.text),
-                              ]))
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(photoUrlController.text),
+
+                        backgroundColor: Colors.transparent,
+                      ),
+
                     ),
                     SizedBox(
                       height: 16,
