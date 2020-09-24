@@ -250,9 +250,13 @@ class _FeedsPageState extends State<FeedsPage> {
         upload = true;
       });
     });
+    (_image!=null)?
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+    ):Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
     );
     print("Done..");
   }
@@ -288,7 +292,9 @@ class _FeedsPageState extends State<FeedsPage> {
                                   context,
                                   MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
                             }else{
-                              return null;
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,),));
                             }
                           },
                           color: Colors.transparent,

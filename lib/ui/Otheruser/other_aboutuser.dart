@@ -58,20 +58,20 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   bool errordikhaoN = false;
   bool _codesent = false;
 
-  String validateMobile(String value) {
-// Indian Mobile number are of 10 digit only
-
-    if (value.length == null)
-      return null;
-    else if (value.length > 0 && value.length != 10)
-      setState(() {
-        errordikhaoN = true;
-      });
-    // return 'Mobile Number must be of 10 digit';
-
-    else
-      return null;
-  }
+//  String validateMobile(String value) {
+//// Indian Mobile number are of 10 digit only
+//
+//    if (value.length == null)
+//      return null;
+//    else if (value.length > 0 && value.length != 10)
+//      setState(() {
+//        errordikhaoN = true;
+//      });
+//    // return 'Mobile Number must be of 10 digit';
+//
+//    else
+//      return null;
+//  }
 
   Future<void> _submitPhoneNumber() async {
     /// NOTE: Either append your phone number country code or add in the code itself
@@ -175,7 +175,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
     int followers = snapshot.data.documents[index]["followers"];
     int following = snapshot.data.documents[index]["following"];
     int posts = snapshot.data.documents[index]["posts"];
-    return (uid != null) ?
+    return (uid != null || displayName!=null) ?
         SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(top:100.0, left: 10.0, right: 10.0),
@@ -326,11 +326,15 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(gender,style: TextStyle(
+                                    (gender!=null)?Text(gender,style: TextStyle(
                                       color: kPrimaryColor,
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                    ),),
+                                    ),):Text("",style: TextStyle(
+                                    color: kPrimaryColor,
+                                    fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                    ),)
                                   ],
                                 ),
                                 Padding(padding: const EdgeInsets.all(2)),
@@ -344,7 +348,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(relationship,style: TextStyle(
+                                    Text((relationship!=null)?relationship:"",style: TextStyle(
                                       color: kPrimaryColor,
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
@@ -363,7 +367,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(work,style: TextStyle(
+                                    Text((work!=null)?work:"",style: TextStyle(
                                       color: kPrimaryColor,
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
@@ -381,7 +385,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(education,style: TextStyle(
+                                    Text((education!=null)?work:"",style: TextStyle(
                                       color: kPrimaryColor,
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
@@ -400,7 +404,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(currentCity,style: TextStyle(
+                                    Text((currentCity!=null)?currentCity:"",style: TextStyle(
                                       color: kPrimaryColor,
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
@@ -419,7 +423,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(pinCode,style: TextStyle(
+                                    Text((pinCode!=null)?pinCode:"",style: TextStyle(
                                       color: kPrimaryColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16.0,
@@ -438,7 +442,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(homeTown,style: TextStyle(
+                                    Text((homeTown!=null)?homeTown:"",style: TextStyle(
                                       color: kPrimaryColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16.0,
