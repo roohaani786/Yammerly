@@ -34,7 +34,7 @@ class HomePage extends StatefulWidget {
   HomePage({
     Key key,
     this.title = "Hashtag",
-    this.uid, @required this.initialindexg,
+    this.uid,this.initialindexg,
   }) : super(key: key); //update this to include the uid in the constructor
   final String title;
   final String uid;

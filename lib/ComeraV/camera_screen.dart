@@ -11,10 +11,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
-import 'package:flutter/services.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
-import 'package:torch_compat/torch_compat.dart';
+//import 'package:torch_compat/torch_compat.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
@@ -22,7 +21,7 @@ import 'package:thumbnails/thumbnails.dart';
 import 'package:lamp/lamp.dart';
 import 'package:torch/torch.dart';
 import 'package:image/image.dart' as ImD;
-import 'package:holding_gesture/holding_gesture.dart';
+//import 'package:holding_gesture/holding_gesture.dart';
 
 import 'application.dart';
 
@@ -40,7 +39,7 @@ class CameraScreenState extends State<CameraScreen>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isRecordingMode = false;
   bool _isRecording = false;
-  bool _isButtonPressed = false;
+//  bool _isButtonPressed = false;
   final _timerKey = GlobalKey<VideoTimerState>();
   bool _hasFlash = false;
   Map<String, dynamic> _profile;
@@ -452,57 +451,57 @@ class CameraScreenState extends State<CameraScreen>
     );
   }
 
-  Widget _gallerygrid() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 500.0),
-        child: Container(
-          color: Colors.purple,
-          height: 100.0,
-          width: double.infinity,
-          child: Row(
-            children: [
-              Container(
-                height: 100.0,
-                width: double.infinity,
-                child: FutureBuilder<List<String>>(
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<String>> snapshot) {
-                      SliverGrid(
-                        gridDelegate:
-                        SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 2.0,
-                          crossAxisSpacing: 2.0,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                            return GalleryItemThumbnail(
-                              heroId: 'itemPanel-$index',
-                              height: 150,
-                              resource: snapshot.data[index],
-                              onTap: () {
-                                Application.router.navigateTo(
-                                  context,
-                                  "/edit/image?resource=${Uri.encodeComponent(snapshot.data[index])}&id=itemPanel-$index",
-                                  transition: TransitionType.fadeIn,
-                                );
-                              },
-                            );
-                          },
-                          childCount: snapshot.data.length,
-                        ),
-                      );
-                      return null;
-                    }
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+//  Widget _gallerygrid() {
+//    return SingleChildScrollView(
+//      child: Padding(
+//        padding: const EdgeInsets.only(top: 500.0),
+//        child: Container(
+//          color: Colors.purple,
+//          height: 100.0,
+//          width: double.infinity,
+//          child: Row(
+//            children: [
+//              Container(
+//                height: 100.0,
+//                width: double.infinity,
+//                child: FutureBuilder<List<String>>(
+//                    builder: (BuildContext context,
+//                        AsyncSnapshot<List<String>> snapshot) {
+//                      SliverGrid(
+//                        gridDelegate:
+//                        SliverGridDelegateWithFixedCrossAxisCount(
+//                          crossAxisCount: 3,
+//                          mainAxisSpacing: 2.0,
+//                          crossAxisSpacing: 2.0,
+//                        ),
+//                        delegate: SliverChildBuilderDelegate(
+//                              (context, index) {
+//                            return GalleryItemThumbnail(
+//                              heroId: 'itemPanel-$index',
+//                              height: 150,
+//                              resource: snapshot.data[index],
+//                              onTap: () {
+//                                Application.router.navigateTo(
+//                                  context,
+//                                  "/edit/image?resource=${Uri.encodeComponent(snapshot.data[index])}&id=itemPanel-$index",
+//                                  transition: TransitionType.fadeIn,
+//                                );
+//                              },
+//                            );
+//                          },
+//                          childCount: snapshot.data.length,
+//                        ),
+//                      );
+//                      return null;
+//                    }
+//                ),
+//              ),
+//            ],
+//          ),
+//        ),
+//      ),
+//    );
+//  }
 
   Widget _buildBottomNavigationBar() {
     return Container(

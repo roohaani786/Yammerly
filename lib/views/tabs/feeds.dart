@@ -10,22 +10,17 @@ import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:techstagram/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:techstagram/models/wiggle.dart';
-import 'package:techstagram/services/database.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
-import 'package:techstagram/services/database.dart';
-import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
-
-import '../../constants3.dart';
+//import 'package:techstagram/services/database.dart';
+//import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
+//
+//import '../../constants3.dart';
 
 
 class FeedsPage extends StatefulWidget {
