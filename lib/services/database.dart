@@ -368,24 +368,28 @@ class DatabaseService {
 //        .updateData({'following': following + 1});
 //  }
 
-    Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
-      await Firestore.instance
-          .collection("users")
-          .document(uidX)
-          .updateData({'followingname': uid,});
+  Future unfollowUser(int followers, String uid, String displayName) async {
+    await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .collection('followers')
+        .document(displayName)
+        .delete();
 
-      return await Firestore.instance
-          .collection("users")
-          .document(uidX)
-          .updateData({'following': following + 1});
-    }
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'followers': followers - 1});
+  }
 
   Future decreaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
 
     await Firestore.instance
         .collection("users")
         .document(uidX)
-        .updateData({'followingname': null});
+        .collection('following')
+        .document(displayNameX)
+        .delete();
 
 
 //        if(following == 1 && following == 0){
@@ -403,6 +407,22 @@ class DatabaseService {
 //        }
   }
 
+  Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
+    await Firestore.instance
+        .collection("users")
+        .document(uidX)
+        .collection('following')
+        .document(displayName)
+        .setData({'followingname' : displayName});
+        //.updateData({'followingname': uid,});
+
+    return await Firestore.instance
+        .collection("users")
+        .document(uidX)
+        .updateData({'following': following + 1});
+  }
+  
+
   Future followUser(int followers, String uid, String displayName) async {
     await Firestore.instance
         .collection("users")
@@ -417,19 +437,7 @@ class DatabaseService {
         .updateData({'followers': followers + 1});
   }
 
-  Future unfollowUser(int followers, String uid, String displayName) async {
-    await Firestore.instance
-        .collection("users")
-        .document(uid)
-        .collection('followers')
-        .document(displayName)
-        .delete();
 
-    return await Firestore.instance
-        .collection("users")
-        .document(uid)
-        .updateData({'followers': followers - 1});
-  }
 
   Future decreaseFame(
       int initialvalue, String raterEmail, bool isAdditional) async {
