@@ -226,15 +226,22 @@ class _BodyState extends State<Body> {
   String validateDisplayName(String value) {
 // Indian Mobile number are of 10 digit only
 
-    if (value.length == null){
-      errordikhaoDN = true;
+    if (value.length == 0){
+      print(value.length);
+      setState(() {
+        errordikhaoDN = true;
+      });
     }
+
 
 
     // return 'Mobile Number must be of 10 digit';
 
-    else
-      return null;
+    else {
+      setState(() {
+        errordikhaoDN = false;
+      });
+    }
   }
 
   String validateMobile(String value) {
@@ -363,6 +370,7 @@ class _BodyState extends State<Body> {
                 lastNameInputController.clear(),
                 phoneNumberController.clear(),
                 emailInputController.clear(),
+                displayNameInputController.clear(),
                 pwdInputController.clear(),
                 confirmPwdInputController.clear()
               })
@@ -485,7 +493,7 @@ class _BodyState extends State<Body> {
       isLoading = false;
     });
 
-    return user.uid;
+//    return user.uid;
   }
 
   @override
@@ -608,7 +616,21 @@ class _BodyState extends State<Body> {
             child: Container(
               height: 50.0,
               width: 250.0,
-              child: TextFieldContainer(
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 5),
+                padding:
+                EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+                width: size.width * 0.8,
+                decoration: BoxDecoration(
+                  color: kPrimaryLightColor,
+                  borderRadius: BorderRadius.circular(29),
+                  border: Border.all(
+                    color: (errordikhaoDN == true)
+                        ? Colors.red
+                        : kPrimaryLightColor,
+                  ),
+                ),
+
                 child: TextFormField(
                   style: TextStyle(
                       fontSize: 12.0, height: 1.5, color: Colors.black),

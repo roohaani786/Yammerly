@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:techstagram/models/users.dart';
-import 'package:techstagram/models/wiggle.dart';
-import 'dart:io';
 
 class DatabaseServiceX {
   final String uid;

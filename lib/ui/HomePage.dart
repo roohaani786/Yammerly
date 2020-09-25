@@ -34,7 +34,7 @@ class HomePage extends StatefulWidget {
   HomePage({
     Key key,
     this.title = "Hashtag",
-    this.uid, @required this.initialindexg,
+    this.uid,this.initialindexg,
   }) : super(key: key); //update this to include the uid in the constructor
   final String title;
   final String uid;
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
 
   int initialindexg;
   TextEditingController emailController,urlController,descriptionController,
-      displayNameController;
+      displayNameController,uidController;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -88,6 +88,7 @@ class _HomePageState extends State<HomePage> {
           .get();
       emailController.text = docSnap.data["email"];
       displayNameController.text = docSnap.data["displayName"];
+      uidController.text = docSnap.data["uid"];
       setState(() {
 //        isLoading = false;
 //        isEditable = true;
@@ -105,6 +106,7 @@ class _HomePageState extends State<HomePage> {
     taskDescripInputController = new TextEditingController();
     emailController = TextEditingController();
     displayNameController = TextEditingController();
+    uidController = TextEditingController();
 
     super.initState();
     // Subscriptions are created here
@@ -173,7 +175,7 @@ class _HomePageState extends State<HomePage> {
 //    final user = Provider.of<User>(context);
 //    _saveDeviceToken(user.uid);
     return GestureDetector(
-//      onTap: () => Navigator.of(context).pop(HomePage()),
+      onTap: () => Navigator.of(context).pop(HomePage()),
           child: Scaffold(
             appBar: AppBar(
               title: Text(
@@ -194,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text ,)),
+                        builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
                   );
                 },
               ),

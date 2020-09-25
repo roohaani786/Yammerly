@@ -72,7 +72,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
-      onTap: () => Navigator.of(context).pop(true),
+      onTap: () =>null,
       child: Scaffold(
         // resizeToAvoidBottomPadding: false,
         body: SingleChildScrollView(

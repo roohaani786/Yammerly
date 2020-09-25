@@ -360,6 +360,49 @@ class DatabaseService {
         .updateData({'likes': initialvalue - 1});
   }
 
+//  Future followingUser(int following, String displayNameX, String displayName) async {
+
+//    return await Firestore.instance
+//        .collection("users")
+//        .document(displayName)
+//        .updateData({'following': following + 1});
+//  }
+
+    Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
+      await Firestore.instance
+          .collection("users")
+          .document(uidX)
+          .updateData({'followingname': uid,});
+
+      return await Firestore.instance
+          .collection("users")
+          .document(uidX)
+          .updateData({'following': following + 1});
+    }
+
+  Future decreaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
+
+    await Firestore.instance
+        .collection("users")
+        .document(uidX)
+        .updateData({'followingname': null});
+
+
+//        if(following == 1 && following == 0){
+//          return await Firestore.instance
+//        .collection("users")
+//        .document(uidX)
+//        .updateData({'following': 0});
+//        }
+
+//        else {
+          return await Firestore.instance
+              .collection("users")
+              .document(uidX)
+              .updateData({'following': following - 1});
+//        }
+  }
+
   Future followUser(int followers, String uid, String displayName) async {
     await Firestore.instance
         .collection("users")

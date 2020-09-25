@@ -68,9 +68,7 @@ dependencies:
   responsive_layout_builder:
   esys_flutter_share: ^1.0.2
   video_player: ^0.10.2+5
-  thumbnails:
-      git:
-        url: https://github.com/divyanshub024/Flutter_Thumbnails.git
+  thumbnails: 1.0.1
   torch_compat: ^1.0.2
   lamp: ^0.0.6
   firebase_core: ^0.4.0+9
@@ -159,10 +157,11 @@ flutter:
     - assets/images/man3.jpg
     - assets/images/man4.jpg
     - assets/images/man5.jpg
+    - assets/images/social.jpg
     - assets/images/my_profile.jpg
     - assets/images/photo4.jpg
     - assets/images/photo5.jpg
-    - assets/images/photo_1.jpeg
+    - assets/images/profileedit.png
     - assets/images/placeholder.jpg
     - assets/images/post2.jpg
     - assets/images/home_page.png

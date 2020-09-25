@@ -200,6 +200,7 @@ class _AboutUserState extends State<AboutUser> {
           color: Colors.deepPurple
         ),),
       ),
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),

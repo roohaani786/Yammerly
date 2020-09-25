@@ -10,21 +10,17 @@ import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:techstagram/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:techstagram/models/wiggle.dart';
-import 'package:techstagram/services/database.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
-import 'package:techstagram/services/database.dart';
-import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
-
-import '../../constants3.dart';
+//import 'package:techstagram/services/database.dart';
+//import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
+//
+//import '../../constants3.dart';
 
 
 class FeedsPage extends StatefulWidget {
@@ -38,7 +34,7 @@ class FeedsPage extends StatefulWidget {
   final String url;
   final String postId;
   final int likes;
-  final int uid;
+  final String uid;
 
   FeedsPage(
       {this.wiggles,
@@ -58,6 +54,7 @@ class FeedsPage extends StatefulWidget {
 class _FeedsPageState extends State<FeedsPage> {
 
   bool isLoading = true;
+  bool liked = false;
   bool isEditable = false;
   final String displayNamecurrentUser;
 
@@ -97,10 +94,16 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
+//    fetchLikes();
+
+    print("widget bhaiyya");
+    print(widget.uid);
   }
+
 
   Stream<QuerySnapshot> postsStream;
   final timelineReference = Firestore.instance.collection('posts');
+  String postIdX;
 
   fetchPosts() async {
 
@@ -134,48 +137,42 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
 
-  getlikes( String displayNameController) {
-    print("dhar");
-    print(displayNameController);
+  getlikes( String displayName, String postId) {
+
+    print("postid");
+    print(postId);
     Firestore.instance.collection('posts')
-        .document(widget.postId)
+        .document(postId)
         .collection('likes')
-        .document(displayNameController)
+        .document(displayName)
         .get()
         .then((value) {
-      if (value!=null) {
+      if (value.exists) {
         setState(() {
           liked = true;
           print("haa");
-        });
-      }
-      else{
-        setState(() {
-          liked = false;
-          print("nhi");
         });
       }
     });
 
   }
 
-//  fetchLikes() async {
-//    print("oi");
-//    currUser = await FirebaseAuth.instance.currentUser();
-//    try {
-//      docSnap = await Firestore.instance
-//          .collection("likes")
-//          .document(currUser.uid)
-//          .get();
-//      setState(() {
-//        isLoading = false;
-//        isEditable = true;
-//      });
-//      getlikes();
-//    } on PlatformException catch (e) {
-//      print("PlatformException in fetching user profile. E  = " + e.message);
-//    }
-//  }
+  fetchLikes() async {
+    print("oi");
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("likes")
+          .document(currUser.uid)
+          .get();
+      setState(() {
+        isLoading = false;
+        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -188,17 +185,17 @@ class _FeedsPageState extends State<FeedsPage> {
       likesController.text = docSnap.data["likes"];
       uidController.text =  docSnap.data["uid"];
       displayNameController.text = docSnap.data["displayName"];
+
+
       setState(() {
         isLoading = false;
         isEditable = true;
       });
-      getlikes(displayNameController.text);
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
 
-  bool liked = false;
   var time = "s";
   User currentUser;
 
@@ -251,9 +248,13 @@ class _FeedsPageState extends State<FeedsPage> {
         upload = true;
       });
     });
+    (_image!=null)?
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+    ):Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
     );
     print("Done..");
   }
@@ -266,7 +267,7 @@ class _FeedsPageState extends State<FeedsPage> {
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
-      onTap: () => Navigator.of(context).pop(true),
+      onTap: () => null,
       child: Scaffold(
         key: _scaffoldKey,
         body: StreamBuilder(
@@ -289,7 +290,9 @@ class _FeedsPageState extends State<FeedsPage> {
                                   context,
                                   MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
                             }else{
-                              return null;
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,),));
                             }
                           },
                           color: Colors.transparent,
@@ -333,6 +336,8 @@ class _FeedsPageState extends State<FeedsPage> {
                       controller: scrollController,
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
+
+                        postIdX = snapshot.data.documents[index]['email'];
                         String email = snapshot.data.documents[index]['email'];
                         String description =
                         snapshot.data.documents[index]['description'];
@@ -347,8 +352,9 @@ class _FeedsPageState extends State<FeedsPage> {
                         String url = snapshot.data.documents[index]['url'];
                         String postId = snapshot.data.documents[index]['postId'];
                         int likes = snapshot.data.documents[index]['likes'];
-
                         readTimestamp(timestamp.seconds);
+
+                        getlikes(displayNameController.text,postId);
 
 
                         print(email);
@@ -358,6 +364,10 @@ class _FeedsPageState extends State<FeedsPage> {
 //                    currentpost = posts[i];
 //                  }
 //                }
+
+                        if(likes< 0 || likes == 0){
+                          liked = false;
+                        }
                         return Container(
                           child: Container(
                             color: Colors.white,
@@ -367,7 +377,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                 GestureDetector(
                                   onTap: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => AboutOtherUser(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                            MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
                           ),
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
@@ -416,7 +426,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                   children: <Widget>[
                                     Row(
                                       children: <Widget>[
-                                        (!liked)?IconButton(
+                                        (liked == false)?IconButton(
                                           onPressed: () {
                                             DatabaseService().likepost(
                                                 likes, postId, displayNameController.text);
@@ -424,9 +434,9 @@ class _FeedsPageState extends State<FeedsPage> {
                                               liked = true;
                                             });
                                           },
-                                          icon: Icon(FontAwesome.thumbs_up),
+                                          icon: Icon(FontAwesomeIcons.thumbsUp),
                                           iconSize: 25,
-                                          color: Colors.grey,
+                                          color: Colors.deepPurple,
                                           // onPressed: () {
                                           // },
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
@@ -440,7 +450,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             });
                                           },
 
-                                          icon: Icon(FontAwesome.thumbs_up),
+                                          icon: Icon(FontAwesomeIcons.solidThumbsUp),
                                           iconSize: 25,
                                           color: Colors.deepPurple,
                                           // onPressed: () {
