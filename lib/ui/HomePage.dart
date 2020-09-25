@@ -175,7 +175,7 @@ class _HomePageState extends State<HomePage> {
 //    final user = Provider.of<User>(context);
 //    _saveDeviceToken(user.uid);
     return GestureDetector(
-//      onTap: () => Navigator.of(context).pop(HomePage()),
+      onTap: () => Navigator.of(context).pop(HomePage()),
           child: Scaffold(
             appBar: AppBar(
               title: Text(

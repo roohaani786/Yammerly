@@ -185,7 +185,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
                     child: Container(
-                      height: 370.0,
+                      height:400.0,
                       width: 450.0,
 
                       // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
@@ -226,7 +226,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(firstName,style: TextStyle(
+                                    Text((firstName!=null)?firstName:"",style: TextStyle(
                                       color: kPrimaryColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16.0,
@@ -246,7 +246,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(lastName,style: TextStyle(
+                                    Text((lastName!=null)?lastName:"",style: TextStyle(
                                       color: kPrimaryColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16.0,
@@ -266,7 +266,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                         color: Colors.grey,
                                       ),),
                                     ),
-                                    Text(phoneNumber,style: TextStyle(
+                                    Text((phoneNumber!=null)?phoneNumber:"",style: TextStyle(
                                       color: kPrimaryColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16.0,

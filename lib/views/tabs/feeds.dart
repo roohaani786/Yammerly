@@ -20,6 +20,7 @@ import 'package:techstagram/models/wiggle.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
@@ -269,7 +270,7 @@ class _FeedsPageState extends State<FeedsPage> {
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
-      onTap: () => Navigator.of(context).pop(true),
+      onTap: () => null,
       child: Scaffold(
         key: _scaffoldKey,
         body: StreamBuilder(
@@ -354,7 +355,6 @@ class _FeedsPageState extends State<FeedsPage> {
                         String url = snapshot.data.documents[index]['url'];
                         String postId = snapshot.data.documents[index]['postId'];
                         int likes = snapshot.data.documents[index]['likes'];
-
                         readTimestamp(timestamp.seconds);
 
                         getlikes(displayNameController.text,postId);
@@ -367,6 +367,10 @@ class _FeedsPageState extends State<FeedsPage> {
 //                    currentpost = posts[i];
 //                  }
 //                }
+
+                        if(likes< 0 || likes == 0){
+                          liked = false;
+                        }
                         return Container(
                           child: Container(
                             color: Colors.white,
@@ -376,7 +380,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                 GestureDetector(
                                   onTap: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => AboutOtherUser(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                            MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
                           ),
                                   child: Container(
                                     padding: EdgeInsets.symmetric(

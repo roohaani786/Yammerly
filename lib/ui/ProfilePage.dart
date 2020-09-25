@@ -183,7 +183,7 @@ print("jhj");
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
-//      onTap: () => Navigator.of(context).pop(true),
+      onTap: () => null,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         key: _scaffoldKey,
@@ -369,11 +369,10 @@ print("jhj");
                                                 String url = snapshot.data.documents[index]['url'];
                                                 return Column(
                                                   children: [
-                                                    Text(url),
+//                                                    Text(url),
                                                     Container(
                                                       child: FadeInImage(
                                                         image: NetworkImage(url),
-                                                        //image: NetworkImage("posts[i].postImage"),
                                                         placeholder: AssetImage("assets/images/empty.png"),
                                                         width: MediaQuery.of(context).size.width,
                                                       ),

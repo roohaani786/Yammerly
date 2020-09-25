@@ -269,7 +269,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                                                         DatabaseService()
                                                             .decreaseFollowing(uid,
-                                                            followingX,
+                                                            1,
                                                             displayNamecurrentUser,
                                                             displayNameX,
                                                             uidControllerX
