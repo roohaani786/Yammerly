@@ -114,7 +114,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   int followers;
   int following;
   int posts;
-  String uidCurrUser;
+
+  //String uidCurrUser = uidController.text;
 
   Stream<QuerySnapshot> userPostsStream;
 
@@ -126,9 +127,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     });
   }
 
+
+
   getPostsUser() async {
     return Firestore.instance.collection('users')
-        .document(uidController.text)
+        .document(currUser.uid)
         .collection('posts')
         .orderBy("timestamp", descending: true)
         .snapshots();
@@ -353,9 +356,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                   stream: userPostsStream,
                                   builder: (context, snapshot) {
                                     return snapshot.hasData
-                                        ? Column(
+                                         ? Column(
                                       children: [
+
                                         new Expanded(
+
                                             child: ListView.builder(
                                               controller: scrollController,
                                               itemCount: snapshot.data.documents.length,
@@ -363,7 +368,14 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                 String url = snapshot.data.documents[index]['url'];
                                                 return Column(
                                                   children: [
-                                                    Text(url),
+                                                    Container(
+                                                      child: FadeInImage(
+                                                        image: NetworkImage(url),
+                                                        //image: NetworkImage("posts[i].postImage"),
+                                                        placeholder: AssetImage("assets/images/empty.png"),
+                                                        width: MediaQuery.of(context).size.width,
+                                                      ),
+                                                    ),
                                                     Container(
                                                       child: FadeInImage(
                                                         image: NetworkImage(url),
@@ -378,7 +390,14 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                             )
                                         ),
                                       ],
-                                    ): Container();
+                                    ): Container(
+                                      child: FadeInImage(
+                                        image: AssetImage("assets/images/empty.png"),
+                                        //image: NetworkImage("posts[i].postImage"),
+                                        placeholder: AssetImage("assets/images/empty.png"),
+                                        width: MediaQuery.of(context).size.width,
+                                      ),
+                                    );
                                   }
                                 ),
                                   //child: Image.network(uidCurrUser),

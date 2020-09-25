@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/models/wiggle.dart';
 import 'dart:io';
@@ -579,6 +580,14 @@ class DatabaseService {
         .orderBy("timestamp", descending: true)
         .snapshots();
   }
+
+  // getPostsUser(TextEditingController uidController) async {
+  //   return Firestore.instance.collection('users')
+  //       .document(uidController.text)
+  //       .collection('posts')
+  //       .orderBy("timestamp", descending: true)
+  //       .snapshots();
+  // }
 
 
 
