@@ -40,13 +40,13 @@ class _GalleryState extends State<Gallery> {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Padding(
-          padding: EdgeInsets.only(left: 220.0),
-          child: IconButton(
+
+        actions: [
+          IconButton(
             icon: Icon(Icons.delete,color: Colors.white),
             onPressed: _deleteFile,
           ),
-        ),
+        ],
       ),
       body: FutureBuilder(
         future: _getAllImages(),
@@ -92,7 +92,7 @@ class _GalleryState extends State<Gallery> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: CircleAvatar(
-                  backgroundColor: Colors.purpleAccent,
+                  backgroundColor: Colors.black,
                   radius: 20.0,
                   child: IconButton(
                     icon: Icon(Icons.share,color: Colors.white),
@@ -103,10 +103,10 @@ class _GalleryState extends State<Gallery> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: CircleAvatar(
-                  backgroundColor: Colors.purpleAccent,
+                  backgroundColor: Colors.black,
                   radius: 20.0,
                   child: IconButton(
-                    icon: Icon(Icons.add,color: Colors.white),
+                    icon: Icon(Icons.add_circle,color: Colors.white),
                     onPressed: (){
                       //add post space
 

@@ -665,6 +665,12 @@ class CameraScreenState extends State<CameraScreen>
       print('path: $filePath');
       await _controller.takePicture(filePath);
       setState(() {});
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Gallery()),
+      );
+
     }
   }
 

@@ -40,7 +40,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       bioController,genderController,linkController,photoUrlController,
       displayNameController,workController,educationController,
       currentCityController,homeTownController,relationshipController,
-  followersController,followingController,pinCodeController,userPostsController,uidController;
+      followersController,followingController,pinCodeController,userPostsController,uidController;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -95,7 +95,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     followingController = TextEditingController();
     userPostsController = TextEditingController();
     uidController = TextEditingController();
-
+    String uiduserX = uid;
 
 
     super.initState();
@@ -105,7 +105,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     authService.loading.listen((state) => setState(() => _loading = state));
 
     fetchProfileData();
-    getUserPosts();
   }
 
 //  String displayName;
@@ -118,17 +117,17 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   Stream<QuerySnapshot> userPostsStream;
 
-  getUserPosts() async {
-    getPostsUser().then((val){
+  getUserPosts(String uidX) async {
+    getPostsUser(uidX).then((val){
       setState(() {
         userPostsStream = val;
       });
     });
   }
 
-  getPostsUser() async {
+  getPostsUser(String uidX) async {
     return Firestore.instance.collection('users')
-        .document(uidController.text)
+        .document(uidX)
         .collection('posts')
         .orderBy("timestamp", descending: true)
         .snapshots();
@@ -157,18 +156,20 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
           .document(currUser.uid)
           .get();
 
-       displayNameController.text = docSnap.data["displayName"];
-       uidController.text = docSnap.data["uid"];
-       photoUrlController.text = docSnap.data["photoURL"];
-       bioController.text = docSnap.data["bio"];
-       followers = docSnap.data["followers"];
-       following  = docSnap.data["following"];
-       posts  = docSnap.data["posts"];
+      displayNameController.text = docSnap.data["displayName"];
+      uidController.text = docSnap.data["uid"];
+      photoUrlController.text = docSnap.data["photoURL"];
+      bioController.text = docSnap.data["bio"];
+      followers = docSnap.data["followers"];
+      following  = docSnap.data["following"];
+      posts  = docSnap.data["posts"];
 
       setState(() {
         isLoading = false;
         isEditable = false;
       });
+
+      getUserPosts(uidController.text);
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
@@ -178,7 +179,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   @override
   Widget build(BuildContext context) {
-print("jhj");
+    print("jhj");
     print(followersController.text);
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
@@ -281,10 +282,10 @@ print("jhj");
                                                 ),
                                                 onPressed: () {
 
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => AboutUser()),
-                                                );
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => AboutUser()),
+                                                  );
                                                 },
                                                 shape: RoundedRectangleBorder(
                                                   //side: BorderSide(color: Colors.white, width: 2),
@@ -332,10 +333,10 @@ print("jhj");
                                                       ),
                                                       onPressed: () {
 
-                                                         Navigator.push(
-                                                           context,
-                                                           MaterialPageRoute(builder: (context) => ProfileSettings()),
-                                                         );
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (context) => ProfileSettings()),
+                                                        );
                                                       },
                                                       shape: RoundedRectangleBorder(
                                                         side: BorderSide(color: Color(0xffed1e79), width: 2),
@@ -354,40 +355,46 @@ print("jhj");
                             ),
 
 
-                              Card(
+                            Container(
+                              height: 300.0,
+                              width: 300.0,
+                              child: Card(
                                 child: StreamBuilder(
-                                  stream: userPostsStream,
-                                  builder: (context, snapshot) {
-                                    return snapshot.hasData
-                                        ? Column(
-                                      children: [
-                                        new Expanded(
-                                            child: ListView.builder(
-                                              controller: scrollController,
-                                              itemCount: snapshot.data.documents.length,
-                                              itemBuilder: (context, index) {
-                                                String url = snapshot.data.documents[index]['url'];
-                                                return Column(
-                                                  children: [
-//                                                    Text(url),
-                                                    Container(
-                                                      child: FadeInImage(
-                                                        image: NetworkImage(url),
-                                                        placeholder: AssetImage("assets/images/empty.png"),
-                                                        width: MediaQuery.of(context).size.width,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              }
-                                            )
-                                        ),
-                                      ],
-                                    ): Container();
-                                  }
+                                    stream: userPostsStream,
+                                    builder: (context, snapshot) {
+                                      return snapshot.hasData
+                                          ? Column(
+                                        children: [
+                                          new Expanded(
+                                              child: ListView.builder(
+                                                  controller: scrollController,
+                                                  itemCount: snapshot.data.documents.length,
+                                                  itemBuilder: (context, index) {
+                                                    String url = snapshot.data.documents[index]['url'];
+                                                    print("URL djjfhdj");
+                                                    print(url);
+                                                    return Column(
+                                                      children: [
+                                                        Text(url),
+                                                        Container(
+                                                          child: FadeInImage(
+                                                            image: NetworkImage(url),
+                                                            placeholder: AssetImage("assets/images/empty.png"),
+                                                            width: MediaQuery.of(context).size.width,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  }
+                                              )
+                                          ),
+                                        ],
+                                      ): Container(color: Colors.deepPurple,);
+                                    }
                                 ),
-                                  //child: Image.network(uidCurrUser),
-                              )
+                                //child: Image.network(uidCurrUser),
+                              ),
+                            )
 
                           ],
                         ),
@@ -457,7 +464,7 @@ Widget _buildStatItem(String label, String count) {
 
     ],
   );
-  }
+}
 
 
 

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -274,61 +273,7 @@ class _FeedsPageState extends State<FeedsPage> {
             return snapshot.hasData
                 ? Column(
                   children: [
-                  Container(
-                    color: Colors.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FlatButton(
-                          onPressed:
-                              (){
-                            pickImage();
-                            if (upload == true){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
-                            }else{
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,),));
-                            }
-                          },
-                          color: Colors.transparent,
-                            child: Row(
-                              children: [
-                                Icon(FontAwesomeIcons.plus,color: Colors.deepPurpleAccent,),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Add Post",style:
-                                    TextStyle(
-                                      color: Colors.deepPurpleAccent,
-                                    ),),
-                                ),
-                              ],
-                            ),
-                            ),
 
-                        Padding(
-                          padding: const EdgeInsets.only(left: 100.0),
-                        ),
-                        FlatButton(onPressed: (){},
-                          color: Colors.transparent,
-                          child: Row(
-                            children: [
-                              Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Rate us",style:
-                                TextStyle(
-                                  color: Colors.deepPurpleAccent,
-                                ),),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                     new Expanded(
                       child: ListView.builder(
                       controller: scrollController,
@@ -371,6 +316,61 @@ class _FeedsPageState extends State<FeedsPage> {
                             color: Colors.white,
                             child: Column(
                               children: <Widget>[
+                                (index == 0)?Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      FlatButton(
+                                        onPressed:
+                                            (){
+                                          pickImage();
+                                          if (upload == true){
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                                          }else{
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,),));
+                                          }
+                                        },
+                                        color: Colors.transparent,
+                                        child: Row(
+                                          children: [
+                                            Icon(FontAwesomeIcons.plus,color: Colors.deepPurpleAccent,),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text("Add Post",style:
+                                              TextStyle(
+                                                color: Colors.deepPurpleAccent,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 100.0),
+                                      ),
+                                      FlatButton(onPressed: (){},
+                                        color: Colors.transparent,
+                                        child: Row(
+                                          children: [
+                                            Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text("Rate us",style:
+                                              TextStyle(
+                                                color: Colors.deepPurpleAccent,
+                                              ),),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ): Container(height: 0.0,width: 0.0,),
 
                                 GestureDetector(
                                   onTap: () => Navigator.push(
