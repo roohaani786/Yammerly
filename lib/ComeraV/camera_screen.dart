@@ -562,6 +562,12 @@ class CameraScreenState extends State<CameraScreen>
                       ),
                       onPressed: () {
                         if (!_isRecordingMode) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Gallery(),
+                            ),
+                          );
                           _captureImage();
                           if(flashOn){
                             _turnFlash();

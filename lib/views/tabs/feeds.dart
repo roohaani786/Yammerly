@@ -113,6 +113,8 @@ class _FeedsPageState extends State<FeedsPage> {
     });
   }
 
+
+
   void _onHorizontalDrag(DragEndDetails details) {
     if (details.primaryVelocity == 0)
       // user have just tapped on screen (no dragging)
