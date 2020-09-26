@@ -96,8 +96,8 @@ class _FeedsPageState extends State<FeedsPage> {
     fetchProfileData();
 //    fetchLikes();
 
-    print("widget bhaiyya");
-    print(widget.uid);
+    //print("widget bhaiyya");
+    //print(widget.uid);
   }
 
 
@@ -139,8 +139,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
   getlikes( String displayName, String postId) {
 
-    print("postid");
-    print(postId);
+    //print("postid");
+    //print(postId);
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
@@ -150,7 +150,7 @@ class _FeedsPageState extends State<FeedsPage> {
       if (value.exists) {
         setState(() {
           liked = true;
-          print("haa");
+          //print("haa");
         });
       }
     });
@@ -158,7 +158,7 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   fetchLikes() async {
-    print("oi");
+    //print("oi");
     currUser = await FirebaseAuth.instance.currentUser();
     try {
       docSnap = await Firestore.instance
@@ -261,7 +261,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(displayNameController.text);
+    //print(displayNameController.text);
 
     // TODO: implement build
     return GestureDetector(
@@ -357,8 +357,8 @@ class _FeedsPageState extends State<FeedsPage> {
                         getlikes(displayNameController.text,postId);
 
 
-                        print(email);
-                        print(displayName);
+                        //print(email);
+                        //print(displayName);
 //                for (int i = 0; i < posts.length; i++) {
 //                  if (posts[i].email == email) {
 //                    currentpost = posts[i];

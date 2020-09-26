@@ -429,7 +429,7 @@ class DatabaseService {
         .document(uid)
         .collection('followers')
         .document(displayName)
-        .setData({'followedby': displayName,});
+        .setData({'followername': displayName,});
 
     return await Firestore.instance
         .collection("users")
