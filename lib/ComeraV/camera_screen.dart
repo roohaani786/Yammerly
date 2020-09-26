@@ -288,6 +288,9 @@ class CameraScreenState extends State<CameraScreen>
     return GestureDetector(
         onHorizontalDragEnd: (DragEndDetails details) =>
             _onHorizontalDrag(details,context),
+      onDoubleTap: (){
+        _onCameraSwitch();
+      },
       child: Scaffold(
         // floatingActionButton: HoldDetector(
         //   onHold: startVideoRecording,
@@ -366,53 +369,38 @@ class CameraScreenState extends State<CameraScreen>
                 },
               ),
             ),
-          Positioned(
-            top: 340.0,
-            right: 12.0,
-            child: IconButton(
-              icon: Icon(
-                (flashOn) ? Icons.flash_on : Icons.flash_off,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                setState(() {
-                  flashOn = !flashOn;
-                });
 
-                // setState(() {
-                //   flashOn = !flashOn;
-                // });
-                // if (!flashOn) {
-                //   //Lamp.turnOff();
-                //   TorchCompat.turnOff();
-                // } else {
-                //   TorchCompat.turnOn();
-                //   //Lamp.turnOn();
-                // }
-              },
-              //onPressed: () => TorchCompat.turnOff(),
+             Padding(
+               padding: EdgeInsets.only(top: 24.0),
+               child: Align(
+                 alignment: Alignment.topCenter,
+                 child: IconButton(
+                  icon: Icon(
+                    (flashOn) ? Icons.flash_on : Icons.flash_off,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      flashOn = !flashOn;
+                    });
+
+                    // setState(() {
+                    //   flashOn = !flashOn;
+                    // });
+                    // if (!flashOn) {
+                    //   //Lamp.turnOff();
+                    //   TorchCompat.turnOff();
+                    // } else {
+                    //   TorchCompat.turnOn();
+                    //   //Lamp.turnOn();
+                    // }
+                  },
+                  //onPressed: () => TorchCompat.turnOff(),
             ),
-          ),
+               ),
+             ),
 
-            Positioned(
-              top: 335.0,
-              left: 12.0,
-              child: IconButton(
 
-                  icon: Icon(FontAwesomeIcons.photoVideo,
-                  color: Colors.white60,), onPressed:
-              (){
-                    pickImage();
-                    if (upload == true){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
-                    }else{
-                      return null;
-                    }
-              }
-
-              ),),
 
 
 
@@ -514,37 +502,54 @@ class CameraScreenState extends State<CameraScreen>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
 
+              IconButton(
 
-              FutureBuilder(
-                future: getLastImage(),
-                builder: (context, snapshot) {
-                  if (snapshot.data == null) {
-                    return Container(
-                      width: 40.0,
-                      height: 40.0,
-                    );
-                  }
-                  return GestureDetector(
-                    onTap: () => Navigator.push(
+                  icon: Icon(FontAwesomeIcons.photoVideo,
+                    color: Colors.white60,), onPressed:
+                  (){
+                pickImage();
+                if (upload == true){
+                  Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => Gallery(),
-                      ),
-                    ),
-                    child: Container(
-                      width: 40.0,
-                      height: 40.0,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4.0),
-                        child: Image.file(
-                          snapshot.data,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  );
-                },
+                      MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                }else{
+                  return null;
+                }
+              }
+
               ),
+
+
+//              FutureBuilder(
+//                future: getLastImage(),
+//                builder: (context, snapshot) {
+//                  if (snapshot.data == null) {
+//                    return Container(
+//                      width: 40.0,
+//                      height: 40.0,
+//                    );
+//                  }
+//                  return GestureDetector(
+//                    onTap: () => Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => Gallery(),
+//                      ),
+//                    ),
+//                    child: Container(
+//                      width: 40.0,
+//                      height: 40.0,
+//                      child: ClipRRect(
+//                        borderRadius: BorderRadius.circular(4.0),
+//                        child: Image.file(
+//                          snapshot.data,
+//                          fit: BoxFit.cover,
+//                        ),
+//                      ),
+//                    ),
+//                  );
+//                },
+//              ),
 
               FlatButton(
                 color: Colors.transparent,
