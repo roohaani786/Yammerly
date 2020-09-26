@@ -203,21 +203,27 @@ class _UploadImageState extends State<UploadImage>
               alignment: Alignment.topLeft,
               child: Column(
                 children: [
-                  Text("Caption",style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                  ),),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Text("Caption :-",style: TextStyle(
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.bold,
+                      ),),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                       controller: descriptionController,
                       enabled: true,
                       keyboardType: TextInputType.multiline,
-                      maxLines: 3,
+                      maxLines: 2,
                       decoration: InputDecoration(
-//                          labelText: "#Hashpost",labelStyle: TextStyle(
-//                          color: Colors.grey,fontWeight: FontWeight.bold
-//                      ),
+                          labelText: "Write your caption here...",labelStyle: TextStyle(
+                          color: Colors.grey,
+                      ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide:

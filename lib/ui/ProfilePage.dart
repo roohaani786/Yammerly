@@ -103,7 +103,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     String uiduserX = uid;
 
 
-
     super.initState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -429,6 +428,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             Container(
                               height: 500.0,
                               width: 500.0,
+
                               child: Card(
                                 child: StreamBuilder(
                                     stream: userPostsStream,
