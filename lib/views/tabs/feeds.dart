@@ -252,6 +252,7 @@ class _FeedsPageState extends State<FeedsPage> {
           displayNameController.text);
       setState(() {
         liked = true;
+        print(liked);
       });
     }
     else if (liked = true){
@@ -260,6 +261,7 @@ class _FeedsPageState extends State<FeedsPage> {
           displayNameController.text);
       setState(() {
         liked = false;
+        print(liked);
       });
 
     }
@@ -273,7 +275,6 @@ class _FeedsPageState extends State<FeedsPage> {
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
-      onTap: () => null,
       child: Scaffold(
         key: _scaffoldKey,
         body: StreamBuilder(
@@ -415,7 +416,11 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                GestureDetector(
                                  onDoubleTap: (){
+                                   print("double tap");
+                                   print(liked);
                                    doubletaplike(likes,postId);
+                                   print("double tap again");
+                                   print(liked);
                                  },
                                  child: FadeInImage(
                                       image: NetworkImage(url),
