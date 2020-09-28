@@ -61,8 +61,8 @@ class AvailableImages {
   };
 
   static const postBanner = {
-    'assetImage': AssetImage('assets/images/post_banner.jpg'),
-    'assetPath': 'assets/images/post_banner.jpg',
+    'assetImage': AssetImage('assets/images/home_page.png'),
+    'assetPath': 'assets/images/home_page.png',
   };
 
   static const emptyState = {
@@ -70,6 +70,6 @@ class AvailableImages {
     'assetPath': 'assets/images/empty.png',
   };
 
-  static const homePage = const AssetImage('assets/images/home_page.png');
+  static const homePage = const AssetImage('assets/images/p.jpg');
   static const appLogo = const AssetImage('assets/images/logo.png');
 }

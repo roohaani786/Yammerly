@@ -1,15 +1,18 @@
 import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:techstagram/models/user.dart';
-import 'package:techstagram/models/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:techstagram/ui/HomePage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as ImD;
+
+import 'auth.dart';
 
 class UploadImage extends StatefulWidget {
   final User userData;
@@ -22,9 +25,24 @@ class UploadImage extends StatefulWidget {
 
 class _UploadImageState extends State<UploadImage>
     with AutomaticKeepAliveClientMixin<UploadImage> {
+
+  TextEditingController
+  emailController,
+      uidController,
+      displayNameController,photoUrlController,
+  descriptionController;
+
+
+  Map<String, dynamic> _profile;
+  bool _loading = false;
+
+  DocumentSnapshot docSnap;
+  FirebaseUser currUser;
+
+
   File file;
-  TextEditingController descriptionTextEditingController =
-  TextEditingController();
+//  TextEditingController descriptionTextEditingController =
+//  TextEditingController();
   bool uploading = false;
   final StorageReference storageReference =
   FirebaseStorage.instance.ref().child("Post Pictures");
@@ -68,37 +86,73 @@ class _UploadImageState extends State<UploadImage>
     await compressPhoto();
 
     String downloadUrl = await uploadPhoto(file);
-    savePostInfoToFirestore(downloadUrl, descriptionTextEditingController.text);
+    savePostInfoToFirestore(downloadUrl, descriptionController.text);
+    savePostinfoToUser(downloadUrl, descriptionController.text);
 
-    descriptionTextEditingController.clear();
+    descriptionController.clear();
     setState(() {
       // file = null;
       uploading = false;
       postId = Uuid().v4();
     });
-    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
   }
 
-  savePostInfoToFirestore(String url, String description) {
-    postReference.document(postId).setData({
+  savePostinfoToUser(String url, String description){
+    Firestore.instance
+        .collection("users")
+        .document(uidController.text)
+        .collection('posts')
+        .document(postId)
+        .setData({
       "postId": postId,
-//      "name": widget.userData.displayName,
+      "uid" : uidController.text,
+      "displayName": displayNameController.text,
       "timestamp": Timestamp.now(),
+      "email": emailController.text,
+      "photoURL" :photoUrlController.text,
 //      "email": widget.userData.email,
-//      "description": description,
+      "description": descriptionController.text,
       "likes": 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
   }
 
+  savePostInfoToFirestore(String url, String description) {
+    postReference.document(postId).setData({
+      "postId": postId,
+      "uid" : uidController.text,
+      "displayName": displayNameController.text,
+      "timestamp": Timestamp.now(),
+      "email": emailController.text,
+      "photoURL" :photoUrlController.text,
+//      "email": widget.userData.email,
+      "description": descriptionController.text,
+      "likes": 0,
+      "url": url,
+//      "photourl": widget.userData.photoUrl,
+    });
+
+  }
+
   displayUploadFormScreen() {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple,),
+            onPressed: (){
+          Navigator.pop(context);
+        }),
         title: Text(
           "New Post",
           style: TextStyle(
-              color: Colors.red, fontSize: 24, fontWeight: FontWeight.bold),
+              color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         actions: <Widget>[
           // uploading ? linearProgress() : Text(''),
@@ -109,7 +163,7 @@ class _UploadImageState extends State<UploadImage>
             child: Text(
               "Share",
               style: TextStyle(
-                  color: Colors.redAccent,
+                  color: Colors.blueAccent,
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
             ),
@@ -124,14 +178,15 @@ class _UploadImageState extends State<UploadImage>
           : ListView(
         children: <Widget>[
           Container(
-            height: 230,
+            height: 330,
             width: MediaQuery.of(context).size.width * 0.8,
             child: Center(
               child: AspectRatio(
-                aspectRatio: 16 / 9,
+                aspectRatio: 6 / 5,
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
+
                         image: FileImage(file), fit: BoxFit.cover),
                   ),
                 ),
@@ -141,33 +196,44 @@ class _UploadImageState extends State<UploadImage>
           Padding(
             padding: EdgeInsets.only(top: 12),
           ),
-//          ListTile(
-//            leading: CircleAvatar(
-//              radius: 27,
-//              child: ClipOval(
-//                child: SizedBox(
-//                  width: 180,
-//                  height: 180,
-//                  child: Image.network(
-//                    widget.userData.photoUrl,
-//                    fit: BoxFit.cover,
-//                  ),
-//                ),
-//              ),
-//            ),
-//            title: Container(
-//              child: TextFormField(
-//                style: TextStyle(color: Colors.white),
-//                controller: descriptionTextEditingController,
-//                decoration: textFieldInputDecoration(
-//                    ' Say something about your image'),
-//                // decoration: InputDecoration(
-//                //   hintText: 'Say something about your image',
-//                //   hintStyle: TextStyle(color: Colors.grey),
-//                //   border: InputBorder.none,
-//              ),
-//            ),
-//          )
+
+          Container(
+//            color: Colors.white,
+            child:  Align(
+              alignment: Alignment.topLeft,
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Text("Caption :-",style: TextStyle(
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.bold,
+                      ),),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      controller: descriptionController,
+                      enabled: true,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 2,
+                      decoration: InputDecoration(
+                          labelText: "Write your caption here...",labelStyle: TextStyle(
+                          color: Colors.grey,
+                      ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide:
+                              BorderSide(color: Colors.black, width: 1))),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -176,7 +242,38 @@ class _UploadImageState extends State<UploadImage>
   @override
   void initState() {
     file = widget.file;
+    uidController = TextEditingController();
+    emailController = TextEditingController();
+    photoUrlController = TextEditingController();
+    displayNameController = TextEditingController();
+    descriptionController = TextEditingController();
+
+    // Subscriptions are created here
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+
     super.initState();
+    fetchProfileData();
+  }
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  fetchProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(currUser.uid)
+          .get();
+      uidController.text = docSnap.data["uid"];
+      emailController.text = docSnap.data["email"];
+      displayNameController.text = docSnap.data["displayName"];
+      photoUrlController.text = docSnap.data["photoURL"];
+
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
   }
 
   @override
