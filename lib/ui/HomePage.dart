@@ -1,32 +1,46 @@
 import 'package:camera/camera.dart';
+import 'package:camera/new/src/support_android/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+//import 'package:firebase/firebase.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
-import 'package:techstagram/camera/camera_screen.dart';
+import 'package:techstagram/ComeraV/cam.dart';
+import 'package:techstagram/models/user.dart';
+import 'package:techstagram/models/wiggle.dart';
+import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 //import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
+import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
+import 'package:techstagram/ui/other_profile.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
 
 //import '../resources/opencamera.dart';
 import 'messagingsystem.dart';
+import 'searchlist.dart';
 
 
 class HomePage extends StatefulWidget {
   HomePage({
     Key key,
     this.title = "Hashtag",
-    this.uid, @required this.initialindexg,
+    this.uid,this.initialindexg,
   }) : super(key: key); //update this to include the uid in the constructor
   final String title;
   final String uid;
   int initialindexg = 2;
   FirebaseUser user;
+
 
 
   //include this
@@ -54,7 +68,35 @@ class _HomePageState extends State<HomePage> {
   _HomePageState(this.initialindexg);
 
   int initialindexg;
+  TextEditingController emailController,urlController,descriptionController,
+      displayNameController,uidController;
 
+  Map<String, dynamic> _profile;
+  bool _loading = false;
+
+  DocumentSnapshot docSnap;
+  FirebaseUser currUser;
+
+
+
+  fetchProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(currUser.uid)
+          .get();
+      emailController.text = docSnap.data["email"];
+      displayNameController.text = docSnap.data["displayName"];
+      uidController.text = docSnap.data["uid"];
+      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
 
 
   @override
@@ -62,6 +104,17 @@ class _HomePageState extends State<HomePage> {
     firebaseProvider = FirebaseProvider();
     taskTitleInputController = new TextEditingController();
     taskDescripInputController = new TextEditingController();
+    emailController = TextEditingController();
+    displayNameController = TextEditingController();
+    uidController = TextEditingController();
+
+    super.initState();
+    // Subscriptions are created here
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+//    fetchPosts();
+    fetchProfileData();
     this.getCurrentUser();
     super.initState();
   }
@@ -70,7 +123,11 @@ class _HomePageState extends State<HomePage> {
     currentUser = await FirebaseAuth.instance.currentUser();
     firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
     setState(() {});
+    print(currentUser.displayName);
+    print(currentUser.email);
+    print(currentUser.uid);
   }
+
 
   _signOut() async {
     await _firebaseAuth.signOut();
@@ -103,10 +160,20 @@ class _HomePageState extends State<HomePage> {
         false;
   }
 
+  final Firestore _db = Firestore.instance;
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+
+
+  _saveDeviceToken(String uid) async {
+    String fcmToken = await _fcm.getToken();
+    DatabaseService(uid: uid).uploadtoken(fcmToken);
+  }
 
 
   @override
   Widget build(BuildContext context) {
+//    final user = Provider.of<User>(context);
+//    _saveDeviceToken(user.uid);
     return GestureDetector(
       onTap: () => Navigator.of(context).pop(HomePage()),
           child: Scaffold(
@@ -122,14 +189,14 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: Colors.white,
               leading: IconButton(
                 icon: Icon(
-                  Icons.search,
+                  FontAwesomeIcons.searchengin,
                   color: Colors.deepPurple,
                 ),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SearchListExample()),
+                        builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
                   );
                 },
               ),
@@ -138,7 +205,7 @@ class _HomePageState extends State<HomePage> {
 
                 IconButton(
                   icon: Icon(
-                    Icons.message,
+                    FontAwesomeIcons.teamspeak,
                     color: Colors.deepPurple,
                   ),
                   onPressed: () {
@@ -152,8 +219,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
 //
-            body: ResponsiveLayoutBuilder(
-                  builder: (context, size) => new TabLayoutDemo(initialindexg)),
+            body: TabLayoutDemo(initialindexg),
 
           ),
         );
@@ -225,7 +291,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                   onTap: () {
                     Navigator.of(context, rootNavigator: true).push(
                       MaterialPageRoute(
-                        builder: (context) => CameraScreen(),
+                        builder: (context) => CameraS(),
                       ),
                     );
                     setState(() {
@@ -262,7 +328,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                         onPressed: () {
                           Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute(
-                              builder: (context) => CameraScreen(),
+                              builder: (context) => CameraS(),
                             ),
                           );
                         },
@@ -279,7 +345,14 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                     icon: new Icon(Icons.notifications, size: 30),
                   ),
                   Tab(
-                    icon: new Icon(Icons.account_circle, size: 30),
+                    icon: GestureDetector(
+                        onTap: (){
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(initialindexg: 4),
+                            ),
+                          );
+                        },child: new Icon(Icons.account_circle, size: 30)),
                   )
                 ],
                 labelColor: Colors.purple,
@@ -309,167 +382,3 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
 //  }
 }
 
-class SearchListExample extends StatefulWidget {
-  @override
-  _SearchListExampleState createState() => new _SearchListExampleState();
-}
-
-class _SearchListExampleState extends State<SearchListExample> {
-  Widget appBarTitle = new Text(
-    "Techstagram",
-    style: new TextStyle(color: Colors.deepPurple),
-  );
-  Icon icon = new Icon(
-    Icons.search,
-    color: Colors.deepPurple,
-  );
-  final globalKey = new GlobalKey<ScaffoldState>();
-  final TextEditingController _controller = new TextEditingController();
-  List<dynamic> _list;
-  bool _isSearching;
-  String _searchText = "";
-  List searchresult = new List();
-
-  _SearchListExampleState() {
-    _controller.addListener(() {
-      if (_controller.text.isEmpty) {
-        setState(() {
-          _isSearching = false;
-          _searchText = "";
-        });
-      } else {
-        setState(() {
-          _isSearching = true;
-          _searchText = _controller.text;
-        });
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _isSearching = false;
-    values();
-  }
-
-  void values() {
-    _list = List();
-    _list.add("Shadaab88");
-    _list.add("Shahid0712");
-    _list.add("Aman446");
-    _list.add("Nabeel44");
-    _list.add("Nikhil123");
-    _list.add("Shahana88");
-    _list.add("Sara77");
-    _list.add("Khizar712");
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-        backgroundColor: Colors.white,
-        key: globalKey,
-        appBar: buildAppBar(context),
-        body: new Container(
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              new Flexible(
-                  child: searchresult.length != 0 || _controller.text.isNotEmpty
-                      ? new ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: searchresult.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      String listData = searchresult[index];
-                      return new ListTile(
-                        title: new Text(listData.toString()),
-                      );
-                    },
-                  )
-                      : new ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _list.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      String listData = _list[index];
-                      return new ListTile(
-                        title: new Text(listData.toString()),
-                      );
-                    },
-                  ))
-            ],
-          ),
-        ));
-  }
-
-  Widget buildAppBar(BuildContext context) {
-    return new AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        title: appBarTitle,
-        actions: <Widget>[
-          new IconButton(
-            icon: icon,
-            onPressed: () {
-              setState(() {
-                if (this.icon.icon == Icons.search) {
-                  this.icon = new Icon(
-                    Icons.close,
-                    color: Colors.black,
-                  );
-                  this.appBarTitle = new TextField(
-                    controller: _controller,
-                    style: new TextStyle(
-                      color: Colors.deepPurple,
-                    ),
-                    decoration: new InputDecoration(
-                        prefixIcon:
-                        new Icon(Icons.search, color: Colors.deepPurple),
-                        hintText: "Search...",
-                        hintStyle: new TextStyle(color: Colors.white)),
-                    onChanged: searchOperation,
-                  );
-                  _handleSearchStart();
-                } else {
-                  _handleSearchEnd();
-                }
-              });
-            },
-          ),
-        ]);
-  }
-
-  void _handleSearchStart() {
-    setState(() {
-      _isSearching = true;
-    });
-  }
-
-  void _handleSearchEnd() {
-    setState(() {
-      this.icon = new Icon(
-        Icons.search,
-        color: Colors.deepPurple,
-      );
-      this.appBarTitle = new Text(
-        "Hashtag",
-        style: new TextStyle(color: Colors.deepPurple),
-      );
-      _isSearching = false;
-      _controller.clear();
-    });
-  }
-
-  void searchOperation(String searchText) {
-    searchresult.clear();
-    if (_isSearching != null) {
-      for (int i = 0; i < _list.length; i++) {
-        String data = _list[i];
-        if (data.toLowerCase().contains(searchText.toLowerCase())) {
-          searchresult.add(data);
-        }
-      }
-    }
-  }
-}

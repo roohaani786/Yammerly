@@ -1,6 +1,7 @@
 import 'package:catcher/catcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
@@ -8,9 +9,16 @@ import 'package:techstagram/pages/intro_page.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/resources/twittersignin.dart';
 import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/ui/ProfileEdit.dart';
+import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/ui/fblogin.dart';
+import 'package:techstagram/views/tabs/profile.dart';
 
 import 'Signup/signup_screen.dart';
+import 'models/user.dart';
+import 'models/wiggle.dart';
+import 'resources/auth.dart';
+import 'services/database.dart';
 
 int initScreen;
 int initialindexg;
@@ -38,44 +46,46 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
 
-        title: 'Hashtag',
-        debugShowCheckedModeBanner: false,
-        navigatorKey: Catcher.navigatorKey,
+      return MaterialApp(
 
-        routes: {
-          '/Login': (context) => LoginScreen(),
-          '/Fblogin': (context) => Fblogin(),
-          '/Welcome': (context) => WelcomeScreen(),
-          '/nayasignup': (context) => SignUpScreen(),
-          '/Twit': (context) => TwitterLoginScreen(),
-        },
+          title: 'Hashtag',
+          debugShowCheckedModeBanner: false,
+          navigatorKey: Catcher.navigatorKey,
 
-
-        theme: new ThemeData(
-          primarySwatch: Colors.blue,
-          primaryColor: Colors.black,
-          primaryIconTheme: IconThemeData(color: Colors.black),
-          primaryTextTheme: TextTheme(
-              headline6: TextStyle(
-                color: Colors.black,)),
-          textTheme: TextTheme(headline6: TextStyle(
-            color: Colors.black,)),
-        ),
-
-
-        home: FutureBuilder(
-          future: _repository.getCurrentUser(),
-          builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
-            if (snapshot.hasData) {
-              return HomePage();
-            } else {
-              return Check();
-            }
+          routes: {
+            '/Login': (context) => LoginScreen(),
+            '/Fblogin': (context) => Fblogin(),
+            '/Welcome': (context) => WelcomeScreen(),
+            '/nayasignup': (context) => SignUpScreen(),
+            '/Twit': (context) => TwitterLoginScreen(),
+            '/Profile': (context) => AccountBottomIconScreen(),
           },
-        )
-    );
+
+
+          theme: new ThemeData(
+            primarySwatch: Colors.blue,
+            primaryColor: Colors.black,
+            primaryIconTheme: IconThemeData(color: Colors.black),
+            primaryTextTheme: TextTheme(
+                headline6: TextStyle(
+                  color: Colors.black,)),
+            textTheme: TextTheme(headline6: TextStyle(
+              color: Colors.black,)),
+          ),
+
+
+          home: FutureBuilder(
+            future: _repository.getCurrentUser(),
+            builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+              if (snapshot.hasData) {
+                return HomePage();
+              } else {
+                return Check();
+              }
+            },
+          )
+      );
   }
 }
 
