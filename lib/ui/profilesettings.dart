@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:techstagram/Changepassword/login_screen.dart';
+//import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
 
 class ProfileSettings extends StatefulWidget {
@@ -104,10 +104,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   ),
               SettingsTile(
                 onTap: (){
-                  Navigator.push(context, new MaterialPageRoute(
-                      builder: (context) =>
-                      ChangePasswordScreen()),
-                  );
+                  // Navigator.push(context, new MaterialPageRoute(
+                  //     builder: (context) =>
+                  //     ChangePasswordScreen()),
+                  // );
                 },
                 title: 'Change password',
                 leading: Icon(Icons.lock,color: Colors.redAccent.shade100,),
