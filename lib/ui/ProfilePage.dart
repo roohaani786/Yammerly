@@ -11,6 +11,8 @@ import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/ui/aboutuser.dart';
+import 'package:techstagram/ui/followerlist.dart';
+import 'package:techstagram/ui/followinglist.dart';
 import 'package:techstagram/ui/messagingsystem.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 
@@ -211,8 +213,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   getlikes( String displayName, String postId) {
 
-    print("postid");
-    print(postId);
+    print("uid");
+   print(uidController.text);
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
@@ -222,7 +224,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       if (value.exists) {
         setState(() {
           liked = true;
-          print("haa");
+          //print("haa");
         });
       }
     });
@@ -233,8 +235,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("jhj");
-    print(followersController.text);
+    //print("jhj");
+    //print(followersController.text);
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
@@ -315,9 +317,23 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: <Widget>[
-                                          _buildStatItem("FOLLOWERS", followers.toString()),
+                                          GestureDetector(
+                                          onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                    ),
+                                              child: _buildStatItem("FOLLOWERS", followers.toString())
+                                          ),
                                           _buildStatItem("POSTS", posts.toString()),
-                                          _buildStatItem("FOLLOWING", following.toString()),
+                                          GestureDetector(
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                              ),
+                                              child: _buildStatItem("FOLLOWING", following.toString())
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -446,8 +462,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                     getlikes(displayNameController.text,postId);
 
 
-                                                    print(email);
-                                                    print(displayName);
+                                                   // print(email);
+                                                   // print(displayName);
 //                for (int i = 0; i < posts.length; i++) {
 //                  if (posts[i].email == email) {
 //                    currentpost = posts[i];

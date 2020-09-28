@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/services/database.dart';
+import 'package:techstagram/ui/Otheruser/otherfollowerlist.dart';
 import 'package:techstagram/ui/ProfileEdit.dart';
 
 import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
@@ -179,8 +180,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    print("HAHA");
-    print(uidControllerX.text);
+    //print("HAHA");
+    //print(uidControllerX.text);
 
 
     Stream userQuery;
@@ -280,11 +281,29 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                       mainAxisAlignment: MainAxisAlignment
                                           .spaceAround,
                                       children: <Widget>[
-                                        _buildStatItem("FOLLOWERS",
-                                            followers.toString()),
+                                        GestureDetector(
+                                          onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OtherFollowersList(displayNamecurrentUser: displayName,uidX: uid,)
+                                            ),
+                                          ),
+                                          child: _buildStatItem("FOLLOWERS",
+                                              followers.toString()),
+                                        ),
                                         _buildStatItem("POSTS", posts.toString()),
-                                        _buildStatItem("FOLLOWING",
-                                            following.toString()),
+                                        GestureDetector(
+                                          onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OtherFollowersList(displayNamecurrentUser: displayName,uidX: uid,)
+                                            ),
+                                          ),
+                                          child: _buildStatItem("FOLLOWING",
+                                              following.toString()),
+                                        ),
 
                                       ],
                                     ),
@@ -464,8 +483,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                   getlikes(displayName,postId);
 
 
-                                                  print(email);
-                                                  print(displayName);
+                                                 // print(email);
+                                                 // print(displayName);
 //                for (int i = 0; i < posts.length; i++) {
 //                  if (posts[i].email == email) {
 //                    currentpost = posts[i];

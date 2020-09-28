@@ -95,8 +95,8 @@ class _FeedsPageState extends State<FeedsPage> {
     fetchProfileData();
 //    fetchLikes();
 
-    print("widget bhaiyya");
-    print(widget.uid);
+    //print("widget bhaiyya");
+    //print(widget.uid);
   }
 
 
@@ -270,6 +270,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   @override
   Widget build(BuildContext context) {
+    //print(displayNameController.text);
 
     // TODO: implement build
     return GestureDetector(
@@ -307,7 +308,13 @@ class _FeedsPageState extends State<FeedsPage> {
                         int likes = snapshot.data.documents[index]['likes'];
                         readTimestamp(timestamp.seconds);
 
-                        if(likes == 0 && likes == 1){
+                        getlikes(displayNameController.text,postId);
+
+
+  
+
+                        if(likes< 0 || likes == 0){
+
                           liked = false;
                         }
 
