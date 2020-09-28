@@ -136,20 +136,19 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
 
-  getlikes( String displayName, String postId) {
+  getlikes( String displayNamecurrent, String postId) {
 
-    //print("postid");
-    //print(postId);
+
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
-        .document(displayName)
+        .document(displayNameController.text)
         .get()
         .then((value) {
       if (value.exists) {
         setState(() {
           liked = true;
-          //print("haa");
+
         });
       }
     });
@@ -157,7 +156,6 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   fetchLikes() async {
-    //print("oi");
     currUser = await FirebaseAuth.instance.currentUser();
     try {
       docSnap = await Firestore.instance
@@ -225,17 +223,6 @@ class _FeedsPageState extends State<FeedsPage> {
     return time;
   }
 
-//  File _image;
-//
-//  Future pickImage() async {
-//    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-//      setState(() {
-//        _image = image;
-//      });
-//    });
-//    uploadFile();
-//    print("Done..");
-//  }
 
   File _image;
   bool upload;
@@ -258,6 +245,29 @@ class _FeedsPageState extends State<FeedsPage> {
     print("Done..");
   }
 
+  doubletaplike(int likes, String postId){
+    if(liked = false) {
+      DatabaseService().likepost(
+          likes, postId,
+          displayNameController.text);
+      setState(() {
+        liked = true;
+        print(liked);
+      });
+    }
+    else if (liked = true){
+      DatabaseService().unlikepost(
+          likes, postId,
+          displayNameController.text);
+      setState(() {
+        liked = false;
+        print(liked);
+      });
+
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     //print(displayNameController.text);
@@ -266,7 +276,6 @@ class _FeedsPageState extends State<FeedsPage> {
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
-      onTap: () => null,
       child: Scaffold(
         key: _scaffoldKey,
         body: StreamBuilder(
@@ -302,17 +311,15 @@ class _FeedsPageState extends State<FeedsPage> {
                         getlikes(displayNameController.text,postId);
 
 
-                        //print(email);
-                        //print(displayName);
-//                for (int i = 0; i < posts.length; i++) {
-//                  if (posts[i].email == email) {
-//                    currentpost = posts[i];
-//                  }
-//                }
+  
 
                         if(likes< 0 || likes == 0){
+
                           liked = false;
                         }
+
+                        getlikes(displayNameController.text,postId);
+
                         return Container(
                           child: Container(
                             color: Colors.white,
@@ -414,12 +421,22 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ),
                                 //Image.network(url),
 
-                                FadeInImage(
-                                  image: NetworkImage(url),
-                                  //image: NetworkImage("posts[i].postImage"),
-                                  placeholder: AssetImage("assets/images/empty.png"),
-                                  width: MediaQuery.of(context).size.width,
-                                ),
+                               GestureDetector(
+                                 onDoubleTap: (){
+                                   print("double tap");
+                                   print(liked);
+                                   doubletaplike(likes,postId);
+                                   print("double tap again");
+                                   print(liked);
+                                 },
+                                 child: FadeInImage(
+                                      image: NetworkImage(url),
+                                      //image: NetworkImage("posts[i].postImage"),
+                                      placeholder: AssetImage("assets/images/empty.png"),
+                                      width: MediaQuery.of(context).size.width,
+                                    ),
+                               ),
+
 
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -435,7 +452,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                             });
                                           },
                                           icon: Icon(FontAwesomeIcons.thumbsUp),
-                                          iconSize: 25,
                                           color: Colors.deepPurple,
                                           // onPressed: () {
                                           // },
@@ -451,7 +467,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           },
 
                                           icon: Icon(FontAwesomeIcons.solidThumbsUp),
-                                          iconSize: 25,
+
                                           color: Colors.deepPurple,
                                           // onPressed: () {
                                           // },
@@ -464,17 +480,20 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                         ),
 
-                                        IconButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: ((context) => CommentsScreen(
-                                                      documentReference: list[index].reference,
-                                                      user: currentUser,
-                                                    ))));
-                                          },
-                                          icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 3.0),
+                                          child: IconButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: ((context) => CommentsScreen(
+                                                        documentReference: list[index].reference,
+                                                        user: currentUser,
+                                                      ))));
+                                            },
+                                            icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
+                                          ),
                                         ),
                                         Text("23"),
                                         IconButton(
@@ -495,13 +514,30 @@ class _FeedsPageState extends State<FeedsPage> {
                                   margin: EdgeInsets.symmetric(
                                     horizontal: 14,
                                   ),
-                                  child: RichText(
-                                    softWrap: true,
-                                    overflow: TextOverflow.visible,
-                                    text: TextSpan(
-                                      text: description,
-                                      style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,),
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      RichText(
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible,
+                                        text: TextSpan(
+                                          text: displayName,
+                                          style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                        ),
+                                      ),
+
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 3.0),
+                                        child: RichText(
+                                          softWrap: true,
+                                          overflow: TextOverflow.visible,
+                                          text: TextSpan(
+                                            text: description,
+                                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                            fontSize: 15.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 ),
 
