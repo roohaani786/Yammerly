@@ -36,7 +36,6 @@ dependencies:
   firebase_database:
   cloud_firestore:
   rxdart: 0.20.0
-  catcher:
   image_picker:
   file_picker:
   after_layout:
@@ -81,8 +80,8 @@ dependencies:
   flutter_icons: ^1.0.0+1
   sliding_up_panel:
   ext_storage:
-
   permission_handler:
+  timeago: ^2.0.27
 
 dev_dependencies:
   flutter_test:

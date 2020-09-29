@@ -1,4 +1,4 @@
-import 'package:catcher/catcher.dart';
+//import 'package:catcher/catcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +51,7 @@ class MyAppState extends State<MyApp> {
 
           title: 'Hashtag',
           debugShowCheckedModeBanner: false,
-          navigatorKey: Catcher.navigatorKey,
+          //navigatorKey: Catcher.navigatorKey,
 
           routes: {
             '/Login': (context) => LoginScreen(),

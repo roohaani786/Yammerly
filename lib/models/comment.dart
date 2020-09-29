@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Comment {
-  
+
   String ownerName;
   String ownerPhotoUrl;
   String comment;
@@ -11,7 +11,7 @@ class Comment {
 
   Comment({this.ownerName, this.ownerPhotoUrl, this.comment, this.timeStamp, this.ownerUid});
 
-   Map toMap(Comment comment) {
+  Map toMap(Comment comment) {
     var data = Map<String, dynamic>();
     data['ownerName'] = comment.ownerName;
     data['ownerPhotoUrl'] = comment.ownerPhotoUrl;
@@ -19,7 +19,7 @@ class Comment {
     data['timestamp'] = comment.timeStamp;
     data['ownerUid'] = comment.ownerUid;
     return data;
-}
+  }
 
   Comment.fromMap(Map<String, dynamic> mapData) {
     this.ownerName = mapData['ownerName'];
