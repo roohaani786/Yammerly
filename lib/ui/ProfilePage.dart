@@ -244,7 +244,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         key: _scaffoldKey,
-        backgroundColor: Colors.grey.shade300,
+        backgroundColor: Colors.white,
         body:  SingleChildScrollView(
           child: SafeArea(
             child: Align(
@@ -270,7 +270,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               width: 340.0,
                               child: Card(
                                 elevation: 5.0,
-                                color: Colors.grey.shade300,
+                                color: Colors.white,
                                 // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -342,11 +342,13 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                 SizedBox(
                                                   width: 120,
                                                   child: RaisedButton(
-                                                      color: Colors.white,
+                                                    color: Colors.lightBlueAccent,
+                                                      //color: Colors.white,
                                                       child: new Text(
                                                         "Edit Profile",
                                                         style: TextStyle(
-                                                          color: Color(0xffed1e79),
+                                                          color: Colors.white,
+                                                          //color: Color(0xffed1e79),
                                                         ),
                                                       ),
                                                       onPressed: () {
@@ -357,7 +359,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
-                                                        side: BorderSide(color: Color(0xffed1e79), width: 2),
+                                                        side: BorderSide(
+                                                          color: Colors.lightBlueAccent,
+                                                            //color: Color(0xffed1e79),
+                                                            width: 2),
                                                         borderRadius: BorderRadius.circular(30.0),
                                                       )),
                                                 ),
@@ -367,12 +372,13 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                 SizedBox(
                                                   width: 120,
                                                   child: RaisedButton(
-
-                                                      color: Colors.white,
+                                                    color: Colors.green.shade300,
+                                                      //color: Colors.white,
                                                       child: new Text(
                                                         "Settings",
                                                         style: TextStyle(
-                                                          color: Color(0xffed1e79),
+                                                          color: Colors.white,
+                                                          //color: Color(0xffed1e79),
                                                         ),
                                                       ),
                                                       onPressed: () {
@@ -383,7 +389,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                         );
                                                       },
                                                       shape: RoundedRectangleBorder(
-                                                        side: BorderSide(color: Color(0xffed1e79), width: 2),
+                                                        side: BorderSide(
+                                                          color: Colors.green.shade300,
+                                                            //color: Color(0xffed1e79),
+                                                            width: 2),
                                                         borderRadius: BorderRadius.circular(30.0),
                                                       )),
                                                 ),
@@ -397,7 +406,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       height: 60.0,
                                       margin: EdgeInsets.only(top: 8.0),
                                       decoration: BoxDecoration(
-                                        color: Colors.grey.shade300,
+                                        color: Colors.white,
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -435,7 +444,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               width: 340.0,
 
                               child: Card(
-                                color: Colors.grey.shade300,
+                                color: Colors.white,
                                 child: StreamBuilder(
                                     stream: userPostsStream,
                                     builder: (context, snapshot) {

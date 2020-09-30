@@ -59,10 +59,12 @@ class CommentsPageState extends State<CommentsPage> {
       },
     );
   }
-
+  //setData({'liked': userEmail});
   saveComment(){
-    CommentsRefrence.document(postId).collection("comments")
-        .add({"username": displayNamecurrentUser,
+    print(postId);
+    print("ehllo");
+    CommentsRefrence.document(postId).collection("comments").document(postId)
+        .setData({"username": postId,
       "comment": commentTextEditingController,
       "timestamp": DateTime.now(),
       "url": photoUrl,
