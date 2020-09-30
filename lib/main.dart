@@ -1,4 +1,4 @@
-//import 'package:catcher/catcher.dart';
+import 'package:catcher/catcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,9 +44,7 @@ class MyAppState extends State<MyApp> {
           title: 'Hashtag',
           debugShowCheckedModeBanner: false,
 
-          //navigatorKey: Catcher.navigatorKey,
-=======
-//          navigatorKey: Catcher.navigatorKey,
+          navigatorKey: Catcher.navigatorKey,
 
 
           routes: {
@@ -56,6 +54,7 @@ class MyAppState extends State<MyApp> {
             '/nayasignup': (context) => SignUpScreen(),
             '/Twit': (context) => TwitterLoginScreen(),
             '/Profile': (context) => AccountBottomIconScreen(),
+            '/HomePage': (context) => HomePage(),
           },
 
 

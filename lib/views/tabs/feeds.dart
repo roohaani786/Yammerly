@@ -85,6 +85,7 @@ class _FeedsPageState extends State<FeedsPage> {
     likesController = TextEditingController();
     uidController = TextEditingController();
     displayNameController = TextEditingController();
+    photoUrlController = TextEditingController();
 
     super.initState();
     // Subscriptions are created here
@@ -119,7 +120,7 @@ class _FeedsPageState extends State<FeedsPage> {
   void _onHorizontalDrag(DragEndDetails details) {
     if (details.primaryVelocity == 0)
       // user have just tapped on screen (no dragging)
-      return;
+      return ;
 
     if (details.primaryVelocity.compareTo(0) == -1) {
 //      dispose();
@@ -183,6 +184,7 @@ class _FeedsPageState extends State<FeedsPage> {
       likesController.text = docSnap.data["likes"];
       uidController.text =  docSnap.data["uid"];
       displayNameController.text = docSnap.data["displayName"];
+      photoUrlController.text = docSnap.data["photoURL"];
 
 
       setState(() {
@@ -293,6 +295,9 @@ class _FeedsPageState extends State<FeedsPage> {
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
+      onTap: () {
+        print("hello");
+      },
       child: Scaffold(
         key: _scaffoldKey,
         body: StreamBuilder(
@@ -330,7 +335,7 @@ class _FeedsPageState extends State<FeedsPage> {
 //                        fetchdimensions(url);
 
 
-  
+
 
                         if(likes< 0 || likes == 0){
 
@@ -417,7 +422,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           children: <Widget>[
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(40),
-                                              
+
                                                 child: Image(
                                                   image: NetworkImage(photoUrl),
                                                   width: 40,
@@ -449,7 +454,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                    print("double tap again");
                                    print(liked);
                                  },
-                                
+                                 onTap: null,
+
                                    child: InteractiveViewer(
                                      transformationController: _controller,
                                      onInteractionEnd: (value){
@@ -511,7 +517,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                         Padding(
                                           padding: const EdgeInsets.only(top: 3.0),
                                           child: IconButton(
-                                            onPressed: () => displayComments(context, postId: postId,uid: uid,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser),
+
+                                            onPressed: () { print(displayNameController.text);
+                                            Navigator.push(context, MaterialPageRoute(builder: (context){
+                                              return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                            }));
+                                            },
                                               // Navigator.push(
                                               //     context,
                                               //     MaterialPageRoute(
@@ -552,13 +563,17 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       Padding(
                                         padding: const EdgeInsets.only(left: 3.0),
-                                        child: RichText(
-                                          softWrap: true,
-                                          overflow: TextOverflow.visible,
-                                          text: TextSpan(
-                                            text: description,
-                                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                            fontSize: 15.0),
+                                        child: Container(
+                                          width: 250.0,
+                                          child: RichText(
+                                            softWrap: true,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.visible,
+                                            text: TextSpan(
+                                              text: description,
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                              fontSize: 15.0,),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -637,11 +652,11 @@ class _FeedsPageState extends State<FeedsPage> {
     );
   }
 
-  displayComments(BuildContext context, {String postId, String uid, String url,Timestamp timestamp, String displayName, String photoUrl,String displayNamecurrentUser}){
-    Navigator.push(context, MaterialPageRoute(builder: (context){
-    return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
-    }));
-  }
+//  displayComments(BuildContext context, {String postId, String uid, String url,Timestamp timestamp, String displayName, String photoUrl,String displayNamecurrentUser}){
+//    Navigator.push(context, MaterialPageRoute(builder: (context){
+//    return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
+//    }));
+//  }
 }
 
 

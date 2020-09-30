@@ -82,6 +82,7 @@ dependencies:
   ext_storage:
   permission_handler:
   timeago: ^2.0.27
+  catcher:
 
 dev_dependencies:
   flutter_test:

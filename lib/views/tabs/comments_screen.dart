@@ -40,6 +40,8 @@ class CommentsPageState extends State<CommentsPage> {
   CommentsPageState({this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
 
   retrieveComments(){
+    print("user");
+    print(displayNamecurrentUser);
     return StreamBuilder(
       stream: CommentsRefrence.document(postId)
       .collection("comments")
@@ -47,7 +49,9 @@ class CommentsPageState extends State<CommentsPage> {
       .snapshots(),
       builder: (context, dataSnapshot){
         if (!dataSnapshot.hasData){
-          return Container();
+          return Container(
+            color: Colors.red,
+          );
         }
         List<Comment> comments = [];
         dataSnapshot.data.documents.forEach((document){
@@ -63,32 +67,36 @@ class CommentsPageState extends State<CommentsPage> {
   saveComment(){
     print(postId);
     print("ehllo");
-    CommentsRefrence.document(postId).collection("comments").document(postId)
-        .setData({"username": postId,
-      "comment": commentTextEditingController,
+    CommentsRefrence.document(postId).collection("comments").document(DateTime.now().toIso8601String())
+        .setData({"username": displayNamecurrentUser,
+      "comment": commentTextEditingController.text,
       "timestamp": DateTime.now(),
       "url": photoUrl,
       "uid": uid,
     });
 
-    // bool isNotPostOwner = uid != uid;
-    // if(isNotPostOwner){
-    //   activityFeedRefrence.document(postOwnerId).collection("feedItems").add({
-    //     "type": "comment",
-    //     "commentDate": timestamp,
-    //     "postId": curentuser.id,
-    //     "username": currentUser.name,
-    //     "userProfileImg":currentUser.url,
-    //     "url": postImageUrl,
-    //   });
-    // }
-    // commentTextEditingController.clear();
+     bool isNotPostOwner = uid != uid;
+     if(isNotPostOwner){
+       CommentsRefrence.document(postId).collection("feedItems").add({
+         "type": "comment",
+         "commentDate": timestamp,
+         "postId": postId,
+         "username": displayNamecurrentUser,
+         "userProfileImg": photoUrl,
+         "url": postImageUrl,
+       });
+     }
+     commentTextEditingController.clear();
+  }
+
+  @override
+  void initState() {
+    retrieveComments();
   }
 
   @override
   Widget build(BuildContext) {
     return Scaffold(
-      //appBar: header(context, strTitle: "Comments"),
       body: Column(
         children: [
           Expanded(
@@ -107,7 +115,10 @@ class CommentsPageState extends State<CommentsPage> {
               style: TextStyle(color: Colors.black),
             ),
             trailing: OutlineButton(
-              onPressed: saveComment,
+              onPressed: (){
+                saveComment();
+//                retrieveComments();
+              },
               borderSide: BorderSide.none,
               child: Text("Publish", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
             ),
@@ -131,7 +142,7 @@ class Comment extends StatelessWidget {
   factory Comment.fromDocument(DocumentSnapshot documentSnapshot){
     return Comment(
       userName: documentSnapshot["username"],
-      userId: documentSnapshot["userId"],
+      userId: documentSnapshot["uid"],
       url: documentSnapshot["url"],
       comment: documentSnapshot["comment"],
       timestamp: documentSnapshot["timestamp"],
@@ -144,16 +155,29 @@ class Comment extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 6.0),
       child: Container(
-        color: Colors.black,
-        child: Column(
+        color: Colors.white,
+        child: Stack(
           children: [
             ListTile(
-              title: Text(userName+":  "+ comment,style: TextStyle(fontSize: 18.0,color: Colors.black),),
-              leading: CircleAvatar(
+              title: (userName != null || comment != null)?Row(
+                children: [
+                  Text(userName,style: TextStyle(fontSize: 18.0,color: Colors.black,
+                  fontWeight: FontWeight.bold,),),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: SizedBox(
+                      width: 200.0,
+                      child: Text(comment,maxLines: 1,style: TextStyle(fontSize: 15.0,color: Colors.black,
+                      ),),
+                    ),
+                  ),
+                ],
+              ):Text(""),
+              leading: (userName != null || comment != null)?CircleAvatar(
                 backgroundImage: CachedNetworkImageProvider(url),
-              ),
-              subtitle: Text(tAgo.format(timestamp.toDate()),style: TextStyle(color: Colors.black),),
-            )
+              ):null,
+              subtitle: (userName != null || comment != null)?Text(tAgo.format(timestamp.toDate()),style: TextStyle(color: Colors.black),):Text(""),
+            ),
           ],
         ),
       ),
