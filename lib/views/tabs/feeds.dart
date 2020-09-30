@@ -93,6 +93,7 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
+
 //    fetchLikes();
 
     //print("widget bhaiyya");
@@ -268,10 +269,24 @@ class _FeedsPageState extends State<FeedsPage> {
 
     }
   }
+  String urlx;
+
+  TransformationController _controller = TransformationController();
+
 
 
   @override
   Widget build(BuildContext context) {
+
+
+//    fetchdimensions(String url) async {
+//      File image = new File(url);
+//      var decodedImage = await decodeImageFromList(image.readAsBytesSync());
+//      print(decodedImage.width);
+//      print(decodedImage.height);
+//    }
+
+
     //print(displayNameController.text);
 
     // TODO: implement build
@@ -310,7 +325,9 @@ class _FeedsPageState extends State<FeedsPage> {
                         int likes = snapshot.data.documents[index]['likes'];
                         readTimestamp(timestamp.seconds);
 
+
                         getlikes(displayNameController.text,postId);
+//                        fetchdimensions(url);
 
 
   
@@ -400,12 +417,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                           children: <Widget>[
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(40),
-                                              child: Image(
-                                                image: NetworkImage(photoUrl),
-                                                width: 40,
-                                                height: 40,
-                                                fit: BoxFit.cover,
-                                              ),
+                                              
+                                                child: Image(
+                                                  image: NetworkImage(photoUrl),
+                                                  width: 40,
+                                                  height: 40,
+                                                  fit: BoxFit.cover,
+                                                ),
                                             ),
                                             SizedBox(
                                               width: 10,
@@ -421,7 +439,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     ),
                                   ),
                                 ),
-                                //Image.network(url),
+
 
                                GestureDetector(
                                  onDoubleTap: (){
@@ -431,12 +449,20 @@ class _FeedsPageState extends State<FeedsPage> {
                                    print("double tap again");
                                    print(liked);
                                  },
-                                 child: FadeInImage(
-                                      image: NetworkImage(url),
-                                      //image: NetworkImage("posts[i].postImage"),
-                                      placeholder: AssetImage("assets/images/empty.png"),
-                                      width: MediaQuery.of(context).size.width,
-                                    ),
+                                
+                                   child: InteractiveViewer(
+                                     transformationController: _controller,
+                                     onInteractionEnd: (value){
+                                       _controller.value = Matrix4.identity();
+                                     },
+                                     child: FadeInImage(
+                                          image: NetworkImage(url),
+                                          //image: NetworkImage("posts[i].postImage"),
+                                          placeholder: AssetImage("assets/images/loading.gif"),
+                                          width: MediaQuery.of(context).size.width,
+                                        ),
+                                   ),
+
                                ),
 
 
