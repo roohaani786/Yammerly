@@ -508,6 +508,7 @@ class _AboutUserState extends State<AboutUser> {
                                   width: 200.0,
                                   child: TextFieldContainer(
                                     child: TextFormField(
+                                      enabled: false,
                                       style: TextStyle(
                                           fontSize: 12.0, height: 1.5, color: Colors.black),
                                       textInputAction: TextInputAction.next,
@@ -585,6 +586,7 @@ class _AboutUserState extends State<AboutUser> {
                                   width: 200.0,
                                   child: TextFieldContainer(
                                     child: TextFormField(
+                                      enabled: false,
                                       style: TextStyle(
                                           fontSize: 12.0, height: 1.5, color: Colors.black),
                                       textInputAction: TextInputAction.next,
@@ -618,6 +620,7 @@ class _AboutUserState extends State<AboutUser> {
                                         filled: true,
                                         hintText: "Email address",
                                       ),
+                                      controller: emailController,
 //                    controller: firstNameInputController,
                                       //enableInteractiveSelection: false,
                                       // keyboardType: TextInputType.name,

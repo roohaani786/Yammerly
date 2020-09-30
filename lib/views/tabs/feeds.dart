@@ -194,6 +194,8 @@ class _FeedsPageState extends State<FeedsPage> {
     }
   }
 
+
+
   var time = "s";
   User currentUser;
 
@@ -509,15 +511,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                         Padding(
                                           padding: const EdgeInsets.only(top: 3.0),
                                           child: IconButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: ((context) => CommentsScreen(
-                                                        documentReference: list[index].reference,
-                                                        user: currentUser,
-                                                      ))));
-                                            },
+                                            onPressed: () => displayComments(context, postId: postId,uid: uid,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser),
+                                              // Navigator.push(
+                                              //     context,
+                                              //     MaterialPageRoute(
+                                              //         builder: ((context) => CommentsScreen())));
+
                                             icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                           ),
                                         ),
@@ -637,7 +636,12 @@ class _FeedsPageState extends State<FeedsPage> {
         ),
     );
   }
-}
 
+  displayComments(BuildContext context, {String postId, String uid, String url,Timestamp timestamp, String displayName, String photoUrl,String displayNamecurrentUser}){
+    Navigator.push(context, MaterialPageRoute(builder: (context){
+    return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
+    }));
+  }
+}
 
 

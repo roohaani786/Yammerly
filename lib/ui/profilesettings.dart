@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-//import 'package:techstagram/Changepassword/login_screen.dart';
+import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
 
 class ProfileSettings extends StatefulWidget {
@@ -40,8 +40,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 onTap: (){
 
                 },
-                  child: Icon(Icons.phone,color: Colors.green,))),
-              SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.blue,)),
+                  child: Icon(Icons.phone,color: Colors.grey,))),
+              SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,)),
               SettingsTile(
                 onTap: (){
                   FirebaseAuth.instance
@@ -57,7 +57,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 title: 'Log out', leading: GestureDetector(
                   child: new Icon(
                     Icons.exit_to_app,
-                    color: Colors.redAccent,
+                    color: Colors.grey,
                   ),
                   onTap: () {
 
@@ -78,9 +78,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             title: 'Notification Settings',titleTextStyle: TextStyle(color: Colors.deepPurple,
               fontWeight: FontWeight.bold),
             tiles: [
-              SettingsTile(title: 'Comments', leading: Icon(Icons.comment,color: Colors.lightBlueAccent,)),
-              SettingsTile(title: 'Tags', leading: Icon(Icons.tag_faces,color: Colors.teal,)),
-              SettingsTile(title: 'Reminders', leading: Icon(Icons.calendar_today,color: Colors.blue.shade800,)),
+              SettingsTile(title: 'Comments', leading: Icon(Icons.comment,color: Colors.grey,)),
+              SettingsTile(title: 'Tags', leading: Icon(Icons.tag_faces,color: Colors.grey,)),
+              SettingsTile(title: 'Reminders', leading: Icon(Icons.calendar_today,color: Colors.grey,)),
             ],
           ),
           SettingsSection(
@@ -90,7 +90,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
               SettingsTile.switchTile(
                   title: 'Use fingerprint',
-                  leading: Icon(Icons.fingerprint,color: Colors.green.shade800,),
+                  leading: Icon(Icons.fingerprint,color: Colors.grey,),
                 switchValue: false,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {
@@ -104,18 +104,18 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   ),
               SettingsTile(
                 onTap: (){
-                  // Navigator.push(context, new MaterialPageRoute(
-                  //     builder: (context) =>
-                  //     ChangePasswordScreen()),
-                  // );
+                  Navigator.push(context, new MaterialPageRoute(
+                      builder: (context) =>
+                      ChangePasswordScreen()),
+                  );
                 },
                 title: 'Change password',
-                leading: Icon(Icons.lock,color: Colors.redAccent.shade100,),
+                leading: Icon(Icons.lock,color: Colors.grey,),
               ),
               SettingsTile.switchTile(
                 title: 'Enable Notifications',
 //                enabled: notificationsEnabled,
-                leading: Icon(Icons.notifications_active,color: Colors.brown,),
+                leading: Icon(Icons.notifications_active,color: Colors.grey,),
                 switchValue: true,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {},
@@ -127,10 +127,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               fontWeight: FontWeight.bold),
             tiles: [
               SettingsTile(
-                  title: 'Terms of Service', leading: Icon(Icons.description,color: Colors.brown.shade700,)),
+                  title: 'Terms of Service', leading: Icon(Icons.description,color: Colors.grey,)),
               SettingsTile(
                   title: 'Privacy Policy',
-                  leading: Icon(Icons.collections_bookmark,color: Colors.brown.shade700)),
+                  leading: Icon(Icons.collections_bookmark,color: Colors.grey)),
             ],
           ),
           CustomSection(

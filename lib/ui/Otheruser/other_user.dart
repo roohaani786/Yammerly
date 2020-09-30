@@ -14,12 +14,12 @@ import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 
 class OtherUserProfile extends StatefulWidget{
-  
+
   final String uid;
   final String uidX;
   final String displayNamecurrentUser;
   final String displayName;
-  
+
   OtherUserProfile({this.uid,this.displayNamecurrentUser,this.displayName,this.uidX});
   @override
   _OtherUserProfileState createState() => _OtherUserProfileState(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName);
@@ -592,14 +592,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                                                                   IconButton(
                                                                     onPressed: () {
-                                                                      var currentUser;
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                              builder: ((context) => CommentsScreen(
-                                                                                documentReference: list[index].reference,
-                                                                                user: currentUser,
-                                                                              ))));
+                                                                      // var currentUser;
+                                                                      // Navigator.push(
+                                                                      //     context,
+                                                                      //     MaterialPageRoute(
+                                                                      //         builder: ((context) => CommentsScreen())));
                                                                     },
                                                                     icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
                                                                   ),

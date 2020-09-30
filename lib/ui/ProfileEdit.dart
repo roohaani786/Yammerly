@@ -17,6 +17,7 @@ import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:image/image.dart' as ImD;
+//import 'package:fluttertoast/fluttertoast.dart';
 
 import '../constants3.dart';
 
@@ -255,6 +256,43 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
 bool isChanged = false;
+
+  String _male = "male";
+  String _female = "female";
+  String _other = "other";
+  String _value;
+  int check;
+  void _handleRadioValueChange1(String value) {
+    setState(() {
+      _value = value;
+      if(_value=="Male"){
+        setState(() {
+          check = 0;
+        });
+      }else if(_value=="Female"){
+        setState(() {
+          check = 1;
+        });
+      }else{
+        setState(() {
+          check = 2;
+        });
+      }
+
+      switch (check) {
+        case 0:
+          genderController = _male as TextEditingController;
+          //correctScore++;
+          break;
+        case 1:
+          genderController = _female as TextEditingController;
+          break;
+        case 2:
+          genderController = _other as TextEditingController;
+          break;
+      }
+    });
+  }
 
 
 
@@ -631,20 +669,63 @@ bool isChanged = false;
                     SizedBox(
                       height: 16,
                     ),
-                    TextFormField(
-                      controller: genderController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.text,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Gender",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                    new Text(
+                      'Gender :',
+                      style: new TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                        color: Colors.deepPurple
                       ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
                     ),
+                    new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        new Radio(
+                          value: _male,
+                          groupValue: _male,
+                          onChanged: _handleRadioValueChange1,
+                        ),
+                        new Text(
+                          'Male',
+                          style: new TextStyle(fontSize: 16.0),
+                        ),
+                        new Radio(
+                          value: _female,
+                          groupValue: _female,
+                          onChanged: _handleRadioValueChange1,
+                        ),
+                        new Text(
+                          'Female',
+                          style: new TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        new Radio(
+                          value:_other,
+                          groupValue: _other,
+                          onChanged: _handleRadioValueChange1,
+                        ),
+                        new Text(
+                          'Other',
+                          style: new TextStyle(fontSize: 16.0),
+                        ),
+                      ],
+                    ),
+
+                    // TextFormField(
+                    //   controller: genderController,
+                    //   enabled: isEditable,
+                    //   keyboardType: TextInputType.text,
+                    //   maxLines: 1,
+                    //   decoration: InputDecoration(
+                    //       labelText: "Gender",labelStyle: TextStyle(
+                    //       color: Colors.deepPurple,fontWeight: FontWeight.bold
+                    //   ),
+                    //       border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(12),
+                    //           borderSide:
+                    //           BorderSide(color: Colors.black, width: 1))),
+                    // ),
                     SizedBox(
                       height: 16,
                     ),
@@ -655,7 +736,7 @@ bool isChanged = false;
                       keyboardType: TextInputType.text,
                       maxLines: 1,
                       decoration: InputDecoration(
-                          labelText: "Link",labelStyle: TextStyle(
+                          labelText: "Website",labelStyle: TextStyle(
                           color: Colors.deepPurple,fontWeight: FontWeight.bold
                       ),
                           border: OutlineInputBorder(
@@ -801,3 +882,7 @@ bool isChanged = false;
     );
   }
 }
+
+
+
+

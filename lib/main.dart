@@ -43,7 +43,11 @@ class MyAppState extends State<MyApp> {
 
           title: 'Hashtag',
           debugShowCheckedModeBanner: false,
+
+          //navigatorKey: Catcher.navigatorKey,
+=======
 //          navigatorKey: Catcher.navigatorKey,
+
 
           routes: {
             '/Login': (context) => LoginScreen(),

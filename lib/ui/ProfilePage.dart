@@ -246,6 +246,47 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         body:  SingleChildScrollView(
+
+          child: SafeArea(
+            child: Align(
+              alignment: Alignment.center,
+              child: Stack(
+                  children: [
+                    // Image.asset(
+                    //   "assets/images/social.jpg",
+                    //   height: MediaQuery.of(context).size.height,
+                    //   width: MediaQuery.of(context).size.width,
+                    //   fit: BoxFit.fitHeight,
+                    // ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 110.0),
+                        child: Column(
+                          children: [
+                        Padding(
+                        padding: const EdgeInsets.only(bottom: 0.0),
+                            child: Container(
+                              height: 270.0,
+                              width: 340.0,
+                              child: Card(
+                                elevation: 5.0,
+                                color: Colors.white,
+                                // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: Text(
+
+                                        displayNameController.text,
+                                        style: TextStyle(
+                                          fontSize: 26.0,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Pacifico',
           child: Column(
             children: [
               Align(
@@ -316,6 +357,33 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                             ),
                                           ),
                                         ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                      width: 200,
+                                      child: Divider(
+                                        color: Colors.teal.shade700,
+                                      ),
+                                    ),
+
+                                    Container(
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            width: 120,
+                                            child: RaisedButton(
+                                                color: Color(0xffed1e79),
+                                                child: new Text(
+                                                  "About",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                onPressed: () {
+
+                                                  Navigator.push(
+
                                         SizedBox(
                                           height: 20,
                                           width: 200,
@@ -343,6 +411,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               _buildStatItem("POSTS", posts.toString()),
                                               GestureDetector(
                                                   onTap: () => Navigator.push(
+
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
@@ -351,6 +420,38 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               ),
                                             ],
                                           ),
+
+                                          Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              children: [
+                                                SizedBox(
+                                                  width: 120,
+                                                  child: RaisedButton(
+                                                    color: Colors.lightBlueAccent,
+                                                      //color: Colors.white,
+                                                      child: new Text(
+                                                        "Edit Profile",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          //color: Color(0xffed1e79),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                        );
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                        side: BorderSide(
+                                                          color: Colors.lightBlueAccent,
+                                                            //color: Color(0xffed1e79),
+                                                            width: 2),
+                                                        borderRadius: BorderRadius.circular(30.0),
+                                                      )),
+                                                ),
+
                                         ),
                                         Container(
                                           child: Column(
@@ -403,6 +504,68 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                           )),
                                                     ),
 
+                                                SizedBox(
+                                                  width: 120,
+                                                  child: RaisedButton(
+                                                    color: Colors.green.shade300,
+                                                      //color: Colors.white,
+                                                      child: new Text(
+                                                        "Settings",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          //color: Color(0xffed1e79),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (context) => ProfileSettings()),
+                                                        );
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                        side: BorderSide(
+                                                          color: Colors.green.shade300,
+                                                            //color: Color(0xffed1e79),
+                                                            width: 2),
+                                                        borderRadius: BorderRadius.circular(30.0),
+                                                      )),
+                                                ),
+                                              ]
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Container(
+                                      height: 60.0,
+                                      margin: EdgeInsets.only(top: 8.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: <Widget>[
+                                          GestureDetector(
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                              ),
+                                              child: _buildStatItem("FOLLOWERS", followers.toString())
+                                          ),
+                                          _buildStatItem("POSTS", posts.toString()),
+                                          GestureDetector(
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                              ),
+                                              child: _buildStatItem("FOLLOWING", following.toString())
+                                          ),
+                                        ],
+                                      ),
+                                    ),
 
 
                                                   ]
@@ -415,6 +578,56 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                     ),
                                   ),
                                 ),
+                              ),
+                            )
+                        ),
+
+
+                            Container(
+                              height: MediaQuery.of(context).size.height,
+                              width: 340.0,
+
+                              child: Card(
+                                color: Colors.white,
+                                child: StreamBuilder(
+                                    stream: userPostsStream,
+                                    builder: (context, snapshot) {
+                                      return snapshot.hasData
+                                          ? Column(
+                                        children: [
+                                          new Expanded(
+                                              child: GridView.builder(
+                                                  shrinkWrap: true,
+                                                  controller: scrollController,
+                                                  itemCount: snapshot.data.documents.length,
+                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 2,
+                                                      crossAxisSpacing: 10.0,
+                                                      mainAxisSpacing: 10.0),
+                                                  itemBuilder: (context, index) {
+
+                                                    postIdX = snapshot.data.documents[index]['email'];
+                                                    String email = snapshot.data.documents[index]['email'];
+                                                    String description =
+                                                    snapshot.data.documents[index]['description'];
+                                                    String displayName =
+                                                    snapshot.data.documents[index]['displayName'];
+                                                    String photoUrl =
+                                                    snapshot.data.documents[index]['photoURL'];
+                                                    String uid = snapshot.data.documents[index]["uid"];
+
+                                                    Timestamp timestamp =
+                                                    snapshot.data.documents[index]['timestamp'];
+                                                    String url = snapshot.data.documents[index]['url'];
+                                                    String postId = snapshot.data.documents[index]['postId'];
+                                                    int likes = snapshot.data.documents[index]['likes'];
+                                                    readTimestamp(timestamp.seconds);
+
+                                                    getlikes(displayNameController.text,postId);
+
+
+                                                   // print(email);
+                                                   // print(displayName);
 
 
                                 Container(
@@ -456,12 +669,225 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                                                        // print(email);
                                                        // print(displayName);
+
 //                for (int i = 0; i < posts.length; i++) {
 //                  if (posts[i].email == email) {
 //                    currentpost = posts[i];
 //                  }
 //                }
 
+
+                                                    if(likes< 0 || likes == 0){
+                                                      liked = false;
+                                                    }
+                                                    return Container(
+
+                                                      child: Container(
+                                                          color: Colors.grey.shade300,
+                                                        child: Column(
+                                                          children: <Widget>[
+
+                                                            // GestureDetector(
+                                                            //   // onTap: () => Navigator.push(
+                                                            //   //   context,
+                                                            //   //   MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                                                            //   // ),
+                                                            //   child: Container(
+                                                            //     padding: EdgeInsets.symmetric(
+                                                            //       horizontal: 10,
+                                                            //       vertical: 10,
+                                                            //     ),
+                                                            //     child: Row(
+                                                            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            //       children: <Widget>[
+                                                            //         Row(
+                                                            //           children: <Widget>[
+                                                            //             ClipRRect(
+                                                            //               borderRadius: BorderRadius.circular(40),
+                                                            //               child: Image(
+                                                            //                 image: NetworkImage(photoUrl),
+                                                            //                 width: 40,
+                                                            //                 height: 40,
+                                                            //                 fit: BoxFit.cover,
+                                                            //               ),
+                                                            //             ),
+                                                            //             SizedBox(
+                                                            //               width: 10,
+                                                            //             ),
+                                                            //             Text(displayName),
+                                                            //           ],
+                                                            //         ),
+                                                            //         IconButton(
+                                                            //           icon: Icon(SimpleLineIcons.options),
+                                                            //           onPressed: () {},
+                                                            //         ),
+                                                            //       ],
+                                                            //     ),
+                                                            //   ),
+                                                            // ),
+                                                            //Image.network(url),
+                                                            Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                              children: [
+                                                                ClipRRect(
+                                                                  borderRadius: BorderRadius.only(
+                                                                    topLeft: Radius.circular(8.0),
+                                                                    topRight: Radius.circular(8.0),
+                                                                    bottomLeft: Radius.circular(8.0),
+                                                                    bottomRight: Radius.circular(8.0),
+                                                                  ),
+                                                                  child: Image.network(
+                                                                      url,
+                                                                      // width: 300,
+                                                                      height: 160,
+                                                                      fit:BoxFit.fill
+
+                                                                  ),
+                                                                ),
+                                                                // FadeInImage(
+                                                                //   // width: 125.0,
+                                                                //   height: 200.0,
+                                                                //   image: NetworkImage(url),
+                                                                //   //image: NetworkImage("posts[i].postImage"),
+                                                                //   placeholder: AssetImage("assets/images/empty.png"),
+                                                                //   width: MediaQuery.of(context).size.width,
+                                                                //   // height: MediaQuery.of(context).size.height,
+                                                                // ),
+                                                              ],
+                                                            )
+
+
+                                                            // Row(
+                                                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            //   children: <Widget>[
+                                                            //     Row(
+                                                            //       children: <Widget>[
+                                                            //         (liked == false)?IconButton(
+                                                            //           onPressed: () {
+                                                            //             DatabaseService().likepost(
+                                                            //                 likes, postId, displayNameController.text);
+                                                            //             setState(() {
+                                                            //               liked = true;
+                                                            //             });
+                                                            //           },
+                                                            //           icon: Icon(FontAwesomeIcons.thumbsUp),
+                                                            //           iconSize: 25,
+                                                            //           color: Colors.deepPurple,
+                                                            //           // onPressed: () {
+                                                            //           // },
+                                                            //           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
+                                                            //         ):IconButton(
+                                                            //
+                                                            //           onPressed: () {
+                                                            //             DatabaseService().unlikepost(
+                                                            //                 likes, postId, displayNameController.text);
+                                                            //             setState(() {
+                                                            //               liked = false;
+                                                            //             });
+                                                            //           },
+                                                            //
+                                                            //           icon: Icon(FontAwesomeIcons.solidThumbsUp),
+                                                            //           iconSize: 25,
+                                                            //           color: Colors.deepPurple,
+                                                            //           // onPressed: () {
+                                                            //           // },
+                                                            //           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
+                                                            //         ),
+                                                            //         Text(
+                                                            //           likes.toString(),style: TextStyle(
+                                                            //           color: Colors.black,
+                                                            //         ),
+                                                            //
+                                                            //         ),
+                                                            //
+                                                            //         IconButton(
+                                                            //           onPressed: () {
+                                                            //             // var currentUser;
+                                                            //             // Navigator.push(
+                                                            //             //     context,
+                                                            //             //     MaterialPageRoute(
+                                                            //             //         builder: ((context) => CommentsScreen())));
+                                                            //           },
+                                                            //           icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
+                                                            //         ),
+                                                            //         Text("23"),
+                                                            //         IconButton(
+                                                            //           onPressed: () {},
+                                                            //           icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
+                                                            //         ),
+                                                            //       ],
+                                                            //     ),
+                                                            //     // IconButton(
+                                                            //     //   onPressed: () {},
+                                                            //     //   icon: Icon(FontAwesome.bookmark_o),
+                                                            //     // ),
+                                                            //   ],
+                                                            // ),
+
+                                                            // Container(
+                                                            //     width: MediaQuery.of(context).size.width,
+                                                            //     margin: EdgeInsets.symmetric(
+                                                            //       horizontal: 14,
+                                                            //     ),
+                                                            //     child: RichText(
+                                                            //       softWrap: true,
+                                                            //       overflow: TextOverflow.visible,
+                                                            //       text: TextSpan(
+                                                            //         text: description,
+                                                            //         style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,),
+                                                            //       ),
+                                                            //     )
+                                                            // ),
+
+                                                            // caption
+//                                                             Container(
+//                                                               width: MediaQuery.of(context).size.width,
+//                                                               margin: EdgeInsets.symmetric(
+//                                                                 horizontal: 14,
+//                                                                 vertical: 5,
+//                                                               ),
+// //                                child: RichText(
+// //                                  softWrap: true,
+// //                                  overflow: TextOverflow.visible,
+// //                                  text: TextSpan(
+// //                                    children: [
+// //                                      TextSpan(
+// //                                        text: displayName,
+// //                                        style: TextStyle(
+// //                                            fontWeight: FontWeight.bold,
+// //                                            color: Colors.black),
+// //                                      ),
+// //                                      // TextSpan(
+// //                                      //   text: " mlkl",
+// //                                      //   style: TextStyle(color: Colors.black),
+// //                                      // ),
+// //                                    ],
+// //                                  ),
+// //                                ),
+//                                                             ),
+
+                                                            // post date
+                                                            // Container(
+                                                            //   margin: EdgeInsets.symmetric(
+                                                            //     horizontal: 14,
+                                                            //   ),
+                                                            //   alignment: Alignment.topLeft,
+                                                            //   child: Text(
+                                                            //     readTimestamp(timestamp.seconds),
+                                                            //     textAlign: TextAlign.start,
+                                                            //     style: TextStyle(
+                                                            //       color: Colors.grey,
+                                                            //       fontSize: 10.0,
+                                                            //     ),
+                                                            //   ),
+                                                            // ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      // height: 150.0,
+                                                      // width: 150.0,
+                                                      //child: Image.network(url),
+                                                    );
                                                         if(likes< 0 || likes == 0){
                                                           liked = false;
                                                         }
@@ -654,6 +1080,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                           //child: Image.network(url),
                                                         );
 
+
 //                return FeedTile(
 //                  wiggle: currentpost,
 //                  wiggles: posts,
@@ -663,6 +1090,19 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 //                  postId: postId,
 //                  likes: likes,
 //                );
+
+                                                  }
+
+                                              )
+                                          ),
+                                        ],
+                                      ): Container(color: Colors.deepPurple,);
+                                    }
+                                ),
+                                //child: Image.network(uidCurrUser),
+                              ),
+                            )
+
                                                       }
                                                   )
                                               ),
@@ -673,6 +1113,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                     //child: Image.network(uidCurrUser),
                                   ),
                                 )
+
 
                               ],
                             ),
@@ -693,6 +1134,24 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             backgroundColor: Colors.transparent,
                           ),
                         ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 50,left: 145.0,right: 130.0),
+                      child:(photoUrlController.text!=null)?CircleAvatar(
+                        radius: 35,
+                        backgroundImage: NetworkImage(photoUrlController.text),
+
+                        backgroundColor: Colors.transparent,
+                      ): CircleAvatar(
+                        radius: 20,
+                        child: IconButton(icon:
+                        Icon(FontAwesomeIcons.userCircle,
+                          color: Colors.deepPurple,), onPressed: null),
+                        backgroundColor: Colors.transparent,
+                      ),
+                    ),
+                  ]
 
 //photocover-----
 //                        Padding(padding: const EdgeInsets.only(top: 0,left: 15.0,right: 15.0),
@@ -729,6 +1188,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                       ]
                   ),
                 ),
+
               ),
             ],
           ),
