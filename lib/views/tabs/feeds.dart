@@ -515,24 +515,29 @@ class _FeedsPageState extends State<FeedsPage> {
                                   ),
                                   child: Row(
                                     children: [
-                                      RichText(
-                                        softWrap: true,
-                                        overflow: TextOverflow.visible,
-                                        text: TextSpan(
-                                          text: displayName,
-                                          style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                      Container(
+                                        child: RichText(
+                                          softWrap: true,
+                                          overflow: TextOverflow.visible,
+                                          text: TextSpan(
+                                            text: displayName,
+                                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                          ),
                                         ),
                                       ),
 
                                       Padding(
                                         padding: const EdgeInsets.only(left: 3.0),
-                                        child: RichText(
-                                          softWrap: true,
-                                          overflow: TextOverflow.visible,
-                                          text: TextSpan(
-                                            text: description,
-                                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                            fontSize: 15.0),
+                                        child: Container(
+                                          constraints: BoxConstraints(maxWidth: 250),
+                                          child: RichText(
+                                            softWrap: true,
+                                            //overflow: TextOverflow.visible,
+                                            text: TextSpan(
+                                              text: description,
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                              fontSize: 15.0),
+                                            ),
                                           ),
                                         ),
                                       ),

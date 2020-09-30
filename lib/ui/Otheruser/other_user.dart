@@ -20,6 +20,8 @@ class OtherUserProfile extends StatefulWidget{
   final String displayNamecurrentUser;
   final String displayName;
 
+
+
   OtherUserProfile({this.uid,this.displayNamecurrentUser,this.displayName,this.uidX});
   @override
   _OtherUserProfileState createState() => _OtherUserProfileState(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName);
@@ -66,17 +68,17 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   int followingX;
 
-  getUserPosts(String uidX) async {
-    getPostsUser(uidX).then((val){
+  getUserPosts(String displayName) async {
+    getPostsUser(displayName).then((val){
       setState(() {
         userPostsStream = val;
       });
     });
   }
 
-  getPostsUser(String uidX) async {
+  getPostsUser(String displayNameU) async {
     return Firestore.instance.collection('users')
-        .document(uidX)
+        .document(displayNameU)
         .collection('posts')
         .orderBy("timestamp", descending: true)
         .snapshots();
@@ -106,6 +108,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
 
   getFollowers() {
+    print(uid);
+    print("hamar");
 
     Firestore.instance.collection('users')
         .document(uid)
@@ -180,14 +184,15 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    //print("HAHA");
+    print(uid);
+    print("HAHA");
     //print(uidControllerX.text);
 
 
     Stream userQuery;
 
      userQuery = Firestore.instance.collection('users')
-        .where('uid', isEqualTo: uid)
+        .where('displayName', isEqualTo: displayName)
         .snapshots();
 
      String displayNameX = displayName;
@@ -196,7 +201,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white70,
-        title: Text(displayNameX),
+        title: Text(displayName),
       ),
       body: StreamBuilder(
       stream: userQuery,
@@ -208,14 +213,14 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     itemBuilder: (context, index) {
       DocumentSnapshot sd = snapshot.data.documents[index];
       String photoUrl = snapshot.data.documents[index]["photoUrl"];
-      String uid = snapshot.data.documents[index]["uid"];
+      String uidX = snapshot.data.documents[index]["uid"];
       String displayName = snapshot.data.documents[index]["displayName"];
       String bio = snapshot.data.documents[index]["bio"];
       int followers = snapshot.data.documents[index]["followers"];
       int following = snapshot.data.documents[index]["following"];
       print(following);
       int posts = snapshot.data.documents[index]["posts"];
-      return (uid != null) ?
+      return (uidX != null) ?
       SingleChildScrollView(
         child: SafeArea(
           child: Align(
