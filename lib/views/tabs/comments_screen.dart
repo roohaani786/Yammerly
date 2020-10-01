@@ -42,6 +42,8 @@ class CommentsPageState extends State<CommentsPage> {
   CommentsPageState({this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
 
   retrieveComments(){
+    print("user");
+    print(displayNamecurrentUser);
     return StreamBuilder(
       stream: CommentsRefrence.document(postId)
       .collection("comments")
@@ -49,7 +51,9 @@ class CommentsPageState extends State<CommentsPage> {
       .snapshots(),
       builder: (context, dataSnapshot){
         if (!dataSnapshot.hasData){
-          return Container();
+          return Container(
+            color: Colors.red,
+          );
         }
         List<Comment> comments = [];
         dataSnapshot.data.documents.forEach((document){
@@ -61,40 +65,80 @@ class CommentsPageState extends State<CommentsPage> {
       },
     );
   }
+
+
+
   //setData({'liked': userEmail});
-  saveComment(){
-    print(displayNamecurrentUser);
+
+  saveComment() {
+    print(postId);
     print("ehllo");
-    CommentsRefrence.document(postId).collection("comments").document("klaus")
-        .setData({"username": "klaus",
-      "comment": commentTextEditingController,
+    CommentsRefrence.document(postId).collection("comments").document(DateTime.now().toIso8601String())
+        .setData({"username": displayNamecurrentUser,
+      "comment": commentTextEditingController.text,
+
       "timestamp": DateTime.now(),
       "url": photoUrl,
       "uid": uid,
     });
 
-    // bool isNotPostOwner = uid != uid;
-    // if(isNotPostOwner){
-    //   activityFeedRefrence.document(postOwnerId).collection("feedItems").add({
-    //     "type": "comment",
-    //     "commentDate": timestamp,
-    //     "postId": curentuser.id,
-    //     "username": currentUser.name,
-    //     "userProfileImg":currentUser.url,
-    //     "url": postImageUrl,
-    //   });
-    // }
-    // commentTextEditingController.clear();
+
+    bool isNotPostOwner = uid != uid;
+     if(isNotPostOwner){
+       CommentsRefrence.document(postId).collection("feedItems").add({
+         "type": "comment",
+         "commentDate": timestamp,
+         "postId": postId,
+         "username": displayNamecurrentUser,
+         "userProfileImg": photoUrl,
+         "url": postImageUrl,
+       });
+     }
+     commentTextEditingController.clear();
+
+    return StreamBuilder(
+
+        stream: CommentsRefrence.document(postId).snapshots(),
+        builder: (context, dataSnapshotX)
+        {
+          int commentscount = dataSnapshotX.data["comments"];
+          updatecommentscount(commentscount);
+
+          return (dataSnapshotX.hasData)?
+          Container(
+            color: Colors.red,
+          ):Container();
+        }
+    );
+
+
+  }
+
+  updatecommentscount(int commentscount){
+    print("oichhh!!1");
+    print(commentscount);
+
+    CommentsRefrence.document(postId).updateData({"comments": commentscount + 1});
+
+  }
+
+  @override
+  void initState() {
+//    retrieveCommentscount();
+    retrieveComments();
+
   }
 
   @override
   Widget build(BuildContext) {
     return Scaffold(
+
         appBar: AppBar(
           backgroundColor: Colors.white70,
           title: Text("Comment", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
         ),
       //appBar: header(context, strTitle: "Comments"),
+
       body: Column(
         children: [
           Expanded(
@@ -113,7 +157,10 @@ class CommentsPageState extends State<CommentsPage> {
               style: TextStyle(color: Colors.black),
             ),
             trailing: OutlineButton(
-              onPressed: saveComment,
+              onPressed: (){
+                saveComment();
+//                retrieveComments();
+              },
               borderSide: BorderSide.none,
               child: Icon(Icons.arrow_forward,size: 40.0,color: Colors.purpleAccent,),
               //child: Text("Publish", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
@@ -138,7 +185,7 @@ class Comment extends StatelessWidget {
   factory Comment.fromDocument(DocumentSnapshot documentSnapshot){
     return Comment(
       userName: documentSnapshot["username"],
-      userId: documentSnapshot["userId"],
+      userId: documentSnapshot["uid"],
       url: documentSnapshot["url"],
       comment: documentSnapshot["comment"],
       timestamp: documentSnapshot["timestamp"],
@@ -151,6 +198,7 @@ class Comment extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 6.0),
       child: Container(
+
         color: Colors.black,
         child: GestureDetector(
           //onTap: () => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX),
@@ -161,17 +209,31 @@ class Comment extends StatelessWidget {
           //         builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX)),
           //   );
           // },
-          child: Column(
-            children: [
-              ListTile(
-                title: Text(userName+":  "+ comment,style: TextStyle(fontSize: 18.0,color: Colors.black),),
-                leading: CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(url),
-                ),
-                subtitle: Text(tAgo.format(timestamp.toDate()),style: TextStyle(color: Colors.black),),
-              )
-            ],
-          ),
+         
+        color: Colors.white,
+        child: Stack(
+          children: [
+            ListTile(
+              title: (userName != null || comment != null)?Row(
+                children: [
+                  Text(userName,style: TextStyle(fontSize: 18.0,color: Colors.black,
+                  fontWeight: FontWeight.bold,),),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: SizedBox(
+                      width: 200.0,
+                      child: Text(comment,maxLines: 1,style: TextStyle(fontSize: 15.0,color: Colors.black,
+                      ),),
+                    ),
+                  ),
+                ],
+              ):Text(""),
+              leading: (userName != null || comment != null)?CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(url),
+              ):null,
+              subtitle: (userName != null || comment != null)?Text(tAgo.format(timestamp.toDate()),style: TextStyle(color: Colors.black),):Text(""),
+            ),
+          ],
         ),
       ),
     );
@@ -179,186 +241,3 @@ class Comment extends StatelessWidget {
 }
 
 
-
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:flutter/material.dart';
-// import 'package:techstagram/models/comment.dart';
-// import 'package:techstagram/models/user.dart';
-// //import 'package:instagram_clone/models/user.dart';
-//
-// class CommentsScreen extends StatefulWidget {
-//   final DocumentReference documentReference;
-//   final User user;
-//   CommentsScreen({this.documentReference, this.user});
-//
-//   @override
-//   _CommentsScreenState createState() => _CommentsScreenState();
-// }
-//
-// class _CommentsScreenState extends State<CommentsScreen> {
-//   TextEditingController _commentController = TextEditingController();
-//   var _formKey = GlobalKey<FormState>();
-//
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     _commentController?.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         elevation: 1,
-//         backgroundColor: new Color(0xfff8faf8),
-//         title: Text('Comments'),
-//       ),
-//       body: Form(
-//         key: _formKey,
-//         child: Column(
-//           children: <Widget>[
-//             commentsListWidget(),
-//             Divider(
-//               height: 20.0,
-//               color: Colors.grey,
-//             ),
-//             commentInputWidget()
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   Widget commentInputWidget() {
-//     return Container(
-//       height: 55.0,
-//       margin: const EdgeInsets.symmetric(horizontal: 8.0),
-//       child: Row(
-//         children: <Widget>[
-//           Container(
-//             width: 40.0,
-//             height: 40.0,
-//             margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
-//             padding: const EdgeInsets.symmetric(vertical: 4.0),
-//             decoration: BoxDecoration(
-//                 borderRadius: BorderRadius.circular(40.0),
-//                 image:
-//                 DecorationImage(image: NetworkImage(widget.user.photoUrl))),
-//           ),
-//           Flexible(
-//             child: Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-//               child: TextFormField(
-//                 validator: (String input) {
-//                   if (input.isEmpty) {
-//                     return "Please enter comment";
-//                   }
-//                 },
-//                 controller: _commentController,
-//                 decoration: InputDecoration(
-//                   hintText: "Add a comment...",
-//                 ),
-//                 onFieldSubmitted: (value) {
-//                   _commentController.text = value;
-//                 },
-//               ),
-//             ),
-//           ),
-//           GestureDetector(
-//             child: Container(
-//               margin: const EdgeInsets.only(right: 8.0),
-//               child: Text('Post', style: TextStyle(color: Colors.blue)),
-//             ),
-//             onTap: () {
-//               if (_formKey.currentState.validate()) {
-//                 postComment();
-//               }
-//             },
-//           )
-//         ],
-//       ),
-//     );
-//   }
-//
-//   postComment() {
-//     var _comment = Comment(
-//         comment: _commentController.text,
-//         timeStamp: FieldValue.serverTimestamp(),
-//         ownerName: widget.user.displayName,
-//         ownerPhotoUrl: widget.user.photoUrl,
-//         ownerUid: widget.user.uid);
-//     widget.documentReference
-//         .collection("comments")
-//         .document()
-//         .setData(_comment.toMap(_comment)).whenComplete(() {
-//       _commentController.text = "";
-//     });
-//   }
-//
-//   Widget commentsListWidget() {
-//     print("Document Ref : ${widget.documentReference.path}");
-//     return Flexible(
-//       child: StreamBuilder(
-//         stream: widget.documentReference
-//             .collection("comments")
-//             .orderBy('timestamp', descending: false)
-//             .snapshots(),
-//         builder: ((context, AsyncSnapshot<QuerySnapshot> snapshot) {
-//           if (!snapshot.hasData) {
-//             return Center(child: CircularProgressIndicator());
-//           } else {
-//             return ListView.builder(
-//               itemCount: snapshot.data.documents.length,
-//               itemBuilder: ((context, index) =>
-//                   commentItem(snapshot.data.documents[index])),
-//             );
-//           }
-//         }),
-//       ),
-//     );
-//   }
-//
-//   Widget commentItem(DocumentSnapshot snapshot) {
-//     //   var time;
-//     //   List<String> dateAndTime;
-//     //   print('${snapshot.data['timestamp'].toString()}');
-//     //   if (snapshot.data['timestamp'].toString() != null) {
-//     //       Timestamp timestamp =snapshot.data['timestamp'];
-//     //  // print('${timestamp.seconds}');
-//     //  // print('${timestamp.toDate()}');
-//     //    time =timestamp.toDate().toString();
-//     //    dateAndTime = time.split(" ");
-//     //   }
-//
-//
-//     return Padding(
-//       padding: const EdgeInsets.all(12.0),
-//       child: Row(
-//         children: <Widget>[
-//           Padding(
-//             padding: const EdgeInsets.only(left: 8.0),
-//             child: CircleAvatar(
-//               backgroundImage: NetworkImage(snapshot.data['ownerPhotoUrl']),
-//               radius: 20,
-//             ),
-//           ),
-//           SizedBox(
-//             width: 15.0,
-//           ),
-//           Row(
-//             children: <Widget>[
-//               Text(snapshot.data['ownerName'],
-//                   style: TextStyle(
-//                     fontWeight: FontWeight.bold,
-//                   )),
-//               Padding(
-//                 padding: const EdgeInsets.only(left: 8.0),
-//                 child: Text(snapshot.data['comment']),
-//               ),
-//             ],
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }

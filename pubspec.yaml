@@ -82,6 +82,7 @@ dependencies:
   ext_storage:
   permission_handler:
   timeago: ^2.0.27
+  catcher:
 
 dev_dependencies:
   flutter_test:
@@ -174,6 +175,7 @@ flutter:
     - assets/images/woman4.jpg
     - assets/images/woman5.jpg
     - assets/insta_logo.png
+    - assets/images/loading.gif
     - assets/intu
     - assets/no_image.png
     - assets/phone-icon.png

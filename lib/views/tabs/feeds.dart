@@ -85,6 +85,7 @@ class _FeedsPageState extends State<FeedsPage> {
     likesController = TextEditingController();
     uidController = TextEditingController();
     displayNameController = TextEditingController();
+    photoUrlController = TextEditingController();
 
     super.initState();
     // Subscriptions are created here
@@ -93,6 +94,7 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
+
 //    fetchLikes();
 
     //print("widget bhaiyya");
@@ -118,7 +120,7 @@ class _FeedsPageState extends State<FeedsPage> {
   void _onHorizontalDrag(DragEndDetails details) {
     if (details.primaryVelocity == 0)
       // user have just tapped on screen (no dragging)
-      return;
+      return ;
 
     if (details.primaryVelocity.compareTo(0) == -1) {
 //      dispose();
@@ -182,6 +184,7 @@ class _FeedsPageState extends State<FeedsPage> {
       likesController.text = docSnap.data["likes"];
       uidController.text =  docSnap.data["uid"];
       displayNameController.text = docSnap.data["displayName"];
+      photoUrlController.text = docSnap.data["photoURL"];
 
 
       setState(() {
@@ -268,16 +271,33 @@ class _FeedsPageState extends State<FeedsPage> {
 
     }
   }
+  String urlx;
+
+  TransformationController _controller = TransformationController();
+
 
 
   @override
   Widget build(BuildContext context) {
+
+
+//    fetchdimensions(String url) async {
+//      File image = new File(url);
+//      var decodedImage = await decodeImageFromList(image.readAsBytesSync());
+//      print(decodedImage.width);
+//      print(decodedImage.height);
+//    }
+
+
     //print(displayNameController.text);
 
     // TODO: implement build
     return GestureDetector(
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
+      onTap: () {
+        print("hello");
+      },
       child: Scaffold(
         key: _scaffoldKey,
         body: StreamBuilder(
@@ -308,12 +328,15 @@ class _FeedsPageState extends State<FeedsPage> {
                         String url = snapshot.data.documents[index]['url'];
                         String postId = snapshot.data.documents[index]['postId'];
                         int likes = snapshot.data.documents[index]['likes'];
+                        int comments = snapshot.data.documents[index]['comments'];
                         readTimestamp(timestamp.seconds);
 
+
                         getlikes(displayNameController.text,postId);
+//                        fetchdimensions(url);
 
 
-  
+
 
                         if(likes< 0 || likes == 0){
 
@@ -400,12 +423,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                           children: <Widget>[
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(40),
-                                              child: Image(
-                                                image: NetworkImage(photoUrl),
-                                                width: 40,
-                                                height: 40,
-                                                fit: BoxFit.cover,
-                                              ),
+
+                                                child: Image(
+                                                  image: NetworkImage(photoUrl),
+                                                  width: 40,
+                                                  height: 40,
+                                                  fit: BoxFit.cover,
+                                                ),
                                             ),
                                             SizedBox(
                                               width: 10,
@@ -421,7 +445,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     ),
                                   ),
                                 ),
-                                //Image.network(url),
+
 
                                GestureDetector(
                                  onDoubleTap: (){
@@ -431,12 +455,21 @@ class _FeedsPageState extends State<FeedsPage> {
                                    print("double tap again");
                                    print(liked);
                                  },
-                                 child: FadeInImage(
-                                      image: NetworkImage(url),
-                                      //image: NetworkImage("posts[i].postImage"),
-                                      placeholder: AssetImage("assets/images/empty.png"),
-                                      width: MediaQuery.of(context).size.width,
-                                    ),
+                                 onTap: null,
+
+                                   child: InteractiveViewer(
+                                     transformationController: _controller,
+                                     onInteractionEnd: (value){
+                                       _controller.value = Matrix4.identity();
+                                     },
+                                     child: FadeInImage(
+                                          image: NetworkImage(url),
+                                          //image: NetworkImage("posts[i].postImage"),
+                                          placeholder: AssetImage("assets/images/loading.gif"),
+                                          width: MediaQuery.of(context).size.width,
+                                        ),
+                                   ),
+
                                ),
 
 
@@ -485,7 +518,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                         Padding(
                                           padding: const EdgeInsets.only(top: 3.0),
                                           child: IconButton(
-                                            onPressed: () => displayComments(context, postId: postId,uid: uid,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser),
+
+                                            onPressed: () { print(displayNameController.text);
+                                            Navigator.push(context, MaterialPageRoute(builder: (context){
+                                              return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                            }));
+                                            },
                                               // Navigator.push(
                                               //     context,
                                               //     MaterialPageRoute(
@@ -494,7 +532,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                           ),
                                         ),
-                                        Text("23"),
+                                        Text(comments.toString()),
                                         IconButton(
                                           onPressed: () {},
                                           icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
@@ -529,14 +567,16 @@ class _FeedsPageState extends State<FeedsPage> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 3.0),
                                         child: Container(
+
                                           constraints: BoxConstraints(maxWidth: 250),
                                           child: RichText(
                                             softWrap: true,
-                                            //overflow: TextOverflow.visible,
+                                            overflow: TextOverflow.visible,
                                             text: TextSpan(
                                               text: description,
                                               style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                               fontSize: 15.0),
+
                                             ),
                                           ),
                                         ),
@@ -616,11 +656,11 @@ class _FeedsPageState extends State<FeedsPage> {
     );
   }
 
-  displayComments(BuildContext context, {String postId, String uid, String url,Timestamp timestamp, String displayName, String photoUrl,String displayNamecurrentUser}){
-    Navigator.push(context, MaterialPageRoute(builder: (context){
-    return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
-    }));
-  }
+//  displayComments(BuildContext context, {String postId, String uid, String url,Timestamp timestamp, String displayName, String photoUrl,String displayNamecurrentUser}){
+//    Navigator.push(context, MaterialPageRoute(builder: (context){
+//    return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
+//    }));
+//  }
 }
 
 

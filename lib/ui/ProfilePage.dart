@@ -244,13 +244,30 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         key: _scaffoldKey,
-        backgroundColor: Colors.white,
         body:  SingleChildScrollView(
           child: SafeArea(
             child: Align(
               alignment: Alignment.center,
               child: Stack(
                   children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                        child: IconButton(
+                            color: Colors.purple,
+                            //color: Colors.white,
+                            icon: new Icon(Icons.settings),
+                            onPressed: () {
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProfileSettings()),
+                              );
+                            },
+                            ),
+
+                    ),
+
+
                     // Image.asset(
                     //   "assets/images/social.jpg",
                     //   height: MediaQuery.of(context).size.height,
@@ -311,94 +328,69 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       ),
                                     ),
 
-                                    Container(
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            width: 120,
-                                            child: RaisedButton(
-                                                color: Color(0xffed1e79),
-                                                child: new Text(
-                                                  "About",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 40.0,right: 40.0),
+                                      child: Container(
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 110,
+                                              child: FlatButton(
+                                                  color: Colors.transparent,
+                                                  child: new Text(
+                                                    "About Me",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                    ),
                                                   ),
-                                                ),
-                                                onPressed: () {
+                                                  onPressed: () {
 
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => AboutUser()),
-                                                  );
-                                                },
-                                                shape: RoundedRectangleBorder(
-                                                  //side: BorderSide(color: Colors.white, width: 2),
-                                                  borderRadius: BorderRadius.circular(30.0),
-                                                )),
-                                          ),
-                                          Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                              children: [
-                                                SizedBox(
-                                                  width: 120,
-                                                  child: RaisedButton(
-                                                    color: Colors.lightBlueAccent,
-                                                      //color: Colors.white,
-                                                      child: new Text(
-                                                        "Edit Profile",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          //color: Color(0xffed1e79),
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => AboutUser()),
+                                                    );
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(color: Colors.purple, width: 2.5),
+                                                    borderRadius: BorderRadius.circular(30.0),
+                                                  )),
+                                            ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(left: 20.0),
+                                                    child: SizedBox(
+                                                      width: 110,
+                                                      child: FlatButton(
+                                                        color: Colors.transparent,
+                                                          //color: Colors.white,
+                                                          child: new Text(
+                                                            "Edit Profile",
+                                                            style: TextStyle(
+                                                              color: Colors.black,
+                                                              //color: Color(0xffed1e79),
+                                                            ),
+                                                          ),
+                                                          onPressed: () {
 
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => ProfilePage()),
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                        side: BorderSide(
-                                                          color: Colors.lightBlueAccent,
-                                                            //color: Color(0xffed1e79),
-                                                            width: 2),
-                                                        borderRadius: BorderRadius.circular(30.0),
-                                                      )),
-                                                ),
-
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                            );
+                                                          },
+                                                          shape: RoundedRectangleBorder(
+                                                            side: BorderSide(
+                                                              color: Colors.purple,
+                                                                //color: Color(0xffed1e79),
+                                                                width: 2.5),
+                                                            borderRadius: BorderRadius.circular(30.0),
+                                                          )),
+                                                    ),
+                                                  ),
 
 
-                                                SizedBox(
-                                                  width: 120,
-                                                  child: RaisedButton(
-                                                    color: Colors.green.shade300,
-                                                      //color: Colors.white,
-                                                      child: new Text(
-                                                        "Settings",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          //color: Color(0xffed1e79),
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
 
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => ProfileSettings()),
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                        side: BorderSide(
-                                                          color: Colors.green.shade300,
-                                                            //color: Color(0xffed1e79),
-                                                            width: 2),
-                                                        borderRadius: BorderRadius.circular(30.0),
-                                                      )),
-                                                ),
-                                              ]
-                                          ),
-                                        ],
+
+                                          ],
+                                        ),
                                       ),
                                     ),
 
@@ -457,7 +449,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                   controller: scrollController,
                                                   itemCount: snapshot.data.documents.length,
                                                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 2,
+                                                      crossAxisCount: 3,
                                                       crossAxisSpacing: 10.0,
                                                       mainAxisSpacing: 10.0),
                                                   itemBuilder: (context, index) {
@@ -552,7 +544,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                                   child: Image.network(
                                                                       url,
                                                                       // width: 300,
-                                                                      height: 160,
+                                                                      height: 104,
                                                                       fit:BoxFit.fill
 
                                                                   ),
@@ -728,7 +720,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 50,left: 145.0,right: 130.0),
+                      padding: const EdgeInsets.only(top: 80,left: 160.0,right: 160.0),
                       child:(photoUrlController.text!=null)?CircleAvatar(
                         radius: 35,
                         backgroundImage: NetworkImage(photoUrlController.text),
