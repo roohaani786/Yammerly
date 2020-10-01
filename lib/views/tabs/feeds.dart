@@ -328,6 +328,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         String url = snapshot.data.documents[index]['url'];
                         String postId = snapshot.data.documents[index]['postId'];
                         int likes = snapshot.data.documents[index]['likes'];
+                        int comments = snapshot.data.documents[index]['comments'];
                         readTimestamp(timestamp.seconds);
 
 
@@ -531,7 +532,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                           ),
                                         ),
-                                        Text("23"),
+                                        Text(comments.toString()),
                                         IconButton(
                                           onPressed: () {},
                                           icon: Icon(Icons.share,color: Colors.deepPurpleAccent),

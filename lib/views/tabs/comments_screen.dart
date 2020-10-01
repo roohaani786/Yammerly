@@ -63,8 +63,11 @@ class CommentsPageState extends State<CommentsPage> {
       },
     );
   }
+
+
+
   //setData({'liked': userEmail});
-  saveComment(){
+  saveComment() {
     print(postId);
     print("ehllo");
     CommentsRefrence.document(postId).collection("comments").document(DateTime.now().toIso8601String())
@@ -75,7 +78,8 @@ class CommentsPageState extends State<CommentsPage> {
       "uid": uid,
     });
 
-     bool isNotPostOwner = uid != uid;
+
+    bool isNotPostOwner = uid != uid;
      if(isNotPostOwner){
        CommentsRefrence.document(postId).collection("feedItems").add({
          "type": "comment",
@@ -87,11 +91,38 @@ class CommentsPageState extends State<CommentsPage> {
        });
      }
      commentTextEditingController.clear();
+
+    return StreamBuilder(
+
+        stream: CommentsRefrence.document(postId).snapshots(),
+        builder: (context, dataSnapshotX)
+        {
+          int commentscount = dataSnapshotX.data["comments"];
+          updatecommentscount(commentscount);
+
+          return (dataSnapshotX.hasData)?
+          Container(
+            color: Colors.red,
+          ):Container();
+        }
+    );
+
+
+  }
+
+  updatecommentscount(int commentscount){
+    print("oichhh!!1");
+    print(commentscount);
+
+    CommentsRefrence.document(postId).updateData({"comments": commentscount + 1});
+
   }
 
   @override
   void initState() {
+//    retrieveCommentscount();
     retrieveComments();
+
   }
 
   @override

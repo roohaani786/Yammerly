@@ -207,7 +207,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     itemCount: snapshot.data.documents.length,
     itemBuilder: (context, index) {
       DocumentSnapshot sd = snapshot.data.documents[index];
-      String photoUrl = snapshot.data.documents[index]["photoUrl"];
+      String photoUrl = snapshot.data.documents[index]["photoURL"];
       String uid = snapshot.data.documents[index]["uid"];
       String displayName = snapshot.data.documents[index]["displayName"];
       String bio = snapshot.data.documents[index]["bio"];
@@ -225,7 +225,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 180.0),
+                      padding: const EdgeInsets.only(top: 120.0),
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -318,13 +318,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                               children: [
                                                 (followed == false)?SizedBox(
                                                   width: 120,
-                                                  child: RaisedButton(
+                                                  child: FlatButton(
                                                       color: Colors.white,
                                                       child: new Text(
                                                         "Follow",
                                                         style: TextStyle(
-                                                          color: Color(
-                                                              0xffed1e79),
+                                                          color: Colors.purple,
                                                         ),
                                                       ),
                                                       onPressed: () {
@@ -339,21 +338,19 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       },
                                                       shape: RoundedRectangleBorder(
                                                         side: BorderSide(
-                                                            color: Color(
-                                                                0xffed1e79),
+                                                            color: Colors.purple,
                                                             width: 2),
                                                         borderRadius: BorderRadius
                                                             .circular(30.0),
                                                       )),
                                                 ): SizedBox(
                                                   width: 120,
-                                                  child: RaisedButton(
+                                                  child: FlatButton(
                                                       color: Colors.white,
                                                       child: new Text(
                                                         "Unfollow",
                                                         style: TextStyle(
-                                                          color: Color(
-                                                              0xffed1e79),
+                                                          color: Colors.redAccent,
                                                         ),
                                                       ),
                                                       onPressed: () {
@@ -375,8 +372,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       },
                                                       shape: RoundedRectangleBorder(
                                                         side: BorderSide(
-                                                            color: Color(
-                                                                0xffed1e79),
+                                                            color: Colors.red,
                                                             width: 2),
                                                         borderRadius: BorderRadius
                                                             .circular(30.0),
@@ -386,14 +382,13 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                                                 SizedBox(
                                                   width: 120,
-                                                  child: RaisedButton(
+                                                  child: FlatButton(
 
                                                       color: Colors.white,
                                                       child: new Text(
                                                         "Message",
                                                         style: TextStyle(
-                                                          color: Color(
-                                                              0xffed1e79),
+                                                          color: Colors.purple,
                                                         ),
                                                       ),
                                                       onPressed: () {
@@ -407,8 +402,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       },
                                                       shape: RoundedRectangleBorder(
                                                         side: BorderSide(
-                                                            color: Color(
-                                                                0xffed1e79),
+                                                            color: Colors.purple,
                                                             width: 2),
                                                         borderRadius: BorderRadius
                                                             .circular(30.0),
@@ -418,8 +412,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                           ),
                                           SizedBox(
                                             width: 120,
-                                            child: RaisedButton(
-                                                color: Color(0xffed1e79),
+                                            child: FlatButton(
+                                                color: Colors.purple,
                                                 child: new Text(
                                                   "About",
                                                   style: TextStyle(
@@ -671,16 +665,16 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                   (photoUrl!=null)?Padding(
                     padding: const EdgeInsets.only(
-                        top: 110, left: 145.0, right: 130.0),
+                        top: 80, left: 160.0, right: 160.0),
                     child:CircleAvatar(
-                      radius: 50,
+                      radius: 35,
                       backgroundImage: NetworkImage(photoUrl),
 
                       backgroundColor: Colors.transparent,
                     ),
                   ):Padding(
                     padding: const EdgeInsets.only(
-                        top: 70, left: 100.0,right: 100.0),
+                        top: 70, left: 110.0,right: 110.0),
                     child: CircleAvatar(
                       radius: 50,
                       child: IconButton(icon:
