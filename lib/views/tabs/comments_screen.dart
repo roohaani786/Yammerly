@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
+//import 'package:path/path.dart';
 import 'package:techstagram/modell/global.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:timeago/timeago.dart' as tAgo;
@@ -210,7 +210,7 @@ class Comment extends StatelessWidget {
           //   );
           // },
          
-        color: Colors.white,
+        //color: Colors.white,
         child: Stack(
           children: [
             ListTile(
@@ -236,6 +236,7 @@ class Comment extends StatelessWidget {
           ],
         ),
       ),
+    )
     );
   }
 }

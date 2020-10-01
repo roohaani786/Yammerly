@@ -510,7 +510,7 @@ class _AboutUserState extends State<AboutUser> {
                                     child: TextFormField(
                                       enabled: false,
                                       style: TextStyle(
-                                          fontSize: 12.0, height: 1.5, color: Colors.black),
+                                          fontSize: 12.0, height: 1.5, color: Colors.grey),
                                       textInputAction: TextInputAction.next,
                                       cursorColor: kPrimaryColor,
 
@@ -588,7 +588,7 @@ class _AboutUserState extends State<AboutUser> {
                                     child: TextFormField(
                                       enabled: false,
                                       style: TextStyle(
-                                          fontSize: 12.0, height: 1.5, color: Colors.black),
+                                          fontSize: 12.0, height: 1.5, color: Colors.grey),
                                       textInputAction: TextInputAction.next,
 //                    focusNode: _firstName,
 //                    onFieldSubmitted: (term) {
