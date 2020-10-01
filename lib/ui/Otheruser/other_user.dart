@@ -13,6 +13,8 @@ import 'package:techstagram/ui/ProfileEdit.dart';
 import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 
+import '../aboutuser.dart';
+
 class OtherUserProfile extends StatefulWidget{
 
   final String uid;
@@ -180,14 +182,15 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    print("HAHA");
-    print(displayName);
+=
 
 
     Stream userQuery;
 
     userQuery = Firestore.instance.collection('users')
+
         .where('displayName', isEqualTo: displayName)
+
         .snapshots();
 
     String displayNameX = displayName;
@@ -318,7 +321,31 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                     children: [
                                                       (followed == false)?SizedBox(
                                                         width: 120,
-                                                        child: FlatButton(
+
+                                                        child: (displayName == displayNamecurrentUser)?FlatButton(
+                                                            color: Colors.white,
+                                                            child: new Text(
+                                                              "About me",
+                                                              style: TextStyle(
+                                                                color: Colors.black,
+                                                              ),
+                                                            ),
+                                                            onPressed: () {
+
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(builder: (context) => AboutUser()),
+                                                              );
+                                                            },
+
+                                                            shape: RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                  color: Colors.purple,
+                                                                  width: 2.5),
+                                                              borderRadius: BorderRadius
+                                                                  .circular(30.0),
+                                                            )):FlatButton(
+                                                          
                                                             color: Colors.white,
                                                             child: new Text(
                                                               "Follow",
@@ -327,7 +354,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               ),
                                                             ),
                                                             onPressed: () {
-
 
                                                               setState(() {
                                                                 followed = true;
@@ -380,18 +406,22 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       ),
 
 
-                                                      SizedBox(
-                                                        width: 120,
-                                                        child: FlatButton(
 
-                                                            color: Colors.white,
-                                                            child: new Text(
-                                                              "Message",
-                                                              style: TextStyle(
-                                                                color: Colors.purple,
+                                                      (displayName != displayNamecurrentUser)?Padding(
+                                                        padding: const EdgeInsets.only(left: 20.0),
+                                                        child: SizedBox(
+                                                          width: 120,
+                                                          child: FlatButton(
+
+                                                              color: Colors.white,
+                                                              child: new Text(
+                                                                "Message",
+                                                                style: TextStyle(
+                                                                  color: Colors.purple,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            onPressed: () {
+                                                              onPressed: () {
+
 //                                                      Navigator.push(
 //                                                        context,
 //                                                        MaterialPageRoute(
@@ -399,18 +429,43 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 //                                                                context) =>
 //                                                                ProfileSettings()),
 //                                                      );
-                                                            },
-                                                            shape: RoundedRectangleBorder(
-                                                              side: BorderSide(
-                                                                  color: Colors.purple,
-                                                                  width: 2),
-                                                              borderRadius: BorderRadius
-                                                                  .circular(30.0),
-                                                            )),
-                                                      ),
+
+                                                              },
+                                                              shape: RoundedRectangleBorder(
+                                                                side: BorderSide(
+                                                                    color: Colors.purple,
+                                                                    width: 2),
+                                                                borderRadius: BorderRadius
+                                                                    .circular(30.0),
+                                                              )),
+                                                        ),
+                                                      ):FlatButton(
+                                                          color: Colors.transparent,
+                                                          //color: Colors.white,
+                                                          child: new Text(
+                                                            "Edit Profile",
+                                                            style: TextStyle(
+                                                              color: Colors.black,
+                                                              //color: Color(0xffed1e79),
+                                                            ),
+                                                          ),
+                                                          onPressed: () {
+
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                            );
+                                                          },
+                                                          shape: RoundedRectangleBorder(
+                                                            side: BorderSide(
+                                                                color: Colors.purple,
+                                                                //color: Color(0xffed1e79),
+                                                                width: 2.5),
+                                                            borderRadius: BorderRadius.circular(30.0),
+                                                          )),
                                                     ]
                                                 ),
-                                                SizedBox(
+                                                (displayName != displayNamecurrentUser)?SizedBox(
                                                   width: 120,
                                                   child: FlatButton(
                                                       color: Colors.purple,
@@ -431,7 +486,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                         borderRadius: BorderRadius
                                                             .circular(30.0),
                                                       )),
-                                                )
+
+                                                ):Container(),
+
                                               ],
                                             ),
                                           )
@@ -682,6 +739,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                             ): Container(color: Colors.deepPurple,);
                                           }
                                       ),
+
                                     ),
                                     //child: Image.network(uidCurrUser),
 

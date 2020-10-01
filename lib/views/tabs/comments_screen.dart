@@ -209,8 +209,7 @@ class Comment extends StatelessWidget {
           //         builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX)),
           //   );
           // },
-         
-        //color: Colors.white,
+
         child: Stack(
           children: [
             ListTile(
@@ -236,7 +235,8 @@ class Comment extends StatelessWidget {
           ],
         ),
       ),
-    )
+    ),
+
     );
   }
 }

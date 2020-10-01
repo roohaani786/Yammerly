@@ -348,7 +348,7 @@ class _BodyState extends State<Body> {
                 "surname": lastNameInputController.text,
                 "phonenumber": phoneNumberController.text,
                 "email": emailInputController.text,
-                "displayName": displayNameInputController.text,
+                "displayName": displayNameInputController.text.toLowerCase(),
                 'followers': 0,
                 'following': 0,
                 'posts': 0,
