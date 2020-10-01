@@ -20,15 +20,17 @@ class CommentsPage extends StatefulWidget{
   final String displayName;
   final String photoUrl;
   final String displayNamecurrentUser;
+  final int comments;
 
 
-  CommentsPage({this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
+  CommentsPage({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
 
   @override
-  CommentsPageState createState() => CommentsPageState(postId: postId, uid: uid, postImageUrl: postImageUrl,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
+  CommentsPageState createState() => CommentsPageState(comments: comments,postId: postId, uid: uid, postImageUrl: postImageUrl,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
 }
 
 class CommentsPageState extends State<CommentsPage> {
+  final int comments;
   final String postId;
   final String uid;
   final String postImageUrl;
@@ -39,7 +41,7 @@ class CommentsPageState extends State<CommentsPage> {
 
   TextEditingController commentTextEditingController = TextEditingController();
 
-  CommentsPageState({this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
+  CommentsPageState({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
 
   retrieveComments(){
     print("user");
@@ -70,7 +72,23 @@ class CommentsPageState extends State<CommentsPage> {
 
   //setData({'liked': userEmail});
 
-  saveComment() {
+  SaveCommentI() async {
+    return await Firestore.instance
+        .collection("posts")
+        .document(postId)
+        .updateData({'comments': comments + 1});
+  }
+
+  SaveCommentIP() async {
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .collection("posts")
+        .document(postId)
+        .updateData({'comments': comments + 1});
+  }
+
+  saveComment() async {
     print(postId);
     print("ehllo");
     CommentsRefrence.document(postId).collection("comments").document(DateTime.now().toIso8601String())
@@ -81,6 +99,10 @@ class CommentsPageState extends State<CommentsPage> {
       "url": photoUrl,
       "uid": uid,
     });
+
+
+
+
 
 
     bool isNotPostOwner = uid != uid;
@@ -159,6 +181,8 @@ class CommentsPageState extends State<CommentsPage> {
             trailing: OutlineButton(
               onPressed: (){
                 saveComment();
+                SaveCommentI();
+                SaveCommentIP();
 //                retrieveComments();
               },
               borderSide: BorderSide.none,
@@ -199,7 +223,7 @@ class Comment extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 6.0),
       child: Container(
 
-        color: Colors.black,
+        color: Colors.white,
         child: GestureDetector(
           //onTap: () => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX),
           // onTap: () {

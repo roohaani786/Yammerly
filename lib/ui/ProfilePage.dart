@@ -14,6 +14,7 @@ import 'package:techstagram/ui/aboutuser.dart';
 import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
 import 'package:techstagram/ui/messagingsystem.dart';
+import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 
 import 'HomePage.dart';
@@ -534,19 +535,27 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                             Column(
                                                               crossAxisAlignment: CrossAxisAlignment.stretch,
                                                               children: [
-                                                                ClipRRect(
-                                                                  borderRadius: BorderRadius.only(
-                                                                    topLeft: Radius.circular(8.0),
-                                                                    topRight: Radius.circular(8.0),
-                                                                    bottomLeft: Radius.circular(8.0),
-                                                                    bottomRight: Radius.circular(8.0),
-                                                                  ),
-                                                                  child: Image.network(
-                                                                      url,
-                                                                      // width: 300,
-                                                                      height: 104,
-                                                                      fit:BoxFit.fill
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(builder: (context) => postPage(PostUrl: url)),
+                                                                    );
+                                                                  },
+                                                                  child: ClipRRect(
+                                                                    borderRadius: BorderRadius.only(
+                                                                      topLeft: Radius.circular(8.0),
+                                                                      topRight: Radius.circular(8.0),
+                                                                      bottomLeft: Radius.circular(8.0),
+                                                                      bottomRight: Radius.circular(8.0),
+                                                                    ),
+                                                                    child: Image.network(
+                                                                        url,
+                                                                        // width: 300,
+                                                                        height: 104,
+                                                                        fit:BoxFit.fill
 
+                                                                    ),
                                                                   ),
                                                                 ),
                                                                 // FadeInImage(
