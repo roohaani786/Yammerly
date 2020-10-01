@@ -548,45 +548,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               child: Column(
                                                                 children: <Widget>[
 
-                                                                  // GestureDetector(
-                                                                  //   // onTap: () => Navigator.push(
-                                                                  //   //   context,
-                                                                  //   //   MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
-                                                                  //   // ),
-                                                                  //   child: Container(
-                                                                  //     padding: EdgeInsets.symmetric(
-                                                                  //       horizontal: 10,
-                                                                  //       vertical: 10,
-                                                                  //     ),
-                                                                  //     child: Row(
-                                                                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  //       children: <Widget>[
-                                                                  //         Row(
-                                                                  //           children: <Widget>[
-                                                                  //             ClipRRect(
-                                                                  //               borderRadius: BorderRadius.circular(40),
-                                                                  //               child: Image(
-                                                                  //                 image: NetworkImage(photoUrl),
-                                                                  //                 width: 40,
-                                                                  //                 height: 40,
-                                                                  //                 fit: BoxFit.cover,
-                                                                  //               ),
-                                                                  //             ),
-                                                                  //             SizedBox(
-                                                                  //               width: 10,
-                                                                  //             ),
-                                                                  //             Text(displayName),
-                                                                  //           ],
-                                                                  //         ),
-                                                                  //         IconButton(
-                                                                  //           icon: Icon(SimpleLineIcons.options),
-                                                                  //           onPressed: () {},
-                                                                  //         ),
-                                                                  //       ],
-                                                                  //     ),
-                                                                  //   ),
-                                                                  // ),
-                                                                  //Image.network(url),
 
                                                                   Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -602,129 +563,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                             url,
                                                                             // width: 300,
                                                                             height: 104,
-                                                                            fit:BoxFit.fill
+                                                                            fit:BoxFit.cover,
 
                                                                         ),
                                                                       ),
-                                                                      // FadeInImage(
-                                                                      //   // width: 125.0,
-                                                                      //   height: 200.0,
-                                                                      //   image: NetworkImage(url),
-                                                                      //   //image: NetworkImage("posts[i].postImage"),
-                                                                      //   placeholder: AssetImage("assets/images/empty.png"),
-                                                                      //   width: MediaQuery.of(context).size.width,
-                                                                      //   // height: MediaQuery.of(context).size.height,
-                                                                      // ),
                                                                     ],
-                                                                  )
-
-                                                                  // Row(
-                                                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  //   children: <Widget>[
-                                                                  //     Row(
-                                                                  //       children: <Widget>[
-                                                                  //         (liked == false)?IconButton(
-                                                                  //           onPressed: () {
-                                                                  //             DatabaseService().likepost(
-                                                                  //                 likes, postId, displayName);
-                                                                  //             setState(() {
-                                                                  //               liked = true;
-                                                                  //             });
-                                                                  //           },
-                                                                  //           icon: Icon(FontAwesomeIcons.thumbsUp),
-                                                                  //           iconSize: 25,
-                                                                  //           color: Colors.deepPurple,
-                                                                  //           // onPressed: () {
-                                                                  //           // },
-                                                                  //           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                                                  //         ):IconButton(
-                                                                  //
-                                                                  //           onPressed: () {
-                                                                  //             DatabaseService().unlikepost(
-                                                                  //                 likes, postId, displayName);
-                                                                  //             setState(() {
-                                                                  //               liked = false;
-                                                                  //             });
-                                                                  //           },
-                                                                  //
-                                                                  //           icon: Icon(FontAwesomeIcons.solidThumbsUp),
-                                                                  //           iconSize: 25,
-                                                                  //           color: Colors.deepPurple,
-                                                                  //           // onPressed: () {
-                                                                  //           // },
-                                                                  //           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                                                  //         ),
-                                                                  //         Text(
-                                                                  //           likes.toString(),style: TextStyle(
-                                                                  //           color: Colors.black,
-                                                                  //         ),
-                                                                  //
-                                                                  //         ),
-                                                                  //
-                                                                  //         IconButton(
-                                                                  //           onPressed: () {
-                                                                  //             // var currentUser;
-                                                                  //             // Navigator.push(
-                                                                  //             //     context,
-                                                                  //             //     MaterialPageRoute(
-                                                                  //             //         builder: ((context) => CommentsScreen())));
-                                                                  //           },
-                                                                  //           icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
-                                                                  //         ),
-                                                                  //         Text("23"),
-                                                                  //         IconButton(
-                                                                  //           onPressed: () {},
-                                                                  //           icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
-                                                                  //         ),
-                                                                  //       ],
-                                                                  //     ),
-                                                                  //     // IconButton(
-                                                                  //     //   onPressed: () {},
-                                                                  //     //   icon: Icon(FontAwesome.bookmark_o),
-                                                                  //     // ),
-                                                                  //   ],
-                                                                  // ),
-
-                                                                  // Container(
-                                                                  //     width: MediaQuery.of(context).size.width,
-                                                                  //     margin: EdgeInsets.symmetric(
-                                                                  //       horizontal: 14,
-                                                                  //     ),
-                                                                  //     child: RichText(
-                                                                  //       softWrap: true,
-                                                                  //       overflow: TextOverflow.visible,
-                                                                  //       text: TextSpan(
-                                                                  //         text: description,
-                                                                  //         style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,),
-                                                                  //       ),
-                                                                  //     )
-                                                                  // ),
-
-                                                                  // caption
-//                                                                 Container(
-//                                                                   width: MediaQuery.of(context).size.width,
-//                                                                   margin: EdgeInsets.symmetric(
-//                                                                     horizontal: 14,
-//                                                                     vertical: 5,
-//                                                                   ),
-// //
-//                                                                 ),
-
-                                                                  // post date
-                                                                  // Container(
-                                                                  //   margin: EdgeInsets.symmetric(
-                                                                  //     horizontal: 14,
-                                                                  //   ),
-                                                                  //   alignment: Alignment.topLeft,
-                                                                  //   child: Text(
-                                                                  //     readTimestamp(timestamp.seconds),
-                                                                  //     textAlign: TextAlign.start,
-                                                                  //     style: TextStyle(
-                                                                  //       color: Colors.grey,
-                                                                  //       fontSize: 10.0,
-                                                                  //     ),
-                                                                  //   ),
-                                                                  // ),
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
