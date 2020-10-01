@@ -41,9 +41,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      phoneNumberController,
       bioController,genderController,linkController,photoUrlController,
       displayNameController,workController,educationController,
+      phonenumberController,
       currentCityController,homeTownController,relationshipController,
       followersController,followingController,pinCodeController,userPostsController,uidController;
 
@@ -83,7 +83,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
     emailController = TextEditingController();
-    phoneNumberController = TextEditingController();
+    phonenumberController = TextEditingController();
     pinCodeController = TextEditingController();
     bioController = TextEditingController();
     genderController = TextEditingController();
@@ -164,7 +164,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
       displayNameController.text = docSnap.data["displayName"];
       uidController.text = docSnap.data["uid"];
+      emailController.text = docSnap.data["email"];
       photoUrlController.text = docSnap.data["photoURL"];
+      phonenumberController.text = docSnap.data["phonenumber"];
       bioController.text = docSnap.data["bio"];
       followers = docSnap.data["followers"];
       following  = docSnap.data["following"];
@@ -260,7 +262,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ProfileSettings()),
+                                MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text)),
                               );
                             },
                             ),

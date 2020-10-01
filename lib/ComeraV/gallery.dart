@@ -65,7 +65,7 @@ int indexd;
                 future: _getAllImages(),
                 builder: (context, AsyncSnapshot<List<FileSystemEntity>> snapshot) {
                   if (!snapshot.hasData) {
-                    if (snapshot.data.isEmpty){
+                    if (!snapshot.data.isEmpty){
                       Navigator.push(
                         context,
                         MaterialPageRoute(

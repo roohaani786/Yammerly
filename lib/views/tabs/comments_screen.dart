@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //import 'package:path/path.dart';
 import 'package:techstagram/modell/global.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
@@ -134,8 +135,11 @@ class CommentsPageState extends State<CommentsPage> {
     return Scaffold(
 
         appBar: AppBar(
-          backgroundColor: Colors.white70,
-          title: Text("Comment", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
+          backgroundColor: Colors.white,
+          title: Text("Comments", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
+          leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black,), onPressed: (){
+            Navigator.pop(context);
+          }),
         ),
       //appBar: header(context, strTitle: "Comments"),
 
@@ -144,7 +148,7 @@ class CommentsPageState extends State<CommentsPage> {
           Expanded(
             child: retrieveComments(),
           ),
-          Divider(),
+
           ListTile(
             title: TextFormField(
               controller: commentTextEditingController,
@@ -156,13 +160,13 @@ class CommentsPageState extends State<CommentsPage> {
               ),
               style: TextStyle(color: Colors.black),
             ),
-            trailing: OutlineButton(
+            trailing:IconButton(
               onPressed: (){
                 saveComment();
 //                retrieveComments();
               },
-              borderSide: BorderSide.none,
-              child: Icon(Icons.arrow_forward,size: 40.0,color: Colors.purpleAccent,),
+
+              icon: Icon(Icons.arrow_forward_ios,size: 30.0,color: Colors.deepPurple,),
               //child: Text("Publish", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
             ),
           )
@@ -199,7 +203,7 @@ class Comment extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 6.0),
       child: Container(
 
-        color: Colors.black,
+        color: Colors.white,
         child: GestureDetector(
           //onTap: () => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX),
           // onTap: () {

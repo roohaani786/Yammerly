@@ -5,15 +5,21 @@ import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
 
 class ProfileSettings extends StatefulWidget {
+  final String email;
+  final String phonenumber;
+  ProfileSettings(this.email,this.phonenumber);
   @override
-  _ProfileSettingsState createState() => _ProfileSettingsState();
+  _ProfileSettingsState createState() => _ProfileSettingsState(email,phonenumber);
 }
 
 class _ProfileSettingsState extends State<ProfileSettings> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
   bool valuef = false;
+  final String email;
+  final String phonenumber;
 
+  _ProfileSettingsState(this.email,this.phonenumber);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -40,8 +46,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 onTap: (){
 
                 },
-                  child: Icon(Icons.phone,color: Colors.grey,))),
-              SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,)),
+                  child: Icon(Icons.phone,color: Colors.grey,)),
+              trailing: Text(phonenumber,style: TextStyle(
+                color: Colors.deepPurple,
+              ),),),
+              SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,),
+                  trailing: Text(email,style: TextStyle(
+                    color: Colors.deepPurple,
+                  ),),),
               SettingsTile(
                 onTap: (){
                   FirebaseAuth.instance

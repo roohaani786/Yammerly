@@ -261,6 +261,7 @@ bool isChanged = false;
   String _female = "female";
   String _other = "other";
   String _value;
+  bool tickvalue = false;
   int check;
   void _handleRadioValueChange1(String value) {
     setState(() {
@@ -273,26 +274,37 @@ bool isChanged = false;
         setState(() {
           check = 1;
         });
-      }else{
+      }else if(_value == "other"){
         setState(() {
           check = 2;
+          print(tickvalue);
+          tickvalue = true;
+        });
+      }
+      else{
+        setState(() {
+          tickvalue = false;
         });
       }
 
       switch (check) {
         case 0:
-          genderController = _male as TextEditingController;
+          genderController.text = _male;
           //correctScore++;
           break;
         case 1:
-          genderController = _female as TextEditingController;
+          genderController.text = _female;
           break;
         case 2:
-          genderController = _other as TextEditingController;
+          genderController.text = _other;
           break;
+        default:
+          genderController.text = null;
       }
     });
   }
+
+
 
 
 
@@ -669,47 +681,79 @@ bool isChanged = false;
                     SizedBox(
                       height: 16,
                     ),
-                    new Text(
-                      'Gender :',
-                      style: new TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                        color: Colors.deepPurple
-                      ),
-                    ),
-                    new Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Radio(
-                          value: _male,
-                          groupValue: _male,
-                          onChanged: _handleRadioValueChange1,
-                        ),
-                        new Text(
-                          'Male',
-                          style: new TextStyle(fontSize: 16.0),
-                        ),
-                        new Radio(
-                          value: _female,
-                          groupValue: _female,
-                          onChanged: _handleRadioValueChange1,
-                        ),
-                        new Text(
-                          'Female',
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: new Text(
+                          'Gender :',
                           style: new TextStyle(
-                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            color: Colors.deepPurple
                           ),
                         ),
-                        new Radio(
-                          value:_other,
-                          groupValue: _other,
-                          onChanged: _handleRadioValueChange1,
-                        ),
-                        new Text(
-                          'Other',
-                          style: new TextStyle(fontSize: 16.0),
-                        ),
-                      ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: new Column(
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              new Radio(
+                                value: _male,
+                                groupValue: _male,
+                                onChanged: _handleRadioValueChange1,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: new Text(
+                                  'Male',
+                                  style: new TextStyle(fontSize: 16.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              new Radio(
+                                value: _female,
+                                groupValue: _female,
+                                onChanged: _handleRadioValueChange1,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: new Text(
+                                  'Female',
+                                  style: new TextStyle(fontSize: 16.0),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                            Row(
+                              children: [
+
+                                (tickvalue == false)?Radio(
+                                    value: _other,
+                                    groupValue: _other,
+                                    onChanged: _handleRadioValueChange1,
+                                  ):Radio(
+
+                                  onChanged: _handleRadioValueChange1,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: new Text(
+                                    'Other',
+                                    style: new TextStyle(fontSize: 16.0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
                     ),
 
                     // TextFormField(
