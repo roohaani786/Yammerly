@@ -5,12 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/modell/global.dart';
+import 'package:techstagram/models/user.dart';
 
 class AuthService {
   // Dependencies
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
+
 
   // Shared State for Widgets
   Observable<FirebaseUser> user; // firebase user
@@ -55,10 +57,12 @@ class AuthService {
         (await _auth.signInWithCredential(credential)).user;
 
 // Checking if email and name is null
-//
+    checkuserexists(user.uid,user);
+
+      updateUserData(user);
+
 
     // Step 3
-    updateUserData(user);
 
     // Done
     loading.add(false);
@@ -68,6 +72,22 @@ class AuthService {
     return user;
   }
 
+
+  checkuserexists(String uid,FirebaseUser user) async {
+    final snapShotX = await Firestore.instance
+        .collection('users')
+        .document(uid)
+        .get();
+
+    if (snapShotX.data["following"] == null || !snapShotX.exists) {
+      updateUserData(user);
+    }
+
+  }
+
+  User userdatax;
+
+
   void updateUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
 
@@ -75,11 +95,11 @@ class AuthService {
       'uid': user.uid,
       'email': user.email,
       'photoURL': user.photoUrl,
-      'displayName': user.displayName,
+      'displayName': user.displayName.toLowerCase(),
       'lastSeen': DateTime.now(),
-      'followers': 0,
-      'following': 0,
-      'posts': 0,
+      'followers': userdatax.followers,
+      'following': userdatax.following,
+      'posts': userdatax.posts,
       'bio' : "Proud Hashtager",
       'emailVerified': true,
 
