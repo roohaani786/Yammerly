@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:path/path.dart';
 import 'package:techstagram/modell/global.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:timeago/timeago.dart' as tAgo;
+import 'package:techstagram/ui/Otheruser/other_user.dart';
 
 import 'package:flutter/material.dart';
 
@@ -88,6 +90,10 @@ class CommentsPageState extends State<CommentsPage> {
   @override
   Widget build(BuildContext) {
     return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white70,
+          title: Text("Comment", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
+        ),
       //appBar: header(context, strTitle: "Comments"),
       body: Column(
         children: [
@@ -109,7 +115,8 @@ class CommentsPageState extends State<CommentsPage> {
             trailing: OutlineButton(
               onPressed: saveComment,
               borderSide: BorderSide.none,
-              child: Text("Publish", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
+              child: Icon(Icons.arrow_forward,size: 40.0,color: Colors.purpleAccent,),
+              //child: Text("Publish", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
             ),
           )
         ],
@@ -145,16 +152,26 @@ class Comment extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 6.0),
       child: Container(
         color: Colors.black,
-        child: Column(
-          children: [
-            ListTile(
-              title: Text(userName+":  "+ comment,style: TextStyle(fontSize: 18.0,color: Colors.black),),
-              leading: CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(url),
-              ),
-              subtitle: Text(tAgo.format(timestamp.toDate()),style: TextStyle(color: Colors.black),),
-            )
-          ],
+        child: GestureDetector(
+          //onTap: () => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX),
+          // onTap: () {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX)),
+          //   );
+          // },
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(userName+":  "+ comment,style: TextStyle(fontSize: 18.0,color: Colors.black),),
+                leading: CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(url),
+                ),
+                subtitle: Text(tAgo.format(timestamp.toDate()),style: TextStyle(color: Colors.black),),
+              )
+            ],
+          ),
         ),
       ),
     );
