@@ -267,6 +267,22 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               );
                             },
                             ),
+                    ),
+
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        color: Colors.purple,
+                        //color: Colors.white,
+                        icon: new Icon(Icons.settings),
+                        onPressed: () {
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text)),
+                          );
+                        },
+                      ),
 
                     ),
 
@@ -283,12 +299,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         padding: const EdgeInsets.only(top: 110.0),
                         child: Column(
                           children: [
-
-                        Padding(
-                        padding: const EdgeInsets.only(bottom: 0.0),
-                            child: Container(
+                            Container(
                               height: 270.0,
                               width: 340.0,
+
                                 // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -307,102 +321,100 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Text(
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: Text(
 
-                                    bioController.text,
-                                    style: TextStyle(
-                                      fontFamily: 'Source Sans Pro',
-                                      fontSize: 15.0,
-                                      color: Colors.grey,
-                                      letterSpacing: 2.5,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                  width: 200,
-                                  child: Divider(
-                                    color: Colors.teal.shade700,
-                                  ),
-                                ),
-
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 40.0,right: 40.0),
-                                  child: Container(
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 110,
-                                          child: FlatButton(
-                                              color: Colors.transparent,
-                                              child: new Text(
-                                                "About Me",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              onPressed: () {
-
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => AboutUser()),
-                                                );
-                                              },
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(color: Colors.purple, width: 2.5),
-                                                borderRadius: BorderRadius.circular(30.0),
-                                              )),
+                                        bioController.text,
+                                        style: TextStyle(
+                                          fontFamily: 'Source Sans Pro',
+                                          fontSize: 15.0,
+                                          color: Colors.grey,
+                                          letterSpacing: 2.5,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(left: 20.0),
-                                                child: SizedBox(
-                                                  width: 110,
-                                                  child: FlatButton(
-                                                    color: Colors.transparent,
-                                                      //color: Colors.white,
-                                                      child: new Text(
-                                                        "Edit Profile",
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          //color: Color(0xffed1e79),
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => ProfilePage()),
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                        side: BorderSide(
-                                                          color: Colors.purple,
-                                                            //color: Color(0xffed1e79),
-                                                            width: 2.5),
-                                                        borderRadius: BorderRadius.circular(30.0),
-                                                      )),
-                                                ),
-                                              ),
-
-
-
-
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                    SizedBox(
+                                      height: 20,
+                                      width: 200,
+                                      child: Divider(
+                                        color: Colors.teal.shade700,
+                                      ),
+                                    ),
 
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 40.0,right: 40.0),
+                                      child: Container(
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 110,
+                                              child: FlatButton(
+                                                  color: Colors.transparent,
+                                                  child: new Text(
+                                                    "About Me",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => AboutUser()),
+                                                    );
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(color: Colors.purple, width: 2.5),
+                                                    borderRadius: BorderRadius.circular(30.0),
+                                                  )),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 20.0),
+                                              child: SizedBox(
+                                                width: 110,
+                                                child: FlatButton(
+                                                    color: Colors.transparent,
+                                                    //color: Colors.white,
+                                                    child: new Text(
+                                                      "Edit Profile",
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        //color: Color(0xffed1e79),
+                                                      ),
+                                                    ),
+                                                    onPressed: () {
+
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                      side: BorderSide(
+                                                          color: Colors.purple,
+                                                          //color: Color(0xffed1e79),
+                                                          width: 2.5),
+                                                      borderRadius: BorderRadius.circular(30.0),
+                                                    )),
+                                              ),
+                                            ),
+
+
+
+
+
+
+                                          ],
+                                        ),
+                                      ),
+                                    ),
 
                                     Container(
                                       height: 60.0,
                                       margin: EdgeInsets.only(top: 8.0),
                                       decoration: BoxDecoration(
-//                                        color: Colors.white,
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -414,32 +426,30 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                     builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
                                               ),
                                               child: _buildStatItem("FOLLOWERS", followers.toString())
+                                          ),
+                                          _buildStatItem("POSTS", posts.toString()),
+                                          GestureDetector(
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                              ),
+                                              child: _buildStatItem("FOLLOWING", following.toString())
+                                          ),
+                                        ],
+                                      ),
+                                    ),
 
-                                          ),
-                                          child: _buildStatItem("FOLLOWERS", followers.toString())
-                                      ),
-                                      _buildStatItem("POSTS", posts.toString()),
-                                      GestureDetector(
-                                          onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
-                                          ),
-                                          child: _buildStatItem("FOLLOWING", following.toString())
-                                      ),
-                                    ],
-                                  ),
+                                  ],
                                 ),
-
-                            )
-
-                        ),
+                            ),
 
 
                             Container(
                               height: MediaQuery.of(context).size.height,
                               //height: 100.0,
                               width: 340.0,
+
                                 child: StreamBuilder(
                                     stream: userPostsStream,
                                     builder: (context, snapshot) {
@@ -477,13 +487,13 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                     getlikes(displayNameController.text,postId);
 
 
-            
+
 
                                                     if(likes< 0 || likes == 0){
                                                       liked = false;
                                                     }
                                                     return Container(
-                                                        color: Colors.grey.shade300,
+                                                      color: Colors.grey.shade300,
                                                       child: Column(
                                                         crossAxisAlignment: CrossAxisAlignment.stretch,
                                                         children: [
@@ -502,13 +512,13 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                                 bottomRight: Radius.circular(8.0),
                                                               ),
 
-                                                            child: Image.network(
+                                                              child: Image.network(
                                                                 url,
                                                                 height: 104,
                                                                 fit:BoxFit.cover,
 
+                                                              ),
                                                             ),
-                                                          ),
                                                           ),
                                                         ],
                                                       ),
@@ -518,16 +528,20 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               )
                                           ),
                                         ],
+                                      ): Container(
+                                        height: 100,
+                                        color: Colors.deepPurple,
+                                      );
                                     }
                                 ),
                                 //child: Image.network(uidCurrUser),
-
                             )
 
                           ],
                         ),
                       ),
                     ),
+
                     Padding(
                       padding: const EdgeInsets.only(top: 80,left: 160.0,right: 160.0),
                       child:(photoUrlController.text!=null)?CircleAvatar(
@@ -543,16 +557,17 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         backgroundColor: Colors.transparent,
                       ),
                     ),
-                  ]
-              ),
-            ),
-          ),
-        ),
 
-//        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-//        floatingActionButton: FloatingActionButton(
-//        child: Icon(Icons.add),onPressed: null),
+
+
+
+
+                  ],
+                    ),
+            ),
+        ),
       ),
+    ),
     );
   }
 

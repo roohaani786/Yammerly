@@ -590,7 +590,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                               ],
                                             ): Container(
                                               height: MediaQuery.of(context).size.height,
-                                              color: Colors.deepPurple,
+                                              color: Colors.white,
                                             );
                                           }
                                       ),
