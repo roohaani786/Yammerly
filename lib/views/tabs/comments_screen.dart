@@ -219,7 +219,7 @@ class Comment extends StatelessWidget {
             ListTile(
               title: (userName != null || comment != null)?Row(
                 children: [
-                  Text(userName,style: TextStyle(fontSize: 18.0,color: Colors.black,
+                  Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
                   fontWeight: FontWeight.bold,),),
                   Padding(
                     padding: const EdgeInsets.only(left: 5.0),

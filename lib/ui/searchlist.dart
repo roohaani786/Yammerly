@@ -61,12 +61,13 @@ String uidf = CloudFirestoreSearch().uidX;
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: (searchKey != "" && searchKey != null)?streamQuery
-        : Firestore.instance.collection("users").snapshots(),
+        :
+//        Firestore.instance.collection("users").snapshots(),
 //        (fname != "" && fname != null)
-//            ? Firestore.instance
-//            .collection('users')
-//            .where("searchKeywords", arrayContains: fname)
-//            .snapshots()
+             Firestore.instance
+            .collection('users')
+            .where("searchKeywords", arrayContains: fname)
+            .snapshots(),
 //            : Firestore.instance.collection("users").snapshots(),
         builder: (context, snapshot) {
           return (snapshot.connectionState == ConnectionState.waiting)
