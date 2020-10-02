@@ -14,6 +14,8 @@ import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 
+import '../aboutuser.dart';
+
 class OtherUserProfile extends StatefulWidget{
 
   final String uid;
@@ -181,14 +183,15 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    print("HAHA");
-    print(displayName);
+
 
 
     Stream userQuery;
 
     userQuery = Firestore.instance.collection('users')
+
         .where('displayName', isEqualTo: displayName)
+
         .snapshots();
 
     String displayNameX = displayName;
@@ -319,7 +322,31 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                     children: [
                                                       (followed == false)?SizedBox(
                                                         width: 120,
-                                                        child: FlatButton(
+
+                                                        child: (displayName == displayNamecurrentUser)?FlatButton(
+                                                            color: Colors.white,
+                                                            child: new Text(
+                                                              "About me",
+                                                              style: TextStyle(
+                                                                color: Colors.black,
+                                                              ),
+                                                            ),
+                                                            onPressed: () {
+
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(builder: (context) => AboutUser()),
+                                                              );
+                                                            },
+
+                                                            shape: RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                  color: Colors.purple,
+                                                                  width: 2.5),
+                                                              borderRadius: BorderRadius
+                                                                  .circular(30.0),
+                                                            )):FlatButton(
+                                                          
                                                             color: Colors.white,
                                                             child: new Text(
                                                               "Follow",
@@ -328,7 +355,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               ),
                                                             ),
                                                             onPressed: () {
-
 
                                                               setState(() {
                                                                 followed = true;
@@ -381,18 +407,22 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       ),
 
 
-                                                      SizedBox(
-                                                        width: 120,
-                                                        child: FlatButton(
 
-                                                            color: Colors.white,
-                                                            child: new Text(
-                                                              "Message",
-                                                              style: TextStyle(
-                                                                color: Colors.purple,
+                                                      (displayName != displayNamecurrentUser)?Padding(
+                                                        padding: const EdgeInsets.only(left: 20.0),
+                                                        child: SizedBox(
+                                                          width: 120,
+                                                          child: FlatButton(
+
+                                                              color: Colors.white,
+                                                              child: new Text(
+                                                                "Message",
+                                                                style: TextStyle(
+                                                                  color: Colors.purple,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            onPressed: () {
+                                                              onPressed: () {
+
 //                                                      Navigator.push(
 //                                                        context,
 //                                                        MaterialPageRoute(
@@ -400,18 +430,43 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 //                                                                context) =>
 //                                                                ProfileSettings()),
 //                                                      );
-                                                            },
-                                                            shape: RoundedRectangleBorder(
-                                                              side: BorderSide(
-                                                                  color: Colors.purple,
-                                                                  width: 2),
-                                                              borderRadius: BorderRadius
-                                                                  .circular(30.0),
-                                                            )),
-                                                      ),
+
+                                                              },
+                                                              shape: RoundedRectangleBorder(
+                                                                side: BorderSide(
+                                                                    color: Colors.purple,
+                                                                    width: 2),
+                                                                borderRadius: BorderRadius
+                                                                    .circular(30.0),
+                                                              )),
+                                                        ),
+                                                      ):FlatButton(
+                                                          color: Colors.transparent,
+                                                          //color: Colors.white,
+                                                          child: new Text(
+                                                            "Edit Profile",
+                                                            style: TextStyle(
+                                                              color: Colors.black,
+                                                              //color: Color(0xffed1e79),
+                                                            ),
+                                                          ),
+                                                          onPressed: () {
+
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                            );
+                                                          },
+                                                          shape: RoundedRectangleBorder(
+                                                            side: BorderSide(
+                                                                color: Colors.purple,
+                                                                //color: Color(0xffed1e79),
+                                                                width: 2.5),
+                                                            borderRadius: BorderRadius.circular(30.0),
+                                                          )),
                                                     ]
                                                 ),
-                                                SizedBox(
+                                                (displayName != displayNamecurrentUser)?SizedBox(
                                                   width: 120,
                                                   child: FlatButton(
                                                       color: Colors.purple,
@@ -432,7 +487,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                         borderRadius: BorderRadius
                                                             .circular(30.0),
                                                       )),
-                                                )
+
+                                                ):Container(),
+
                                               ],
                                             ),
                                           )
@@ -492,49 +549,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               child: Column(
                                                                 children: <Widget>[
 
-                                                                  // GestureDetector(
-                                                                  //   // onTap: () => Navigator.push(
-                                                                  //   //   context,
-                                                                  //   //   MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
-                                                                  //   // ),
-                                                                  //   child: Container(
-                                                                  //     padding: EdgeInsets.symmetric(
-                                                                  //       horizontal: 10,
-                                                                  //       vertical: 10,
-                                                                  //     ),
-                                                                  //     child: Row(
-                                                                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  //       children: <Widget>[
-                                                                  //         Row(
-                                                                  //           children: <Widget>[
-                                                                  //             ClipRRect(
-                                                                  //               borderRadius: BorderRadius.circular(40),
-                                                                  //               child: Image(
-                                                                  //                 image: NetworkImage(photoUrl),
-                                                                  //                 width: 40,
-                                                                  //                 height: 40,
-                                                                  //                 fit: BoxFit.cover,
-                                                                  //               ),
-                                                                  //             ),
-                                                                  //             SizedBox(
-                                                                  //               width: 10,
-                                                                  //             ),
-                                                                  //             Text(displayName),
-                                                                  //           ],
-                                                                  //         ),
-                                                                  //         IconButton(
-                                                                  //           icon: Icon(SimpleLineIcons.options),
-                                                                  //           onPressed: () {},
-                                                                  //         ),
-                                                                  //       ],
-                                                                  //     ),
-                                                                  //   ),
-                                                                  // ),
-                                                                  //Image.network(url),
 
                                                                   Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                                                     children: [
+
                                                                       GestureDetector(
                                                                         onTap: () {
                                                                           Navigator.push(
@@ -549,134 +568,17 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                             bottomLeft: Radius.circular(8.0),
                                                                             bottomRight: Radius.circular(8.0),
                                                                           ),
-                                                                          child: Image.network(
-                                                                              url,
-                                                                              // width: 300,
-                                                                              height: 104,
-                                                                              fit:BoxFit.fill
+                                                                    
+                                                                        child: Image.network(
+                                                                            url,
+                                                                            // width: 300,
+                                                                            height: 104,
+                                                                            fit:BoxFit.cover,
 
-                                                                          ),
                                                                         ),
                                                                       ),
-                                                                      // FadeInImage(
-                                                                      //   // width: 125.0,
-                                                                      //   height: 200.0,
-                                                                      //   image: NetworkImage(url),
-                                                                      //   //image: NetworkImage("posts[i].postImage"),
-                                                                      //   placeholder: AssetImage("assets/images/empty.png"),
-                                                                      //   width: MediaQuery.of(context).size.width,
-                                                                      //   // height: MediaQuery.of(context).size.height,
-                                                                      // ),
                                                                     ],
-                                                                  )
-
-                                                                  // Row(
-                                                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  //   children: <Widget>[
-                                                                  //     Row(
-                                                                  //       children: <Widget>[
-                                                                  //         (liked == false)?IconButton(
-                                                                  //           onPressed: () {
-                                                                  //             DatabaseService().likepost(
-                                                                  //                 likes, postId, displayName);
-                                                                  //             setState(() {
-                                                                  //               liked = true;
-                                                                  //             });
-                                                                  //           },
-                                                                  //           icon: Icon(FontAwesomeIcons.thumbsUp),
-                                                                  //           iconSize: 25,
-                                                                  //           color: Colors.deepPurple,
-                                                                  //           // onPressed: () {
-                                                                  //           // },
-                                                                  //           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                                                  //         ):IconButton(
-                                                                  //
-                                                                  //           onPressed: () {
-                                                                  //             DatabaseService().unlikepost(
-                                                                  //                 likes, postId, displayName);
-                                                                  //             setState(() {
-                                                                  //               liked = false;
-                                                                  //             });
-                                                                  //           },
-                                                                  //
-                                                                  //           icon: Icon(FontAwesomeIcons.solidThumbsUp),
-                                                                  //           iconSize: 25,
-                                                                  //           color: Colors.deepPurple,
-                                                                  //           // onPressed: () {
-                                                                  //           // },
-                                                                  //           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                                                  //         ),
-                                                                  //         Text(
-                                                                  //           likes.toString(),style: TextStyle(
-                                                                  //           color: Colors.black,
-                                                                  //         ),
-                                                                  //
-                                                                  //         ),
-                                                                  //
-                                                                  //         IconButton(
-                                                                  //           onPressed: () {
-                                                                  //             // var currentUser;
-                                                                  //             // Navigator.push(
-                                                                  //             //     context,
-                                                                  //             //     MaterialPageRoute(
-                                                                  //             //         builder: ((context) => CommentsScreen())));
-                                                                  //           },
-                                                                  //           icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
-                                                                  //         ),
-                                                                  //         Text("23"),
-                                                                  //         IconButton(
-                                                                  //           onPressed: () {},
-                                                                  //           icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
-                                                                  //         ),
-                                                                  //       ],
-                                                                  //     ),
-                                                                  //     // IconButton(
-                                                                  //     //   onPressed: () {},
-                                                                  //     //   icon: Icon(FontAwesome.bookmark_o),
-                                                                  //     // ),
-                                                                  //   ],
-                                                                  // ),
-
-                                                                  // Container(
-                                                                  //     width: MediaQuery.of(context).size.width,
-                                                                  //     margin: EdgeInsets.symmetric(
-                                                                  //       horizontal: 14,
-                                                                  //     ),
-                                                                  //     child: RichText(
-                                                                  //       softWrap: true,
-                                                                  //       overflow: TextOverflow.visible,
-                                                                  //       text: TextSpan(
-                                                                  //         text: description,
-                                                                  //         style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,),
-                                                                  //       ),
-                                                                  //     )
-                                                                  // ),
-
-                                                                  // caption
-//                                                                 Container(
-//                                                                   width: MediaQuery.of(context).size.width,
-//                                                                   margin: EdgeInsets.symmetric(
-//                                                                     horizontal: 14,
-//                                                                     vertical: 5,
-//                                                                   ),
-// //
-//                                                                 ),
-
-                                                                  // post date
-                                                                  // Container(
-                                                                  //   margin: EdgeInsets.symmetric(
-                                                                  //     horizontal: 14,
-                                                                  //   ),
-                                                                  //   alignment: Alignment.topLeft,
-                                                                  //   child: Text(
-                                                                  //     readTimestamp(timestamp.seconds),
-                                                                  //     textAlign: TextAlign.start,
-                                                                  //     style: TextStyle(
-                                                                  //       color: Colors.grey,
-                                                                  //       fontSize: 10.0,
-                                                                  //     ),
-                                                                  //   ),
-                                                                  // ),
+                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
@@ -691,6 +593,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                             ): Container(color: Colors.deepPurple,);
                                           }
                                       ),
+
                                     ),
                                     //child: Image.network(uidCurrUser),
 

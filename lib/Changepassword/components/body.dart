@@ -35,11 +35,13 @@ class _BodyState extends State<Body> {
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   TextEditingController emailInputController;
-  TextEditingController pwdInputController,newpwdInputController;
+  TextEditingController ppwdInputController,pwdInputController,newpwdInputController;
   bool isUserSignedIn = true;
 
   final FocusNode _email = FocusNode();
   final FocusNode _pwd = FocusNode();
+  final FocusNode _apwd = FocusNode();
+  final FocusNode _cpwd = FocusNode();
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   fl.FacebookLogin fbLogin = new fl.FacebookLogin();
@@ -55,6 +57,8 @@ class _BodyState extends State<Body> {
   initState() {
     emailInputController = new TextEditingController();
     pwdInputController = new TextEditingController();
+    ppwdInputController = new TextEditingController();
+    newpwdInputController = new TextEditingController();
     super.initState();
     checkIfUserIsSignedIn();
   }
@@ -66,6 +70,7 @@ class _BodyState extends State<Body> {
     //Pass in the password to updatePassword.
     user.updatePassword(password).then((_){
       print("Succesfull changed password");
+      return PasswordChanged();
     }).catchError((error){
       print("Password can't be changed" + error.toString());
       //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
@@ -334,7 +339,7 @@ class _BodyState extends State<Body> {
                                       loginfail ? 'password not match' : null,
                                       filled: true,
                                       hintText: "Current Password"),
-                                  controller: pwdInputController,
+                                  controller: ppwdInputController,
                                   obscureText: _obscureText,
                                   focusNode: _pwd,
                                   onFieldSubmitted: (value) {
@@ -408,12 +413,12 @@ class _BodyState extends State<Body> {
                                       errorText:
                                       loginfail ? 'password not match' : null,
                                       filled: true,
-                                      hintText: " New Password"),
-                                  controller: pwdInputController,
+                                      hintText: "New Password"),
+                                  controller: newpwdInputController,
                                   obscureText: _obscureText,
-                                  focusNode: _pwd,
+                                  focusNode: _apwd,
                                   onFieldSubmitted: (value) {
-                                    _pwd.unfocus();
+                                    _apwd.unfocus();
                                     RoundedButton;
                                   },
                                   style: TextStyle(
@@ -486,9 +491,9 @@ class _BodyState extends State<Body> {
                                       hintText: "Confirm New Password"),
                                   controller: newpwdInputController,
                                   obscureText: _obscureText,
-                                  focusNode: _pwd,
+                                  focusNode: _cpwd,
                                   onFieldSubmitted: (value) {
-                                    _pwd.unfocus();
+                                    _cpwd.unfocus();
                                     RoundedButton;
                                   },
                                   style: TextStyle(
@@ -545,6 +550,18 @@ class _BodyState extends State<Body> {
                 ),
               ),
         ),
+      ),
+    );
+  }
+}
+
+class PasswordChanged extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("success"),
       ),
     );
   }
