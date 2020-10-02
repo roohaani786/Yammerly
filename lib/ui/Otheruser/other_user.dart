@@ -11,6 +11,7 @@ import 'package:techstagram/ui/Otheruser/otherfollowerlist.dart';
 import 'package:techstagram/ui/ProfileEdit.dart';
 
 import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
+import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 
 import '../aboutuser.dart';
@@ -552,13 +553,22 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                   Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                                                     children: [
-                                                                      ClipRRect(
-                                                                        borderRadius: BorderRadius.only(
-                                                                          topLeft: Radius.circular(8.0),
-                                                                          topRight: Radius.circular(8.0),
-                                                                          bottomLeft: Radius.circular(8.0),
-                                                                          bottomRight: Radius.circular(8.0),
-                                                                        ),
+
+                                                                      GestureDetector(
+                                                                        onTap: () {
+                                                                          Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder: (context) => postPage(PostUrl: url)),
+                                                                          );
+                                                                        },
+                                                                        child: ClipRRect(
+                                                                          borderRadius: BorderRadius.only(
+                                                                            topLeft: Radius.circular(8.0),
+                                                                            topRight: Radius.circular(8.0),
+                                                                            bottomLeft: Radius.circular(8.0),
+                                                                            bottomRight: Radius.circular(8.0),
+                                                                          ),
+                                                                    
                                                                         child: Image.network(
                                                                             url,
                                                                             // width: 300,

@@ -14,6 +14,7 @@ import 'package:techstagram/ui/aboutuser.dart';
 import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
 import 'package:techstagram/ui/messagingsystem.dart';
+import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 
 import 'HomePage.dart';
@@ -476,13 +477,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                     getlikes(displayNameController.text,postId);
 
 
-                                                   // print(email);
-                                                   // print(displayName);
-//                for (int i = 0; i < posts.length; i++) {
-//                  if (posts[i].email == email) {
-//                    currentpost = posts[i];
-//                  }
-//                }
+            
 
                                                     if(likes< 0 || likes == 0){
                                                       liked = false;
@@ -536,17 +531,26 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                             Column(
                                                               crossAxisAlignment: CrossAxisAlignment.stretch,
                                                               children: [
-                                                                ClipRRect(
-                                                                  borderRadius: BorderRadius.only(
-                                                                    topLeft: Radius.circular(8.0),
-                                                                    topRight: Radius.circular(8.0),
-                                                                    bottomLeft: Radius.circular(8.0),
-                                                                    bottomRight: Radius.circular(8.0),
-                                                                  ),
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(builder: (context) => postPage(PostUrl: url)),
+                                                                    );
+                                                                  },
+                                                                  child: ClipRRect(
+                                                                    borderRadius: BorderRadius.only(
+                                                                      topLeft: Radius.circular(8.0),
+                                                                      topRight: Radius.circular(8.0),
+                                                                      bottomLeft: Radius.circular(8.0),
+                                                                      bottomRight: Radius.circular(8.0),
+                                                                    ),
+                                                       
                                                                   child: Image.network(
                                                                       url,
                                                                       height: 104,
                                                                       fit:BoxFit.cover,
+
                                                                   ),
                                                                 ),
                                                               ],
