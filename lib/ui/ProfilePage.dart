@@ -288,9 +288,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             child: Container(
                               height: 270.0,
                               width: 340.0,
-                              child: Card(
-                                elevation: 5.0,
-                                color: Colors.white,
                                 // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -401,7 +398,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       height: 60.0,
                                       margin: EdgeInsets.only(top: 8.0),
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+//                                        color: Colors.white,
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -429,7 +426,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                                   ],
                                 ),
-                              ),
+
                             )
                         ),
 
@@ -437,9 +434,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             Container(
                               height: MediaQuery.of(context).size.height,
                               width: 340.0,
-
-                              child: Card(
-                                color: Colors.white,
                                 child: StreamBuilder(
                                     stream: userPostsStream,
                                     builder: (context, snapshot) {
@@ -565,11 +559,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               )
                                           ),
                                         ],
-                                      ): Container(color: Colors.deepPurple,);
+                                      ): Container(color: Colors.white,);
                                     }
                                 ),
                                 //child: Image.network(uidCurrUser),
-                              ),
+
                             )
 
                           ],

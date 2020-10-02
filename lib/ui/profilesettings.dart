@@ -15,7 +15,7 @@ class ProfileSettings extends StatefulWidget {
 class _ProfileSettingsState extends State<ProfileSettings> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
-  bool valuef = false;
+  bool valuef = true;
   final String email;
   final String phonenumber;
 
