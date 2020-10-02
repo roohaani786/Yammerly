@@ -283,27 +283,29 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         padding: const EdgeInsets.only(top: 110.0),
                         child: Column(
                           children: [
-                        Container(
-                          height: 270.0,
-                          width: 340.0,
-                          child: Card(
-                            elevation: 5.0,
-                            color: Colors.white,
-                            // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
 
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Text(
+                        Padding(
+                        padding: const EdgeInsets.only(bottom: 0.0),
+                            child: Container(
+                              height: 270.0,
+                              width: 340.0,
+                                // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
 
-                                    displayNameController.text,
-                                    style: TextStyle(
-                                      fontSize: 26.0,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Pacifico',
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: Text(
+
+                                        displayNameController.text,
+                                        style: TextStyle(
+                                          fontSize: 26.0,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Pacifico',
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -395,20 +397,24 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                   ),
                                 ),
 
-                                Container(
-                                  height: 60.0,
-                                  margin: EdgeInsets.only(top: 8.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: <Widget>[
-                                      GestureDetector(
-                                          onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+
+                                    Container(
+                                      height: 60.0,
+                                      margin: EdgeInsets.only(top: 8.0),
+                                      decoration: BoxDecoration(
+//                                        color: Colors.white,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: <Widget>[
+                                          GestureDetector(
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                              ),
+                                              child: _buildStatItem("FOLLOWERS", followers.toString())
+
                                           ),
                                           child: _buildStatItem("FOLLOWERS", followers.toString())
                                       ),
@@ -425,9 +431,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                   ),
                                 ),
 
-                              ],
-                            ),
-                          ),
+                            )
+
                         ),
 
 
@@ -435,9 +440,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               height: MediaQuery.of(context).size.height,
                               //height: 100.0,
                               width: 340.0,
-
-                              child: Card(
-                                color: Colors.white,
                                 child: StreamBuilder(
                                     stream: userPostsStream,
                                     builder: (context, snapshot) {
@@ -516,14 +518,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               )
                                           ),
                                         ],
-                                      ): Container(
-                                        height: 100,
-                                        color: Colors.deepPurple,
-                                      );
                                     }
                                 ),
                                 //child: Image.network(uidCurrUser),
-                              ),
+
                             )
 
                           ],

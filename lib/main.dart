@@ -1,6 +1,7 @@
 //import 'package:catcher/catcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
@@ -11,12 +12,16 @@ import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/ui/fblogin.dart';
 import 'Signup/signup_screen.dart';
+import 'biometric_auth.dart';
+import 'biometric_auth.dart' as authenticated;
 
 int initScreen;
 int initialindexg;
 
 Future<void> main() async {
+//  setupLocator();
   WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
   SharedPreferences prefs = await SharedPreferences.getInstance();
   initScreen = await prefs.getInt("initScreen");
   await prefs.setInt("initScreen", 1);
@@ -70,12 +75,15 @@ class MyAppState extends State<MyApp> {
           ),
 
 
-          home: FutureBuilder(
+          home:
+          FutureBuilder(
             future: _repository.getCurrentUser(),
             builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
               if (snapshot.hasData) {
+//                return Biometricauth();
                 return HomePage();
               } else {
+//                return Biometricauth();
                 return Check();
               }
             },
@@ -90,6 +98,8 @@ class Check extends StatefulWidget {
 }
 
 class CheckState extends State<Check> {
+
+//  final LocalAuthenticationService _localAuth = locator<LocalAuthenticationService>();
 
 
   @override

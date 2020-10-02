@@ -236,9 +236,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                   Container(
                                     height: 300.0,
                                     width: 340.0,
-                                    child: Card(
-                                      elevation: 5.0,
-                                      color: Colors.white,
+
                                       // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -280,7 +278,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                             height: 60.0,
                                             margin: EdgeInsets.only(top: 8.0),
                                             decoration: BoxDecoration(
-                                              color: Colors.white,
+
                                             ),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment
@@ -496,13 +494,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                                         ],
                                       ),
-                                    ),
+
                                   ),
                                   Container(
                                     height: MediaQuery.of(context).size.height,
                                     width: 340.0,
-                                    child: Card(
-                                      color: Colors.white,
+
                                       child: StreamBuilder(
                                           stream: userPostsStream,
                                           builder: (context, snapshot) {
@@ -598,7 +595,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                           }
                                       ),
 
-                                    ),
+
                                     //child: Image.network(uidCurrUser),
 
                                   )
