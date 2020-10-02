@@ -28,7 +28,7 @@ class postPage extends StatefulWidget {
   @override
 
   final String PostUrl;
-  final displayNamecurrentUser;
+  final String displayNamecurrentUser;
   final Wiggle wiggle;
   final List<Wiggle> wiggles;
   final Timestamp timestamp;
@@ -121,6 +121,23 @@ class _postPageState extends State<postPage> {
       });
     });
   }
+
+  deletePost( String displayNamecurrent, String displayName, String url) {
+
+
+    if(displayName == displayNamecurrentUser){
+      print(url);
+      print(displayName);
+      print("halelula");
+      print(displayNamecurrentUser);
+      return Firestore.instance.collection("posts")
+          .document(url)
+          .delete();
+    }else{
+      return null;
+    }
+  }
+
 
   getPosts() async {
     print(PostUrl);
@@ -428,12 +445,12 @@ class _postPageState extends State<postPage> {
                                   // ),
                                 ): Container(height: 0.0,width: 0.0,),
 
-                                GestureDetector(
-                                  onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
-                                  ),
-                                  child: Container(
+                                // GestureDetector(
+                                //   onTap: () => Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                                // ),
+                                  Container(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 10,
                                       vertical: 10,
@@ -460,13 +477,14 @@ class _postPageState extends State<postPage> {
                                           ],
                                         ),
                                         IconButton(
-                                          icon: Icon(SimpleLineIcons.options),
-                                          onPressed: () {},
+                                          icon: Icon(Icons.delete_outline, color: Colors.purple,),
+                                          onPressed: () => deletePost(displayNamecurrentUser, displayName,url),
+
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
+                                //),
 
 
                                 GestureDetector(
@@ -543,7 +561,8 @@ class _postPageState extends State<postPage> {
 
                                             onPressed: () { print(displayNameController.text);
                                             Navigator.push(context, MaterialPageRoute(builder: (context){
-                                              return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                              return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                              //return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
                                             },
                                             // Navigator.push(

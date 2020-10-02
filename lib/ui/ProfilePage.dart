@@ -283,6 +283,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         padding: const EdgeInsets.only(top: 110.0),
                         child: Column(
                           children: [
+
                         Padding(
                         padding: const EdgeInsets.only(bottom: 0.0),
                             child: Container(
@@ -306,93 +307,96 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 10.0),
-                                      child: Text(
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Text(
 
-                                        bioController.text,
-                                        style: TextStyle(
-                                          fontFamily: 'Source Sans Pro',
-                                          fontSize: 15.0,
-                                          color: Colors.grey,
-                                          letterSpacing: 2.5,
-                                          fontWeight: FontWeight.bold,
+                                    bioController.text,
+                                    style: TextStyle(
+                                      fontFamily: 'Source Sans Pro',
+                                      fontSize: 15.0,
+                                      color: Colors.grey,
+                                      letterSpacing: 2.5,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                  width: 200,
+                                  child: Divider(
+                                    color: Colors.teal.shade700,
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 40.0,right: 40.0),
+                                  child: Container(
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 110,
+                                          child: FlatButton(
+                                              color: Colors.transparent,
+                                              child: new Text(
+                                                "About Me",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              onPressed: () {
+
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => AboutUser()),
+                                                );
+                                              },
+                                              shape: RoundedRectangleBorder(
+                                                side: BorderSide(color: Colors.purple, width: 2.5),
+                                                borderRadius: BorderRadius.circular(30.0),
+                                              )),
                                         ),
-                                      ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 20.0),
+                                                child: SizedBox(
+                                                  width: 110,
+                                                  child: FlatButton(
+                                                    color: Colors.transparent,
+                                                      //color: Colors.white,
+                                                      child: new Text(
+                                                        "Edit Profile",
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          //color: Color(0xffed1e79),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                        );
+                                                      },
+                                                      shape: RoundedRectangleBorder(
+                                                        side: BorderSide(
+                                                          color: Colors.purple,
+                                                            //color: Color(0xffed1e79),
+                                                            width: 2.5),
+                                                        borderRadius: BorderRadius.circular(30.0),
+                                                      )),
+                                                ),
+                                              ),
+
+
+
+
+                                      ],
                                     ),
-                                    SizedBox(
-                                      height: 20,
-                                      width: 200,
-                                      child: Divider(
-                                        color: Colors.teal.shade700,
-                                      ),
-                                    ),
+                                  ),
+                                ),
 
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 40.0,right: 40.0),
-                                      child: Container(
-                                        child: Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 110,
-                                              child: FlatButton(
-                                                  color: Colors.transparent,
-                                                  child: new Text(
-                                                    "About Me",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => AboutUser()),
-                                                    );
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                    side: BorderSide(color: Colors.purple, width: 2.5),
-                                                    borderRadius: BorderRadius.circular(30.0),
-                                                  )),
-                                            ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(left: 20.0),
-                                                    child: SizedBox(
-                                                      width: 110,
-                                                      child: FlatButton(
-                                                        color: Colors.transparent,
-                                                          //color: Colors.white,
-                                                          child: new Text(
-                                                            "Edit Profile",
-                                                            style: TextStyle(
-                                                              color: Colors.black,
-                                                              //color: Color(0xffed1e79),
-                                                            ),
-                                                          ),
-                                                          onPressed: () {
-
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => ProfilePage()),
-                                                            );
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                              color: Colors.purple,
-                                                                //color: Color(0xffed1e79),
-                                                                width: 2.5),
-                                                            borderRadius: BorderRadius.circular(30.0),
-                                                          )),
-                                                    ),
-                                                  ),
-
-
-
-
-                                          ],
-                                        ),
-                                      ),
-                                    ),
 
                                     Container(
                                       height: 60.0,
@@ -410,29 +414,31 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                     builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
                                               ),
                                               child: _buildStatItem("FOLLOWERS", followers.toString())
-                                          ),
-                                          _buildStatItem("POSTS", posts.toString()),
-                                          GestureDetector(
-                                              onTap: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
-                                              ),
-                                              child: _buildStatItem("FOLLOWING", following.toString())
-                                          ),
-                                        ],
-                                      ),
-                                    ),
 
-                                  ],
+                                          ),
+                                          child: _buildStatItem("FOLLOWERS", followers.toString())
+                                      ),
+                                      _buildStatItem("POSTS", posts.toString()),
+                                      GestureDetector(
+                                          onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                          ),
+                                          child: _buildStatItem("FOLLOWING", following.toString())
+                                      ),
+                                    ],
+                                  ),
                                 ),
 
                             )
+
                         ),
 
 
                             Container(
                               height: MediaQuery.of(context).size.height,
+                              //height: 100.0,
                               width: 340.0,
                                 child: StreamBuilder(
                                     stream: userPostsStream,
@@ -477,81 +483,34 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                       liked = false;
                                                     }
                                                     return Container(
+                                                        color: Colors.grey.shade300,
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url)),
+                                                              );
+                                                            },
+                                                            child: ClipRRect(
+                                                              borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(8.0),
+                                                                topRight: Radius.circular(8.0),
+                                                                bottomLeft: Radius.circular(8.0),
+                                                                bottomRight: Radius.circular(8.0),
+                                                              ),
 
-                                                      child: Container(
-                                                          color: Colors.grey.shade300,
-                                                        child: Column(
-                                                          children: <Widget>[
+                                                            child: Image.network(
+                                                                url,
+                                                                height: 104,
+                                                                fit:BoxFit.cover,
 
-                                                            // GestureDetector(
-                                                            //   // onTap: () => Navigator.push(
-                                                            //   //   context,
-                                                            //   //   MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
-                                                            //   // ),
-                                                            //   child: Container(
-                                                            //     padding: EdgeInsets.symmetric(
-                                                            //       horizontal: 10,
-                                                            //       vertical: 10,
-                                                            //     ),
-                                                            //     child: Row(
-                                                            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            //       children: <Widget>[
-                                                            //         Row(
-                                                            //           children: <Widget>[
-                                                            //             ClipRRect(
-                                                            //               borderRadius: BorderRadius.circular(40),
-                                                            //               child: Image(
-                                                            //                 image: NetworkImage(photoUrl),
-                                                            //                 width: 40,
-                                                            //                 height: 40,
-                                                            //                 fit: BoxFit.cover,
-                                                            //               ),
-                                                            //             ),
-                                                            //             SizedBox(
-                                                            //               width: 10,
-                                                            //             ),
-                                                            //             Text(displayName),
-                                                            //           ],
-                                                            //         ),
-                                                            //         IconButton(
-                                                            //           icon: Icon(SimpleLineIcons.options),
-                                                            //           onPressed: () {},
-                                                            //         ),
-                                                            //       ],
-                                                            //     ),
-                                                            //   ),
-                                                            // ),
-                                                            //Image.network(url),
-                                                            Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                              children: [
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    Navigator.push(
-                                                                      context,
-                                                                      MaterialPageRoute(builder: (context) => postPage(PostUrl: url)),
-                                                                    );
-                                                                  },
-                                                                  child: ClipRRect(
-                                                                    borderRadius: BorderRadius.only(
-                                                                      topLeft: Radius.circular(8.0),
-                                                                      topRight: Radius.circular(8.0),
-                                                                      bottomLeft: Radius.circular(8.0),
-                                                                      bottomRight: Radius.circular(8.0),
-                                                                    ),
-                                                       
-                                                                  child: Image.network(
-                                                                      url,
-                                                                      height: 104,
-                                                                      fit:BoxFit.cover,
-
-                                                                  ),
-                                                                ),
-                                                                ),
-                                                              ],
                                                             ),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     );
                                                   }
@@ -559,7 +518,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               )
                                           ),
                                         ],
-                                      ): Container(color: Colors.white,);
                                     }
                                 ),
                                 //child: Image.network(uidCurrUser),

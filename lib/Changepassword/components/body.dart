@@ -63,7 +63,17 @@ class _BodyState extends State<Body> {
     checkIfUserIsSignedIn();
   }
 
+  @override
+  void dispose() {
+    newpwdInputController.dispose();
+    ppwdInputController.dispose();
+   // _newPasswordController.dispose();
+   // _repeatPasswordController.dispose();
+    super.dispose();
+  }
+
   void _changePassword(String password) async{
+    print(password);
     //Create an instance of the current user.
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
@@ -73,6 +83,19 @@ class _BodyState extends State<Body> {
       return PasswordChanged();
     }).catchError((error){
       print("Password can't be changed" + error.toString());
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+
+            return AlertDialog(
+              content: Text(
+                '$error',
+                style: TextStyle(color: Colors.black),
+              ),
+              title: Text("Error !", style:
+              TextStyle(color: Colors.red),),
+            );
+          });
       //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
     });
   }
@@ -338,7 +361,11 @@ class _BodyState extends State<Body> {
                                       errorText:
                                       loginfail ? 'password not match' : null,
                                       filled: true,
-                                      hintText: "Current Password"),
+                                      hintText: "Current Password",
+                                    // errorText: checkCurrentPasswordValid
+                                    //     ? null
+                                    //     : "Please double check your current password",
+                                  ),
                                   controller: ppwdInputController,
                                   obscureText: _obscureText,
                                   focusNode: _pwd,
