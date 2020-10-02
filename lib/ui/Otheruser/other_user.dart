@@ -577,6 +577,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                                                                         ),
                                                                       ),
+                                                                      ),
                                                                     ],
                                                                   ),
                                                                 ],
