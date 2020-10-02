@@ -591,7 +591,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                     )
                                                 ),
                                               ],
-                                            ): Container(color: Colors.deepPurple,);
+                                            ): Container(
+                                              height: MediaQuery.of(context).size.height,
+                                              color: Colors.deepPurple,
+                                            );
                                           }
                                       ),
 

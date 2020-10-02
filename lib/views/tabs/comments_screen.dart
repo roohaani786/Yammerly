@@ -55,7 +55,7 @@ class CommentsPageState extends State<CommentsPage> {
       builder: (context, dataSnapshot){
         if (!dataSnapshot.hasData){
           return Container(
-            color: Colors.red,
+            color: Colors.white,
           );
         }
         List<Comment> comments = [];
