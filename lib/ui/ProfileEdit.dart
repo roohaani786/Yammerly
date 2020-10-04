@@ -256,6 +256,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
 bool isChanged = false;
+  String relationstring = "Select Relationship";
+  String genderstring = "Select Gender";
 
   String _male = "male";
   String _female = "female";
@@ -303,6 +305,8 @@ bool isChanged = false;
       }
     });
   }
+
+  String valueX = "Select Gender";
 
 
 
@@ -695,64 +699,67 @@ bool isChanged = false;
                         ),
                       ),
                     ),
+
                     Align(
-                      alignment: Alignment.centerLeft,
-                      child: new Column(
-                        children: <Widget>[
-                          Row(
-                            children: [
-                              new Radio(
-                                value: _male,
-                                groupValue: _male,
-                                onChanged: _handleRadioValueChange1,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: new Text(
-                                  'Male',
-                                  style: new TextStyle(fontSize: 16.0),
-                                ),
-                              ),
-                            ],
+                      alignment: Alignment.center,
+                      child: new DropdownButton<String>(
+                        hint: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: (genderController.text == "")?Text(genderstring):Text(genderController.text),
+                        ),
+                        items: <String>['Male', 'Female','Others'].map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          genderController.text = value;
+                          setState(() {
+                            genderstring = value;
+                          });
+                        },
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 16.0,
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: new Text(
+                          'Relationship :',
+                          style: new TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.deepPurple
                           ),
-                          Row(
-                            children: [
-                              new Radio(
-                                value: _female,
-                                groupValue: _female,
-                                onChanged: _handleRadioValueChange1,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: new Text(
-                                  'Female',
-                                  style: new TextStyle(fontSize: 16.0),
-                                ),
-                              ),
-                            ],
-                          ),
+                        ),
+                      ),
+                    ),
 
-                            Row(
-                              children: [
-
-                                (tickvalue == false)?Radio(
-                                    value: _other,
-                                    groupValue: _other,
-                                    onChanged: _handleRadioValueChange1,
-                                  ):Radio(
-
-                                  onChanged: _handleRadioValueChange1,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  child: new Text(
-                                    'Other',
-                                    style: new TextStyle(fontSize: 16.0),
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ],
+                    Align(
+                      alignment: Alignment.center,
+                      child: new DropdownButton<String>(
+                        hint: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: (relationshipController.text=="")?Text(relationstring):Text(relationshipController.text),
+                        ),
+                        items: <String>['Single', 'Engaged'].map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          relationshipController.text = value;
+                          setState(() {
+                            relationstring = value;
+                          });
+                        },
                       ),
                     ),
 
@@ -903,20 +910,7 @@ bool isChanged = false;
                       height: 16,
                     ),
 
-                    TextFormField(
-                      controller: relationshipController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Relationship",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
+
 
 
                   ],
