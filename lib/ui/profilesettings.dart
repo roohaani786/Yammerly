@@ -58,6 +58,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 onTap: (){
                   FirebaseAuth.instance
                       .signOut()
+
                       .then((result) =>
                       Navigator.push(context, new MaterialPageRoute(
                           builder: (context) =>

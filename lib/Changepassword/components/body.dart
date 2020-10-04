@@ -274,9 +274,7 @@ class _BodyState extends State<Body> {
     Size size = MediaQuery
         .of(context)
         .size;
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           leading: IconButton(
@@ -577,8 +575,7 @@ class _BodyState extends State<Body> {
                 ),
               ),
         ),
-      ),
-    );
+      );
   }
 }
 

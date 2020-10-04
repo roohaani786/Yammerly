@@ -64,10 +64,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
     if (details.primaryVelocity.compareTo(0) == -1) {
 //      dispose();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ConversationPage()),
-      );
+    null;
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => ConversationPage()),
+//      );
     }
     else {
       Navigator.push(

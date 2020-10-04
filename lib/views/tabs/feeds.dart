@@ -157,21 +157,21 @@ class _FeedsPageState extends State<FeedsPage> {
 
   }
 
-  fetchLikes() async {
-    currUser = await FirebaseAuth.instance.currentUser();
-    try {
-      docSnap = await Firestore.instance
-          .collection("likes")
-          .document(currUser.uid)
-          .get();
-      setState(() {
-        isLoading = false;
-        isEditable = true;
-      });
-    } on PlatformException catch (e) {
-      print("PlatformException in fetching user profile. E  = " + e.message);
-    }
-  }
+//  fetchLikes() async {
+//    currUser = await FirebaseAuth.instance.currentUser();
+//    try {
+//      docSnap = await Firestore.instance
+//          .collection("likes")
+//          .document(currUser.uid)
+//          .get();
+//      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+//      });
+//    } on PlatformException catch (e) {
+//      print("PlatformException in fetching user profile. E  = " + e.message);
+//    }
+//  }
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -338,12 +338,12 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
 
-                        if(likes< 0 || likes == 0){
+                        if(likes == 0){
 
                           liked = false;
                         }
 
-                        getlikes(displayNameController.text,postId);
+//                        getlikes(displayNameController.text,postId);
 
                         return Container(
                           child: Container(

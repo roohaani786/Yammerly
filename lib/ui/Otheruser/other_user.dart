@@ -199,8 +199,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white70,
-        title: Text(displayNameX),
+        backgroundColor: Colors.white,
+        title: Text(displayNameX,style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),),
       ),
       body: StreamBuilder(
         stream: userQuery,
