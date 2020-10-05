@@ -383,6 +383,18 @@ class DatabaseService {
         .updateData({'followers': followers - 1});
   }
 
+  Future PhoneverificationX(String uid) async {
+//    .collection("users")
+//        .document(uid)
+//        .delete(); await Firestore.instance
+
+
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'phoneVerified': true});
+  }
+
   Future decreaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
 
     await Firestore.instance

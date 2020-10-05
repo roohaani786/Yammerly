@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/ComeraV/video_preview.dart';
@@ -86,6 +87,7 @@ int indexd;
 
                   return PageView.builder(
                     itemCount: snapshot.data.length,
+                    physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       indexd = snapshot.data.length;
                       print(indexd);
@@ -198,7 +200,7 @@ int indexd;
 //            ),
 
               Padding(
-                padding: const EdgeInsets.only(right: 30.0,bottom: 3.0),
+                padding: const EdgeInsets.only(right: 50.0,bottom: 3.0),
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Positioned(
@@ -217,21 +219,21 @@ int indexd;
                                 MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
                               );
                             },
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 3.0,),
-                                  child: Icon(FontAwesomeIcons.angleDoubleRight,
-                                    color: Colors.grey.shade200,),
-                                ),
-                                Text("Swipe right for saved posts",style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey.shade200,
-//                                fontSize: 15.0
-                                ),),
-
-                              ],
-                            ),
+//                            child: Row(
+//                              children: [
+//                                Padding(
+//                                  padding: const EdgeInsets.only(right: 0.0,),
+//                                  child: Icon(FontAwesomeIcons.angleDoubleRight,
+//                                    color: Colors.grey.shade200,),
+//                                ),
+//                                Text("Swipe right for saved posts",style: TextStyle(
+//                                    fontWeight: FontWeight.w600,
+//                                    color: Colors.grey.shade200,
+////                                fontSize: 15.0
+//                                ),),
+//
+//                              ],
+//                            ),
                           ),
                         ),
                       ),
@@ -247,7 +249,7 @@ int indexd;
                   child: Positioned(
                     width: 20.0,
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 3.0),
+                      padding: const EdgeInsets.only(bottom: 20.0,right: 15.0),
                       child:ButtonTheme(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         child: Container(

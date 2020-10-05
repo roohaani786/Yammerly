@@ -186,10 +186,20 @@ class CameraScreenState extends State<CameraScreen>
         upload = true;
       });
     });
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
-    );
+
+    if (_image != null){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+    }else{
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CameraScreen(),));
+    }
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+//    );
     print("Done..");
   }
   String url;

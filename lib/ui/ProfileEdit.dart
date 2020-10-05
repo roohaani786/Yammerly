@@ -136,6 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     });
     uploadFile();
+    return ProfilePage();
     print("Done..");
   }
 
@@ -171,15 +172,19 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
   compressPhoto() async {
+    setState(() {
+      isChanged = true;
+    });
     final directory = await getTemporaryDirectory();
     final path = directory.path;
     ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
     final compressedImage = File('$path/img_$uidController.jpg')
       ..writeAsBytesSync(
-        ImD.encodeJpg(mImageFile, quality: 60),
+        ImD.encodeJpg(mImageFile, quality: 30),
       );
     setState(() {
       _image = compressedImage;
+
     });
   }
 
@@ -191,12 +196,21 @@ class _ProfilePageState extends State<ProfilePage> {
     postReference.document(currUser.uid).updateData({
       "photoURL": photoUrlController.text,
     });
+
+    setState(() {
+      isChanged = false;
+    });
+
     print(photoUrlController.text);
+    return ProfilePage();
   }
 
   Future uploadFile() async {
 
-    await compressPhoto();
+   if(_image!=null){
+     await compressPhoto();
+   }
+
 
     StorageReference storageReference =
 
@@ -212,7 +226,7 @@ class _ProfilePageState extends State<ProfilePage> {
 //        _uploadedFileURL = fileURL;
 //        photoUrlController.text = _uploadedFileURL;
       photoUrlController.text = fileURL;
-        isChanged = true;
+
       });
     });
     savePostInfoToFirestore(photoUrlController.text);
@@ -237,6 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     });
     uploadFile();
+    return ProfilePage();
     print("Done..");
 
   }
@@ -257,6 +272,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
 bool isChanged = false;
+  String relationstring = "Select Relationship";
+  String genderstring = "Select Gender";
 
   String _male = "male";
   String _female = "female";
@@ -305,6 +322,7 @@ bool isChanged = false;
     });
   }
 
+
   bool firstnameE = false;
   bool lastnameE = false;
   bool phonenumberE = false;
@@ -314,6 +332,8 @@ bool isChanged = false;
   bool educationE = false;
   bool currentcityE = false;
   bool hometownE = false;
+  String valueX = "Select Gender";
+
 
 
 
@@ -592,7 +612,7 @@ bool isChanged = false;
     showDialog<void>(
     context: context,// THIS WAS MISSING// user must tap button!
     builder: (BuildContext context) {
-    return (isChanged==false)?AlertDialog(
+    return AlertDialog(
     title: Text('Select image from :-',style: TextStyle(
       fontSize: 15.0,
     ),),
@@ -601,11 +621,12 @@ bool isChanged = false;
     children: <Widget>[
     GestureDetector(
       onTap: (){
-        _scaffoldKey.currentState.removeCurrentSnackBar();
-        setState(() {
-          isChanged = true;
-        });
+//        _scaffoldKey.currentState.removeCurrentSnackBar();
+//        setState(() {
+//          isChanged = true;
+//        });
         pickImagefromCamera();
+        Navigator.of(context, rootNavigator: true).pop(context);
       },
       child: Row(
         children: [
@@ -622,6 +643,7 @@ bool isChanged = false;
       child: GestureDetector(
         onTap: (){
           pickImage();
+          Navigator.of(context, rootNavigator: true).pop(context);
         },
         child: Row(
             children: [
@@ -637,14 +659,13 @@ bool isChanged = false;
     ],
     ),
     ),
-    ):Container();
+    );
 
                       });
                       },
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(photoUrlController.text),
-
+                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):NetworkImage("https://media.giphy.com/media/N256GFy1u6M6Y/giphy.gif"),
                         backgroundColor: Colors.transparent,
                       ),
 
@@ -780,83 +801,71 @@ bool isChanged = false;
                                   BorderSide(color: Colors.black, width: 1))),
                         ),
 
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Padding(
+                      ),
+                    ),
+
+                    Align(
+                      alignment: Alignment.center,
+                      child: new DropdownButton<String>(
+                        hint: Padding(
                           padding: const EdgeInsets.only(left: 10.0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: new Text(
-                              'Gender :',
-                              style: new TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15.0,
-                                  color: Colors.deepPurple
-                              ),
-                            ),
+                          child: (genderController.text == "")?Text(genderstring):Text(genderController.text),
+                        ),
+                        items: <String>['Male', 'Female','Others'].map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          genderController.text = value;
+                          setState(() {
+                            genderstring = value;
+                          });
+                        },
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 16.0,
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: new Text(
+                          'Relationship :',
+                          style: new TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.deepPurple
                           ),
                         ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: new Column(
-                            children: <Widget>[
-                              Row(
-                                children: [
-                                  new Radio(
-                                    value: _male,
-                                    groupValue: _male,
-                                    onChanged: _handleRadioValueChange1,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: new Text(
-                                      'Male',
-                                      style: new TextStyle(fontSize: 16.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  new Radio(
-                                    value: _female,
-                                    groupValue: _female,
-                                    onChanged: _handleRadioValueChange1,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: new Text(
-                                      'Female',
-                                      style: new TextStyle(fontSize: 16.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                      ),
+                    ),
 
-                              Row(
-                                children: [
-
-                                  (tickvalue == false)?Radio(
-                                    value: _other,
-                                    groupValue: _other,
-                                    onChanged: _handleRadioValueChange1,
-                                  ):Radio(
-
-                                    onChanged: _handleRadioValueChange1,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: new Text(
-                                      'Other',
-                                      style: new TextStyle(fontSize: 16.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: new DropdownButton<String>(
+                        hint: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: (relationshipController.text=="")?Text(relationstring):Text(relationshipController.text),
                         ),
+                        items: <String>['Single', 'Engaged'].map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          relationshipController.text = value;
+                          setState(() {
+                            relationstring = value;
+                          });
+                        },
+                      ),
+                    ),
 
                         SizedBox(
                           height: 16,
@@ -1032,30 +1041,9 @@ bool isChanged = false;
                                   BorderSide(color: Colors.black, width: 1))),
                         ),
 
-                        SizedBox(
-                          height: 16,
-                        ),
-
-                        TextFormField(
-                          controller: relationshipController,
-                          enabled: isEditable,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                              labelText: "Relationship",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
-                          ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                  BorderSide(color: Colors.black, width: 1))),
-                        ),
-
 
                       ]),
                     ),
-
-
                   ],
                 ),
               ),

@@ -133,15 +133,21 @@ class _AboutUserState extends State<AboutUser> {
   Future<void> _submitPhoneNumber() async {
     /// NOTE: Either append your phone number country code or add in the code itself
     /// Since I'm in India we use "+91 " as prefix `phoneNumber`
-    String phoneNumber = "+91 " + phoneNumberController.text.toString().trim();
+    String phoneNumber = "+91" + phoneNumberController.text.toString().trim();
     print(phoneNumber);
 
     /// The below functions are the callbacks, separated so as to make code more readable
     void verificationCompleted(AuthCredential phoneAuthCredential) {
       print('verificationCompleted');
+      DatabaseService().PhoneverificationX(currUser.uid);
 
       this._phoneAuthCredential = phoneAuthCredential;
       print(phoneAuthCredential);
+
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => ),
+//      );
     }
 
     void verificationFailed(AuthException error) {
@@ -168,10 +174,12 @@ class _AboutUserState extends State<AboutUser> {
 
       /// `seconds` didn't work. The underlying implementation code only reads in `milliseconds`
       timeout: Duration(milliseconds: 10000),
-
+      
+//     
       /// If the SIM (with phoneNumber) is in the current device this function is called.
       /// This function gives `AuthCredential`. Moreover `login` function can be called from this callback
       verificationCompleted: verificationCompleted,
+      
 
       /// Called when the verification is failed
       verificationFailed: verificationFailed,
@@ -642,7 +650,9 @@ class _AboutUserState extends State<AboutUser> {
                                       onPressed: (){
                                         if (_phoneVerificationKey.currentState.validate()) {
                                           _submitPhoneNumber();
+
                                          // if(_codesent){
+
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -651,7 +661,9 @@ class _AboutUserState extends State<AboutUser> {
                                                 },
                                               ),
                                             );
+
                                           //}
+
                                         }
                                       }),
                                 ),
@@ -755,17 +767,22 @@ class SubmitPhoneOTP extends StatefulWidget {
 
 class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
   TextEditingController _otpController;
+  int _otpControllerX;
   AuthCredential _phoneAuthCredential;
   String _verificationId;
 
-  void _submitOTP() {
+  final GlobalKey<FormState> _otpVerificationKey = GlobalKey<FormState>();
+
+  void _submitOTP(String _otp) {
     /// get the `smsCode` from the user
-    String smsCode = _otpController.text.toString().trim();
+    String smsCode = _otp.toString();
 
     /// when used different phoneNumber other than the current (running) device
     /// we need to use OTP to get `phoneAuthCredential` which is inturn used to signIn/login
     this._phoneAuthCredential = PhoneAuthProvider.getCredential(
         verificationId: this._verificationId, smsCode: smsCode);
+    print(_verificationId);
+    print("Done...");
 
   }
   @override
@@ -775,6 +792,7 @@ class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
       appBar: AppBar(),
       body: Container(
         child: Form(
+          key: _otpVerificationKey,
         child: Row(
         children: [
         Container(
@@ -782,6 +800,7 @@ class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
         width: 250.0,
         child: TextFieldContainer(
           child: TextFormField(
+            controller: _otpController,
             style: TextStyle(
                 fontSize: 12.0, height: 1.5, color: Colors.black),
             textInputAction: TextInputAction.next,
@@ -800,7 +819,6 @@ class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
                 color: kPrimaryColor,
               ),
               fillColor: Colors.deepPurple.shade50,
-              filled: true,
               hintText: "Enter OTP",
             ),
           ),
@@ -814,7 +832,7 @@ class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
       ),),
       color: Colors.deepPurple,
       onPressed: (){
-        _submitOTP();
+        _submitOTP(_otpController.text);
       })),
       ],
       ),
