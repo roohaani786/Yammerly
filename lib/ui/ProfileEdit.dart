@@ -690,7 +690,7 @@ bool isChanged = false;
                           },
                           decoration: InputDecoration(
                               labelText: "First Name",labelStyle: TextStyle(
-                              color: Colors.black,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -730,11 +730,11 @@ bool isChanged = false;
                           enabled: isEditable,
                           validator: (value) {
                             if(value.length ==0){
-                              return 'phone number should not be null';
+                              return 'Phone number should not be null';
                             }else if(value.length < 10.0){
-                              return 'phone number should be of 10 digit';
+                              return 'Phone number should be of 10 digit';
                             }else if(value.length > 10.0){
-                              return 'phone number should be of 10 digit';
+                              return 'Phone number should be of 10 digit';
                             }
                           },
                           maxLength: 10,
@@ -801,8 +801,6 @@ bool isChanged = false;
                                   BorderSide(color: Colors.black, width: 1))),
                         ),
 
-                      ),
-                    ),
 
                     Align(
                       alignment: Alignment.center,
@@ -876,7 +874,7 @@ bool isChanged = false;
                           enabled: isEditable,
                           validator: (value) {
                             if(value.length > 20.0){
-                              return 'website should not be greater then 20 words';
+                              return 'Website link should not be greater than 20 words';
                             }
                           },
                           keyboardType: TextInputType.text,
@@ -901,7 +899,7 @@ bool isChanged = false;
                           enabled: isEditable,
                           validator: (value) {
                             if(value.length > 15.0){
-                              return 'Display Name should not be greater then 15 words';
+                              return 'Display Name should not be greater than 15 words';
                             }else if(value.length ==0){
                               return 'Display Name should not be null';
                             }
@@ -927,7 +925,7 @@ bool isChanged = false;
                           enabled: isEditable,
                           validator: (value) {
                             if(value.length > 15.0){
-                              return 'work shout not be greater then 15 words';
+                              return 'Work should not be greater than 15 words';
                             }
                           },
                           keyboardType: TextInputType.multiline,
@@ -950,8 +948,8 @@ bool isChanged = false;
                           controller: educationController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 15.0){
-                              return 'Education should not be greater then 15 words';
+                            if(value.length > 20.0){
+                              return 'Education should not be greater then 20 words';
                             }
                           },
                           keyboardType: TextInputType.multiline,
@@ -975,7 +973,7 @@ bool isChanged = false;
                           enabled: isEditable,
                           validator: (value) {
                             if(value.length > 15.0){
-                              return 'Current City should not be of 15 words';
+                              return 'Current city should not be greater than 15 words';
                             }
                           },
                           keyboardType: TextInputType.multiline,
@@ -1005,7 +1003,7 @@ bool isChanged = false;
                             //   return 'pin code should be of 6 digit';
                             // }
                           },
-                          keyboardType: TextInputType.multiline,
+                          keyboardType: TextInputType.number,
                           maxLines: 1,
                           decoration: InputDecoration(
                               labelText: "Pin Code",labelStyle: TextStyle(
@@ -1026,7 +1024,7 @@ bool isChanged = false;
                           enabled: isEditable,
                           validator: (value) {
                             if(value.length > 15.0){
-                              return 'home town should not be greater then 15 words';
+                              return 'Home town should not be greater then 15 words';
                             }
                           },
                           keyboardType: TextInputType.multiline,
@@ -1042,12 +1040,13 @@ bool isChanged = false;
                         ),
 
 
-                      ]),
-                    ),
-                  ],
-                ),
-              ),
-      ),
+    ],
+    ),
+    ),
+    ],
+     ),
+    ),
+    ),
     );
   }
 }

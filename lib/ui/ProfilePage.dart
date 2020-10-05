@@ -529,10 +529,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               )
                                           ),
                                         ],
-                                      ): Container(
-                                        height: 100,
-                                        color: Colors.deepPurple,
-                                      );
+                                      ): Container();
                                     }
                                 ),
                                 //child: Image.network(uidCurrUser),

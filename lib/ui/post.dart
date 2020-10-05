@@ -15,6 +15,8 @@ import 'package:techstagram/models/wiggle.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
+import 'package:techstagram/ui/ProfileEdit.dart';
+import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 //import 'package:techstagram/services/database.dart';
 //import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
@@ -135,14 +137,20 @@ class _postPageState extends State<postPage> {
       print("halelula");
       print(displayNamecurrentUser);
       await Firestore.instance.collection('posts').document(postId).delete();
-      return await Firestore.instance.collection('users').document(uidX)
+      await Firestore.instance.collection('users').document(uidX)
       .collection('posts').document(postId).delete();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 4,)),
+      );
+
     }else{
       return showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('you are not the owner of this post'),
+              title: Text('You are not the owner of this post'),
               actions: <Widget>[
                 // FlatButton(
                 //     child: Text('Yes'),
@@ -181,25 +189,25 @@ class _postPageState extends State<postPage> {
 
 
 
-  void _onHorizontalDrag(DragEndDetails details) {
-    if (details.primaryVelocity == 0)
-      // user have just tapped on screen (no dragging)
-      return ;
-
-    if (details.primaryVelocity.compareTo(0) == -1) {
-//      dispose();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
-      );
-    }
-    else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
-      );
-    }
-  }
+//  void _onHorizontalDrag(DragEndDetails details) {
+//    if (details.primaryVelocity == 0)
+//      // user have just tapped on screen (no dragging)
+//      return ;
+//
+//    if (details.primaryVelocity.compareTo(0) == -1) {
+////      dispose();
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
+//      );
+//    }
+//    else {
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+//      );
+//    }
+//  }
 
 
   getlikes( String displayNamecurrent, String postId) {
@@ -396,8 +404,7 @@ class _postPageState extends State<postPage> {
 
     // TODO: implement build
     return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails details) =>
-          _onHorizontalDrag(details),
+
       onTap: () {
         print("hello");
       },
@@ -514,14 +521,15 @@ class _postPageState extends State<postPage> {
                                   //     ),
                                   //   ],
                                   // ),
-                                ): Container(height: 0.0,width: 0.0,),
+                                ):
+                                Container(height: 0.0,width: 0.0,),
 
                                 // GestureDetector(
                                 //   onTap: () => Navigator.push(
                                 //     context,
                                 //     MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
                                 // ),
-                                  Container(
+                                Container(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 10,
                                       vertical: 10,
