@@ -101,7 +101,8 @@ class AuthService {
       'following': userdatax.following,
       'posts': userdatax.posts,
       'bio' : "Proud Hashtager",
-      'emailVerified': true,
+      'emailVerified': false,
+      'phoneVerified': false,
 
     }, merge: true);
   }

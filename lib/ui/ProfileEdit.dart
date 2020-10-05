@@ -135,6 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     });
     uploadFile();
+    return ProfilePage();
     print("Done..");
   }
 
@@ -170,15 +171,19 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
   compressPhoto() async {
+    setState(() {
+      isChanged = true;
+    });
     final directory = await getTemporaryDirectory();
     final path = directory.path;
     ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
     final compressedImage = File('$path/img_$uidController.jpg')
       ..writeAsBytesSync(
-        ImD.encodeJpg(mImageFile, quality: 60),
+        ImD.encodeJpg(mImageFile, quality: 30),
       );
     setState(() {
       _image = compressedImage;
+
     });
   }
 
@@ -190,12 +195,21 @@ class _ProfilePageState extends State<ProfilePage> {
     postReference.document(currUser.uid).updateData({
       "photoURL": photoUrlController.text,
     });
+
+    setState(() {
+      isChanged = false;
+    });
+
     print(photoUrlController.text);
+    return ProfilePage();
   }
 
   Future uploadFile() async {
 
-    await compressPhoto();
+   if(_image!=null){
+     await compressPhoto();
+   }
+
 
     StorageReference storageReference =
 
@@ -211,7 +225,7 @@ class _ProfilePageState extends State<ProfilePage> {
 //        _uploadedFileURL = fileURL;
 //        photoUrlController.text = _uploadedFileURL;
       photoUrlController.text = fileURL;
-        isChanged = true;
+
       });
     });
     savePostInfoToFirestore(photoUrlController.text);
@@ -236,6 +250,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     });
     uploadFile();
+    return ProfilePage();
     print("Done..");
 
   }
@@ -535,7 +550,7 @@ bool isChanged = false;
     showDialog<void>(
     context: context,// THIS WAS MISSING// user must tap button!
     builder: (BuildContext context) {
-    return (isChanged==false)?AlertDialog(
+    return AlertDialog(
     title: Text('Select image from :-',style: TextStyle(
       fontSize: 15.0,
     ),),
@@ -544,11 +559,12 @@ bool isChanged = false;
     children: <Widget>[
     GestureDetector(
       onTap: (){
-        _scaffoldKey.currentState.removeCurrentSnackBar();
-        setState(() {
-          isChanged = true;
-        });
+//        _scaffoldKey.currentState.removeCurrentSnackBar();
+//        setState(() {
+//          isChanged = true;
+//        });
         pickImagefromCamera();
+        Navigator.of(context, rootNavigator: true).pop(context);
       },
       child: Row(
         children: [
@@ -565,6 +581,7 @@ bool isChanged = false;
       child: GestureDetector(
         onTap: (){
           pickImage();
+          Navigator.of(context, rootNavigator: true).pop(context);
         },
         child: Row(
             children: [
@@ -580,14 +597,13 @@ bool isChanged = false;
     ],
     ),
     ),
-    ):Container();
+    );
 
                       });
                       },
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(photoUrlController.text),
-
+                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):NetworkImage("https://media.giphy.com/media/N256GFy1u6M6Y/giphy.gif"),
                         backgroundColor: Colors.transparent,
                       ),
 
