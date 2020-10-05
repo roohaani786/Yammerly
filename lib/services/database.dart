@@ -420,6 +420,18 @@ class DatabaseService {
 //        }
   }
 
+  PostD(String uid,int posts) async {
+    //print(postsController);
+    print("helloww");
+    //String increment = postsController.text;
+    //int incr = int.parse(posts);
+    //print(incr);
+    Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'posts': posts - 1});
+  }
+
   Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
     await Firestore.instance
         .collection("users")

@@ -490,7 +490,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                           width: MediaQuery.of(context).size.width,
                                         ),
                                    ),
-
                                ),
 
 

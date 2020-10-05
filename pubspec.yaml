@@ -84,6 +84,7 @@ dependencies:
   timeago: ^2.0.27
   catcher:
   local_auth:
+  http:
 
 dev_dependencies:
   flutter_test:

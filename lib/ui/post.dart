@@ -73,7 +73,7 @@ class _postPageState extends State<postPage> {
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,photoUrlController,
       timestampController,likesController,uidController;
-  List<Posts> posts;
+  int posts;
   List<DocumentSnapshot> list;
 
   Map<String, dynamic> _profile;
@@ -126,11 +126,18 @@ class _postPageState extends State<postPage> {
     });
   }
 
+
+
+
   deletePost( String displayNamecurrent, String displayName, String postId, String uidX) async {
     //print(displayNamecurrent)
 
 
+
+
     if(displayName == displayNamecurrentUser){
+
+      DatabaseService().PostD(uidX,posts);
       print(postId);
       print(displayName);
       print(uidX);
@@ -152,26 +159,7 @@ class _postPageState extends State<postPage> {
             return AlertDialog(
               title: Text('You are not the owner of this post'),
               actions: <Widget>[
-                // FlatButton(
-                //     child: Text('Yes'),
-                //     onPressed: () {
-                //       // return Firestore.instance.collection("posts")
-                //       //     .document(url)
-                //       //     .delete();
-                //
-                //       Firestore.instance.collection('posts').document(postId).delete();
-                //       // DatabaseService()
-                //       //     .postReference
-                //       //     .document(widget.postId)
-                //       //     .get()
-                //       //     .then((doc) {
-                //       //   if (doc.exists) {
-                //       //     doc.reference.delete();
-                //       //
-                //       //     Navigator.pop(context);
-                //       //   }
-                //       // });
-                //     }),
+
               ],
             );
           });
@@ -257,6 +245,7 @@ class _postPageState extends State<postPage> {
       uidController.text =  docSnap.data["uid"];
       displayNameController.text = docSnap.data["displayName"];
       photoUrlController.text = docSnap.data["photoURL"];
+      posts = docSnap.data["posts"];
 
 
       setState(() {

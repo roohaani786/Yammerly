@@ -154,12 +154,17 @@ class _BodyState extends State<Body> {
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
+          if(user.email == null){
+            print("User already exists");
+          }
 
-          authService.updateUserData(user);
-          loading.add(false);
+          else{
+            authService.updateUserData(user);
+            loading.add(false);
 
-          print("signed in " + user.displayName);
-          return user;
+            print("signed in " + user.displayName);
+            return user;
+          }
         } catch (e) {
           showDialog(
               context: context,

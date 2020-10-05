@@ -79,9 +79,13 @@ class AuthService {
         .document(uid)
         .get();
 
-    if (snapShotX.data["following"] == null || !snapShotX.exists) {
+    if (snapShotX.data["following"] != null || !snapShotX.exists && snapShotX.data["uid"]!=null) {
       updateUserData(user);
     }
+    else{
+      updatenewUserData(user);
+    }
+
 
   }
 
@@ -100,6 +104,25 @@ class AuthService {
       'followers': userdatax.followers,
       'following': userdatax.following,
       'posts': userdatax.posts,
+      'bio' : "Proud Hashtager",
+      'emailVerified': false,
+      'phoneVerified': false,
+
+    }, merge: true);
+  }
+
+  void updatenewUserData(FirebaseUser user) async {
+    DocumentReference ref = _db.collection('users').document(user.uid);
+
+    return ref.setData({
+      'uid': user.uid,
+      'email': user.email,
+      'photoURL': user.photoUrl,
+      'displayName': user.displayName.toLowerCase(),
+      'lastSeen': DateTime.now(),
+      'followers': 0,
+      'following': 0,
+      'posts': 0,
       'bio' : "Proud Hashtager",
       'emailVerified': false,
       'phoneVerified': false,

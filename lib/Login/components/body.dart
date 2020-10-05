@@ -16,7 +16,7 @@ import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
-
+import 'package:http/http.dart';
 import '../../constants.dart';
 import '../../forgotpassword.dart';
 
@@ -279,12 +279,14 @@ class _BodyState extends State<Body> {
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
 
+
           authService.updateUserData(user);
           loading.add(false);
 
           print("signed in " + user.displayName);
           return user;
         } catch (e) {
+
           showDialog(
               context: context,
               builder: (BuildContext context) {
