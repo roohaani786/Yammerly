@@ -217,8 +217,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   getlikes( String displayName, String postId) {
 
-    print("uid");
-   print(uidController.text);
+   // print("uid");
+   //print(uidController.text);
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
@@ -447,8 +447,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
 
                             Container(
-                              height: MediaQuery.of(context).size.height,
-                              //height: 100.0,
+                              height: MediaQuery.of(context).size.height -300.0,
+                              //height: 200.0,
                               width: 340.0,
 
                                 child: StreamBuilder(
@@ -460,7 +460,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                           new Expanded(
                                               child: GridView.builder(
                                                   shrinkWrap: true,
-                                                  controller: scrollController,
+                                                  //controller: scrollController,
                                                   itemCount: snapshot.data.documents.length,
                                                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                                       crossAxisCount: 3,
@@ -502,7 +502,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                             onTap: () {
                                                               Navigator.push(
                                                                 context,
-                                                                MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url)),
+                                                                MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),
                                                               );
                                                             },
                                                             child: ClipRRect(

@@ -259,17 +259,19 @@ class _FeedsPageState extends State<FeedsPage> {
         liked = true;
         print(liked);
       });
+    }else{
+      return null;
     }
-    else if (liked = true){
-      DatabaseService().unlikepost(
-          likes, postId,
-          displayNameController.text);
-      setState(() {
-        liked = false;
-        print(liked);
-      });
-
-    }
+    // else if (liked = true){
+    //   DatabaseService().unlikepost(
+    //       likes, postId,
+    //       displayNameController.text);
+    //   setState(() {
+    //     liked = false;
+    //     print(liked);
+    //   });
+    //
+    // }
   }
   String urlx;
 
@@ -343,7 +345,6 @@ class _FeedsPageState extends State<FeedsPage> {
                           liked = false;
                         }
 
-//                        getlikes(displayNameController.text,postId);
 
                         return Container(
                           child: Container(
@@ -384,24 +385,24 @@ class _FeedsPageState extends State<FeedsPage> {
                                         ),
                                       ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 100.0),
-                                      ),
-                                      FlatButton(onPressed: (){},
-                                        color: Colors.transparent,
-                                        child: Row(
-                                          children: [
-                                            Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text("Rate us",style:
-                                              TextStyle(
-                                                color: Colors.deepPurpleAccent,
-                                              ),),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      // Padding(
+                                      //   padding: const EdgeInsets.only(left: 100.0),
+                                      // ),
+                                      // FlatButton(onPressed: (){},
+                                      //   color: Colors.transparent,
+                                      //   child: Row(
+                                      //     children: [
+                                      //       Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
+                                      //       Padding(
+                                      //         padding: const EdgeInsets.all(8.0),
+                                      //         child: Text("Rate us",style:
+                                      //         TextStyle(
+                                      //           color: Colors.deepPurpleAccent,
+                                      //         ),),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ): Container(height: 0.0,width: 0.0,),
@@ -539,7 +540,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           padding: const EdgeInsets.only(top: 3.0),
                                           child: IconButton(
 
-                                            onPressed: () { print(displayNameController.text);
+                                            onPressed: () { //print(displayNameController.text);
                                             Navigator.push(context, MaterialPageRoute(builder: (context){
                                               return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
@@ -553,10 +554,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                           ),
                                         ),
                                         Text(comments.toString()),
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
-                                        ),
+                                        // IconButton(
+                                        //   onPressed: () {},
+                                        //   icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
+                                        // ),
                                       ],
                                     ),
                                     // IconButton(

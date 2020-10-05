@@ -39,6 +39,7 @@ class CommentsPageState extends State<CommentsPage> {
   final String displayName;
   final String photoUrl;
   final String displayNamecurrentUser;
+  final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
 
   TextEditingController commentTextEditingController = TextEditingController();
 
@@ -69,6 +70,21 @@ class CommentsPageState extends State<CommentsPage> {
     );
   }
 
+  bool errordikhaoC = false;
+
+//   String commentValidator(String value) {
+//     if (value.length == null) {
+// //      return 'Password must be longer than 8 characters';
+//       setState(() {
+//         errordikhaoC = true;
+//       });
+//     } else {
+//       setState(() {
+//         errordikhaoC = false;
+//       });
+//     }
+//   }
+
 
 
   //setData({'liked': userEmail});
@@ -78,6 +94,20 @@ class CommentsPageState extends State<CommentsPage> {
         .collection("posts")
         .document(postId)
         .updateData({'comments': comments + 1});
+  }
+
+  showError(){
+    setState(() {
+      errordikhaoC = true;
+    });
+    return AlertDialog(
+      content: Text(
+        'Insert something',
+        style: TextStyle(color: Colors.black),
+      ),
+      title: Text("Error !", style:
+      TextStyle(color: Colors.red),),
+    );
   }
 
   SaveCommentIP() async {
@@ -90,49 +120,55 @@ class CommentsPageState extends State<CommentsPage> {
   }
 
   saveComment() async {
+    setState(() {
+      errordikhaoC = false;
+    });
     print(postId);
     print("ehllo");
-    CommentsRefrence.document(postId).collection("comments").document(DateTime.now().toIso8601String())
-        .setData({"username": displayNamecurrentUser,
-      "comment": commentTextEditingController.text,
-
-      "timestamp": DateTime.now(),
-      "url": photoUrl,
-      "uid": uid,
-    });
 
 
+      CommentsRefrence.document(postId).collection("comments").document(DateTime.now().toIso8601String())
+          .setData({"username": displayNamecurrentUser,
+        "comment": commentTextEditingController.text,
+
+        "timestamp": DateTime.now(),
+        "url": photoUrl,
+        "uid": uid,
+      });
 
 
 
 
-    bool isNotPostOwner = uid != uid;
-     if(isNotPostOwner){
-       CommentsRefrence.document(postId).collection("feedItems").add({
-         "type": "comment",
-         "commentDate": timestamp,
-         "postId": postId,
-         "username": displayNamecurrentUser,
-         "userProfileImg": photoUrl,
-         "url": postImageUrl,
-       });
-     }
-     commentTextEditingController.clear();
 
-    return StreamBuilder(
 
-        stream: CommentsRefrence.document(postId).snapshots(),
-        builder: (context, dataSnapshotX)
-        {
-          int commentscount = dataSnapshotX.data["comments"];
-          updatecommentscount(commentscount);
+      bool isNotPostOwner = uid != uid;
+      if(isNotPostOwner){
+        CommentsRefrence.document(postId).collection("feedItems").add({
+          "type": "comment",
+          "commentDate": timestamp,
+          "postId": postId,
+          "username": displayNamecurrentUser,
+          "userProfileImg": photoUrl,
+          "url": postImageUrl,
+        });
+      }
+      commentTextEditingController.clear();
 
-          return (dataSnapshotX.hasData)?
-          Container(
-            color: Colors.red,
-          ):Container();
-        }
-    );
+      return StreamBuilder(
+
+          stream: CommentsRefrence.document(postId).snapshots(),
+          builder: (context, dataSnapshotX)
+          {
+            int commentscount = dataSnapshotX.data["comments"];
+            updatecommentscount(commentscount);
+
+            return (dataSnapshotX.hasData)?
+            Container(
+              color: Colors.red,
+            ):Container();
+          }
+      );
+
 
 
   }
@@ -172,21 +208,32 @@ class CommentsPageState extends State<CommentsPage> {
           ),
 
           ListTile(
+            key: _CommentKey,
             title: TextFormField(
               controller: commentTextEditingController,
+              //validator: commentValidator,
               decoration: InputDecoration(
-                labelText: "Write Comment Here...",
-                labelStyle: TextStyle(color: Colors.black),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.black))
+                labelText: (errordikhaoC)?"insert proper comment":"Write Comment Here...",
+                labelStyle: TextStyle(color: (errordikhaoC)?Colors.red:Colors.black),
+                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: (errordikhaoC)?Colors.red:Colors.grey)),
+                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: (errordikhaoC)?Colors.red:Colors.black))
               ),
               style: TextStyle(color: Colors.black),
             ),
             trailing:IconButton(
               onPressed: (){
-                saveComment();
-                SaveCommentI();
-                SaveCommentIP();
+                if(commentTextEditingController.text != "" && commentTextEditingController.text.length < 20){
+                  setState(() {
+                    errordikhaoC = false;
+                  });
+                  saveComment();
+                  SaveCommentI();
+                  SaveCommentIP();
+                }else{
+                  showError();
+                  print("error hai bhaiya");
+                }
+
 //                retrieveComments();
               },
 
@@ -238,29 +285,31 @@ class Comment extends StatelessWidget {
           //   );
           // },
 
-        child: Stack(
-          children: [
-            ListTile(
-              title: (userName != null || comment != null)?Row(
-                children: [
-                  Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
-                  fontWeight: FontWeight.bold,),),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: SizedBox(
-                      width: 200.0,
-                      child: Text(comment,maxLines: 1,style: TextStyle(fontSize: 15.0,color: Colors.black,
-                      ),),
+        child: Container(
+          child: Stack(
+            children: [
+              ListTile(
+                title: (userName != null || comment != null)?Row(
+                  children: [
+                    Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
+                    fontWeight: FontWeight.bold,),),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: SizedBox(
+                        width: 200.0,
+                        child: Text(comment,maxLines: 1,style: TextStyle(fontSize: 15.0,color: Colors.black,
+                        ),),
+                      ),
                     ),
-                  ),
-                ],
-              ):Text(""),
-              leading: (userName != null || comment != null)?CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(url),
-              ):null,
-              subtitle: (userName != null || comment != null)?Text(tAgo.format(timestamp.toDate()),style: TextStyle(color: Colors.black),):Text(""),
-            ),
-          ],
+                  ],
+                ):Text(""),
+                leading: (userName != null || comment != null)?CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(url),
+                ):null,
+                subtitle: (userName != null || comment != null)?Text(tAgo.format(timestamp.toDate()),style: TextStyle(color: Colors.black),):Text(""),
+              ),
+            ],
+          ),
         ),
       ),
     ),

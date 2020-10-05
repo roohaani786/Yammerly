@@ -37,7 +37,7 @@ class postPage extends StatefulWidget {
   final String postId;
   final int likes;
   final String uid;
-
+  final String uidX;
 
   postPage(
       {this.PostUrl,
@@ -50,10 +50,11 @@ class postPage extends StatefulWidget {
         this.postId,
         this.displayNamecurrentUser,
         this.likes,
+        this.uidX
       });
 
   @override
-  _postPageState createState() => _postPageState(displayNamecurrentUser: displayNamecurrentUser,PostUrl: PostUrl);
+  _postPageState createState() => _postPageState(displayNamecurrentUser: displayNamecurrentUser,PostUrl: PostUrl,uidX: uidX);
 }
 
 class _postPageState extends State<postPage> {
@@ -63,8 +64,9 @@ class _postPageState extends State<postPage> {
   bool isEditable = false;
   final String displayNamecurrentUser;
   final String PostUrl;
+  final String uidX;
 
-  _postPageState({this.displayNamecurrentUser,this.PostUrl});
+  _postPageState({this.displayNamecurrentUser,this.PostUrl,this.uidX});
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,photoUrlController,
@@ -122,19 +124,49 @@ class _postPageState extends State<postPage> {
     });
   }
 
-  deletePost( String displayNamecurrent, String displayName, String url) {
+  deletePost( String displayNamecurrent, String displayName, String postId, String uidX) async {
+    //print(displayNamecurrent)
 
 
     if(displayName == displayNamecurrentUser){
-      print(url);
+      print(postId);
       print(displayName);
+      print(uidX);
       print("halelula");
       print(displayNamecurrentUser);
-      return Firestore.instance.collection("posts")
-          .document(url)
-          .delete();
+      await Firestore.instance.collection('posts').document(postId).delete();
+      return await Firestore.instance.collection('users').document(uidX)
+      .collection('posts').document(postId).delete();
     }else{
-      return null;
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('you are not the owner of this post'),
+              actions: <Widget>[
+                // FlatButton(
+                //     child: Text('Yes'),
+                //     onPressed: () {
+                //       // return Firestore.instance.collection("posts")
+                //       //     .document(url)
+                //       //     .delete();
+                //
+                //       Firestore.instance.collection('posts').document(postId).delete();
+                //       // DatabaseService()
+                //       //     .postReference
+                //       //     .document(widget.postId)
+                //       //     .get()
+                //       //     .then((doc) {
+                //       //   if (doc.exists) {
+                //       //     doc.reference.delete();
+                //       //
+                //       //     Navigator.pop(context);
+                //       //   }
+                //       // });
+                //     }),
+              ],
+            );
+          });
     }
   }
 
@@ -264,6 +296,45 @@ class _postPageState extends State<postPage> {
   File _image;
   bool upload;
 
+  createAlertDialog(context,url) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Are you sure you want to delete post?'),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    // return Firestore.instance.collection("posts")
+                    //     .document(url)
+                    //     .delete();
+
+                    Firestore.instance.collection("posts").document(url).get()
+                    .then((doc) {
+                      if (doc.exists) {
+                        doc.reference.delete();
+
+                        Navigator.pop(context);
+                      }
+                    });
+                    // DatabaseService()
+                    //     .postReference
+                    //     .document(widget.postId)
+                    //     .get()
+                    //     .then((doc) {
+                    //   if (doc.exists) {
+                    //     doc.reference.delete();
+                    //
+                    //     Navigator.pop(context);
+                    //   }
+                    // });
+                  }),
+            ],
+          );
+        });
+  }
+
   Future pickImage() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
@@ -377,12 +448,12 @@ class _postPageState extends State<postPage> {
 
 
 
-                        if(likes< 0 || likes == 0){
+                        if(likes == 0){
 
                           liked = false;
                         }
 
-                        getlikes(displayNameController.text,postId);
+                        //getlikes(displayNameController.text,postId);
 
                         return Container(
                           child: Container(
@@ -478,7 +549,8 @@ class _postPageState extends State<postPage> {
                                         ),
                                         IconButton(
                                           icon: Icon(Icons.delete_outline, color: Colors.purple,),
-                                          onPressed: () => deletePost(displayNamecurrentUser, displayName,url),
+                                          //onPressed: () => createAlertDialog(context,url),
+                                          onPressed: () => deletePost(displayNamecurrentUser, displayName,postId,uidX),
 
                                         ),
                                       ],
@@ -574,10 +646,10 @@ class _postPageState extends State<postPage> {
                                           ),
                                         ),
                                         Text(comments.toString()),
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
-                                        ),
+                                        // IconButton(
+                                        //   onPressed: () {},
+                                        //   icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
+                                        // ),
                                       ],
                                     ),
                                     // IconButton(

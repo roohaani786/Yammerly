@@ -211,280 +211,376 @@ class _AboutUserState extends State<AboutUser> {
 
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(0.0),
           child: Column(
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
-                  child: Container(
-                    height: 350.0,
-                    width: 450.0,
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
+                child: Container(
+                  height: MediaQuery.of(context).size.height-70.0,
+                  width: 450.0,
 
-                      // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
+                    // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
 
 
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20.0,top: 10.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                " Personal Details",
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Pacifico',
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0,top: 10.0),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              " Personal Details",
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: kPrimaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Pacifico',
+                              ),
+                            ),
+
+                          ),
+                        ),
+
+
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0,left: 0.0),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 50.0,
+                                width: 500.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("First Name",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(firstNameController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
                                 ),
                               ),
 
-                            ),
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Last Name",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(lastNameController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Phone Number",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(phoneNumberController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Username",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(displayNameController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Email",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(emailController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Gender",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(genderController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Relationship",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(relationshipController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Work",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(workController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Education",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(educationController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Current City",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(currentCityController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Pin Code",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(pinCodeController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Home Town",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(homeTownController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            ],
                           ),
-
-
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20.0,left: 25.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("First Name",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(firstNameController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Last Name",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(lastNameController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Phonenumber",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(phoneNumberController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Username",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(displayNameController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Email",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(emailController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Gender",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(genderController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Relationship",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(relationshipController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Work",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(workController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Education",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(educationController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Current City",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(currentCityController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Pin Code",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(pinCodeController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("HomeTown",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(homeTownController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                        ),
 
 
 
 
-                        ],
-                      ),
-                  ),
+                      ],
+                    ),
                 ),
               ),
 
@@ -554,6 +650,9 @@ class _AboutUserState extends State<AboutUser> {
                                       onPressed: (){
                                         if (_phoneVerificationKey.currentState.validate()) {
                                           _submitPhoneNumber();
+
+                                         // if(_codesent){
+
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -562,6 +661,9 @@ class _AboutUserState extends State<AboutUser> {
                                                 },
                                               ),
                                             );
+
+                                          //}
+
                                         }
                                       }),
                                 ),

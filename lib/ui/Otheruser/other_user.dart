@@ -499,7 +499,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                                   ),
                                   Container(
-                                    height: MediaQuery.of(context).size.height,
+                                    height: MediaQuery.of(context).size.height-300,
                                     width: 340.0,
 
                                       child: StreamBuilder(
