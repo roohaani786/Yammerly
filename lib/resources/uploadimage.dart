@@ -26,6 +26,8 @@ class UploadImage extends StatefulWidget {
 class _UploadImageState extends State<UploadImage>
     with AutomaticKeepAliveClientMixin<UploadImage> {
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController
   emailController,
       uidController,
@@ -175,8 +177,10 @@ class _UploadImageState extends State<UploadImage>
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
             onPressed: (){
-              controlUploadAndSave();
-              PostI();
+              if(_formKey.currentState.validate()) {
+                controlUploadAndSave();
+                PostI();
+              }
             },
             //onPressed: () => controlUploadAndSave(),
             child: Text(
@@ -234,20 +238,30 @@ class _UploadImageState extends State<UploadImage>
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: descriptionController,
-                      enabled: true,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 2,
-                      decoration: InputDecoration(
-                          labelText: "Write your caption here...",labelStyle: TextStyle(
+                    child: Form(
+                      autovalidate: true,
+                      key: _formKey,
+                      child: TextFormField(
+                        controller: descriptionController,
+                        enabled: true,
+                        validator: (value) {
+                          if(value.length > 25.0){
+                            return 'Caption should not be greater then 25 words';
+                          }
+                        },
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 2,
+                        decoration: InputDecoration(
+                            labelText: "Write your caption here...",labelStyle: TextStyle(
                           color: Colors.grey,
+                        ),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide:
+                                BorderSide(color: Colors.black, width: 1))),
                       ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
+                    )
+
                   ),
                 ],
               ),

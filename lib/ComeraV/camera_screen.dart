@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluro/fluro.dart';
+import 'package:techstagram/ComeraV/cam.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -448,13 +449,18 @@ class CameraScreenState extends State<CameraScreen>
                   icon: Icon(FontAwesomeIcons.photoVideo,
                     color: Colors.white60,), onPressed:
                   (){
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => pickImage(),));
                 pickImage();
                 if (upload == true){
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
                 }else{
-                  return null;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CameraS(),));
                 }
               }
 
@@ -500,14 +506,18 @@ class CameraScreenState extends State<CameraScreen>
               ),
               IconButton(
                 icon: Icon(
-                  (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-                  color: Colors.white,
+                  Icons.camera_alt,color: Colors.white,
                 ),
-                onPressed: () {
-                  setState(() {
-                    _isRecordingMode = !_isRecordingMode;
-                  });
-                },
+                onPressed: (){},
+                // icon: Icon(
+                //   (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
+                //   color: Colors.white,
+                // ),
+                // onPressed: () {
+                //   setState(() {
+                //     _isRecordingMode = !_isRecordingMode;
+                //   });
+                // },
               ),
             ],
           ),
