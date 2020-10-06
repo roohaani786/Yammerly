@@ -20,6 +20,8 @@ import 'package:techstagram/views/tabs/comments_screen.dart';
 //import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 //
 //import '../../constants3.dart';
+import 'package:vector_math/vector_math_64.dart' hide Colors;
+import 'dart:math' as math;
 
 
 class FeedsPage extends StatefulWidget {
@@ -77,6 +79,12 @@ class _FeedsPageState extends State<FeedsPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
+  double _scale = 1.0;
+  double _previousScale;
+  var yOffset = 400.0;
+  var xOffset = 50.0;
+  var rotation = 0.0;
+  var lastRotation = 0.0;
 
   @override
   void initState() {
@@ -479,33 +487,24 @@ class _FeedsPageState extends State<FeedsPage> {
                                   // },
                                   onTap: null,
 
-                                  child: InteractiveViewer(
-                                    transformationController: _controller, // pass the transformation controller
-                                    onInteractionEnd: (details) {
-                                      setState(() {
-                                        _controller.toScene(
-                                            Offset.zero); // return to normal size after scaling has ended
-                                      });
-                                    },
-                                    boundaryMargin: EdgeInsets.all(20.0),
-                                    minScale: 0.1, // min scale
-                                    maxScale: 4.6, // max scale
-                                    scaleEnabled: true,
-                                    panEnabled: true,
-                                    child: Column(
-                                      children: [
-                                        FadeInImage(
+                                  child: GestureDetector(
 
-                                          image: NetworkImage(url),
-                                          //image: NetworkImage("posts[i].postImage"),
-                                          placeholder: AssetImage("assets/images/loadingX.gif"),
-                                          width: MediaQuery.of(context).size.width,
+                                            child :FadeInImage(
 
+                                              image: NetworkImage(url),
+                                              //image: NetworkImage("posts[i].postImage"),
+                                              placeholder: AssetImage("assets/images/loadingX.gif"),
+                                              width: MediaQuery.of(context).size.width,
+
+
+                                            ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
+
+
+
+
+
 
 
                                 Row(
