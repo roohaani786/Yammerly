@@ -516,7 +516,7 @@ class CameraScreenState extends State<CameraScreen>
               ),
               IconButton(
                 icon: Icon(
-                  Icons.camera_alt,color: Colors.white,
+                  Icons.camera_alt,color: Colors.transparent,
                 ),
                 onPressed: (){},
                 // icon: Icon(

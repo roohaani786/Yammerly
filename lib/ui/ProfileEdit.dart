@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:string_validator/string_validator.dart';
 import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
@@ -760,7 +761,7 @@ bool isChanged = false;
                           controller: emailController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 25.0){
+                            if(value.length > 30.0){
                               return 'email should not be greater then 25 words';
                             }else if(value.length ==0){
                               return 'email should not be null';
@@ -902,6 +903,8 @@ bool isChanged = false;
                               return 'Display Name should not be greater than 15 words';
                             }else if(value.length ==0){
                               return 'Display Name should not be null';
+                            }else if(!isLowercase(value)){
+                              return 'Display must be in lowercase';
                             }
                           },
                           keyboardType: TextInputType.text,
