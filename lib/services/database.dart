@@ -438,7 +438,8 @@ class DatabaseService {
         .document(uidX)
         .collection('following')
         .document(displayName)
-        .setData({'followingname' : displayName});
+        .setData({'followingname' : displayName,
+                  'followinguid': uidX});
         //.updateData({'followingname': uid,});
 
     return await Firestore.instance
@@ -448,7 +449,7 @@ class DatabaseService {
   }
   
 
-  Future followUser(int followers, String uid, String displayName) async {
+  Future followUser(int followers, String uid, String displayName,String uidX) async {
     await Firestore.instance
         .collection("users")
         .document(uid)
@@ -456,6 +457,7 @@ class DatabaseService {
         .document(displayName)
         .setData({
       'followername': displayName,
+      'followeruid':uidX,
     });
 
     return await Firestore.instance

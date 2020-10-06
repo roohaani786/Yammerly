@@ -64,7 +64,7 @@ class _UploadImageState extends State<UploadImage>
     ImD.Image mImageFile = ImD.decodeImage(file.readAsBytesSync());
     final compressedImage = File('$path/img_$postId.jpg')
       ..writeAsBytesSync(
-        ImD.encodeJpg(mImageFile, quality: 60),
+        ImD.encodeJpg(mImageFile, quality: 50),
       );
     setState(() {
       file = compressedImage;

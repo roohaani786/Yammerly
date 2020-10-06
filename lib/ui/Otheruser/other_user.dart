@@ -359,7 +359,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               setState(() {
                                                                 followed = true;
                                                               });
-                                                              DatabaseService().followUser(followers, uid, displayNamecurrentUser);
+                                                              DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidControllerX.text);
                                                               // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
                                                               DatabaseService().increaseFollowing(uid,followingX,displayNamecurrentUser,displayNameX,uidControllerX.text);
                                                             },

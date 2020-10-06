@@ -576,6 +576,165 @@ class _AboutUserState extends State<AboutUser> {
                           ),
                         ),
 
+//                        Card(
+//                            child: Padding(
+//                              padding: const EdgeInsets.only(left: 18.0,top: 30.0),
+//                              child: Column(
+//                                children: [
+//
+//
+////                      Container(
+////                          child: Form(
+////                            key: _phoneVerificationKey,
+////                            child: Row(
+////                              children: [
+////                                Container(
+////                                  height: 50.0,
+////                                  width: 200.0,
+////                                  child: TextFieldContainer(
+////                                    child: TextFormField(
+////                                      enabled: false,
+////                                      style: TextStyle(
+////                                          fontSize: 12.0, height: 1.5, color: Colors.grey),
+////                                      textInputAction: TextInputAction.next,
+////                                      cursorColor: kPrimaryColor,
+////
+////                                      decoration: InputDecoration(
+////                                        border: InputBorder.none,
+////                                        contentPadding: EdgeInsets.only(
+////                                            left: 0, right: 3, top: 6, bottom: 12),
+////                                        errorStyle: TextStyle(
+////                                          fontSize: 10.0,
+////                                          height: 0.3,
+////                                        ),
+////                                        icon: Icon(
+////                                          Icons.phone_iphone,
+////                                          //  size: 12.0,
+////                                          color: kPrimaryColor,
+////                                        ),
+////                                        fillColor: Colors.deepPurple.shade50,
+////                                        filled: true,
+////                                        hintText: "Phone Number",
+////                                      ),
+////                                      controller: phoneNumberController,
+////                                      //enableInteractiveSelection: false,
+////                                      keyboardType: TextInputType.number,
+////                                      validator: validateMobile,
+////                                    ),
+////                                  ),),
+////                                Padding(
+////                                  padding: const EdgeInsets.all(8.0),
+////                                  child: RaisedButton(child: Text("Verify",style: TextStyle(
+////                                    color: Colors.white,
+////                                  ),),
+////                                      color: Colors.deepPurple,
+////                                      onPressed: (){
+////                                        if (_phoneVerificationKey.currentState.validate()) {
+////                                          _submitPhoneNumber();
+////
+////                                         // if(_codesent){
+////
+////                                            Navigator.push(
+////                                              context,
+////                                              MaterialPageRoute(
+////                                                builder: (context) {
+////                                                  return SubmitPhoneOTP();
+////                                                },
+////                                              ),
+////                                            );
+////
+////                                          //}
+////
+////                                        }
+////                                      }),
+////                                ),
+////                              ],
+////                            ),
+////                          )
+////                      ),
+//
+//                                  Padding(
+//                                    padding: const EdgeInsets.only(top: 10.0),
+//                                    child: Align(
+//                                      alignment: Alignment.topLeft,
+//                                      child: Text("Verify email",style:
+//                                      TextStyle(
+//                                          color: kPrimaryColor,
+//                                          fontWeight: FontWeight.bold,
+//                                          fontSize: 15.0
+//                                      ),),
+//                                    ),
+//                                  ),
+//
+//                                  Container(
+//                                      child: Form(
+//                                        child: Row(
+//                                          children: [
+//                                            Container(
+//                                              height: 50.0,
+//                                              width: 200.0,
+//                                              child: TextFieldContainer(
+//                                                child: TextFormField(
+//                                                  enabled: false,
+//                                                  style: TextStyle(
+//                                                      fontSize: 12.0, height: 1.5, color: Colors.grey),
+//                                                  textInputAction: TextInputAction.next,
+////                    focusNode: _firstName,
+////                    onFieldSubmitted: (term) {
+////                      _fieldFocusChange(context, _firstName, _lastName);
+////                    },
+////                            style: TextStyle(
+////                                fontSize: 20.0,
+////                                height: 2.0,
+////                                color: Colors.black
+////                            ),
+//                                                  cursorColor: kPrimaryColor,
+//
+//
+//
+//                                                  decoration: InputDecoration(
+//                                                    border: InputBorder.none,
+//                                                    contentPadding: EdgeInsets.only(
+//                                                        left: 0, right: 3, top: 6, bottom: 12),
+//                                                    errorStyle: TextStyle(
+//                                                      fontSize: 10.0,
+//                                                      height: 0.3,
+//                                                    ),
+//                                                    icon: Icon(
+//                                                      Icons.alternate_email,
+//                                                      //  size: 12.0,
+//                                                      color: kPrimaryColor,
+//                                                    ),
+//                                                    fillColor: Colors.deepPurple.shade50,
+//                                                    filled: true,
+//                                                    hintText: "Email address",
+//                                                  ),
+//                                                  controller: emailController,
+////                    controller: firstNameInputController,
+//                                                  //enableInteractiveSelection: false,
+//                                                  // keyboardType: TextInputType.name,
+////                      validator: emailValidator,
+//                                                ),
+//                                              ),),
+//                                            Padding(
+//                                              padding: const EdgeInsets.all(8.0),
+//                                              child: RaisedButton(child: Text("Verify",style: TextStyle(
+//                                                color: Colors.white,
+//                                              ),),
+//                                                  color: Colors.deepPurple,
+//                                                  onPressed: (){
+//
+//                                                  }),
+//                                            ),
+//                                          ],
+//                                        ),
+//                                      )
+//                                  )
+//                                ],
+//                              ),
+//                            )
+//                        )
+
 
 
 
@@ -584,173 +743,7 @@ class _AboutUserState extends State<AboutUser> {
                 ),
               ),
 
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 18.0,bottom: 30.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Verify phone",style:
-                          TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0
-                          ),),
-                        ),
-                      ),
 
-                      Container(
-                          child: Form(
-                            key: _phoneVerificationKey,
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 50.0,
-                                  width: 200.0,
-                                  child: TextFieldContainer(
-                                    child: TextFormField(
-                                      enabled: false,
-                                      style: TextStyle(
-                                          fontSize: 12.0, height: 1.5, color: Colors.grey),
-                                      textInputAction: TextInputAction.next,
-                                      cursorColor: kPrimaryColor,
-
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.only(
-                                            left: 0, right: 3, top: 6, bottom: 12),
-                                        errorStyle: TextStyle(
-                                          fontSize: 10.0,
-                                          height: 0.3,
-                                        ),
-                                        icon: Icon(
-                                          Icons.phone_iphone,
-                                          //  size: 12.0,
-                                          color: kPrimaryColor,
-                                        ),
-                                        fillColor: Colors.deepPurple.shade50,
-                                        filled: true,
-                                        hintText: "Phone Number",
-                                      ),
-                                      controller: phoneNumberController,
-                                      //enableInteractiveSelection: false,
-                                      keyboardType: TextInputType.number,
-                                      validator: validateMobile,
-                                    ),
-                                  ),),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: RaisedButton(child: Text("Verify",style: TextStyle(
-                                    color: Colors.white,
-                                  ),),
-                                      color: Colors.deepPurple,
-                                      onPressed: (){
-                                        if (_phoneVerificationKey.currentState.validate()) {
-                                          _submitPhoneNumber();
-
-                                         // if(_codesent){
-
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) {
-                                                  return SubmitPhoneOTP();
-                                                },
-                                              ),
-                                            );
-
-                                          //}
-
-                                        }
-                                      }),
-                                ),
-                              ],
-                            ),
-                          )
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Verify email",style:
-                          TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0
-                          ),),
-                        ),
-                      ),
-
-                      Container(
-                          child: Form(
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 50.0,
-                                  width: 200.0,
-                                  child: TextFieldContainer(
-                                    child: TextFormField(
-                                      enabled: false,
-                                      style: TextStyle(
-                                          fontSize: 12.0, height: 1.5, color: Colors.grey),
-                                      textInputAction: TextInputAction.next,
-//                    focusNode: _firstName,
-//                    onFieldSubmitted: (term) {
-//                      _fieldFocusChange(context, _firstName, _lastName);
-//                    },
-//                            style: TextStyle(
-//                                fontSize: 20.0,
-//                                height: 2.0,
-//                                color: Colors.black
-//                            ),
-                                      cursorColor: kPrimaryColor,
-
-
-
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.only(
-                                            left: 0, right: 3, top: 6, bottom: 12),
-                                        errorStyle: TextStyle(
-                                          fontSize: 10.0,
-                                          height: 0.3,
-                                        ),
-                                        icon: Icon(
-                                          Icons.alternate_email,
-                                          //  size: 12.0,
-                                          color: kPrimaryColor,
-                                        ),
-                                        fillColor: Colors.deepPurple.shade50,
-                                        filled: true,
-                                        hintText: "Email address",
-                                      ),
-                                      controller: emailController,
-//                    controller: firstNameInputController,
-                                      //enableInteractiveSelection: false,
-                                      // keyboardType: TextInputType.name,
-//                      validator: emailValidator,
-                                    ),
-                                  ),),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: RaisedButton(child: Text("Verify",style: TextStyle(
-                                    color: Colors.white,
-                                  ),),
-                                      color: Colors.deepPurple,
-                                      onPressed: (){}),
-                                ),
-                              ],
-                            ),
-                          )
-                      )
-                    ],
-                  ),
-                )
-              )
 
             ],
           ),
