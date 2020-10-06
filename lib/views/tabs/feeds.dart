@@ -428,7 +428,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               borderRadius: BorderRadius.circular(40),
 
                                               child: Image(
-                                                image: NetworkImage(photoUrl),
+                                                image: NetworkImage(photoUrlController.text),
                                                 width: 40,
                                                 height: 40,
                                                 fit: BoxFit.cover,
@@ -480,17 +480,29 @@ class _FeedsPageState extends State<FeedsPage> {
                                   onTap: null,
 
                                   child: InteractiveViewer(
-                                    transformationController: _controller,
-                                    onInteractionEnd: (value){
-                                      _controller.value = Matrix4.identity();
+                                    transformationController: _controller, // pass the transformation controller
+                                    onInteractionEnd: (details) {
+                                      setState(() {
+                                        _controller.toScene(
+                                            Offset.zero); // return to normal size after scaling has ended
+                                      });
                                     },
-                                    child: FadeInImage(
+                                    boundaryMargin: EdgeInsets.all(20.0),
+                                    minScale: 0.1, // min scale
+                                    maxScale: 4.6, // max scale
+                                    scaleEnabled: true,
+                                    panEnabled: true,
+                                    child: Column(
+                                      children: [
+                                        FadeInImage(
 
-                                      image: NetworkImage(url),
-                                      //image: NetworkImage("posts[i].postImage"),
-                                      placeholder: AssetImage("assets/images/loadingX.gif"),
-                                      width: MediaQuery.of(context).size.width,
+                                          image: NetworkImage(url),
+                                          //image: NetworkImage("posts[i].postImage"),
+                                          placeholder: AssetImage("assets/images/loadingX.gif"),
+                                          width: MediaQuery.of(context).size.width,
 
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
