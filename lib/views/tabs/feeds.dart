@@ -485,10 +485,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                       _controller.value = Matrix4.identity();
                                     },
                                     child: FadeInImage(
+
                                       image: NetworkImage(url),
                                       //image: NetworkImage("posts[i].postImage"),
-                                      placeholder: AssetImage("assets/images/loading.gif"),
+                                      placeholder: AssetImage("assets/images/loadingX.gif"),
                                       width: MediaQuery.of(context).size.width,
+
                                     ),
                                   ),
                                 ),

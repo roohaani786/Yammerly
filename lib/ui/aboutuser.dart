@@ -234,7 +234,7 @@ class _AboutUserState extends State<AboutUser> {
                               " Personal Details",
                               style: TextStyle(
                                 fontSize: 18.0,
-                                color: kPrimaryColor,
+                                color: Colors.purple,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Pacifico',
                               ),
@@ -245,7 +245,7 @@ class _AboutUserState extends State<AboutUser> {
 
 
                         Padding(
-                          padding: const EdgeInsets.only(top: 5.0,left: 0.0),
+                          padding: const EdgeInsets.only(top: 10.0,left: 0.0),
                           child: Column(
                             children: [
                               Container(
@@ -498,7 +498,7 @@ class _AboutUserState extends State<AboutUser> {
                                   child: Row(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 8.0),
+                                        padding: const EdgeInsets.only(left: 15.0),
                                         child: Container(
                                           width: 150.0,
                                           child: Text("Current City",style: TextStyle(

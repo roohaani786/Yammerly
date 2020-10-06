@@ -665,7 +665,7 @@ bool isChanged = false;
                       },
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):NetworkImage("https://media.giphy.com/media/N256GFy1u6M6Y/giphy.gif"),
+                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loadingX.gif"),
                         backgroundColor: Colors.transparent,
                       ),
 
@@ -678,6 +678,33 @@ bool isChanged = false;
                       autovalidate: true,
                       key: _formKey,
                       child: Column(children: <Widget>[
+
+                        TextFormField(
+                          controller: displayNameController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 15.0){
+                              return 'Display Name should not be greater than 15 words';
+                            }else if(value.length ==0){
+                              return 'Display Name should not be null';
+                            }
+                          },
+                          keyboardType: TextInputType.text,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: "Display Name",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
+
+                        SizedBox(
+                          height: 16.0,
+                        ),
+
                         TextFormField(
                           controller: firstNameController,
                           enabled: isEditable,
@@ -760,8 +787,8 @@ bool isChanged = false;
                           controller: emailController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 25.0){
-                              return 'email should not be greater then 25 words';
+                            if(value.length > 35.0){
+                              return 'email should not be greater then 35 words';
                             }else if(value.length ==0){
                               return 'email should not be null';
                             }
@@ -781,6 +808,7 @@ bool isChanged = false;
                           height: 16,
                         ),
 
+
                         TextFormField(
                           controller: bioController,
                           enabled: isEditable,
@@ -799,6 +827,25 @@ bool isChanged = false;
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
                                   BorderSide(color: Colors.black, width: 1))),
+                        ),
+
+                        SizedBox(
+                          height: 16.0,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: new Text(
+                              'Gender :',
+                              style: new TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                  color: Colors.deepPurple
+                              ),
+                            ),
+                          ),
                         ),
 
 
@@ -893,39 +940,12 @@ bool isChanged = false;
                           height: 16,
                         ),
 
-
-                        TextFormField(
-                          controller: displayNameController,
-                          enabled: isEditable,
-                          validator: (value) {
-                            if(value.length > 15.0){
-                              return 'Display Name should not be greater than 15 words';
-                            }else if(value.length ==0){
-                              return 'Display Name should not be null';
-                            }
-                          },
-                          keyboardType: TextInputType.text,
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                              labelText: "Display Name",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
-                          ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                  BorderSide(color: Colors.black, width: 1))),
-                        ),
-
-                        SizedBox(
-                          height: 16,
-                        ),
-
                         TextFormField(
                           controller: workController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 15.0){
-                              return 'Work should not be greater than 15 words';
+                            if(value.length > 25.0){
+                              return 'Work should not be greater than 25 words';
                             }
                           },
                           keyboardType: TextInputType.multiline,
