@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //import 'package:path/path.dart';
 import 'package:techstagram/modell/global.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
-import 'package:timeago/timeago.dart' as tAgo;
+//import 'package:timeago/timeago.dart' as tAgo;
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 
 import 'package:flutter/material.dart';
@@ -84,6 +84,7 @@ class CommentsPageState extends State<CommentsPage> {
 //       });
 //     }
 //   }
+
 
 
 
@@ -268,6 +269,23 @@ class Comment extends StatelessWidget {
     );
   }
 
+  String tAgo(DateTime d) {
+    Duration diff = DateTime.now().difference(d);
+    if (diff.inDays > 365)
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "year" : "years"} ago";
+    if (diff.inDays > 30)
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "month" : "months"} ago";
+    if (diff.inDays > 7)
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "week" : "weeks"} ago";
+    if (diff.inDays > 0)
+      return "${diff.inDays} ${diff.inDays == 1 ? "day" : "days"} ago";
+    if (diff.inHours > 0)
+      return "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+    if (diff.inMinutes > 0)
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+    return "just now";
+  }
+
   @override
   Widget build(BuildContext) {
     return Padding(
@@ -296,7 +314,7 @@ class Comment extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 5.0),
                       child: SizedBox(
-                        width: 200.0,
+                        width: 170.0,
                         child: Text(comment,maxLines: 1,style: TextStyle(fontSize: 15.0,color: Colors.black,
                         ),),
                       ),
@@ -306,7 +324,7 @@ class Comment extends StatelessWidget {
                 leading: (userName != null || comment != null)?CircleAvatar(
                   backgroundImage: CachedNetworkImageProvider(url),
                 ):null,
-                subtitle: (userName != null || comment != null)?Text(tAgo.format(timestamp.toDate()),style: TextStyle(color: Colors.black),):Text(""),
+                subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.black),):Text(""),
               ),
             ],
           ),

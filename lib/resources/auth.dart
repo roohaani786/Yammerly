@@ -59,7 +59,7 @@ class AuthService {
 // Checking if email and name is null
     checkuserexists(user.uid,user);
 
-      updateUserData(user);
+//      updateUserData(user);
 
 
     // Step 3
@@ -79,7 +79,7 @@ class AuthService {
         .document(uid)
         .get();
 
-    if (snapShotX.data["following"] != null || !snapShotX.exists && snapShotX.data["uid"]!=null) {
+    if (snapShotX.exists) {
       updateUserData(user);
     }
     else{
