@@ -60,8 +60,8 @@ class _FeedsPageState extends State<FeedsPage> {
   _FeedsPageState({this.displayNamecurrentUser});
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
-  displayNameController,photoUrlController,
-  timestampController,likesController,uidController;
+      displayNameController,photoUrlController,
+      timestampController,likesController,uidController;
   List<Posts> posts;
   List<DocumentSnapshot> list;
 
@@ -283,6 +283,8 @@ class _FeedsPageState extends State<FeedsPage> {
   Widget build(BuildContext context) {
 
 
+
+
 //    fetchdimensions(String url) async {
 //      File image = new File(url);
 //      var decodedImage = await decodeImageFromList(image.readAsBytesSync());
@@ -307,10 +309,10 @@ class _FeedsPageState extends State<FeedsPage> {
           builder: (context, snapshot) {
             return snapshot.hasData
                 ? Column(
-                  children: [
+              children: [
 
-                    new Expanded(
-                      child: ListView.builder(
+                new Expanded(
+                  child: ListView.builder(
                       controller: scrollController,
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
@@ -409,9 +411,9 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                 GestureDetector(
                                   onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
-                          ),
+                                    context,
+                                    MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                                  ),
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 10,
@@ -425,12 +427,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(40),
 
-                                                child: Image(
-                                                  image: NetworkImage(photoUrl),
-                                                  width: 40,
-                                                  height: 40,
-                                                  fit: BoxFit.cover,
-                                                ),
+                                              child: Image(
+                                                image: NetworkImage(photoUrl),
+                                                width: 40,
+                                                height: 40,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                             SizedBox(
                                               width: 10,
@@ -448,49 +450,48 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ),
 
 
-                               GestureDetector(
-                                 onDoubleTap: () {
-                                   if(liked == false) {
-                                     DatabaseService().likepost(
-                                         likes, postId,
-                                         displayNameController.text);
-                                     setState(() {
-                                       liked = true;
-                                     });
-                                   }else{
-                                     DatabaseService().unlikepost(
-                                         likes, postId, displayNameController.text);
-                                     setState(() {
-                                       liked = false;
-                                     });
-                                   }
-                                 },
-                                   // onPressed: () {
-                                   // },
-                                   // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
+                                GestureDetector(
+                                  onDoubleTap: () {
+                                    getlikes(displayNameController.text, postId);
+                                    if (liked == false) {
+                                      DatabaseService().likepost(
+                                          likes, postId,
+                                          displayNameController.text);
+                                      setState(() {
+                                        liked = true;
+                                        print(liked);
+                                      });
+//                                     return liked;
+                                    } else {
+                                      print("nahi");
+                                    }
+                                  },
+                                  // onPressed: () {
+                                  // },
+                                  // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
 
-                                 // onDoubleTap: (){
-                                 //   print("double tap");
-                                 //   print(liked);
-                                 //   doubletaplike(likes,postId);
-                                 //   print("double tap again");
-                                 //   print(liked);
-                                 // },
-                                 onTap: null,
+                                  // onDoubleTap: (){
+                                  //   print("double tap");
+                                  //   print(liked);
+                                  //   doubletaplike(likes,postId);
+                                  //   print("double tap again");
+                                  //   print(liked);
+                                  // },
+                                  onTap: null,
 
-                                   child: InteractiveViewer(
-                                     transformationController: _controller,
-                                     onInteractionEnd: (value){
-                                       _controller.value = Matrix4.identity();
-                                     },
-                                     child: FadeInImage(
-                                          image: NetworkImage(url),
-                                          //image: NetworkImage("posts[i].postImage"),
-                                          placeholder: AssetImage("assets/images/loading.gif"),
-                                          width: MediaQuery.of(context).size.width,
-                                        ),
-                                   ),
-                               ),
+                                  child: InteractiveViewer(
+                                    transformationController: _controller,
+                                    onInteractionEnd: (value){
+                                      _controller.value = Matrix4.identity();
+                                    },
+                                    child: FadeInImage(
+                                      image: NetworkImage(url),
+                                      //image: NetworkImage("posts[i].postImage"),
+                                      placeholder: AssetImage("assets/images/loading.gif"),
+                                      width: MediaQuery.of(context).size.width,
+                                    ),
+                                  ),
+                                ),
 
 
                                 Row(
@@ -540,14 +541,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                           child: IconButton(
 
                                             onPressed: () { //print(displayNameController.text);
-                                            Navigator.push(context, MaterialPageRoute(builder: (context){
-                                              return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
-                                            }));
+                                              Navigator.push(context, MaterialPageRoute(builder: (context){
+                                                return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                              }));
                                             },
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: ((context) => CommentsScreen())));
+                                            // Navigator.push(
+                                            //     context,
+                                            //     MaterialPageRoute(
+                                            //         builder: ((context) => CommentsScreen())));
 
                                             icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                           ),
@@ -567,42 +568,42 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ),
 
                                 Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        child: RichText(
-                                          softWrap: true,
-                                          overflow: TextOverflow.visible,
-                                          text: TextSpan(
-                                            text: displayName,
-                                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
-                                          ),
-                                        ),
-                                      ),
-
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 3.0),
-                                        child: Container(
-
-                                          constraints: BoxConstraints(maxWidth: 250),
+                                    width: MediaQuery.of(context).size.width,
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
                                           child: RichText(
                                             softWrap: true,
                                             overflow: TextOverflow.visible,
                                             text: TextSpan(
-                                              text: description,
-                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                              fontSize: 15.0),
-
+                                              text: displayName,
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  )
+
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 3.0),
+                                          child: Container(
+
+                                            constraints: BoxConstraints(maxWidth: 250),
+                                            child: RichText(
+                                              softWrap: true,
+                                              overflow: TextOverflow.visible,
+                                              text: TextSpan(
+                                                text: description,
+                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                    fontSize: 15.0),
+
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                 ),
 
                                 // caption
@@ -612,27 +613,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                     horizontal: 14,
                                     vertical: 5,
                                   ),
-//                                child: RichText(
-//                                  softWrap: true,
-//                                  overflow: TextOverflow.visible,
-//                                  text: TextSpan(
-//                                    children: [
-//                                      TextSpan(
-//                                        text: displayName,
-//                                        style: TextStyle(
-//                                            fontWeight: FontWeight.bold,
-//                                            color: Colors.black),
-//                                      ),
-//                                      // TextSpan(
-//                                      //   text: " mlkl",
-//                                      //   style: TextStyle(color: Colors.black),
-//                                      // ),
-//                                    ],
-//                                  ),
-//                                ),
                                 ),
 
-                                // post date
                                 Container(
                                   margin: EdgeInsets.symmetric(
                                     horizontal: 14,
@@ -650,29 +632,16 @@ class _FeedsPageState extends State<FeedsPage> {
                               ],
                             ),
                           ),
-                          // height: 150.0,
-                          // width: 150.0,
-                          //child: Image.network(url),
                         );
-
-//                return FeedTile(
-//                  wiggle: currentpost,
-//                  wiggles: posts,
-//                  description: description,
-//                  timestamp: timestamp,
-//                  url: url,
-//                  postId: postId,
-//                  likes: likes,
-//                );
                       }),
-                    ),
-                  ],
-                )
+                ),
+              ],
+            )
                 : Container();
 
           },
-          ),
         ),
+      ),
     );
   }
 
