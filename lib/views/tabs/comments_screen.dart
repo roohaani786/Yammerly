@@ -311,7 +311,7 @@ class Comment extends StatelessWidget {
           //   );
           // },
 
-        child: Container(
+        child: Expanded(
           child: Stack(
             children: [
               ListTile(
@@ -321,8 +321,8 @@ class Comment extends StatelessWidget {
                     fontWeight: FontWeight.bold,),),
                     Padding(
                       padding: const EdgeInsets.only(left: 5.0),
-                      child: SizedBox(
-                        width: 170.0,
+                      child: Expanded(
+                        //width: 170.0,
                         child: Text(comment,maxLines: 1,style: TextStyle(fontSize: 15.0,color: Colors.black,
                         ),),
                       ),

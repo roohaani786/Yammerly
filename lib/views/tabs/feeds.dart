@@ -493,7 +493,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                               image: NetworkImage(url),
                                               //image: NetworkImage("posts[i].postImage"),
-                                              placeholder: AssetImage("assets/images/loadingX.gif"),
+                                              placeholder: AssetImage("assets/images/loading.gif"),
                                               width: MediaQuery.of(context).size.width,
 
 

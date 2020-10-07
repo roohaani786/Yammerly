@@ -144,7 +144,6 @@ flutter:
     - assets/icons/login.svg
     - assets/icons/signup.svg
     - assets/icons/twitter.svg
-    - assets/images/loadingX.gif
     - assets/images/1.jpg
     - assets/images/2.jpg
     - assets/images/3.jpg
