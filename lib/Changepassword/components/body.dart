@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/Login/components/background.dart';
+import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Signup/components/or_divider.dart';
 import 'package:techstagram/Signup/components/social_icon.dart';
 import 'package:techstagram/Signup/signup_screen.dart';
@@ -35,7 +36,7 @@ class _BodyState extends State<Body> {
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   TextEditingController emailInputController;
-  TextEditingController ppwdInputController,pwdInputController,newpwdInputController;
+  TextEditingController ppwdInputController,pwdInputController,newpwdInputController,CnewpwdInputController;
   bool isUserSignedIn = true;
 
   final FocusNode _email = FocusNode();
@@ -59,6 +60,7 @@ class _BodyState extends State<Body> {
     pwdInputController = new TextEditingController();
     ppwdInputController = new TextEditingController();
     newpwdInputController = new TextEditingController();
+    CnewpwdInputController = new TextEditingController();
     super.initState();
     checkIfUserIsSignedIn();
   }
@@ -66,6 +68,7 @@ class _BodyState extends State<Body> {
   @override
   void dispose() {
     newpwdInputController.dispose();
+    CnewpwdInputController.dispose();
     ppwdInputController.dispose();
    // _newPasswordController.dispose();
    // _repeatPasswordController.dispose();
@@ -79,6 +82,13 @@ class _BodyState extends State<Body> {
 
     //Pass in the password to updatePassword.
     user.updatePassword(password).then((_){
+      FirebaseAuth.instance
+          .signOut()
+          .then((result) =>
+          Navigator.push(context, new MaterialPageRoute(
+              builder: (context) =>
+              new LoginScreen())
+          ));
       print("Succesfull changed password");
       return PasswordChanged();
     }).catchError((error){
@@ -100,6 +110,22 @@ class _BodyState extends State<Body> {
     });
   }
 
+  String emailValidator(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+//    var hu = value;
+    if (!regex.hasMatch(value) && value.length == null) {
+      setState(() {
+        errordikhaoL = true;
+      });
+    } else {
+      setState(() {
+        errordikhaoL = false;
+      });
+    }
+  }
+
   void checkIfUserIsSignedIn() async {
     var userSignedIn = await googleSignIn.isSignedIn();
 
@@ -110,28 +136,38 @@ class _BodyState extends State<Body> {
 
 
   bool errordikhaoL = false;
+  bool login = false;
 
 
-  Future<String> signIn(String email, String password) async {
+  Future<String> signIn(String email,String password,String Npassword) async {
     FirebaseUser user;
     String errorMessage;
 
-    this.setState(() {
-      isLoading = true;
-    });
+    // this.setState(() {
+    //   isLoading = true;
+    // });
 
     try {
       if (_loginFormKey.currentState.validate()) {
         AuthResult result = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
             email: emailInputController.text,
-            password: pwdInputController.text);
+            password: ppwdInputController.text);
         user = result.user;
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-              (Route<dynamic> route) => false,
-        );
+        this.setState(() {
+          login = true;
+        });
+
+        if(login){
+          _changePassword(newpwdInputController.text);
+        }else{
+          print("error hai bro");
+        }
+        // Navigator.pushAndRemoveUntil(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => HomePage()),
+        //       (Route<dynamic> route) => false,
+        // );
       }
     } catch (error) {
       switch (error.code) {
@@ -301,6 +337,69 @@ class _BodyState extends State<Body> {
                           height: 200.0,
                         ),
                         SizedBox(height: 10.0),
+
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              right: 10.0, top: 30.0, bottom: 0.0, left: 10.0),
+                          child: Container(
+                            height: 50.0,
+                            width: 250.0,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 5),
+                              padding:
+                              EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+//                              width: size.width * 0.8,
+                              decoration: BoxDecoration(
+                                color: kPrimaryLightColor,
+                                borderRadius: BorderRadius.circular(29),
+                                border: Border.all(
+                                  color: (errordikhaoL == true)
+                                      ? Colors.red
+                                      : kPrimaryLightColor,
+                                ),
+                              ),
+                              child: TextFormField(
+
+                                style: TextStyle(
+                                    fontSize: 12.0,
+                                    height: 1.6,
+                                    color: Colors.black),
+                                textInputAction: TextInputAction.next,
+                                focusNode: _email,
+                                //enableInteractiveSelection: false,
+                                onFieldSubmitted: (term) {
+                                  _fieldFocusChange(context, _email, _pwd);
+                                },
+                                cursorColor: kPrimaryColor,
+
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.red,
+                                        )),
+                                    contentPadding: EdgeInsets.only(
+                                        left: 0, right: 3, top: 6, bottom: 12),
+                                    errorStyle: TextStyle(
+                                      fontSize: 10.0,
+                                      height: 0.3,
+                                    ),
+                                    icon: Icon(
+                                      Icons.email,
+                                      color: kPrimaryColor,
+                                    ),
+                                    fillColor: Colors.deepPurple.shade50,
+                                    filled: true,
+                                    hintText: "Email"),
+                                controller: emailInputController,
+                                validator: emailValidator,
+//                        keyboardType: TextInputType.emailAddress,
+//                      validator: emailValidator,
+                              ),
+                            ),
+                          ),
+                        ),
+
 
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
@@ -514,7 +613,7 @@ class _BodyState extends State<Body> {
                                       loginfail ? 'password not match' : null,
                                       filled: true,
                                       hintText: "Confirm New Password"),
-                                  controller: newpwdInputController,
+                                  controller: CnewpwdInputController,
                                   obscureText: _obscureText,
                                   focusNode: _cpwd,
                                   onFieldSubmitted: (value) {
@@ -535,7 +634,26 @@ class _BodyState extends State<Body> {
                           child: RoundedButton(
                               text: "Change Password",
                               press: () {
-                                _changePassword(newpwdInputController.text);
+                                if(newpwdInputController.text == CnewpwdInputController){
+                                  signIn(emailInputController.text,
+                                      ppwdInputController.text,newpwdInputController.text);
+                                }else{
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+
+                                        return AlertDialog(
+                                          content: Text(
+                                            'password dos not match',
+                                            style: TextStyle(color: Colors.black),
+                                          ),
+                                          title: Text("Error !", style:
+                                          TextStyle(color: Colors.red),),
+                                        );
+                                      });
+                                }
+
+
 //
                               }),
                         ),
