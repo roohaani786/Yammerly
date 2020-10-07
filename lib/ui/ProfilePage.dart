@@ -14,6 +14,7 @@ import 'package:techstagram/ui/aboutuser.dart';
 import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
 import 'package:techstagram/ui/messagingsystem.dart';
+import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 
 import 'HomePage.dart';
@@ -41,9 +42,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      phoneNumberController,
       bioController,genderController,linkController,photoUrlController,
       displayNameController,workController,educationController,
+      phonenumberController,
       currentCityController,homeTownController,relationshipController,
       followersController,followingController,pinCodeController,userPostsController,uidController;
 
@@ -63,10 +64,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
     if (details.primaryVelocity.compareTo(0) == -1) {
 //      dispose();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ConversationPage()),
-      );
+    null;
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => ConversationPage()),
+//      );
     }
     else {
       Navigator.push(
@@ -83,7 +85,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
     emailController = TextEditingController();
-    phoneNumberController = TextEditingController();
+    phonenumberController = TextEditingController();
     pinCodeController = TextEditingController();
     bioController = TextEditingController();
     genderController = TextEditingController();
@@ -164,7 +166,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
       displayNameController.text = docSnap.data["displayName"];
       uidController.text = docSnap.data["uid"];
+      emailController.text = docSnap.data["email"];
       photoUrlController.text = docSnap.data["photoURL"];
+      phonenumberController.text = docSnap.data["phonenumber"];
       bioController.text = docSnap.data["bio"];
       followers = docSnap.data["followers"];
       following  = docSnap.data["following"];
@@ -213,8 +217,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   getlikes( String displayName, String postId) {
 
-    print("uid");
-   print(uidController.text);
+   // print("uid");
+   //print(uidController.text);
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
@@ -244,31 +248,62 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         key: _scaffoldKey,
-        backgroundColor: Colors.grey.shade300,
         body:  SingleChildScrollView(
           child: SafeArea(
             child: Align(
               alignment: Alignment.center,
               child: Stack(
                   children: [
-                    Image.asset(
-                      "assets/images/social.jpg",
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      fit: BoxFit.fitHeight,
+                    Align(
+                      alignment: Alignment.topRight,
+                        child: IconButton(
+                            color: Colors.purple,
+                            //color: Colors.white,
+                            icon: new Icon(Icons.settings),
+                            onPressed: () {
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text)),
+                              );
+                            },
+                            ),
                     ),
+
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        color: Colors.purple,
+                        //color: Colors.white,
+                        icon: new Icon(Icons.settings),
+                        onPressed: () {
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text)),
+                          );
+                        },
+                      ),
+
+                    ),
+
+
+                    // Image.asset(
+                    //   "assets/images/social.jpg",
+                    //   height: MediaQuery.of(context).size.height,
+                    //   width: MediaQuery.of(context).size.width,
+                    //   fit: BoxFit.fitHeight,
+                    // ),
                     Align(
                       alignment: Alignment.center,
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 180.0),
+                        padding: const EdgeInsets.only(top: 110.0),
                         child: Column(
                           children: [
                             Container(
-                              height: 300.0,
+                              height: 270.0,
                               width: 340.0,
-                              child: Card(
-                                elevation: 5.0,
-                                color: Colors.white,
+
                                 // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -308,21 +343,89 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                         color: Colors.teal.shade700,
                                       ),
                                     ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 40.0,right: 40.0),
+                                      child: Container(
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 110,
+                                              child: FlatButton(
+                                                  color: Colors.transparent,
+                                                  child: new Text(
+                                                    "About Me",
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => AboutUser()),
+                                                    );
+                                                  },
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(color: Colors.purple, width: 2.5),
+                                                    borderRadius: BorderRadius.circular(30.0),
+                                                  )),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 20.0),
+                                              child: SizedBox(
+                                                width: 110,
+                                                child: FlatButton(
+                                                    color: Colors.transparent,
+                                                    //color: Colors.white,
+                                                    child: new Text(
+                                                      "Edit Profile",
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        //color: Color(0xffed1e79),
+                                                      ),
+                                                    ),
+                                                    onPressed: () {
+
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                      );
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                      side: BorderSide(
+                                                          color: Colors.purple,
+                                                          //color: Color(0xffed1e79),
+                                                          width: 2.5),
+                                                      borderRadius: BorderRadius.circular(30.0),
+                                                    )),
+                                              ),
+                                            ),
+
+
+
+
+
+
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+
                                     Container(
                                       height: 60.0,
                                       margin: EdgeInsets.only(top: 8.0),
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: <Widget>[
                                           GestureDetector(
-                                          onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
-                                    ),
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                              ),
                                               child: _buildStatItem("FOLLOWERS", followers.toString())
                                           ),
                                           _buildStatItem("POSTS", posts.toString()),
@@ -337,99 +440,17 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                         ],
                                       ),
                                     ),
-                                    Container(
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            width: 120,
-                                            child: RaisedButton(
-                                                color: Color(0xffed1e79),
-                                                child: new Text(
-                                                  "About",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                onPressed: () {
-
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => AboutUser()),
-                                                  );
-                                                },
-                                                shape: RoundedRectangleBorder(
-                                                  //side: BorderSide(color: Colors.white, width: 2),
-                                                  borderRadius: BorderRadius.circular(30.0),
-                                                )),
-                                          ),
-                                          Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                              children: [
-                                                SizedBox(
-                                                  width: 120,
-                                                  child: RaisedButton(
-                                                      color: Colors.white,
-                                                      child: new Text(
-                                                        "Edit Profile",
-                                                        style: TextStyle(
-                                                          color: Color(0xffed1e79),
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => ProfilePage()),
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                        side: BorderSide(color: Color(0xffed1e79), width: 2),
-                                                        borderRadius: BorderRadius.circular(30.0),
-                                                      )),
-                                                ),
-
-
-
-                                                SizedBox(
-                                                  width: 120,
-                                                  child: RaisedButton(
-
-                                                      color: Colors.white,
-                                                      child: new Text(
-                                                        "Settings",
-                                                        style: TextStyle(
-                                                          color: Color(0xffed1e79),
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => ProfileSettings()),
-                                                        );
-                                                      },
-                                                      shape: RoundedRectangleBorder(
-                                                        side: BorderSide(color: Color(0xffed1e79), width: 2),
-                                                        borderRadius: BorderRadius.circular(30.0),
-                                                      )),
-                                                ),
-                                              ]
-                                          ),
-                                        ],
-                                      ),
-                                    )
 
                                   ],
                                 ),
-                              ),
                             ),
 
 
                             Container(
-                              height: 500.0,
-                              width: 500.0,
+                              height: MediaQuery.of(context).size.height -300.0,
+                              //height: 200.0,
+                              width: 340.0,
 
-                              child: Card(
                                 child: StreamBuilder(
                                     stream: userPostsStream,
                                     builder: (context, snapshot) {
@@ -437,9 +458,14 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                           ? Column(
                                         children: [
                                           new Expanded(
-                                              child: ListView.builder(
-                                                  controller: scrollController,
+                                              child: GridView.builder(
+                                                  shrinkWrap: true,
+                                                  //controller: scrollController,
                                                   itemCount: snapshot.data.documents.length,
+                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 3,
+                                                      crossAxisSpacing: 10.0,
+                                                      mainAxisSpacing: 10.0),
                                                   itemBuilder: (context, index) {
 
                                                     postIdX = snapshot.data.documents[index]['email'];
@@ -462,233 +488,62 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                     getlikes(displayNameController.text,postId);
 
 
-                                                   // print(email);
-                                                   // print(displayName);
-//                for (int i = 0; i < posts.length; i++) {
-//                  if (posts[i].email == email) {
-//                    currentpost = posts[i];
-//                  }
-//                }
+
 
                                                     if(likes< 0 || likes == 0){
                                                       liked = false;
                                                     }
                                                     return Container(
-                                                      child: Container(
-                                                        color: Colors.white,
-                                                        child: Column(
-                                                          children: <Widget>[
+                                                      color: Colors.grey.shade300,
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),
+                                                              );
+                                                            },
+                                                            child: ClipRRect(
+                                                              borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(8.0),
+                                                                topRight: Radius.circular(8.0),
+                                                                bottomLeft: Radius.circular(8.0),
+                                                                bottomRight: Radius.circular(8.0),
+                                                              ),
 
-                                                            GestureDetector(
-                                                              // onTap: () => Navigator.push(
-                                                              //   context,
-                                                              //   MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
-                                                              // ),
-                                                              child: Container(
-                                                                padding: EdgeInsets.symmetric(
-                                                                  horizontal: 10,
-                                                                  vertical: 10,
-                                                                ),
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  children: <Widget>[
-                                                                    Row(
-                                                                      children: <Widget>[
-                                                                        ClipRRect(
-                                                                          borderRadius: BorderRadius.circular(40),
-                                                                          child: Image(
-                                                                            image: NetworkImage(photoUrl),
-                                                                            width: 40,
-                                                                            height: 40,
-                                                                            fit: BoxFit.cover,
-                                                                          ),
-                                                                        ),
-                                                                        SizedBox(
-                                                                          width: 10,
-                                                                        ),
-                                                                        Text(displayName),
-                                                                      ],
-                                                                    ),
-                                                                    IconButton(
-                                                                      icon: Icon(SimpleLineIcons.options),
-                                                                      onPressed: () {},
-                                                                    ),
-                                                                  ],
-                                                                ),
+                                                              child: Image.network(
+                                                                url,
+                                                                height: 104,
+                                                                fit:BoxFit.cover,
+
                                                               ),
                                                             ),
-                                                            //Image.network(url),
-
-                                                            FadeInImage(
-                                                              image: NetworkImage(url),
-                                                              //image: NetworkImage("posts[i].postImage"),
-                                                              placeholder: AssetImage("assets/images/empty.png"),
-                                                              width: MediaQuery.of(context).size.width,
-                                                            ),
-
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              children: <Widget>[
-                                                                Row(
-                                                                  children: <Widget>[
-                                                                    (liked == false)?IconButton(
-                                                                      onPressed: () {
-                                                                        DatabaseService().likepost(
-                                                                            likes, postId, displayNameController.text);
-                                                                        setState(() {
-                                                                          liked = true;
-                                                                        });
-                                                                      },
-                                                                      icon: Icon(FontAwesomeIcons.thumbsUp),
-                                                                      iconSize: 25,
-                                                                      color: Colors.deepPurple,
-                                                                      // onPressed: () {
-                                                                      // },
-                                                                      // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                                                    ):IconButton(
-
-                                                                      onPressed: () {
-                                                                        DatabaseService().unlikepost(
-                                                                            likes, postId, displayNameController.text);
-                                                                        setState(() {
-                                                                          liked = false;
-                                                                        });
-                                                                      },
-
-                                                                      icon: Icon(FontAwesomeIcons.solidThumbsUp),
-                                                                      iconSize: 25,
-                                                                      color: Colors.deepPurple,
-                                                                      // onPressed: () {
-                                                                      // },
-                                                                      // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                                                    ),
-                                                                    Text(
-                                                                      likes.toString(),style: TextStyle(
-                                                                      color: Colors.black,
-                                                                    ),
-
-                                                                    ),
-
-                                                                    IconButton(
-                                                                      onPressed: () {
-                                                                        var currentUser;
-                                                                        Navigator.push(
-                                                                            context,
-                                                                            MaterialPageRoute(
-                                                                                builder: ((context) => CommentsScreen(
-                                                                                  documentReference: list[index].reference,
-                                                                                  user: currentUser,
-                                                                                ))));
-                                                                      },
-                                                                      icon: Icon(Icons.comment,color: Colors.deepPurpleAccent),
-                                                                    ),
-                                                                    Text("23"),
-                                                                    IconButton(
-                                                                      onPressed: () {},
-                                                                      icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                // IconButton(
-                                                                //   onPressed: () {},
-                                                                //   icon: Icon(FontAwesome.bookmark_o),
-                                                                // ),
-                                                              ],
-                                                            ),
-
-                                                            Container(
-                                                                width: MediaQuery.of(context).size.width,
-                                                                margin: EdgeInsets.symmetric(
-                                                                  horizontal: 14,
-                                                                ),
-                                                                child: RichText(
-                                                                  softWrap: true,
-                                                                  overflow: TextOverflow.visible,
-                                                                  text: TextSpan(
-                                                                    text: description,
-                                                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,),
-                                                                  ),
-                                                                )
-                                                            ),
-
-                                                            // caption
-                                                            Container(
-                                                              width: MediaQuery.of(context).size.width,
-                                                              margin: EdgeInsets.symmetric(
-                                                                horizontal: 14,
-                                                                vertical: 5,
-                                                              ),
-//                                child: RichText(
-//                                  softWrap: true,
-//                                  overflow: TextOverflow.visible,
-//                                  text: TextSpan(
-//                                    children: [
-//                                      TextSpan(
-//                                        text: displayName,
-//                                        style: TextStyle(
-//                                            fontWeight: FontWeight.bold,
-//                                            color: Colors.black),
-//                                      ),
-//                                      // TextSpan(
-//                                      //   text: " mlkl",
-//                                      //   style: TextStyle(color: Colors.black),
-//                                      // ),
-//                                    ],
-//                                  ),
-//                                ),
-                                                            ),
-
-                                                            // post date
-                                                            Container(
-                                                              margin: EdgeInsets.symmetric(
-                                                                horizontal: 14,
-                                                              ),
-                                                              alignment: Alignment.topLeft,
-                                                              child: Text(
-                                                                readTimestamp(timestamp.seconds),
-                                                                textAlign: TextAlign.start,
-                                                                style: TextStyle(
-                                                                  color: Colors.grey,
-                                                                  fontSize: 10.0,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      // height: 150.0,
-                                                      // width: 150.0,
-                                                      //child: Image.network(url),
                                                     );
-
-//                return FeedTile(
-//                  wiggle: currentpost,
-//                  wiggles: posts,
-//                  description: description,
-//                  timestamp: timestamp,
-//                  url: url,
-//                  postId: postId,
-//                  likes: likes,
-//                );
                                                   }
+
                                               )
                                           ),
                                         ],
-                                      ): Container(color: Colors.deepPurple,);
+                                      ): Container();
                                     }
                                 ),
                                 //child: Image.network(uidCurrUser),
-                              ),
                             )
 
                           ],
                         ),
                       ),
                     ),
+
                     Padding(
-                      padding: const EdgeInsets.only(top: 110,left: 145.0,right: 130.0),
+                      padding: const EdgeInsets.only(top: 80,left: 160.0,right: 160.0),
                       child:(photoUrlController.text!=null)?CircleAvatar(
-                        radius: 50,
+                        radius: 35,
                         backgroundImage: NetworkImage(photoUrlController.text),
 
                         backgroundColor: Colors.transparent,
@@ -700,16 +555,17 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         backgroundColor: Colors.transparent,
                       ),
                     ),
-                  ]
-              ),
-            ),
-          ),
-        ),
 
-//        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-//        floatingActionButton: FloatingActionButton(
-//        child: Icon(Icons.add),onPressed: null),
+
+
+
+
+                  ],
+                    ),
+            ),
+        ),
       ),
+    ),
     );
   }
 

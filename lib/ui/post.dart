@@ -15,19 +15,22 @@ import 'package:techstagram/models/wiggle.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
+import 'package:techstagram/ui/ProfileEdit.dart';
+import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 //import 'package:techstagram/services/database.dart';
 //import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 //
 //import '../../constants3.dart';
-import 'package:vector_math/vector_math_64.dart' hide Colors;
-import 'dart:math' as math;
 
 
-class FeedsPage extends StatefulWidget {
-  final displayNamecurrentUser;
+class postPage extends StatefulWidget {
+
+
   @override
 
+  final String PostUrl;
+  final String displayNamecurrentUser;
   final Wiggle wiggle;
   final List<Wiggle> wiggles;
   final Timestamp timestamp;
@@ -36,9 +39,11 @@ class FeedsPage extends StatefulWidget {
   final String postId;
   final int likes;
   final String uid;
+  final String uidX;
 
-  FeedsPage(
-      {this.wiggles,
+  postPage(
+      {this.PostUrl,
+        this.wiggles,
         this.wiggle,
         this.timestamp,
         this.description,
@@ -46,25 +51,29 @@ class FeedsPage extends StatefulWidget {
         this.uid,
         this.postId,
         this.displayNamecurrentUser,
-        this.likes});
+        this.likes,
+        this.uidX
+      });
 
   @override
-  _FeedsPageState createState() => _FeedsPageState(displayNamecurrentUser: displayNamecurrentUser);
+  _postPageState createState() => _postPageState(displayNamecurrentUser: displayNamecurrentUser,PostUrl: PostUrl,uidX: uidX);
 }
 
-class _FeedsPageState extends State<FeedsPage> {
+class _postPageState extends State<postPage> {
 
   bool isLoading = true;
   bool liked = false;
   bool isEditable = false;
   final String displayNamecurrentUser;
+  final String PostUrl;
+  final String uidX;
 
-  _FeedsPageState({this.displayNamecurrentUser});
+  _postPageState({this.displayNamecurrentUser,this.PostUrl,this.uidX});
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,photoUrlController,
       timestampController,likesController,uidController;
-  List<Posts> posts;
+  int posts;
   List<DocumentSnapshot> list;
 
   Map<String, dynamic> _profile;
@@ -79,12 +88,6 @@ class _FeedsPageState extends State<FeedsPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
-  double _scale = 1.0;
-  double _previousScale;
-  var yOffset = 400.0;
-  var xOffset = 50.0;
-  var rotation = 0.0;
-  var lastRotation = 0.0;
 
   @override
   void initState() {
@@ -116,7 +119,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   fetchPosts() async {
 
-    DatabaseService().getPosts().then((val){
+    getPosts().then((val){
       setState(() {
         postsStream = val;
       });
@@ -125,25 +128,74 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
 
-  void _onHorizontalDrag(DragEndDetails details) {
-    if (details.primaryVelocity == 0)
-      // user have just tapped on screen (no dragging)
-      return ;
 
-    if (details.primaryVelocity.compareTo(0) == -1) {
-//      dispose();
+  deletePost( String displayNamecurrent, String displayName, String postId, String uidX) async {
+    //print(displayNamecurrent)
+
+
+
+
+    if(displayName == displayNamecurrentUser){
+
+      DatabaseService().PostD(uidX,posts);
+      print(postId);
+      print(displayName);
+      print(uidX);
+      print("halelula");
+      print(displayNamecurrentUser);
+      await Firestore.instance.collection('posts').document(postId).delete();
+      await Firestore.instance.collection('users').document(uidX)
+      .collection('posts').document(postId).delete();
+
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 4,)),
       );
-    }
-    else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
-      );
+
+    }else{
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('You are not the owner of this post'),
+              actions: <Widget>[
+
+              ],
+            );
+          });
     }
   }
+
+
+  getPosts() async {
+    print(PostUrl);
+    return Firestore.instance
+        .collection("posts")
+        .where('url', isEqualTo: PostUrl)
+        .snapshots();
+  }
+
+
+
+//  void _onHorizontalDrag(DragEndDetails details) {
+//    if (details.primaryVelocity == 0)
+//      // user have just tapped on screen (no dragging)
+//      return ;
+//
+//    if (details.primaryVelocity.compareTo(0) == -1) {
+////      dispose();
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
+//      );
+//    }
+//    else {
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+//      );
+//    }
+//  }
 
 
   getlikes( String displayNamecurrent, String postId) {
@@ -165,21 +217,21 @@ class _FeedsPageState extends State<FeedsPage> {
 
   }
 
-//  fetchLikes() async {
-//    currUser = await FirebaseAuth.instance.currentUser();
-//    try {
-//      docSnap = await Firestore.instance
-//          .collection("likes")
-//          .document(currUser.uid)
-//          .get();
-//      setState(() {
-//        isLoading = false;
-//        isEditable = true;
-//      });
-//    } on PlatformException catch (e) {
-//      print("PlatformException in fetching user profile. E  = " + e.message);
-//    }
-//  }
+  fetchLikes() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("likes")
+          .document(currUser.uid)
+          .get();
+      setState(() {
+        isLoading = false;
+        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -193,6 +245,7 @@ class _FeedsPageState extends State<FeedsPage> {
       uidController.text =  docSnap.data["uid"];
       displayNameController.text = docSnap.data["displayName"];
       photoUrlController.text = docSnap.data["photoURL"];
+      posts = docSnap.data["posts"];
 
 
       setState(() {
@@ -240,6 +293,45 @@ class _FeedsPageState extends State<FeedsPage> {
   File _image;
   bool upload;
 
+  createAlertDialog(context,url) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Are you sure you want to delete post?'),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    // return Firestore.instance.collection("posts")
+                    //     .document(url)
+                    //     .delete();
+
+                    Firestore.instance.collection("posts").document(url).get()
+                    .then((doc) {
+                      if (doc.exists) {
+                        doc.reference.delete();
+
+                        Navigator.pop(context);
+                      }
+                    });
+                    // DatabaseService()
+                    //     .postReference
+                    //     .document(widget.postId)
+                    //     .get()
+                    //     .then((doc) {
+                    //   if (doc.exists) {
+                    //     doc.reference.delete();
+                    //
+                    //     Navigator.pop(context);
+                    //   }
+                    // });
+                  }),
+            ],
+          );
+        });
+  }
+
   Future pickImage() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
@@ -267,19 +359,17 @@ class _FeedsPageState extends State<FeedsPage> {
         liked = true;
         print(liked);
       });
-    }else{
-      return null;
     }
-    // else if (liked = true){
-    //   DatabaseService().unlikepost(
-    //       likes, postId,
-    //       displayNameController.text);
-    //   setState(() {
-    //     liked = false;
-    //     print(liked);
-    //   });
-    //
-    // }
+    else if (liked = true){
+      DatabaseService().unlikepost(
+          likes, postId,
+          displayNameController.text);
+      setState(() {
+        liked = false;
+        print(liked);
+      });
+
+    }
   }
   String urlx;
 
@@ -289,8 +379,6 @@ class _FeedsPageState extends State<FeedsPage> {
 
   @override
   Widget build(BuildContext context) {
-
-
 
 
 //    fetchdimensions(String url) async {
@@ -305,12 +393,18 @@ class _FeedsPageState extends State<FeedsPage> {
 
     // TODO: implement build
     return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails details) =>
-          _onHorizontalDrag(details),
+
       onTap: () {
         print("hello");
       },
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text("Post", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
+          leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black,), onPressed: (){
+            Navigator.pop(context);
+          }),
+        ),
         key: _scaffoldKey,
         body: StreamBuilder(
           stream: postsStream,
@@ -355,6 +449,7 @@ class _FeedsPageState extends State<FeedsPage> {
                           liked = false;
                         }
 
+                        //getlikes(displayNameController.text,postId);
 
                         return Container(
                           child: Container(
@@ -363,66 +458,67 @@ class _FeedsPageState extends State<FeedsPage> {
                               children: <Widget>[
                                 (index == 0)?Container(
                                   color: Colors.transparent,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      FlatButton(
-                                        onPressed:
-                                            (){
-                                          pickImage();
-                                          if (upload == true){
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
-                                          }else{
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,),));
-                                          }
-                                        },
-                                        color: Colors.transparent,
-                                        child: Row(
-                                          children: [
-                                            Icon(FontAwesomeIcons.plus,color: Colors.deepPurpleAccent,),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text("Add Post",style:
-                                              TextStyle(
-                                                color: Colors.deepPurpleAccent,
-                                              ),),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                  // child: Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.center,
+                                  //   children: [
+                                  //     FlatButton(
+                                  //       onPressed:
+                                  //           (){
+                                  //         pickImage();
+                                  //         if (upload == true){
+                                  //           Navigator.push(
+                                  //               context,
+                                  //               MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                                  //         }else{
+                                  //           Navigator.push(
+                                  //               context,
+                                  //               MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,),));
+                                  //         }
+                                  //       },
+                                  //       color: Colors.transparent,
+                                  //       child: Row(
+                                  //         children: [
+                                  //           Icon(FontAwesomeIcons.plus,color: Colors.deepPurpleAccent,),
+                                  //           Padding(
+                                  //             padding: const EdgeInsets.all(8.0),
+                                  //             child: Text("Add Post",style:
+                                  //             TextStyle(
+                                  //               color: Colors.deepPurpleAccent,
+                                  //             ),),
+                                  //           ),
+                                  //         ],
+                                  //       ),
+                                  //     ),
+                                  //
+                                  //     Padding(
+                                  //       padding: const EdgeInsets.only(left: 100.0),
+                                  //     ),
+                                  //     FlatButton(onPressed: (){},
+                                  //       color: Colors.transparent,
+                                  //       child: Row(
+                                  //         children: [
+                                  //           Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
+                                  //           Padding(
+                                  //             padding: const EdgeInsets.all(8.0),
+                                  //             child: Text("Rate us",style:
+                                  //             TextStyle(
+                                  //               color: Colors.deepPurpleAccent,
+                                  //             ),),
+                                  //           ),
+                                  //         ],
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+                                ):
+                                Container(height: 0.0,width: 0.0,),
 
-                                      // Padding(
-                                      //   padding: const EdgeInsets.only(left: 100.0),
-                                      // ),
-                                      // FlatButton(onPressed: (){},
-                                      //   color: Colors.transparent,
-                                      //   child: Row(
-                                      //     children: [
-                                      //       Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
-                                      //       Padding(
-                                      //         padding: const EdgeInsets.all(8.0),
-                                      //         child: Text("Rate us",style:
-                                      //         TextStyle(
-                                      //           color: Colors.deepPurpleAccent,
-                                      //         ),),
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
-                                    ],
-                                  ),
-                                ): Container(height: 0.0,width: 0.0,),
-
-                                GestureDetector(
-                                  onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
-                                  ),
-                                  child: Container(
+                                // GestureDetector(
+                                //   onTap: () => Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                                // ),
+                                Container(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 10,
                                       vertical: 10,
@@ -436,7 +532,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               borderRadius: BorderRadius.circular(40),
 
                                               child: Image(
-                                                image: NetworkImage(photoUrlController.text),
+                                                image: NetworkImage(photoUrl),
                                                 width: 40,
                                                 height: 40,
                                                 fit: BoxFit.cover,
@@ -449,63 +545,41 @@ class _FeedsPageState extends State<FeedsPage> {
                                           ],
                                         ),
                                         IconButton(
-                                          icon: Icon(SimpleLineIcons.options),
-                                          onPressed: () {},
+                                          icon: Icon(Icons.delete_outline, color: Colors.purple,),
+                                          //onPressed: () => createAlertDialog(context,url),
+                                          onPressed: () => deletePost(displayNamecurrentUser, displayName,postId,uidX),
+
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
+                                //),
 
 
                                 GestureDetector(
-                                  onDoubleTap: () {
-                                    getlikes(displayNameController.text, postId);
-                                    if (liked == false) {
-                                      DatabaseService().likepost(
-                                          likes, postId,
-                                          displayNameController.text);
-                                      setState(() {
-                                        liked = true;
-                                        print(liked);
-                                      });
-//                                     return liked;
-                                    } else {
-                                      print("nahi");
-                                    }
+                                  onDoubleTap: (){
+                                    print("double tap");
+                                    print(liked);
+                                    doubletaplike(likes,postId);
+                                    print("double tap again");
+                                    print(liked);
                                   },
-                                  // onPressed: () {
-                                  // },
-                                  // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-
-                                  // onDoubleTap: (){
-                                  //   print("double tap");
-                                  //   print(liked);
-                                  //   doubletaplike(likes,postId);
-                                  //   print("double tap again");
-                                  //   print(liked);
-                                  // },
                                   onTap: null,
 
-                                  child: GestureDetector(
+                                  child: InteractiveViewer(
+                                    transformationController: _controller,
+                                    onInteractionEnd: (value){
+                                      _controller.value = Matrix4.identity();
+                                    },
+                                    child: FadeInImage(
+                                      image: NetworkImage(url),
+                                      //image: NetworkImage("posts[i].postImage"),
+                                      placeholder: AssetImage("assets/images/loading.gif"),
+                                      width: MediaQuery.of(context).size.width,
+                                    ),
+                                  ),
 
-                                            child :FadeInImage(
-
-                                              image: NetworkImage(url),
-                                              //image: NetworkImage("posts[i].postImage"),
-                                              placeholder: AssetImage("assets/images/loadingX.gif"),
-                                              width: MediaQuery.of(context).size.width,
-
-
-
-                                            ),
-                                        ),
                                 ),
-
-
-
-
-
 
 
                                 Row(
@@ -554,10 +628,11 @@ class _FeedsPageState extends State<FeedsPage> {
                                           padding: const EdgeInsets.only(top: 3.0),
                                           child: IconButton(
 
-                                            onPressed: () { //print(displayNameController.text);
-                                              Navigator.push(context, MaterialPageRoute(builder: (context){
-                                                return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
-                                              }));
+                                            onPressed: () { print(displayNameController.text);
+                                            Navigator.push(context, MaterialPageRoute(builder: (context){
+                                              return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                              //return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                            }));
                                             },
                                             // Navigator.push(
                                             //     context,
@@ -627,8 +702,27 @@ class _FeedsPageState extends State<FeedsPage> {
                                     horizontal: 14,
                                     vertical: 5,
                                   ),
+//                                child: RichText(
+//                                  softWrap: true,
+//                                  overflow: TextOverflow.visible,
+//                                  text: TextSpan(
+//                                    children: [
+//                                      TextSpan(
+//                                        text: displayName,
+//                                        style: TextStyle(
+//                                            fontWeight: FontWeight.bold,
+//                                            color: Colors.black),
+//                                      ),
+//                                      // TextSpan(
+//                                      //   text: " mlkl",
+//                                      //   style: TextStyle(color: Colors.black),
+//                                      // ),
+//                                    ],
+//                                  ),
+//                                ),
                                 ),
 
+                                // post date
                                 Container(
                                   margin: EdgeInsets.symmetric(
                                     horizontal: 14,
@@ -646,7 +740,20 @@ class _FeedsPageState extends State<FeedsPage> {
                               ],
                             ),
                           ),
+                          // height: 150.0,
+                          // width: 150.0,
+                          //child: Image.network(url),
                         );
+
+//                return FeedTile(
+//                  wiggle: currentpost,
+//                  wiggles: posts,
+//                  description: description,
+//                  timestamp: timestamp,
+//                  url: url,
+//                  postId: postId,
+//                  likes: likes,
+//                );
                       }),
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/src/widgets/editable_text.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/models/wiggle.dart';
 import 'dart:io';
@@ -382,6 +383,18 @@ class DatabaseService {
         .updateData({'followers': followers - 1});
   }
 
+  Future PhoneverificationX(String uid) async {
+//    .collection("users")
+//        .document(uid)
+//        .delete(); await Firestore.instance
+
+
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'phoneVerified': true});
+  }
+
   Future decreaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
 
     await Firestore.instance
@@ -407,13 +420,26 @@ class DatabaseService {
 //        }
   }
 
+  PostD(String uid,int posts) async {
+    //print(postsController);
+    print("helloww");
+    //String increment = postsController.text;
+    //int incr = int.parse(posts);
+    //print(incr);
+    Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'posts': posts - 1});
+  }
+
   Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
     await Firestore.instance
         .collection("users")
         .document(uidX)
         .collection('following')
         .document(displayName)
-        .setData({'followingname' : displayName});
+        .setData({'followingname' : displayName,
+                  'followinguid': uidX});
         //.updateData({'followingname': uid,});
 
     return await Firestore.instance
@@ -423,13 +449,16 @@ class DatabaseService {
   }
   
 
-  Future followUser(int followers, String uid, String displayName) async {
+  Future followUser(int followers, String uid, String displayName,String uidX) async {
     await Firestore.instance
         .collection("users")
         .document(uid)
         .collection('followers')
         .document(displayName)
-        .setData({'followername': displayName,});
+        .setData({
+      'followername': displayName,
+      'followeruid':uidX,
+    });
 
     return await Firestore.instance
         .collection("users")
@@ -754,4 +783,6 @@ class DatabaseService {
         .where("users", arrayContains: userName)
         .snapshots();
   }
+
+
 }

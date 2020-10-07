@@ -36,7 +36,6 @@ dependencies:
   firebase_database:
   cloud_firestore:
   rxdart: 0.20.0
-  catcher:
   image_picker:
   file_picker:
   after_layout:
@@ -81,8 +80,11 @@ dependencies:
   flutter_icons: ^1.0.0+1
   sliding_up_panel:
   ext_storage:
-
   permission_handler:
+  timeago: ^2.0.27
+  catcher:
+  local_auth:
+  http:
 
 dev_dependencies:
   flutter_test:
@@ -141,6 +143,7 @@ flutter:
     - assets/icons/login.svg
     - assets/icons/signup.svg
     - assets/icons/twitter.svg
+    - assets/images/loadingX.gif
     - assets/images/1.jpg
     - assets/images/2.jpg
     - assets/images/3.jpg
@@ -175,6 +178,7 @@ flutter:
     - assets/images/woman4.jpg
     - assets/images/woman5.jpg
     - assets/insta_logo.png
+    - assets/images/loading.gif
     - assets/intu
     - assets/no_image.png
     - assets/phone-icon.png

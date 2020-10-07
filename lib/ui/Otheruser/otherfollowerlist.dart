@@ -103,7 +103,6 @@ class _OtherFollowersList extends State<OtherFollowersList> {
               String uid = snapshot.data.documents[index]["uid"];
               //bandekiuid = snapshot.data.documents[index]["uid"];
               String displayName = snapshot.data.documents[index]["followername"];
-              print(displayName);
               return (searchKey!= null)?Card(
                 child: Row(
                   children: <Widget>[

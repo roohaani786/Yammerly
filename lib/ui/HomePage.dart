@@ -175,7 +175,8 @@ class _HomePageState extends State<HomePage> {
 //    final user = Provider.of<User>(context);
 //    _saveDeviceToken(user.uid);
     return GestureDetector(
-      onTap: () => Navigator.of(context).pop(HomePage()),
+      onTap: (){print("hu");},
+//      onTap: () => Navigator.of(context).pop(HomePage()),
           child: Scaffold(
             appBar: AppBar(
               title: Text(
@@ -276,7 +277,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
     // TODO: implement build
 
     return GestureDetector(
-      onTap: () => Navigator.of(context).pop(HomePage()),
+      onTap: () => print("hello"),
       child: Scaffold(
         body: DefaultTabController(
           length: 5,

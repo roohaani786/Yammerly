@@ -41,7 +41,7 @@ class _ChatsPageState extends State<ChatsPage> {
         context,
         MaterialPageRoute(builder: (context) => CameraS()),
       );
-      cameraon = false;
+//      cameraon = false;
 //      Navigator.push(
 //          context,
 //          MaterialPageRoute(
@@ -148,7 +148,7 @@ class _ChatsPageState extends State<ChatsPage> {
       onHorizontalDragEnd: (DragEndDetails details) =>
           _onHorizontalDrag(details),
 
-      onTap: () => Navigator.of(context).pop(true),
+      onTap: () => print("hui"),
 
 //      onHorizontalDragUpdate: (details){
 //        print(details.primaryDelta);

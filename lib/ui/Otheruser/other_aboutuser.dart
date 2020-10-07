@@ -144,8 +144,9 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
       backgroundColor: Colors.deepPurple.shade50,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("About me",style: TextStyle(
-            color: Colors.deepPurple
+        title: Text(displayName,style: TextStyle(
+            color: Colors.deepPurple,
+                fontWeight: FontWeight.bold,
         ),),
       ),
       body: StreamBuilder(

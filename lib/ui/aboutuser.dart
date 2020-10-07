@@ -133,15 +133,21 @@ class _AboutUserState extends State<AboutUser> {
   Future<void> _submitPhoneNumber() async {
     /// NOTE: Either append your phone number country code or add in the code itself
     /// Since I'm in India we use "+91 " as prefix `phoneNumber`
-    String phoneNumber = "+91 " + phoneNumberController.text.toString().trim();
+    String phoneNumber = "+91" + phoneNumberController.text.toString().trim();
     print(phoneNumber);
 
     /// The below functions are the callbacks, separated so as to make code more readable
     void verificationCompleted(AuthCredential phoneAuthCredential) {
       print('verificationCompleted');
+      DatabaseService().PhoneverificationX(currUser.uid);
 
       this._phoneAuthCredential = phoneAuthCredential;
       print(phoneAuthCredential);
+
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => ),
+//      );
     }
 
     void verificationFailed(AuthException error) {
@@ -168,10 +174,12 @@ class _AboutUserState extends State<AboutUser> {
 
       /// `seconds` didn't work. The underlying implementation code only reads in `milliseconds`
       timeout: Duration(milliseconds: 10000),
-
+      
+//     
       /// If the SIM (with phoneNumber) is in the current device this function is called.
       /// This function gives `AuthCredential`. Moreover `login` function can be called from this callback
       verificationCompleted: verificationCompleted,
+      
 
       /// Called when the verification is failed
       verificationFailed: verificationFailed,
@@ -203,443 +211,539 @@ class _AboutUserState extends State<AboutUser> {
 
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(0.0),
           child: Column(
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
-                  child: Container(
-                    height: 350.0,
-                    width: 450.0,
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
+                child: Container(
+                  height: MediaQuery.of(context).size.height-70.0,
+                  width: 450.0,
 
-                      // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
+                    // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
 
 
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20.0,top: 10.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                " Personal Details",
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Pacifico',
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0,top: 10.0),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              " Personal Details",
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.purple,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Pacifico',
+                              ),
+                            ),
+
+                          ),
+                        ),
+
+
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0,left: 0.0),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 50.0,
+                                width: 500.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("First Name",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(firstNameController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
                                 ),
                               ),
 
-                            ),
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Last Name",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(lastNameController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Phone Number",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(phoneNumberController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Username",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(displayNameController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Email",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(emailController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Gender",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(genderController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Relationship",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(relationshipController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Work",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(workController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Education",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(educationController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Current City",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(currentCityController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Pin Code",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(pinCodeController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                height: 50.0,
+                                width: 450.0,
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 15.0),
+                                        child: Container(
+                                          width: 150.0,
+                                          child: Text("Home Town",style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),),
+                                        ),
+                                      ),
+                                      Text(homeTownController.text,style: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            ],
                           ),
+                        ),
 
-
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20.0,left: 25.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("First Name",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(firstNameController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Last Name",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(lastNameController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Phonenumber",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(phoneNumberController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Username",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(displayNameController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Email",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(emailController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Gender",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(genderController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Relationship",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(relationshipController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Work",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(workController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Education",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(educationController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Current City",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(currentCityController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Pin Code",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(pinCodeController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("HomeTown",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(homeTownController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+//                        Card(
+//                            child: Padding(
+//                              padding: const EdgeInsets.only(left: 18.0,top: 30.0),
+//                              child: Column(
+//                                children: [
+//
+//
+////                      Container(
+////                          child: Form(
+////                            key: _phoneVerificationKey,
+////                            child: Row(
+////                              children: [
+////                                Container(
+////                                  height: 50.0,
+////                                  width: 200.0,
+////                                  child: TextFieldContainer(
+////                                    child: TextFormField(
+////                                      enabled: false,
+////                                      style: TextStyle(
+////                                          fontSize: 12.0, height: 1.5, color: Colors.grey),
+////                                      textInputAction: TextInputAction.next,
+////                                      cursorColor: kPrimaryColor,
+////
+////                                      decoration: InputDecoration(
+////                                        border: InputBorder.none,
+////                                        contentPadding: EdgeInsets.only(
+////                                            left: 0, right: 3, top: 6, bottom: 12),
+////                                        errorStyle: TextStyle(
+////                                          fontSize: 10.0,
+////                                          height: 0.3,
+////                                        ),
+////                                        icon: Icon(
+////                                          Icons.phone_iphone,
+////                                          //  size: 12.0,
+////                                          color: kPrimaryColor,
+////                                        ),
+////                                        fillColor: Colors.deepPurple.shade50,
+////                                        filled: true,
+////                                        hintText: "Phone Number",
+////                                      ),
+////                                      controller: phoneNumberController,
+////                                      //enableInteractiveSelection: false,
+////                                      keyboardType: TextInputType.number,
+////                                      validator: validateMobile,
+////                                    ),
+////                                  ),),
+////                                Padding(
+////                                  padding: const EdgeInsets.all(8.0),
+////                                  child: RaisedButton(child: Text("Verify",style: TextStyle(
+////                                    color: Colors.white,
+////                                  ),),
+////                                      color: Colors.deepPurple,
+////                                      onPressed: (){
+////                                        if (_phoneVerificationKey.currentState.validate()) {
+////                                          _submitPhoneNumber();
+////
+////                                         // if(_codesent){
+////
+////                                            Navigator.push(
+////                                              context,
+////                                              MaterialPageRoute(
+////                                                builder: (context) {
+////                                                  return SubmitPhoneOTP();
+////                                                },
+////                                              ),
+////                                            );
+////
+////                                          //}
+////
+////                                        }
+////                                      }),
+////                                ),
+////                              ],
+////                            ),
+////                          )
+////                      ),
+//
+//                                  Padding(
+//                                    padding: const EdgeInsets.only(top: 10.0),
+//                                    child: Align(
+//                                      alignment: Alignment.topLeft,
+//                                      child: Text("Verify email",style:
+//                                      TextStyle(
+//                                          color: kPrimaryColor,
+//                                          fontWeight: FontWeight.bold,
+//                                          fontSize: 15.0
+//                                      ),),
+//                                    ),
+//                                  ),
+//
+//                                  Container(
+//                                      child: Form(
+//                                        child: Row(
+//                                          children: [
+//                                            Container(
+//                                              height: 50.0,
+//                                              width: 200.0,
+//                                              child: TextFieldContainer(
+//                                                child: TextFormField(
+//                                                  enabled: false,
+//                                                  style: TextStyle(
+//                                                      fontSize: 12.0, height: 1.5, color: Colors.grey),
+//                                                  textInputAction: TextInputAction.next,
+////                    focusNode: _firstName,
+////                    onFieldSubmitted: (term) {
+////                      _fieldFocusChange(context, _firstName, _lastName);
+////                    },
+////                            style: TextStyle(
+////                                fontSize: 20.0,
+////                                height: 2.0,
+////                                color: Colors.black
+////                            ),
+//                                                  cursorColor: kPrimaryColor,
+//
+//
+//
+//                                                  decoration: InputDecoration(
+//                                                    border: InputBorder.none,
+//                                                    contentPadding: EdgeInsets.only(
+//                                                        left: 0, right: 3, top: 6, bottom: 12),
+//                                                    errorStyle: TextStyle(
+//                                                      fontSize: 10.0,
+//                                                      height: 0.3,
+//                                                    ),
+//                                                    icon: Icon(
+//                                                      Icons.alternate_email,
+//                                                      //  size: 12.0,
+//                                                      color: kPrimaryColor,
+//                                                    ),
+//                                                    fillColor: Colors.deepPurple.shade50,
+//                                                    filled: true,
+//                                                    hintText: "Email address",
+//                                                  ),
+//                                                  controller: emailController,
+////                    controller: firstNameInputController,
+//                                                  //enableInteractiveSelection: false,
+//                                                  // keyboardType: TextInputType.name,
+////                      validator: emailValidator,
+//                                                ),
+//                                              ),),
+//                                            Padding(
+//                                              padding: const EdgeInsets.all(8.0),
+//                                              child: RaisedButton(child: Text("Verify",style: TextStyle(
+//                                                color: Colors.white,
+//                                              ),),
+//                                                  color: Colors.deepPurple,
+//                                                  onPressed: (){
+//
+//                                                  }),
+//                                            ),
+//                                          ],
+//                                        ),
+//                                      )
+//                                  )
+//                                ],
+//                              ),
+//                            )
+//                        )
 
 
 
 
-                        ],
-                      ),
-                  ),
+                      ],
+                    ),
                 ),
               ),
 
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 18.0,bottom: 30.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Verify phone",style:
-                          TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0
-                          ),),
-                        ),
-                      ),
 
-                      Container(
-                          child: Form(
-                            key: _phoneVerificationKey,
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 50.0,
-                                  width: 200.0,
-                                  child: TextFieldContainer(
-                                    child: TextFormField(
-                                      style: TextStyle(
-                                          fontSize: 12.0, height: 1.5, color: Colors.black),
-                                      textInputAction: TextInputAction.next,
-                                      cursorColor: kPrimaryColor,
-
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.only(
-                                            left: 0, right: 3, top: 6, bottom: 12),
-                                        errorStyle: TextStyle(
-                                          fontSize: 10.0,
-                                          height: 0.3,
-                                        ),
-                                        icon: Icon(
-                                          Icons.phone_iphone,
-                                          //  size: 12.0,
-                                          color: kPrimaryColor,
-                                        ),
-                                        fillColor: Colors.deepPurple.shade50,
-                                        filled: true,
-                                        hintText: "Phone Number",
-                                      ),
-                                      controller: phoneNumberController,
-                                      //enableInteractiveSelection: false,
-                                      keyboardType: TextInputType.number,
-                                      validator: validateMobile,
-                                    ),
-                                  ),),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: RaisedButton(child: Text("Verify",style: TextStyle(
-                                    color: Colors.white,
-                                  ),),
-                                      color: Colors.deepPurple,
-                                      onPressed: (){
-                                        if (_phoneVerificationKey.currentState.validate()) {
-                                          _submitPhoneNumber();
-                                          if(_codesent){
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) {
-                                                  return SubmitPhoneOTP();
-                                                },
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      }),
-                                ),
-                              ],
-                            ),
-                          )
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Verify email",style:
-                          TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0
-                          ),),
-                        ),
-                      ),
-
-                      Container(
-                          child: Form(
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 50.0,
-                                  width: 200.0,
-                                  child: TextFieldContainer(
-                                    child: TextFormField(
-                                      style: TextStyle(
-                                          fontSize: 12.0, height: 1.5, color: Colors.black),
-                                      textInputAction: TextInputAction.next,
-//                    focusNode: _firstName,
-//                    onFieldSubmitted: (term) {
-//                      _fieldFocusChange(context, _firstName, _lastName);
-//                    },
-//                            style: TextStyle(
-//                                fontSize: 20.0,
-//                                height: 2.0,
-//                                color: Colors.black
-//                            ),
-                                      cursorColor: kPrimaryColor,
-
-
-
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.only(
-                                            left: 0, right: 3, top: 6, bottom: 12),
-                                        errorStyle: TextStyle(
-                                          fontSize: 10.0,
-                                          height: 0.3,
-                                        ),
-                                        icon: Icon(
-                                          Icons.alternate_email,
-                                          //  size: 12.0,
-                                          color: kPrimaryColor,
-                                        ),
-                                        fillColor: Colors.deepPurple.shade50,
-                                        filled: true,
-                                        hintText: "Email address",
-                                      ),
-//                    controller: firstNameInputController,
-                                      //enableInteractiveSelection: false,
-                                      // keyboardType: TextInputType.name,
-//                      validator: emailValidator,
-                                    ),
-                                  ),),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: RaisedButton(child: Text("Verify",style: TextStyle(
-                                    color: Colors.white,
-                                  ),),
-                                      color: Colors.deepPurple,
-                                      onPressed: (){}),
-                                ),
-                              ],
-                            ),
-                          )
-                      )
-                    ],
-                  ),
-                )
-              )
 
             ],
           ),
@@ -656,17 +760,22 @@ class SubmitPhoneOTP extends StatefulWidget {
 
 class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
   TextEditingController _otpController;
+  int _otpControllerX;
   AuthCredential _phoneAuthCredential;
   String _verificationId;
 
-  void _submitOTP() {
+  final GlobalKey<FormState> _otpVerificationKey = GlobalKey<FormState>();
+
+  void _submitOTP(String _otp) {
     /// get the `smsCode` from the user
-    String smsCode = _otpController.text.toString().trim();
+    String smsCode = _otp.toString();
 
     /// when used different phoneNumber other than the current (running) device
     /// we need to use OTP to get `phoneAuthCredential` which is inturn used to signIn/login
     this._phoneAuthCredential = PhoneAuthProvider.getCredential(
         verificationId: this._verificationId, smsCode: smsCode);
+    print(_verificationId);
+    print("Done...");
 
   }
   @override
@@ -676,6 +785,7 @@ class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
       appBar: AppBar(),
       body: Container(
         child: Form(
+          key: _otpVerificationKey,
         child: Row(
         children: [
         Container(
@@ -683,6 +793,7 @@ class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
         width: 250.0,
         child: TextFieldContainer(
           child: TextFormField(
+            controller: _otpController,
             style: TextStyle(
                 fontSize: 12.0, height: 1.5, color: Colors.black),
             textInputAction: TextInputAction.next,
@@ -701,7 +812,6 @@ class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
                 color: kPrimaryColor,
               ),
               fillColor: Colors.deepPurple.shade50,
-              filled: true,
               hintText: "Enter OTP",
             ),
           ),
@@ -715,7 +825,7 @@ class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
       ),),
       color: Colors.deepPurple,
       onPressed: (){
-        _submitOTP();
+        _submitOTP(_otpController.text);
       })),
       ],
       ),

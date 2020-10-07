@@ -154,12 +154,17 @@ class _BodyState extends State<Body> {
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
+          if(user.email == null){
+            print("User already exists");
+          }
 
-          authService.updateUserData(user);
-          loading.add(false);
+          else{
+            authService.checkuserexists(user.uid, user);
+            loading.add(false);
 
-          print("signed in " + user.displayName);
-          return user;
+            print("signed in " + user.displayName);
+            return user;
+          }
         } catch (e) {
           showDialog(
               context: context,
@@ -348,7 +353,7 @@ class _BodyState extends State<Body> {
                 "surname": lastNameInputController.text,
                 "phonenumber": phoneNumberController.text,
                 "email": emailInputController.text,
-                "displayName": displayNameInputController.text,
+                "displayName": displayNameInputController.text.toLowerCase(),
                 'followers': 0,
                 'following': 0,
                 'posts': 0,

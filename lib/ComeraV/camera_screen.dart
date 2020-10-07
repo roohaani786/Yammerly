@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluro/fluro.dart';
+import 'package:techstagram/ComeraV/cam.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -185,10 +186,20 @@ class CameraScreenState extends State<CameraScreen>
         upload = true;
       });
     });
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
-    );
+
+    if (_image != null){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+    }else{
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CameraScreen(),));
+    }
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+//    );
     print("Done..");
   }
   String url;
@@ -292,15 +303,7 @@ class CameraScreenState extends State<CameraScreen>
         _onCameraSwitch();
       },
       child: Scaffold(
-        // floatingActionButton: HoldDetector(
-        //   onHold: startVideoRecording,
-        //   holdTimeout: Duration(milliseconds: 200),
-        //   enableHapticFeedback: true,
-        //   child: FloatingActionButton(
-        //     child: Icon(Icons.camera),
-        //     onPressed: _captureImage,
-        //   ),
-        // ),
+
         backgroundColor: Theme.of(context).backgroundColor,
         key: _scaffoldKey,
         extendBody: true,
@@ -439,57 +442,6 @@ class CameraScreenState extends State<CameraScreen>
     );
   }
 
-//  Widget _gallerygrid() {
-//    return SingleChildScrollView(
-//      child: Padding(
-//        padding: const EdgeInsets.only(top: 500.0),
-//        child: Container(
-//          color: Colors.purple,
-//          height: 100.0,
-//          width: double.infinity,
-//          child: Row(
-//            children: [
-//              Container(
-//                height: 100.0,
-//                width: double.infinity,
-//                child: FutureBuilder<List<String>>(
-//                    builder: (BuildContext context,
-//                        AsyncSnapshot<List<String>> snapshot) {
-//                      SliverGrid(
-//                        gridDelegate:
-//                        SliverGridDelegateWithFixedCrossAxisCount(
-//                          crossAxisCount: 3,
-//                          mainAxisSpacing: 2.0,
-//                          crossAxisSpacing: 2.0,
-//                        ),
-//                        delegate: SliverChildBuilderDelegate(
-//                              (context, index) {
-//                            return GalleryItemThumbnail(
-//                              heroId: 'itemPanel-$index',
-//                              height: 150,
-//                              resource: snapshot.data[index],
-//                              onTap: () {
-//                                Application.router.navigateTo(
-//                                  context,
-//                                  "/edit/image?resource=${Uri.encodeComponent(snapshot.data[index])}&id=itemPanel-$index",
-//                                  transition: TransitionType.fadeIn,
-//                                );
-//                              },
-//                            );
-//                          },
-//                          childCount: snapshot.data.length,
-//                        ),
-//                      );
-//                      return null;
-//                    }
-//                ),
-//              ),
-//            ],
-//          ),
-//        ),
-//      ),
-//    );
-//  }
 
   Widget _buildBottomNavigationBar() {
     return Container(
@@ -507,49 +459,22 @@ class CameraScreenState extends State<CameraScreen>
                   icon: Icon(FontAwesomeIcons.photoVideo,
                     color: Colors.white60,), onPressed:
                   (){
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => pickImage(),));
                 pickImage();
                 if (upload == true){
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
                 }else{
-                  return null;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CameraS(),));
                 }
               }
 
               ),
-
-
-//              FutureBuilder(
-//                future: getLastImage(),
-//                builder: (context, snapshot) {
-//                  if (snapshot.data == null) {
-//                    return Container(
-//                      width: 40.0,
-//                      height: 40.0,
-//                    );
-//                  }
-//                  return GestureDetector(
-//                    onTap: () => Navigator.push(
-//                      context,
-//                      MaterialPageRoute(
-//                        builder: (context) => Gallery(),
-//                      ),
-//                    ),
-//                    child: Container(
-//                      width: 40.0,
-//                      height: 40.0,
-//                      child: ClipRRect(
-//                        borderRadius: BorderRadius.circular(4.0),
-//                        child: Image.file(
-//                          snapshot.data,
-//                          fit: BoxFit.cover,
-//                        ),
-//                      ),
-//                    ),
-//                  );
-//                },
-//              ),
 
               FlatButton(
                 color: Colors.transparent,
@@ -591,14 +516,18 @@ class CameraScreenState extends State<CameraScreen>
               ),
               IconButton(
                 icon: Icon(
-                  (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-                  color: Colors.white,
+                  Icons.camera_alt,color: Colors.white,
                 ),
-                onPressed: () {
-                  setState(() {
-                    _isRecordingMode = !_isRecordingMode;
-                  });
-                },
+                onPressed: (){},
+                // icon: Icon(
+                //   (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
+                //   color: Colors.white,
+                // ),
+                // onPressed: () {
+                //   setState(() {
+                //     _isRecordingMode = !_isRecordingMode;
+                //   });
+                // },
               ),
             ],
           ),
@@ -635,7 +564,7 @@ class CameraScreenState extends State<CameraScreen>
       return lastFile;
     } else {
       String thumb = await Thumbnails.getThumbnail(
-          videoFile: lastFile.path, imageType: ThumbFormat.PNG, quality: 30);
+          videoFile: lastFile.path, imageType: ThumbFormat.PNG, quality: 100);
       return File(thumb);
     }
   }

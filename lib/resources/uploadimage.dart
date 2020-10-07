@@ -26,11 +26,13 @@ class UploadImage extends StatefulWidget {
 class _UploadImageState extends State<UploadImage>
     with AutomaticKeepAliveClientMixin<UploadImage> {
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController
   emailController,
       uidController,
       displayNameController,photoUrlController,
-  descriptionController;
+  descriptionController,postsController;
 
 
   Map<String, dynamic> _profile;
@@ -62,7 +64,7 @@ class _UploadImageState extends State<UploadImage>
     ImD.Image mImageFile = ImD.decodeImage(file.readAsBytesSync());
     final compressedImage = File('$path/img_$postId.jpg')
       ..writeAsBytesSync(
-        ImD.encodeJpg(mImageFile, quality: 60),
+        ImD.encodeJpg(mImageFile, quality: 50),
       );
     setState(() {
       file = compressedImage;
@@ -88,6 +90,7 @@ class _UploadImageState extends State<UploadImage>
     String downloadUrl = await uploadPhoto(file);
     savePostInfoToFirestore(downloadUrl, descriptionController.text);
     savePostinfoToUser(downloadUrl, descriptionController.text);
+    //PostI();
 
     descriptionController.clear();
     setState(() {
@@ -99,6 +102,18 @@ class _UploadImageState extends State<UploadImage>
       context,
       MaterialPageRoute(builder: (context) => HomePage()),
     );
+  }
+
+  PostI() async {
+    print(postsController);
+    print("helloww");
+    //String increment = postsController.text;
+    //int incr = int.parse(posts);
+    //print(incr);
+    Firestore.instance
+        .collection("users")
+        .document(uidController.text)
+        .updateData({'posts': posts + 1});
   }
 
   savePostinfoToUser(String url, String description){
@@ -117,6 +132,7 @@ class _UploadImageState extends State<UploadImage>
 //      "email": widget.userData.email,
       "description": descriptionController.text,
       "likes": 0,
+      "comments": 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
@@ -133,6 +149,7 @@ class _UploadImageState extends State<UploadImage>
 //      "email": widget.userData.email,
       "description": descriptionController.text,
       "likes": 0,
+      "comments": 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
@@ -159,7 +176,13 @@ class _UploadImageState extends State<UploadImage>
           FlatButton(
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
-            onPressed: () => controlUploadAndSave(),
+            onPressed: (){
+              if(_formKey.currentState.validate()) {
+                controlUploadAndSave();
+                PostI();
+              }
+            },
+            //onPressed: () => controlUploadAndSave(),
             child: Text(
               "Share",
               style: TextStyle(
@@ -215,20 +238,30 @@ class _UploadImageState extends State<UploadImage>
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: descriptionController,
-                      enabled: true,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 2,
-                      decoration: InputDecoration(
-                          labelText: "Write your caption here...",labelStyle: TextStyle(
+                    child: Form(
+                      autovalidate: true,
+                      key: _formKey,
+                      child: TextFormField(
+                        controller: descriptionController,
+                        enabled: true,
+                        validator: (value) {
+                          if(value.length > 25.0){
+                            return 'Caption should not be greater then 25 words';
+                          }
+                        },
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 2,
+                        decoration: InputDecoration(
+                            labelText: "Write your caption here...",labelStyle: TextStyle(
                           color: Colors.grey,
+                        ),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide:
+                                BorderSide(color: Colors.black, width: 1))),
                       ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
+                    )
+
                   ),
                 ],
               ),
@@ -247,6 +280,7 @@ class _UploadImageState extends State<UploadImage>
     photoUrlController = TextEditingController();
     displayNameController = TextEditingController();
     descriptionController = TextEditingController();
+    postsController = TextEditingController();
 
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -256,6 +290,8 @@ class _UploadImageState extends State<UploadImage>
     super.initState();
     fetchProfileData();
   }
+
+  int posts;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -270,6 +306,11 @@ class _UploadImageState extends State<UploadImage>
       emailController.text = docSnap.data["email"];
       displayNameController.text = docSnap.data["displayName"];
       photoUrlController.text = docSnap.data["photoURL"];
+      posts = docSnap.data["posts"];
+
+
+      print(postsController);
+      print("halelula");
 
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
