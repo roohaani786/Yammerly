@@ -332,7 +332,6 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
               height: 60.0,
               child: new TabBar(
                 tabs: [
-
                   Tab(
                     icon: IconButton(
                         onPressed: () {
@@ -357,12 +356,13 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                   Tab(
                     icon: GestureDetector(
                         onTap: (){
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(initialindexg: 4),
-                            ),
-                          );
-                        },child: new Icon(Icons.account_circle, size: 30)),
+//                          Navigator.of(context, rootNavigator: true).push(
+//                            MaterialPageRoute(
+//                              builder: (context) => AccountBottomIconScreen(),
+//                            ),
+//                          );
+                        },
+                        child: new Icon(Icons.account_circle, size: 30)),
                   )
                 ],
                 labelColor: Colors.purple,

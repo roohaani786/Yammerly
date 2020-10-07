@@ -757,9 +757,7 @@ bool isChanged = false;
                           controller: phoneNumberController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length ==0){
-                              return 'Phone number should not be null';
-                            }else if(value.length < 10.0){
+                             if(value.length < 10.0 && value.length > 0){
                               return 'Phone number should be of 10 digit';
                             }else if(value.length > 10.0){
                               return 'Phone number should be of 10 digit';
