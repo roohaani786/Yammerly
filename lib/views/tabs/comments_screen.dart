@@ -8,6 +8,7 @@ import 'package:techstagram/modell/global.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:timeago/timeago.dart' as tAgo;
 import 'package:techstagram/ui/Otheruser/other_user.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:flutter/material.dart';
 
@@ -40,6 +41,8 @@ class CommentsPageState extends State<CommentsPage> {
   final String photoUrl;
   final String displayNamecurrentUser;
   final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
+
+  String CommentId = Uuid().v4();
 
   TextEditingController commentTextEditingController = TextEditingController();
 
@@ -121,14 +124,19 @@ class CommentsPageState extends State<CommentsPage> {
 
   saveComment() async {
     setState(() {
+      // file = null;
+      CommentId = Uuid().v4();
+    });
+    setState(() {
       errordikhaoC = false;
     });
     print(postId);
     print("ehllo");
 
 
-      CommentsRefrence.document(postId).collection("comments").document(DateTime.now().toIso8601String())
-          .setData({"username": displayNamecurrentUser,
+      CommentsRefrence.document(postId).collection("comments").document(CommentId)
+          .setData({"commentId" : CommentId,
+        "username": displayNamecurrentUser,
         "comment": commentTextEditingController.text,
 
         "timestamp": DateTime.now(),

@@ -1006,6 +1006,9 @@ bool isChanged = false;
                             //   return 'pin code should be of 6 digit';
                             // }
                           },
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
                           keyboardType: TextInputType.number,
                           maxLines: 1,
                           decoration: InputDecoration(
