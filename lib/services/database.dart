@@ -439,6 +439,7 @@ class DatabaseService {
         .collection('following')
         .document(displayName)
         .setData({'followingname' : displayName,'followinguid' : uidX,'photoUrl' : photoUrlX});
+
         //.updateData({'followingname': uid,});
 
     return await Firestore.instance
@@ -449,6 +450,7 @@ class DatabaseService {
   
 
   Future followUser(int followers, String uid, String displayName, String uidX,String photoUrlX) async {
+
     await Firestore.instance
         .collection("users")
         .document(uid)

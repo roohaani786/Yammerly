@@ -159,7 +159,7 @@ class _BodyState extends State<Body> {
           }
 
           else{
-            authService.updateUserData(user);
+            authService.checkuserexists(user.uid, user);
             loading.add(false);
 
             print("signed in " + user.displayName);
