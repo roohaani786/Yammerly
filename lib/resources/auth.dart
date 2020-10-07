@@ -85,7 +85,7 @@ class AuthService {
     else{
       updatenewUserData(user);
     }
-
+//        updatenewUserData(user);
 
   }
 
