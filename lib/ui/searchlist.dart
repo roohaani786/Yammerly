@@ -17,8 +17,8 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
   String lname = "";
   String searchKey;
   Stream streamQuery;
-  final String displayNamecurrentUser;
-  final String uidX;
+  final displayNamecurrentUser;
+  final uidX;
 
   _CloudFirestoreSearchState({this.displayNamecurrentUser,this.uidX});
 
@@ -26,7 +26,7 @@ String uidf = CloudFirestoreSearch().uidX;
   @override
   Widget build(BuildContext context) {
     print("cv");
-    print(uidf);
+    print(uidX);
     print("434");
     return Scaffold(
       appBar: AppBar(

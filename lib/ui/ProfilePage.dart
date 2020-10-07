@@ -424,7 +424,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               onTap: () => Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                                    builder: (context) => FollowersList(displayNamecurrentUserX:displayNameController.text,uidX: uidController.text,)),
                                               ),
                                               child: _buildStatItem("FOLLOWERS", followers.toString())
                                           ),
