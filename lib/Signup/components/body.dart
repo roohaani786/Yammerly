@@ -118,6 +118,7 @@ class _BodyState extends State<Body> {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseUser user;
   PublishSubject loading = PublishSubject();
 
   Future<FirebaseUser> facebookLogin(BuildContext context) async {
@@ -154,17 +155,7 @@ class _BodyState extends State<Body> {
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
-          if(user.email == null){
-            print("User already exists");
-          }
-
-          else{
-            authService.checkuserexists(user.uid, user);
-            loading.add(false);
-
-            print("signed in " + user.displayName);
-            return user;
-          }
+          AuthService().updatenewUserData(user);
         } catch (e) {
           showDialog(
               context: context,
@@ -269,44 +260,44 @@ class _BodyState extends State<Body> {
   String errorMessage = '';
   String successMessage = '';
 
-  Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
-    FirebaseUser currentUser;
-    var twitterLogin = new TwitterLogin(
-      consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
-      consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
-    );
-
-    final TwitterLoginResult result = await twitterLogin.authorize();
-
-    switch (result.status) {
-      case TwitterLoginStatus.loggedIn:
-        var session = result.session;
-//        final FacebookLoginResult facebookLoginResult =
-//        await fbLogin.logIn(['email']);
-        final AuthCredential credential = TwitterAuthProvider.getCredential(
-            authToken: session.token, authTokenSecret: session.secret);
-
-        final AuthResult user = await auth.signInWithCredential(credential);
-        assert(user.user.email == null);
-        assert(user.user.displayName != null);
-        assert(!user.user.isAnonymous);
-        assert(await user.user.getIdToken() != null);
-        currentUser = await auth.currentUser();
-        assert(user.user.uid == currentUser.uid);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-              (Route<dynamic> route) => false,
-        );
-        return currentUser;
-
-        break;
-      case TwitterLoginStatus.cancelledByUser:
-        break;
-      case TwitterLoginStatus.error:
-        break;
-    }
-  }
+//  Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
+//    FirebaseUser currentUser;
+//    var twitterLogin = new TwitterLogin(
+//      consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
+//      consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
+//    );
+//
+//    final TwitterLoginResult result = await twitterLogin.authorize();
+//
+//    switch (result.status) {
+//      case TwitterLoginStatus.loggedIn:
+//        var session = result.session;
+////        final FacebookLoginResult facebookLoginResult =
+////        await fbLogin.logIn(['email']);
+//        final AuthCredential credential = TwitterAuthProvider.getCredential(
+//            authToken: session.token, authTokenSecret: session.secret);
+//
+//        final AuthResult user = await auth.signInWithCredential(credential);
+//        assert(user.user.email == null);
+//        assert(user.user.displayName != null);
+//        assert(!user.user.isAnonymous);
+//        assert(await user.user.getIdToken() != null);
+//        currentUser = await auth.currentUser();
+//        assert(user.user.uid == currentUser.uid);
+//        Navigator.pushAndRemoveUntil(
+//          context,
+//          MaterialPageRoute(builder: (context) => HomePage()),
+//              (Route<dynamic> route) => false,
+//        );
+//        return currentUser;
+//
+//        break;
+//      case TwitterLoginStatus.cancelledByUser:
+//        break;
+//      case TwitterLoginStatus.error:
+//        break;
+//    }
+//  }
 
   void _toggle() {
     setState(() {
@@ -1043,11 +1034,12 @@ class _BodyState extends State<Body> {
                         iconSrc: "assets/icons/twitter.svg",
                         press: () {
 //                        Navigator.pushReplacementNamed(context, "/Twit");
-                          loginWithTwitter(context).then(
-                                (user) {
-                              print('Logged in successfully.');
-                            },
-                          );
+//                          loginWithTwitter(context).then(
+//                                (user) {
+//                              print('Logged in successfully.');
+//                            },
+//                          );
+                        print("hello");
                         })
                   ],
                 )

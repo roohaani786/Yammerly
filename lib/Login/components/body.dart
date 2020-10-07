@@ -133,42 +133,42 @@ class _BodyState extends State<Body> {
 
   //twitter Login method
 
-  Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
-    FirebaseUser currentUser;
-    var twitterLogin = new TwitterLogin(
-      consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
-      consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
-    );
-
-    final TwitterLoginResult result = await twitterLogin.authorize();
-
-    switch (result.status) {
-      case TwitterLoginStatus.loggedIn:
-        var session = result.session;
-        final AuthCredential credential = TwitterAuthProvider.getCredential(
-            authToken: session.token, authTokenSecret: session.secret);
-
-        final AuthResult user = await auth.signInWithCredential(credential);
-        assert(user.user.email == null);
-        assert(user.user.displayName != null);
-        assert(!user.user.isAnonymous);
-        assert(await user.user.getIdToken() != null);
-        currentUser = await auth.currentUser();
-        assert(user.user.uid == currentUser.uid);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-              (Route<dynamic> route) => false,
-        );
-        return currentUser;
-
-        break;
-      case TwitterLoginStatus.cancelledByUser:
-        break;
-      case TwitterLoginStatus.error:
-        break;
-    }
-  }
+//  Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
+//    FirebaseUser currentUser;
+//    var twitterLogin = new TwitterLogin(
+//      consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
+//      consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
+//    );
+//
+//    final TwitterLoginResult result = await twitterLogin.authorize();
+//
+//    switch (result.status) {
+//      case TwitterLoginStatus.loggedIn:
+//        var session = result.session;
+//        final AuthCredential credential = TwitterAuthProvider.getCredential(
+//            authToken: session.token, authTokenSecret: session.secret);
+//
+//        final AuthResult user = await auth.signInWithCredential(credential);
+//        assert(user.user.email == null);
+//        assert(user.user.displayName != null);
+//        assert(!user.user.isAnonymous);
+//        assert(await user.user.getIdToken() != null);
+//        currentUser = await auth.currentUser();
+//        assert(user.user.uid == currentUser.uid);
+//        Navigator.pushAndRemoveUntil(
+//          context,
+//          MaterialPageRoute(builder: (context) => HomePage()),
+//              (Route<dynamic> route) => false,
+//        );
+//        return currentUser;
+//
+//        break;
+//      case TwitterLoginStatus.cancelledByUser:
+//        break;
+//      case TwitterLoginStatus.error:
+//        break;
+//    }
+//  }
 
   Future<String> signIn(String email, String password) async {
     FirebaseUser user;
@@ -606,9 +606,10 @@ class _BodyState extends State<Body> {
                             SocalIcon(
                               iconSrc: "assets/icons/twitter.svg",
                               press: () {
-                                loginWithTwitter(context).then((user) {
-                                  print('Logged in successfully.');
-                                });
+                                print("hello");
+//                                loginWithTwitter(context).then((user) {
+//                                  print('Logged in successfully.');
+//                                });
                               },
                             ),
                           ],

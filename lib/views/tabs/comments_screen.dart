@@ -173,7 +173,7 @@ class CommentsPageState extends State<CommentsPage> {
 
             return (dataSnapshotX.hasData)?
             Container(
-              color: Colors.red,
+              color: Colors.white,
             ):Container();
           }
       );
