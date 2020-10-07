@@ -130,8 +130,8 @@ class CommentsPageState extends State<CommentsPage> {
     setState(() {
       errordikhaoC = false;
     });
-    print(postId);
-    print("ehllo");
+    // print(postId);
+    // print("ehllo");
 
 
       CommentsRefrence.document(postId).collection("comments").document(CommentId)

@@ -214,8 +214,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   getlikes( String displayName, String postId) {
 
-    print("postid");
-    print(postId);
+    // print("postid");
+    // print(postId);
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
