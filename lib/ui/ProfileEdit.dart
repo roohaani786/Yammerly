@@ -666,7 +666,7 @@ bool isChanged = false;
                       },
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loadingX.gif"),
+                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
                         backgroundColor: Colors.transparent,
                       ),
 

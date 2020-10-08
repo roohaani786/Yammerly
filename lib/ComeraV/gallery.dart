@@ -298,26 +298,28 @@ int indexd;
                     child: Positioned(
                       width: 20.0,
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0,right: 15.0),
-                        child:ButtonTheme(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                          child: Container(
-                            width: 85.0,
-                            child: RaisedButton(
-                              color: Colors.white,
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
-                                );
-                              },
-                              child: Row(
-                                children: [
-                                  Text("Post",style: TextStyle(
-                                      fontWeight: FontWeight.w400
-                                  ),),
-                                  Icon(Icons.keyboard_arrow_right),
-                                ],
+                        padding: const EdgeInsets.only(bottom: 20.0,right: 30.0),
+                        child:Expanded(
+                          child: ButtonTheme(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            child: Container(
+                              width: 85.0,
+                              child: RaisedButton(
+                                color: Colors.white,
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Text("Post",style: TextStyle(
+                                        fontWeight: FontWeight.w400
+                                    ),),
+                                    Icon(Icons.keyboard_arrow_right),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
