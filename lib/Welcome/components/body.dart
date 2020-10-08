@@ -22,7 +22,7 @@ class Body extends StatelessWidget {
             children: <Widget>[
               Text(
                 "WELCOME TO TECHSTAGRAM",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold,),
               ),
               SizedBox(height: size.height * 0.05),
               SvgPicture.asset(

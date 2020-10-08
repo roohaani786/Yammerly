@@ -298,12 +298,12 @@ int indexd;
                     child: Positioned(
                       width: 20.0,
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0,right: 30.0),
+                        padding: const EdgeInsets.only(bottom: 20.0,right: 40.0),
                         child:Expanded(
                           child: ButtonTheme(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                             child: Container(
-                              width: 85.0,
+                              width: 95.0,
                               child: RaisedButton(
                                 color: Colors.white,
                                 onPressed: () {
@@ -312,14 +312,18 @@ int indexd;
                                     MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
                                   );
                                 },
-                                child: Row(
-                                  children: [
-                                    Text("Post",style: TextStyle(
-                                        fontWeight: FontWeight.w400
-                                    ),),
-                                    Icon(Icons.keyboard_arrow_right),
-                                  ],
-                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Row(
+                                    children: [
+                                      Text("Post",style: TextStyle(
+                                          fontWeight: FontWeight.w400
+                                      ),),
+                                      Icon(Icons.keyboard_arrow_right),
+                                    ],
+                                  ),
+                                )
+
                               ),
                             ),
                           ),

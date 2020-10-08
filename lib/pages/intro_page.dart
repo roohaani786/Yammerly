@@ -269,7 +269,7 @@ class _IntroPageState extends State<IntroPage> {
               "Welcome to Techstagram",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 15,
+                fontSize: 12,
                 color: Colors.deepPurple,
               ),
             ),
