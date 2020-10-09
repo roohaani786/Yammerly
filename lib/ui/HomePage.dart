@@ -354,15 +354,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                     icon: new Icon(Icons.notifications, size: 30),
                   ),
                   Tab(
-                    icon: GestureDetector(
-                        onTap: (){
-//                          Navigator.of(context, rootNavigator: true).push(
-//                            MaterialPageRoute(
-//                              builder: (context) => AccountBottomIconScreen(),
-//                            ),
-//                          );
-                        },
-                        child: new Icon(Icons.account_circle, size: 30)),
+                    icon: new Icon(Icons.account_circle, size: 30),
                   )
                 ],
                 labelColor: Colors.purple,

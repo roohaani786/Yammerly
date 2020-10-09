@@ -311,6 +311,13 @@ class _BodyState extends State<Body> {
     });
   }
 
+  Future<bool> usernameCheck(String displayName) async {
+    final result = await Firestore.instance
+        .collection('users')
+        .where('displayName', isEqualTo: displayName)
+        .getDocuments();
+    return result.documents.isEmpty;
+  }
 
   Future<String> signup(String email, String password, String firstname,
       String lastname, String phonenumber, String displayname) async {
@@ -321,68 +328,115 @@ class _BodyState extends State<Body> {
       isLoading = true;
     });
     try {
-      if (_registerFormKey.currentState.validate()) {
+
+       if (_registerFormKey.currentState.validate()) {
         if (pwdInputController.text ==
             confirmPwdInputController.text) {
+
+          final valid = await usernameCheck(displayNameInputController.text);
+          if (!valid) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+
+                  return AlertDialog(
+                    title: Text("Error"),
+                    content: Text("Display name already exists!", style: TextStyle(
+                        color: Colors.deepPurple
+                    )),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Close"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                });
+          }
 //          this.setState(() {
 //            isLoading = true;
 //          });
 
+          else {
+            FirebaseAuth.instance
+                .createUserWithEmailAndPassword(
+                email: emailInputController.text,
+                password: pwdInputController.text)
 
-          FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-              email: emailInputController.text,
-              password: pwdInputController.text)
-
-              .then((authResult) =>
-              Firestore.instance
-                  .collection("users")
-                  .document(authResult.user.uid)
-                  .setData({
-                "uid": authResult.user.uid,
-                "fname": firstNameInputController.text,
-                "surname": lastNameInputController.text,
-                "phonenumber": phoneNumberController.text,
-                "email": emailInputController.text,
-                "displayName": displayNameInputController.text.toLowerCase(),
-                'followers': 0,
-                'following': 0,
-                'posts': 0,
-                'photoURL' : 'https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png',
-                'bio' : "Proud Hashtager",
-                'emailVerified': false,
-                'phoneVerified': false,
-              })
-                  .then((result) =>
-              {
+                .then((authResult) =>
+                Firestore.instance
+                    .collection("users")
+                    .document(authResult.user.uid)
+                    .setData({
+                  "uid": authResult.user.uid,
+                  "fname": firstNameInputController.text,
+                  "surname": lastNameInputController.text,
+                  "phonenumber": phoneNumberController.text,
+                  "email": emailInputController.text,
+                  "displayName": displayNameInputController.text.toLowerCase(),
+                  'followers': 0,
+                  'following': 0,
+                  'posts': 0,
+                  'photoURL': 'https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png',
+                  'bio': "Proud Hashtager",
+                  'emailVerified': false,
+                  'phoneVerified': false,
+                })
+                    .then((result) =>
+                {
 
 
-              Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-              (Route<dynamic> route) => false,
-              ),
-                firstNameInputController.clear(),
-                lastNameInputController.clear(),
-                phoneNumberController.clear(),
-                emailInputController.clear(),
-                displayNameInputController.clear(),
-                pwdInputController.clear(),
-                confirmPwdInputController.clear()
-              })
-                  .catchError(
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                        (Route<dynamic> route) => false,
+                  ),
+                  firstNameInputController.clear(),
+                  lastNameInputController.clear(),
+                  phoneNumberController.clear(),
+                  emailInputController.clear(),
+                  displayNameInputController.clear(),
+                  pwdInputController.clear(),
+                  confirmPwdInputController.clear()
+                })
+                    .catchError(
 
-                    (err) =>
+                      (err) =>
 //                          print(err.code),
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Error"),
+                          content: Text(err.code, style: TextStyle(
+                              color: Colors.deepPurple
+                          )),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text("Close"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        );
+                      }),
+
+
+                ))
+                .catchError((err) =>
                 showDialog(
+
                     context: context,
                     builder: (BuildContext context) {
-
                       return AlertDialog(
                         title: Text("Error"),
-                        content: Text(err.code, style: TextStyle(
-                            color: Colors.deepPurple
-                        )),
+                        content: Text(err.code,
+                            style: TextStyle(
+                                color: Colors.deepPurple
+                            )),
                         actions: <Widget>[
                           FlatButton(
                             child: Text("Close"),
@@ -393,31 +447,8 @@ class _BodyState extends State<Body> {
                         ],
                       );
                     }),
-
-
-              ))
-              .catchError((err) =>
-              showDialog(
-
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text("Error"),
-                      content: Text(err.code,
-                          style: TextStyle(
-                              color: Colors.deepPurple
-                          )),
-                      actions: <Widget>[
-                        FlatButton(
-                          child: Text("Close"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        )
-                      ],
-                    );
-                  }),
-          );
+            );
+          }
         } else {
           showDialog(
               context: context,

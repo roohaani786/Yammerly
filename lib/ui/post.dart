@@ -270,14 +270,29 @@ class _postPageState extends State<postPage> {
     var time = '';
 
     if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
-      time = format.format(date);
+      if (diff.inHours > 0) {
+        time = "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+      }
+
+      else if (diff.inSeconds <= 0) {
+        time = "just now";
+      }
+
+
+      else if (diff.inMinutes > 0) {
+        time = "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+      }
     } else if (diff.inDays > 0 && diff.inDays < 7) {
       if (diff.inDays == 1) {
         time = diff.inDays.toString() + ' DAY AGO';
       } else {
         time = diff.inDays.toString() + ' DAYS AGO';
       }
-    } else {
+    }
+
+
+
+    else {
       if (diff.inDays == 7) {
         time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
       } else {

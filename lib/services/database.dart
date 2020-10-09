@@ -399,9 +399,9 @@ class DatabaseService {
 
     await Firestore.instance
         .collection("users")
-        .document(uidX)
+        .document(uid)
         .collection('following')
-        .document(displayNameX)
+        .document(displayName)
         .delete();
 
 
@@ -415,7 +415,7 @@ class DatabaseService {
 //        else {
           return await Firestore.instance
               .collection("users")
-              .document(uidX)
+              .document(uid)
               .updateData({'following': following - 1});
 //        }
   }
@@ -444,7 +444,7 @@ class DatabaseService {
 
     return await Firestore.instance
         .collection("users")
-        .document(uidX)
+        .document(uid)
         .updateData({'following': following + 1});
   }
   

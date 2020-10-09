@@ -327,6 +327,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       child: Text(
 
                                         bioController.text,
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: 'Source Sans Pro',
                                           fontSize: 15.0,

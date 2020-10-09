@@ -17,12 +17,15 @@ import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
 class Gallery extends StatefulWidget {
+  Gallery({this.filePath});
+  String filePath;
   @override
-  _GalleryState createState() => _GalleryState();
+  _GalleryState createState() => _GalleryState(filePath);
 }
 
 class _GalleryState extends State<Gallery> {
   String currentFilePath;
+  _GalleryState(this.currentFilePath);
 
 int indexd;
 
@@ -108,126 +111,85 @@ int indexd;
         child: Scaffold(
           backgroundColor: Colors.transparent,
 
-          body: Stack(
-              children: [
+          body: Container(
 
-                FutureBuilder(
-                  future: _getAllImages(),
-                  builder: (context, AsyncSnapshot<List<FileSystemEntity>> snapshot) {
-                    if (!snapshot.hasData) {
-                      if (!snapshot.data.isNotEmpty){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return CameraScreen();
-                            },
-                          ),
-                        );
-                      }
-                      return Container(
-                        color: Colors.white,
-                      );
-                    }
-                    print('${snapshot.data.length} ${snapshot.data}');
-                    if (snapshot.data.length == 0) {
-                      Navigator.pop(context);
-                    }
+            child: Stack(
+                children: [
 
-                    return PageView.builder(
-                      itemCount: snapshot.data.length,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        indexd = snapshot.data.length;
-                        print(indexd);
-                        currentFilePath = snapshot.data[index].path;
-                        var extension = path.extension(snapshot.data[index].path);
-                        if (extension == '.jpeg') {
-                          return Container(
-                            height: 300,
-                            padding: const EdgeInsets.only(bottom: 0.0),
-                            child: Image.file(
-                              File(snapshot.data[index].path),
-                              fit: BoxFit.cover,
-                            ),
-                          );
-                        } else if (extension == '.jpeg') {
-                          return VideoPreview(
-                            videoPath: snapshot.data[index].path,
-                          );
-                        }
-                        else{
-                          return Text("cmcv",style: TextStyle(
-                            color: Colors.white
-                          ),);
-                        };
-                      },
-                    );
-                  },
-                ),
 
-                Padding(
-                  padding: const EdgeInsets.only(top: 30.0,left: 6.0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Positioned(
-                      child: IconButton(icon: Icon(Icons.close,
-                      color: Colors.grey.shade200,
-                      size: 30.0,), onPressed: (){
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-
-                              return AlertDialog(
-                                backgroundColor: Colors.white,
-                                title: Text("Discard post ?"),
-                                content: Text("If you go back now, you will lose your post.", style: TextStyle(
-                                    color: Colors.deepPurple
-                                )),
-                                actions: <Widget>[
-                                 Padding(
-                                   padding: const EdgeInsets.only(right: 120.0),
-
-                                     child: Column(
-                                       children: [
-                                         FlatButton(
-                                           child: Text("Discard",style:
-                                           TextStyle(
-                                             color: Colors.red,
-                                           ),),
-                                           onPressed: () {
-                                             _deleteFile();
-                                             Navigator.push(
-                                               context,
-                                               MaterialPageRoute(
-                                                 builder: (context) {
-                                                   return CameraScreen();
-                                                 },
-                                               ),
-                                             );
-                                           },
-                                         ),
-                                         FlatButton(
-                                           child: Text("Keep",style:
-                                           TextStyle(
-                                             color: Colors.black,
-                                           ),),
-                                           onPressed: () {
-                                             Navigator.pop(context);
-                                           },
-                                         )
-                                       ],
-                                     ),
-
-                                 )
-                                ],
-                              );
-                            });
-                      },
-                      )
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Image.file(
+                      File(currentFilePath),
+                      fit: BoxFit.fill,
                     ),
                   ),
-                ),
+
+
+
+
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30.0,left: 6.0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Positioned(
+                        child: IconButton(icon: Icon(Icons.close,
+                        color: Colors.grey.shade200,
+                        size: 30.0,), onPressed: (){
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+
+                                return AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  title: Text("Discard post ?"),
+                                  content: Text("If you go back now, you will lose your post.", style: TextStyle(
+                                      color: Colors.deepPurple
+                                  )),
+                                  actions: <Widget>[
+                                   Padding(
+                                     padding: const EdgeInsets.only(right: 120.0),
+
+                                       child: Column(
+                                         children: [
+                                           FlatButton(
+                                             child: Text("Discard",style:
+                                             TextStyle(
+                                               color: Colors.red,
+                                             ),),
+                                             onPressed: () {
+                                               _deleteFile();
+                                               Navigator.push(
+                                                 context,
+                                                 MaterialPageRoute(
+                                                   builder: (context) {
+                                                     return CameraScreen();
+                                                   },
+                                                 ),
+                                               );
+                                             },
+                                           ),
+                                           FlatButton(
+                                             child: Text("Keep",style:
+                                             TextStyle(
+                                               color: Colors.black,
+                                             ),),
+                                             onPressed: () {
+                                               Navigator.pop(context);
+                                             },
+                                           )
+                                         ],
+                                       ),
+
+                                   )
+                                  ],
+                                );
+                              });
+                        },
+                        )
+                      ),
+                    ),
+                  ),
 
 //            Padding(
 //              padding: const EdgeInsets.only(top: 30.0,right: 6.0),
@@ -248,26 +210,26 @@ int indexd;
 //              ),
 //            ),
 
-                Padding(
-                  padding: const EdgeInsets.only(right: 50.0,bottom: 3.0),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Positioned(
-                      width: 20.0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 0.0),
-                        child:ButtonTheme(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                          child: Container(
-                            width: 230.0,
-                            child: FlatButton(
-                              color: Colors.transparent,
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
-                                );
-                              },
+                  Padding(
+                    padding: const EdgeInsets.only(right: 50.0,bottom: 3.0),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Positioned(
+                        width: 20.0,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 0.0),
+                          child:ButtonTheme(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            child: Container(
+                              width: 230.0,
+                              child: FlatButton(
+                                color: Colors.transparent,
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
+                                  );
+                                },
 //                            child: Row(
 //                              children: [
 //                                Padding(
@@ -283,43 +245,6 @@ int indexd;
 //
 //                              ],
 //                            ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.only(right: 6.0),
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: Positioned(
-                      width: 20.0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0,right: 30.0),
-                        child:Expanded(
-                          child: ButtonTheme(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                            child: Container(
-                              width: 85.0,
-                              child: RaisedButton(
-                                color: Colors.white,
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
-                                  );
-                                },
-                                child: Row(
-                                  children: [
-                                    Text("Post",style: TextStyle(
-                                        fontWeight: FontWeight.w400
-                                    ),),
-                                    Icon(Icons.keyboard_arrow_right),
-                                  ],
-                                ),
                               ),
                             ),
                           ),
@@ -327,10 +252,48 @@ int indexd;
                       ),
                     ),
                   ),
-                )
 
-              ],
-            ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 6.0),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Positioned(
+                        width: 20.0,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0,right: 30.0),
+                          child:Expanded(
+                            child: ButtonTheme(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              child: Container(
+                                width: 85.0,
+                                child: RaisedButton(
+                                  color: Colors.white,
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text("Post",style: TextStyle(
+                                          fontWeight: FontWeight.w400
+                                      ),),
+                                      Icon(Icons.keyboard_arrow_right),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+
+                ],
+              ),
+          ),
 
         ),
       ),

@@ -483,6 +483,7 @@ class CameraScreenState extends State<CameraScreen>
                   backgroundColor: Colors.white,
                   radius: 28.0,
                     child: IconButton(
+                      highlightColor: Colors.transparent,
                       icon: Icon(
                         (_isRecordingMode)
                             ? (_isRecording) ? Icons.stop : Icons.videocam
@@ -495,7 +496,7 @@ class CameraScreenState extends State<CameraScreen>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Gallery(),
+                              builder: (context) => Gallery(filePath: currentCityController.text,),
                             ),
                           );
                           _captureImage();
@@ -608,7 +609,7 @@ class CameraScreenState extends State<CameraScreen>
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Gallery()),
+            builder: (context) => Gallery(filePath: filePath,)),
       );
 
     }

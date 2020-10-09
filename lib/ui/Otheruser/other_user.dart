@@ -452,12 +452,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                   displayNamecurrentUser);
 
                                                               DatabaseService()
-                                                                  .decreaseFollowing(uid,
-                                                                  1,
-                                                                  displayNamecurrentUser,
-                                                                  displayNameX,
-                                                                  uidControllerX
-                                                                      .text);
+                                                                  .decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
                                                             },
                                                             shape: RoundedRectangleBorder(
                                                               side: BorderSide(

@@ -787,8 +787,8 @@ bool isChanged = false;
                           enabled: isEditable,
                           validator: (value) {
 
-                            if(value.length > 35.0){
-                              return 'email should not be greater then 35 words';
+                            if(value.length > 30.0){
+                              return 'email should not be greater than 30 words';
 
                             }else if(value.length ==0){
                               return 'email should not be null';
@@ -815,10 +815,10 @@ bool isChanged = false;
                           enabled: isEditable,
                           validator: (value) {
                             if(value.length > 50.0){
-                              return 'bio should not be greater then 50';
+                              return 'bio should not be greater than 50';
                             }
                           },
-                          keyboardType: TextInputType.multiline,
+                          keyboardType: TextInputType.text,
                           maxLines: 3,
                           decoration: InputDecoration(
                               labelText: "Bio",labelStyle: TextStyle(
