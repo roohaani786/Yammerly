@@ -116,7 +116,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   fetchPosts() async {
 
-    DatabaseService().getPosts().then((val){
+    await DatabaseService().getPosts().then((val){
       setState(() {
         postsStream = val;
       });
@@ -146,10 +146,10 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
 
-  getlikes( String displayNamecurrent, String postId) {
+  getlikes( String displayNamecurrent, String postId) async {
 
 
-    Firestore.instance.collection('posts')
+    await Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
         .document(displayNameController.text)
@@ -239,6 +239,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
   File _image;
   bool upload;
+  int likescount;
+  bool loading = false;
 
   Future pickImage() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
@@ -341,6 +343,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         String postId = snapshot.data.documents[index]['postId'];
                         int likes = snapshot.data.documents[index]['likes'];
                         int comments = snapshot.data.documents[index]['comments'];
+                        likescount = likes;
                         readTimestamp(timestamp.seconds);
 
 
@@ -459,10 +462,10 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
                                 GestureDetector(
-                                  onDoubleTap: () {
+                                  onDoubleTap: () async {
                                     getlikes(displayNameController.text, postId);
                                     if (liked == false) {
-                                      DatabaseService().likepost(
+                                      await DatabaseService().likepost(
                                           likes, postId,
                                           displayNameController.text);
                                       setState(() {
@@ -514,11 +517,17 @@ class _FeedsPageState extends State<FeedsPage> {
                                     Row(
                                       children: <Widget>[
                                         (liked == false)?IconButton(
-                                          onPressed: () {
-                                            DatabaseService().likepost(
+                                          onPressed: () async {
+//                                            setState(() {
+//                                              loading = true;
+//                                              likescount++;
+//                                            });
+
+                                            await DatabaseService().likepost(
                                                 likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = true;
+                                              loading = false;
                                             });
                                           },
                                           icon: Icon(FontAwesomeIcons.thumbsUp),
@@ -528,11 +537,17 @@ class _FeedsPageState extends State<FeedsPage> {
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
                                         ):IconButton(
 
-                                          onPressed: () {
-                                            DatabaseService().unlikepost(
+                                          onPressed: () async {
+//                                            setState(() {
+//                                              loading = true;
+//                                              likescount--;
+//                                            });
+
+                                            await DatabaseService().unlikepost(
                                                 likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = false;
+                                              loading = false;
                                             });
                                           },
 
@@ -543,8 +558,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                           // },
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
                                         ),
-                                        Text(
+                                        (loading == false)?Text(
                                           likes.toString(),style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+
+                                        ):Text(
+                                          likescount.toString(),style: TextStyle(
                                           color: Colors.black,
                                         ),
 
