@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
@@ -104,17 +103,41 @@ class _BodyState extends State<Body> {
   }
 
   void onGoogleSignIn(BuildContext context) async {
-    FirebaseUser user = await authService.hellogoogleSignIn();
-    print(user);
-    var userSignedIn = await Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage()),
-          (Route<dynamic> route) => false,
-    );
+    final valid = await usernameCheck(displayNameInputController.text);
+    if (!valid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
 
-    setState(() {
-      isUserSignedIn = userSignedIn == null ? true : false;
-    });
+            return AlertDialog(
+              title: Text("Error"),
+              content: Text("Display name already exists!", style: TextStyle(
+                  color: Colors.deepPurple
+              )),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Close"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    }
+    else {
+      FirebaseUser user = await authService.hellogoogleSignIn();
+      print(user);
+      var userSignedIn = await Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+            (Route<dynamic> route) => false,
+      );
+
+      setState(() {
+        isUserSignedIn = userSignedIn == null ? true : false;
+      });
+    }
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -260,44 +283,6 @@ class _BodyState extends State<Body> {
   String errorMessage = '';
   String successMessage = '';
 
-//  Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
-//    FirebaseUser currentUser;
-//    var twitterLogin = new TwitterLogin(
-//      consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
-//      consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
-//    );
-//
-//    final TwitterLoginResult result = await twitterLogin.authorize();
-//
-//    switch (result.status) {
-//      case TwitterLoginStatus.loggedIn:
-//        var session = result.session;
-////        final FacebookLoginResult facebookLoginResult =
-////        await fbLogin.logIn(['email']);
-//        final AuthCredential credential = TwitterAuthProvider.getCredential(
-//            authToken: session.token, authTokenSecret: session.secret);
-//
-//        final AuthResult user = await auth.signInWithCredential(credential);
-//        assert(user.user.email == null);
-//        assert(user.user.displayName != null);
-//        assert(!user.user.isAnonymous);
-//        assert(await user.user.getIdToken() != null);
-//        currentUser = await auth.currentUser();
-//        assert(user.user.uid == currentUser.uid);
-//        Navigator.pushAndRemoveUntil(
-//          context,
-//          MaterialPageRoute(builder: (context) => HomePage()),
-//              (Route<dynamic> route) => false,
-//        );
-//        return currentUser;
-//
-//        break;
-//      case TwitterLoginStatus.cancelledByUser:
-//        break;
-//      case TwitterLoginStatus.error:
-//        break;
-//    }
-//  }
 
   void _toggle() {
     setState(() {

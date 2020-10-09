@@ -204,7 +204,7 @@ class _postPageState extends State<postPage> {
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
-        .document(displayNameController.text)
+        .document(displayNamecurrentUser)
         .get()
         .then((value) {
       if (value.exists) {
@@ -365,9 +365,9 @@ class _postPageState extends State<postPage> {
     print("Done..");
   }
 
-  doubletaplike(int likes, String postId){
+  doubletaplike(int likes, String postId) async{
     if(liked = false) {
-      DatabaseService().likepost(
+      await DatabaseService().likepost(
           likes, postId,
           displayNameController.text);
       setState(() {
@@ -375,14 +375,8 @@ class _postPageState extends State<postPage> {
         print(liked);
       });
     }
-    else if (liked = true){
-      DatabaseService().unlikepost(
-          likes, postId,
-          displayNameController.text);
-      setState(() {
-        liked = false;
-        print(liked);
-      });
+    else {
+      print("jhj");
 
     }
   }
@@ -572,14 +566,22 @@ class _postPageState extends State<postPage> {
 
 
                                 GestureDetector(
-                                  onDoubleTap: (){
-                                    print("double tap");
-                                    print(liked);
-                                    doubletaplike(likes,postId);
-                                    print("double tap again");
-                                    print(liked);
+                                  onDoubleTap: ()async {
+//                                    getlikes(displayNameController.text, postId);
+                                    if (liked == false) {
+                                      await DatabaseService().likepost(
+                                          likes, postId,
+                                          displayNameController.text);
+                                      setState(() {
+                                        liked = true;
+                                        print(liked);
+                                      });
+//                                     return liked;
+                                    } else {
+                                      print("nahi");
+                                    }
                                   },
-                                  onTap: null,
+
 
                                   child: InteractiveViewer(
                                     transformationController: _controller,
@@ -645,7 +647,7 @@ class _postPageState extends State<postPage> {
 
                                             onPressed: () { print(displayNameController.text);
                                             Navigator.push(context, MaterialPageRoute(builder: (context){
-                                              return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                              return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text,comments: comments,);
                                               //return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
                                             },

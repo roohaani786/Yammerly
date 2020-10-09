@@ -319,6 +319,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                             padding: const EdgeInsets.only(top: 10.0),
                                             child: (bio!=null)?Text(
                                               bio,
+                                              textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontFamily: 'Source Sans Pro',
                                                 fontSize: 15.0,

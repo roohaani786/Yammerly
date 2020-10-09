@@ -19,7 +19,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:thumbnails/thumbnails.dart';
-import 'package:lamp/lamp.dart';
+//import 'package:lamp/lamp.dart';
 import 'package:torch/torch.dart';
 import 'package:image/image.dart' as ImD;
 //import 'package:holding_gesture/holding_gesture.dart';
@@ -114,9 +114,9 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   initPlatformState() async {
-    bool hasFlash = await Lamp.hasLamp;
-    print("Device has flash ? $hasFlash");
-    setState(() { _hasFlash = hasFlash; });
+//    bool hasFlash = await Lamp.hasLamp;
+//    print("Device has flash ? $hasFlash");
+//    setState(() { _hasFlash = hasFlash; });
   }
 
   Future<void> _initCamera() async {
@@ -478,7 +478,7 @@ class CameraScreenState extends State<CameraScreen>
 
               FlatButton(
                 color: Colors.transparent,
-              onPressed: () async => await Lamp.flash(new Duration(seconds: 2)),
+//              onPressed: () async => await Lamp.flash(new Duration(seconds: 2)),
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 28.0,
