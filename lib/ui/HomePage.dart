@@ -132,9 +132,7 @@ class _HomePageState extends State<HomePage> {
     currentUser = await FirebaseAuth.instance.currentUser();
     firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
     setState(() {});
-    print(currentUser.displayName);
-    print(currentUser.email);
-    print(currentUser.uid);
+
   }
 
 
