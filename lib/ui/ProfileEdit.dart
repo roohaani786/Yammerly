@@ -688,6 +688,8 @@ bool isChanged = false;
                               return 'Display Name should not be greater than 15 words';
                             }else if(value.length ==0){
                               return 'Display Name should not be null';
+                            }else if(!isLowercase(value)){
+                              return 'Display Name must be in lower case';
                             }
                           },
                           keyboardType: TextInputType.text,

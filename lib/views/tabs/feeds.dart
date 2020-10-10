@@ -454,7 +454,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               borderRadius: BorderRadius.circular(40),
 
                                               child: Image(
-                                                image: NetworkImage(url),
+                                                image: NetworkImage(photoUrl),
                                                 width: 40,
                                                 height: 40,
                                                 fit: BoxFit.cover,
