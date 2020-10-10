@@ -312,7 +312,7 @@ int indexd;
 
   _deleteFile() {
     final dir = Directory(currentFilePath);
-    dir.deleteSync(recursive: true);
+//    dir.deleteSync(recursive: true);
     print('deleted');
     setState(() {});
   }

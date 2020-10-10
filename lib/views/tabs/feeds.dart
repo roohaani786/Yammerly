@@ -149,10 +149,11 @@ class _FeedsPageState extends State<FeedsPage> {
   getlikes( String displayNamecurrent, String postId) async {
 
 
+
     await Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
-        .document(displayNamecurrentUser)
+        .document(displayNameController.text)
         .get()
         .then((value) {
       if (value.exists) {
