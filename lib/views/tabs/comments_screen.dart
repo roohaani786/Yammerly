@@ -8,6 +8,7 @@ import 'package:techstagram/modell/global.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 //import 'package:timeago/timeago.dart' as tAgo;
 import 'package:techstagram/ui/Otheruser/other_user.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:flutter/material.dart';
 
@@ -41,18 +42,28 @@ class CommentsPageState extends State<CommentsPage> {
   final String displayNamecurrentUser;
   final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
 
+  String CommentId = Uuid().v4();
+
   TextEditingController commentTextEditingController = TextEditingController();
 
   CommentsPageState({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
+  // return Firestore.instance
+  //     .collection("posts")
+  //     .orderBy("timestamp", descending: true)
+  //     .snapshots();
+
+
+
+
 
   retrieveComments(){
     print("user");
     print(displayNamecurrentUser);
-    return StreamBuilder(
+    return  StreamBuilder(
       stream: CommentsRefrence.document(postId)
-      .collection("comments")
-      .orderBy("timestamp", descending: false)
-      .snapshots(),
+          .collection("comments")
+          .orderBy("timestamp", descending: false)
+          .snapshots(),
       builder: (context, dataSnapshot){
         if (!dataSnapshot.hasData){
           return Container(
@@ -90,11 +101,25 @@ class CommentsPageState extends State<CommentsPage> {
 
   //setData({'liked': userEmail});
 
+  var commentCount = 0;
+
+  // CommentCount() async {
+  //   return StreamBuilder(
+  //     stream: CommentsRefrence.document(postId)
+  //         .snapshots(),
+  //     builder: (context, dataSnapshot) {
+  //        commentCount = 'comments';
+  //       }
+
+
+  //   );
+  // }
+
   SaveCommentI() async {
     return await Firestore.instance
         .collection("posts")
         .document(postId)
-        .updateData({'comments': comments + 1});
+        .updateData({'comments': comments + commentCount});
   }
 
   showError(){
@@ -121,54 +146,61 @@ class CommentsPageState extends State<CommentsPage> {
   }
 
   saveComment() async {
+    print("comm");
+    print(commentCount);
+    setState(() {
+      // file = null;
+      CommentId = Uuid().v4();
+    });
     setState(() {
       errordikhaoC = false;
     });
-    print(postId);
-    print("ehllo");
+    // print(postId);
+    // print("ehllo");
 
 
-      CommentsRefrence.document(postId).collection("comments").document(DateTime.now().toIso8601String())
-          .setData({"username": displayNamecurrentUser,
-        "comment": commentTextEditingController.text,
+    await CommentsRefrence.document(postId).collection("comments").document(CommentId)
+        .setData({"commentId" : CommentId,
+      "username": displayNamecurrentUser,
+      "comment": commentTextEditingController.text,
 
-        "timestamp": DateTime.now(),
-        "url": photoUrl,
-        "uid": uid,
+      "timestamp": DateTime.now(),
+      "url": photoUrl,
+      "uid": uid,
+    });
+
+
+
+
+
+
+    bool isNotPostOwner = uid != uid;
+    if(isNotPostOwner){
+      CommentsRefrence.document(postId).collection("feedItems").add({
+        "type": "comment",
+        "commentDate": timestamp,
+        "postId": postId,
+        "username": displayNamecurrentUser,
+        "userProfileImg": photoUrl,
+        "url": postImageUrl,
       });
+    }
+    commentTextEditingController.clear();
 
+    return StreamBuilder(
 
+        stream: CommentsRefrence.document(postId).snapshots(),
+        builder: (context, dataSnapshotX)
+        {
+          int commentscount = dataSnapshotX.data["comments"];
+          updatecommentscount(commentscount);
 
-
-
-
-      bool isNotPostOwner = uid != uid;
-      if(isNotPostOwner){
-        CommentsRefrence.document(postId).collection("feedItems").add({
-          "type": "comment",
-          "commentDate": timestamp,
-          "postId": postId,
-          "username": displayNamecurrentUser,
-          "userProfileImg": photoUrl,
-          "url": postImageUrl,
-        });
-      }
-      commentTextEditingController.clear();
-
-      return StreamBuilder(
-
-          stream: CommentsRefrence.document(postId).snapshots(),
-          builder: (context, dataSnapshotX)
-          {
-            int commentscount = dataSnapshotX.data["comments"];
-            updatecommentscount(commentscount);
-
-            return (dataSnapshotX.hasData)?
-            Container(
-              color: Colors.red,
-            ):Container();
-          }
-      );
+          return (dataSnapshotX.hasData)?
+          Container(
+            color: Colors.white,
+          ):Container();
+        }
+    );
 
 
 
@@ -200,50 +232,51 @@ class CommentsPageState extends State<CommentsPage> {
             Navigator.pop(context);
           }),
         ),
-      //appBar: header(context, strTitle: "Comments"),
+        //appBar: header(context, strTitle: "Comments"),
 
-      body: Column(
-        children: [
-          Expanded(
-            child: retrieveComments(),
-          ),
-
-          ListTile(
-            key: _CommentKey,
-            title: TextFormField(
-              controller: commentTextEditingController,
-              //validator: commentValidator,
-              decoration: InputDecoration(
-                labelText: (errordikhaoC)?"insert proper comment":"Write Comment Here...",
-                labelStyle: TextStyle(color: (errordikhaoC)?Colors.red:Colors.black),
-                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: (errordikhaoC)?Colors.red:Colors.grey)),
-                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: (errordikhaoC)?Colors.red:Colors.black))
-              ),
-              style: TextStyle(color: Colors.black),
+        body: Column(
+          children: [
+            Expanded(
+              child: retrieveComments(),
             ),
-            trailing:IconButton(
-              onPressed: (){
-                if(commentTextEditingController.text != "" && commentTextEditingController.text.length < 20){
-                  setState(() {
-                    errordikhaoC = false;
-                  });
-                  saveComment();
-                  SaveCommentI();
-                  SaveCommentIP();
-                }else{
-                  showError();
-                  print("error hai bhaiya");
-                }
+
+            ListTile(
+              key: _CommentKey,
+              title: TextFormField(
+                controller: commentTextEditingController,
+                //validator: commentValidator,
+                decoration: InputDecoration(
+                    labelText: (errordikhaoC)?"insert proper comment":"Write Comment Here...",
+                    labelStyle: TextStyle(color: (errordikhaoC)?Colors.red:Colors.black),
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: (errordikhaoC)?Colors.red:Colors.grey)),
+                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: (errordikhaoC)?Colors.red:Colors.black))
+                ),
+                style: TextStyle(color: Colors.black),
+              ),
+              trailing:IconButton(
+                onPressed: (){
+                  if(commentTextEditingController.text != "" && commentTextEditingController.text.length < 20){
+                    setState(() {
+                      errordikhaoC = false;
+                    });
+                    commentCount = commentCount + 1;
+                    saveComment();
+                    SaveCommentI();
+                    SaveCommentIP();
+                  }else{
+                    showError();
+                    print("error hai bhaiya");
+                  }
 
 //                retrieveComments();
-              },
+                },
 
-              icon: Icon(Icons.arrow_forward_ios,size: 30.0,color: Colors.deepPurple,),
-              //child: Text("Publish", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
-            ),
-          )
-        ],
-      )
+                icon: Icon(Icons.arrow_forward_ios,size: 30.0,color: Colors.deepPurple,),
+                //child: Text("Publish", style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),),
+              ),
+            )
+          ],
+        )
 
     );
   }
@@ -303,37 +336,36 @@ class Comment extends StatelessWidget {
           //   );
           // },
 
-        child: Container(
-          child: Stack(
-            children: [
-              ListTile(
-                title: (userName != null || comment != null)?Row(
-                  children: [
-                    Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
-                    fontWeight: FontWeight.bold,),),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5.0),
-                      child: SizedBox(
-                        width: 170.0,
-                        child: Text(comment,maxLines: 1,style: TextStyle(fontSize: 15.0,color: Colors.black,
-                        ),),
+          child: Expanded(
+            child: Stack(
+              children: [
+                ListTile(
+                  title: (userName != null || comment != null)?Row(
+                    children: [
+                      Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
+                        fontWeight: FontWeight.bold,),),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: Expanded(
+                          //width: 170.0,
+                          child: Text(comment,maxLines: 1,style: TextStyle(fontSize: 15.0,color: Colors.black,
+                          ),),
+                        ),
                       ),
-                    ),
-                  ],
-                ):Text(""),
-                leading: (userName != null || comment != null)?CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(url),
-                ):null,
-                subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.black),):Text(""),
-              ),
-            ],
+                    ],
+                  ):Text(""),
+                  leading: (userName != null || comment != null)?CircleAvatar(
+                    backgroundImage: CachedNetworkImageProvider(url),
+                  ):null,
+                  subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.black),):Text(""),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
 
     );
   }
 }
-
 

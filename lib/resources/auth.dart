@@ -57,7 +57,7 @@ class AuthService {
         (await _auth.signInWithCredential(credential)).user;
 
 // Checking if email and name is null
-    checkuserexists(user.uid,user);
+    checkuserexists(user.uid,user,user.displayName);
 
 //      updateUserData(user);
 
@@ -72,20 +72,29 @@ class AuthService {
     return user;
   }
 
+  Future<bool> usernameCheck(String displayName) async {
+    final result = await Firestore.instance
+        .collection('users')
+        .where('displayName', isEqualTo: displayName)
+        .getDocuments();
+    return result.documents.isEmpty;
+  }
 
-  checkuserexists(String uid,FirebaseUser user) async {
+
+  checkuserexists(String uid,FirebaseUser user,String displayName) async {
     final snapShotX = await Firestore.instance
         .collection('users')
         .document(uid)
         .get();
 
-    if (snapShotX.exists) {
+
+    if (snapShotX.exists ) {
       updateUserData(user);
     }
     else{
       updatenewUserData(user);
     }
-
+//        updatenewUserData(user);
 
   }
 

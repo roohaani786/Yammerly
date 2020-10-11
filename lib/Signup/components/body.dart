@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
@@ -104,20 +103,45 @@ class _BodyState extends State<Body> {
   }
 
   void onGoogleSignIn(BuildContext context) async {
-    FirebaseUser user = await authService.hellogoogleSignIn();
-    print(user);
-    var userSignedIn = await Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage()),
-          (Route<dynamic> route) => false,
-    );
+    final valid = await usernameCheck(displayNameInputController.text);
+    if (!valid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
 
-    setState(() {
-      isUserSignedIn = userSignedIn == null ? true : false;
-    });
+            return AlertDialog(
+              title: Text("Error"),
+              content: Text("Display name already exists!", style: TextStyle(
+                  color: Colors.deepPurple
+              )),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Close"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    }
+    else {
+      FirebaseUser user = await authService.hellogoogleSignIn();
+      print(user);
+      var userSignedIn = await Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+            (Route<dynamic> route) => false,
+      );
+
+      setState(() {
+        isUserSignedIn = userSignedIn == null ? true : false;
+      });
+    }
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseUser user;
   PublishSubject loading = PublishSubject();
 
   Future<FirebaseUser> facebookLogin(BuildContext context) async {
@@ -154,17 +178,7 @@ class _BodyState extends State<Body> {
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
-          if(user.email == null){
-            print("User already exists");
-          }
-
-          else{
-            authService.checkuserexists(user.uid, user);
-            loading.add(false);
-
-            print("signed in " + user.displayName);
-            return user;
-          }
+          AuthService().updatenewUserData(user);
         } catch (e) {
           showDialog(
               context: context,
@@ -269,44 +283,6 @@ class _BodyState extends State<Body> {
   String errorMessage = '';
   String successMessage = '';
 
-  Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
-    FirebaseUser currentUser;
-    var twitterLogin = new TwitterLogin(
-      consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
-      consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
-    );
-
-    final TwitterLoginResult result = await twitterLogin.authorize();
-
-    switch (result.status) {
-      case TwitterLoginStatus.loggedIn:
-        var session = result.session;
-//        final FacebookLoginResult facebookLoginResult =
-//        await fbLogin.logIn(['email']);
-        final AuthCredential credential = TwitterAuthProvider.getCredential(
-            authToken: session.token, authTokenSecret: session.secret);
-
-        final AuthResult user = await auth.signInWithCredential(credential);
-        assert(user.user.email == null);
-        assert(user.user.displayName != null);
-        assert(!user.user.isAnonymous);
-        assert(await user.user.getIdToken() != null);
-        currentUser = await auth.currentUser();
-        assert(user.user.uid == currentUser.uid);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-              (Route<dynamic> route) => false,
-        );
-        return currentUser;
-
-        break;
-      case TwitterLoginStatus.cancelledByUser:
-        break;
-      case TwitterLoginStatus.error:
-        break;
-    }
-  }
 
   void _toggle() {
     setState(() {
@@ -320,6 +296,13 @@ class _BodyState extends State<Body> {
     });
   }
 
+  Future<bool> usernameCheck(String displayName) async {
+    final result = await Firestore.instance
+        .collection('users')
+        .where('displayName', isEqualTo: displayName)
+        .getDocuments();
+    return result.documents.isEmpty;
+  }
 
   Future<String> signup(String email, String password, String firstname,
       String lastname, String phonenumber, String displayname) async {
@@ -330,68 +313,115 @@ class _BodyState extends State<Body> {
       isLoading = true;
     });
     try {
-      if (_registerFormKey.currentState.validate()) {
+
+       if (_registerFormKey.currentState.validate()) {
         if (pwdInputController.text ==
             confirmPwdInputController.text) {
+
+          final valid = await usernameCheck(displayNameInputController.text);
+          if (!valid) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+
+                  return AlertDialog(
+                    title: Text("Error"),
+                    content: Text("Display name already exists!", style: TextStyle(
+                        color: Colors.deepPurple
+                    )),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Close"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                });
+          }
 //          this.setState(() {
 //            isLoading = true;
 //          });
 
+          else {
+            FirebaseAuth.instance
+                .createUserWithEmailAndPassword(
+                email: emailInputController.text,
+                password: pwdInputController.text)
 
-          FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-              email: emailInputController.text,
-              password: pwdInputController.text)
-
-              .then((authResult) =>
-              Firestore.instance
-                  .collection("users")
-                  .document(authResult.user.uid)
-                  .setData({
-                "uid": authResult.user.uid,
-                "fname": firstNameInputController.text,
-                "surname": lastNameInputController.text,
-                "phonenumber": phoneNumberController.text,
-                "email": emailInputController.text,
-                "displayName": displayNameInputController.text.toLowerCase(),
-                'followers': 0,
-                'following': 0,
-                'posts': 0,
-                'photoURL' : 'https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png',
-                'bio' : "Proud Hashtager",
-                'emailVerified': false,
-                'phoneVerified': false,
-              })
-                  .then((result) =>
-              {
+                .then((authResult) =>
+                Firestore.instance
+                    .collection("users")
+                    .document(authResult.user.uid)
+                    .setData({
+                  "uid": authResult.user.uid,
+                  "fname": firstNameInputController.text,
+                  "surname": lastNameInputController.text,
+                  "phonenumber": phoneNumberController.text,
+                  "email": emailInputController.text,
+                  "displayName": displayNameInputController.text.toLowerCase(),
+                  'followers': 0,
+                  'following': 0,
+                  'posts': 0,
+                  'photoURL': 'https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png',
+                  'bio': "Proud Hashtager",
+                  'emailVerified': false,
+                  'phoneVerified': false,
+                })
+                    .then((result) =>
+                {
 
 
-              Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-              (Route<dynamic> route) => false,
-              ),
-                firstNameInputController.clear(),
-                lastNameInputController.clear(),
-                phoneNumberController.clear(),
-                emailInputController.clear(),
-                displayNameInputController.clear(),
-                pwdInputController.clear(),
-                confirmPwdInputController.clear()
-              })
-                  .catchError(
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                        (Route<dynamic> route) => false,
+                  ),
+                  firstNameInputController.clear(),
+                  lastNameInputController.clear(),
+                  phoneNumberController.clear(),
+                  emailInputController.clear(),
+                  displayNameInputController.clear(),
+                  pwdInputController.clear(),
+                  confirmPwdInputController.clear()
+                })
+                    .catchError(
 
-                    (err) =>
+                      (err) =>
 //                          print(err.code),
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Error"),
+                          content: Text(err.code, style: TextStyle(
+                              color: Colors.deepPurple
+                          )),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text("Close"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        );
+                      }),
+
+
+                ))
+                .catchError((err) =>
                 showDialog(
+
                     context: context,
                     builder: (BuildContext context) {
-
                       return AlertDialog(
                         title: Text("Error"),
-                        content: Text(err.code, style: TextStyle(
-                            color: Colors.deepPurple
-                        )),
+                        content: Text(err.code,
+                            style: TextStyle(
+                                color: Colors.deepPurple
+                            )),
                         actions: <Widget>[
                           FlatButton(
                             child: Text("Close"),
@@ -402,31 +432,8 @@ class _BodyState extends State<Body> {
                         ],
                       );
                     }),
-
-
-              ))
-              .catchError((err) =>
-              showDialog(
-
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text("Error"),
-                      content: Text(err.code,
-                          style: TextStyle(
-                              color: Colors.deepPurple
-                          )),
-                      actions: <Widget>[
-                        FlatButton(
-                          child: Text("Close"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        )
-                      ],
-                    );
-                  }),
-          );
+            );
+          }
         } else {
           showDialog(
               context: context,
@@ -1043,11 +1050,12 @@ class _BodyState extends State<Body> {
                         iconSrc: "assets/icons/twitter.svg",
                         press: () {
 //                        Navigator.pushReplacementNamed(context, "/Twit");
-                          loginWithTwitter(context).then(
-                                (user) {
-                              print('Logged in successfully.');
-                            },
-                          );
+//                          loginWithTwitter(context).then(
+//                                (user) {
+//                              print('Logged in successfully.');
+//                            },
+//                          );
+                        print("hello");
                         })
                   ],
                 )

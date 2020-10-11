@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:string_validator/string_validator.dart';
 import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
@@ -665,7 +666,7 @@ bool isChanged = false;
                       },
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loadingX.gif"),
+                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
                         backgroundColor: Colors.transparent,
                       ),
 
@@ -687,6 +688,8 @@ bool isChanged = false;
                               return 'Display Name should not be greater than 15 words';
                             }else if(value.length ==0){
                               return 'Display Name should not be null';
+                            }else if(!isLowercase(value)){
+                              return 'Display Name must be in lower case';
                             }
                           },
                           keyboardType: TextInputType.text,
@@ -756,9 +759,7 @@ bool isChanged = false;
                           controller: phoneNumberController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length ==0){
-                              return 'Phone number should not be null';
-                            }else if(value.length < 10.0){
+                             if(value.length < 10.0 && value.length > 0){
                               return 'Phone number should be of 10 digit';
                             }else if(value.length > 10.0){
                               return 'Phone number should be of 10 digit';
@@ -787,8 +788,10 @@ bool isChanged = false;
                           controller: emailController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 35.0){
-                              return 'email should not be greater then 35 words';
+
+                            if(value.length > 30.0){
+                              return 'email should not be greater than 30 words';
+
                             }else if(value.length ==0){
                               return 'email should not be null';
                             }
@@ -814,10 +817,10 @@ bool isChanged = false;
                           enabled: isEditable,
                           validator: (value) {
                             if(value.length > 50.0){
-                              return 'bio should not be greater then 50';
+                              return 'bio should not be greater than 50';
                             }
                           },
-                          keyboardType: TextInputType.multiline,
+                          keyboardType: TextInputType.text,
                           maxLines: 3,
                           decoration: InputDecoration(
                               labelText: "Bio",labelStyle: TextStyle(
@@ -1023,6 +1026,9 @@ bool isChanged = false;
                             //   return 'pin code should be of 6 digit';
                             // }
                           },
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
                           keyboardType: TextInputType.number,
                           maxLines: 1,
                           decoration: InputDecoration(

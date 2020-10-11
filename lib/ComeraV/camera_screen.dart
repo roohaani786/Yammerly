@@ -19,7 +19,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:thumbnails/thumbnails.dart';
-import 'package:lamp/lamp.dart';
+//import 'package:lamp/lamp.dart';
 import 'package:torch/torch.dart';
 import 'package:image/image.dart' as ImD;
 //import 'package:holding_gesture/holding_gesture.dart';
@@ -114,9 +114,9 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   initPlatformState() async {
-    bool hasFlash = await Lamp.hasLamp;
-    print("Device has flash ? $hasFlash");
-    setState(() { _hasFlash = hasFlash; });
+//    bool hasFlash = await Lamp.hasLamp;
+//    print("Device has flash ? $hasFlash");
+//    setState(() { _hasFlash = hasFlash; });
   }
 
   Future<void> _initCamera() async {
@@ -478,11 +478,12 @@ class CameraScreenState extends State<CameraScreen>
 
               FlatButton(
                 color: Colors.transparent,
-              onPressed: () async => await Lamp.flash(new Duration(seconds: 2)),
+//              onPressed: () async => await Lamp.flash(new Duration(seconds: 2)),
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 28.0,
                     child: IconButton(
+                      highlightColor: Colors.transparent,
                       icon: Icon(
                         (_isRecordingMode)
                             ? (_isRecording) ? Icons.stop : Icons.videocam
@@ -495,13 +496,13 @@ class CameraScreenState extends State<CameraScreen>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Gallery(),
+                              builder: (context) => Gallery(filePath: currentCityController.text,),
                             ),
                           );
                           _captureImage();
-                          if(flashOn){
-                            _turnFlash();
-                          }
+//                          if(flashOn){
+//                            _turnFlash();
+//                          }
                         } else {
                           if (_isRecording) {
                             stopVideoRecording();
@@ -516,7 +517,7 @@ class CameraScreenState extends State<CameraScreen>
               ),
               IconButton(
                 icon: Icon(
-                  Icons.camera_alt,color: Colors.white,
+                  Icons.camera_alt,color: Colors.transparent,
                 ),
                 onPressed: (){},
                 // icon: Icon(
@@ -608,7 +609,7 @@ class CameraScreenState extends State<CameraScreen>
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Gallery()),
+            builder: (context) => Gallery(filePath: filePath,)),
       );
 
     }

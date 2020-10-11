@@ -204,7 +204,7 @@ class _postPageState extends State<postPage> {
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
-        .document(displayNameController.text)
+        .document(displayNamecurrentUser)
         .get()
         .then((value) {
       if (value.exists) {
@@ -270,14 +270,29 @@ class _postPageState extends State<postPage> {
     var time = '';
 
     if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
-      time = format.format(date);
+      if (diff.inHours > 0) {
+        time = "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+      }
+
+      else if (diff.inSeconds <= 0) {
+        time = "just now";
+      }
+
+
+      else if (diff.inMinutes > 0) {
+        time = "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+      }
     } else if (diff.inDays > 0 && diff.inDays < 7) {
       if (diff.inDays == 1) {
         time = diff.inDays.toString() + ' DAY AGO';
       } else {
         time = diff.inDays.toString() + ' DAYS AGO';
       }
-    } else {
+    }
+
+
+
+    else {
       if (diff.inDays == 7) {
         time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
       } else {
@@ -350,9 +365,9 @@ class _postPageState extends State<postPage> {
     print("Done..");
   }
 
-  doubletaplike(int likes, String postId){
+  doubletaplike(int likes, String postId) async{
     if(liked = false) {
-      DatabaseService().likepost(
+      await DatabaseService().likepost(
           likes, postId,
           displayNameController.text);
       setState(() {
@@ -360,14 +375,8 @@ class _postPageState extends State<postPage> {
         print(liked);
       });
     }
-    else if (liked = true){
-      DatabaseService().unlikepost(
-          likes, postId,
-          displayNameController.text);
-      setState(() {
-        liked = false;
-        print(liked);
-      });
+    else {
+      print("jhj");
 
     }
   }
@@ -557,14 +566,22 @@ class _postPageState extends State<postPage> {
 
 
                                 GestureDetector(
-                                  onDoubleTap: (){
-                                    print("double tap");
-                                    print(liked);
-                                    doubletaplike(likes,postId);
-                                    print("double tap again");
-                                    print(liked);
+                                  onDoubleTap: ()async {
+//                                    getlikes(displayNameController.text, postId);
+                                    if (liked == false) {
+                                      await DatabaseService().likepost(
+                                          likes, postId,
+                                          displayNameController.text);
+                                      setState(() {
+                                        liked = true;
+                                        print(liked);
+                                      });
+//                                     return liked;
+                                    } else {
+                                      print("nahi");
+                                    }
                                   },
-                                  onTap: null,
+
 
                                   child: InteractiveViewer(
                                     transformationController: _controller,
@@ -630,7 +647,7 @@ class _postPageState extends State<postPage> {
 
                                             onPressed: () { print(displayNameController.text);
                                             Navigator.push(context, MaterialPageRoute(builder: (context){
-                                              return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                              return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text,comments: comments,);
                                               //return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
                                             },

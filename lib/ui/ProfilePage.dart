@@ -327,53 +327,55 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       child: Text(
 
                                         bioController.text,
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: 'Source Sans Pro',
                                           fontSize: 15.0,
-                                          color: Colors.grey,
+                                          color: Colors.grey.shade700,
                                           letterSpacing: 2.5,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
                                     SizedBox(
-                                      height: 20,
+                                      height: 10,
                                       width: 200,
-                                      child: Divider(
-                                        color: Colors.teal.shade700,
-                                      ),
+//                                      child: Divider(
+//                                        color: Colors.teal.shade700,
+//                                      ),
                                     ),
 
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 40.0,right: 40.0),
+                                    Align(
+                                      alignment: Alignment.center,
                                       child: Container(
-                                        child: Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 110,
-                                              child: FlatButton(
-                                                  color: Colors.transparent,
-                                                  child: new Text(
-                                                    "About Me",
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => AboutUser()),
-                                                    );
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                    side: BorderSide(color: Colors.purple, width: 2.5),
-                                                    borderRadius: BorderRadius.circular(30.0),
-                                                  )),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 20.0),
-                                              child: SizedBox(
+//                                        child: Row(
+//                                          children: [
+//                                            SizedBox(
+//                                              width: 110,
+//                                              child: FlatButton(
+//                                                  color: Colors.transparent,
+//                                                  child: new Text(
+//                                                    "About Me",
+//                                                    style: TextStyle(
+//                                                      color: Colors.black,
+//                                                    ),
+//                                                  ),
+//                                                  onPressed: () {
+//
+//                                                    Navigator.push(
+//                                                      context,
+//                                                      MaterialPageRoute(builder: (context) => AboutUser()),
+//                                                    );
+//                                                  },
+//                                                  shape: RoundedRectangleBorder(
+//                                                    side: BorderSide(color: Colors.purple, width: 2.5),
+//                                                    borderRadius: BorderRadius.circular(30.0),
+//                                                  )),
+//                                            ),
+//                                            Padding(
+//                                              padding: const EdgeInsets.only(left: 20.0),
+//                                              child:
+                                              child :SizedBox(
                                                 width: 110,
                                                 child: FlatButton(
                                                     color: Colors.transparent,
@@ -400,15 +402,15 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                       borderRadius: BorderRadius.circular(30.0),
                                                     )),
                                               ),
-                                            ),
+//                                            ),
 
 
 
 
 
 
-                                          ],
-                                        ),
+//                                          ],
+//                                        ),
                                       ),
                                     ),
 
@@ -424,7 +426,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               onTap: () => Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => FollowersList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                                    builder: (context) => FollowersList(displayNamecurrentUserX:displayNameController.text,uidX: uidController.text,)),
                                               ),
                                               child: _buildStatItem("FOLLOWERS", followers.toString())
                                           ),

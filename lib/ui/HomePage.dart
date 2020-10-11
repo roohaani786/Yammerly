@@ -69,7 +69,8 @@ class _HomePageState extends State<HomePage> {
 
   int initialindexg;
   TextEditingController emailController,urlController,descriptionController,
-      displayNameController,uidController;
+      displayNameController,uidController,photoUrlController,phonenumberController,
+      bioController,followers,following,posts;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -86,9 +87,15 @@ class _HomePageState extends State<HomePage> {
           .collection("users")
           .document(currUser.uid)
           .get();
-      emailController.text = docSnap.data["email"];
       displayNameController.text = docSnap.data["displayName"];
       uidController.text = docSnap.data["uid"];
+      emailController.text = docSnap.data["email"];
+      photoUrlController.text = docSnap.data["photoURL"];
+      phonenumberController.text = docSnap.data["phonenumber"];
+      bioController.text = docSnap.data["bio"];
+      followers = docSnap.data["followers"];
+      following  = docSnap.data["following"];
+      posts  = docSnap.data["posts"];
       setState(() {
 //        isLoading = false;
 //        isEditable = true;
@@ -107,6 +114,8 @@ class _HomePageState extends State<HomePage> {
     emailController = TextEditingController();
     displayNameController = TextEditingController();
     uidController = TextEditingController();
+    photoUrlController = TextEditingController();
+    phonenumberController = TextEditingController();
 
     super.initState();
     // Subscriptions are created here
@@ -323,7 +332,6 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
               height: 60.0,
               child: new TabBar(
                 tabs: [
-
                   Tab(
                     icon: IconButton(
                         onPressed: () {
@@ -346,14 +354,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                     icon: new Icon(Icons.notifications, size: 30),
                   ),
                   Tab(
-                    icon: GestureDetector(
-                        onTap: (){
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(initialindexg: 4),
-                            ),
-                          );
-                        },child: new Icon(Icons.account_circle, size: 30)),
+                    icon: new Icon(Icons.account_circle, size: 30),
                   )
                 ],
                 labelColor: Colors.purple,

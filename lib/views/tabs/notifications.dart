@@ -60,7 +60,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       ),
     );
     final notificationText = Text(
-      "Notification feature is coming on our app.",
+      "Notification feature is coming soon on our app.",
       style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 16.0,

@@ -399,9 +399,9 @@ class DatabaseService {
 
     await Firestore.instance
         .collection("users")
-        .document(uidX)
+        .document(uid)
         .collection('following')
-        .document(displayNameX)
+        .document(displayName)
         .delete();
 
 
@@ -415,7 +415,7 @@ class DatabaseService {
 //        else {
           return await Firestore.instance
               .collection("users")
-              .document(uidX)
+              .document(uid)
               .updateData({'following': following - 1});
 //        }
   }
@@ -432,24 +432,25 @@ class DatabaseService {
         .updateData({'posts': posts - 1});
   }
 
-  Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
+  Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX,String photoUrlX) async {
     await Firestore.instance
         .collection("users")
-        .document(uidX)
+        .document(uid)
         .collection('following')
         .document(displayName)
-        .setData({'followingname' : displayName,
-                  'followinguid': uidX});
+        .setData({'followingname' : displayName,'followinguid' : uidX,'photoUrl' : photoUrlX});
+
         //.updateData({'followingname': uid,});
 
     return await Firestore.instance
         .collection("users")
-        .document(uidX)
+        .document(uid)
         .updateData({'following': following + 1});
   }
   
 
-  Future followUser(int followers, String uid, String displayName,String uidX) async {
+  Future followUser(int followers, String uid, String displayName, String uidX,String photoUrlX) async {
+
     await Firestore.instance
         .collection("users")
         .document(uid)
@@ -457,7 +458,8 @@ class DatabaseService {
         .document(displayName)
         .setData({
       'followername': displayName,
-      'followeruid':uidX,
+      'followeruid': uidX,
+      'photoUrl' : photoUrlX,
     });
 
     return await Firestore.instance

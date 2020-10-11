@@ -6,11 +6,13 @@ import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'other_user.dart';
 
 class OtherFollowersList extends StatefulWidget {
+  final displayName;
+  final uid;
   final displayNamecurrentUser;
   final uidX;
-  OtherFollowersList({this.displayNamecurrentUser,this.uidX});
+  OtherFollowersList({this.displayName,this.uid,this.displayNamecurrentUser,this.uidX});
   @override
-  _OtherFollowersList createState() => _OtherFollowersList(displayNamecurrentUser: displayNamecurrentUser,uidX: uidX);
+  _OtherFollowersList createState() => _OtherFollowersList(displayName: displayName,uid: uid,displayNamecurrentUser: displayNamecurrentUser,uidX: uidX);
 }
 
 class _OtherFollowersList extends State<OtherFollowersList> {
@@ -18,16 +20,19 @@ class _OtherFollowersList extends State<OtherFollowersList> {
   String lname = "";
   String searchKey;
   Stream streamQuery;
+  final String displayName;
+  final String uid;
   final String displayNamecurrentUser;
   final String uidX;
+
   //String bandekiuid;
 
-  _OtherFollowersList({this.displayNamecurrentUser,this.uidX});
+  _OtherFollowersList({this.displayName,this.uid,this.displayNamecurrentUser,this.uidX});
 
   //String uidf = FollowersList().uidX;
   @override
   Widget build(BuildContext context) {
-    print("cv");
+    print("meme");
     print(uidX);
     print("434");
     return Scaffold(
@@ -74,7 +79,7 @@ class _OtherFollowersList extends State<OtherFollowersList> {
         stream: (searchKey != "" && searchKey != null)?streamQuery
             : Firestore.instance
             .collection("users")
-            .document(uidX)
+            .document(uid)
             .collection('followers')
             .snapshots(),
 //        (fname != "" && fname != null)

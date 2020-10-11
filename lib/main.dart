@@ -57,7 +57,7 @@ class MyAppState extends State<MyApp> {
             '/Fblogin': (context) => Fblogin(),
             '/Welcome': (context) => WelcomeScreen(),
             '/nayasignup': (context) => SignUpScreen(),
-            '/Twit': (context) => TwitterLoginScreen(),
+//            '/Twit': (context) => TwitterLoginScreen(),
             '/Profile': (context) => AccountBottomIconScreen(),
             '/HomePage': (context) => HomePage(),
           },

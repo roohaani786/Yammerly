@@ -25,7 +25,7 @@ class OtherUserProfile extends StatefulWidget{
 
   OtherUserProfile({this.uid,this.displayNamecurrentUser,this.displayName,this.uidX});
   @override
-  _OtherUserProfileState createState() => _OtherUserProfileState(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName);
+  _OtherUserProfileState createState() => _OtherUserProfileState(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName,uidX: uidX);
 }
 
 class _OtherUserProfileState extends State<OtherUserProfile> {
@@ -62,12 +62,14 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     authService.loading.listen((state) => setState(() => _loading = state));
 
     uidControllerX = TextEditingController();
+    //photoUrlX = TextEditingController();
     super.initState();
     fetchProfileData();
     getUserPosts(uid);
   }
 
   int followingX;
+  String photoUrlX;
 
   getUserPosts(String uidX) async {
     getPostsUser(uidX).then((val){
@@ -85,6 +87,35 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
         .snapshots();
   }
 
+  // fetchMyProfileData() async {
+  //   currUser = await FirebaseAuth.instance.currentUser();
+  //   try {
+  //     docSnap = await Firestore.instance
+  //         .collection("users")
+  //         .document(currUser.uid)
+  //         .get();
+  //
+  //     displayNameController.text = docSnap.data["displayName"];
+  //     uidController.text = docSnap.data["uid"];
+  //     emailController.text = docSnap.data["email"];
+  //     photoUrlController.text = docSnap.data["photoURL"];
+  //     phonenumberController.text = docSnap.data["phonenumber"];
+  //     bioController.text = docSnap.data["bio"];
+  //     followers = docSnap.data["followers"];
+  //     following  = docSnap.data["following"];
+  //     posts  = docSnap.data["posts"];
+  //
+  //     setState(() {
+  //       isLoading = false;
+  //       isEditable = false;
+  //     });
+  //
+  //     //getUserPosts(uidController.text);
+  //   } on PlatformException catch (e) {
+  //     print("PlatformException in fetching user profile. E  = " + e.message);
+  //   }
+  // }
+
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
@@ -95,8 +126,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
       uidControllerX.text = docSnap.data["uid"];
       followingX = docSnap.data["following"];
+      photoUrlX = docSnap.data["photoURL"];
       print("fg");
-      print(followingX);
+      print(currUser.uid);
 
       setState(() {
 //        isLoading = false;
@@ -130,6 +162,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     });
   }
 
+
+
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
     //var format = DateFormat('HH:mm a');
@@ -159,10 +193,29 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   bool liked = false;
 
+  getfollowers( String displayNamecurrentUser, String uid) {
+
+
+    Firestore.instance.collection('users')
+        .document(uid)
+        .collection('followers')
+        .document(displayNamecurrentUser)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        setState(() {
+          followed = true;
+
+        });
+      }
+    });
+
+  }
+
   getlikes( String displayName, String postId) {
 
-    print("postid");
-    print(postId);
+    // print("postid");
+    // print(postId);
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
@@ -196,6 +249,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
     String displayNameX = displayName;
 
+    print("cv");
+    print(displayNameX);
+    print("434");
+
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -221,6 +278,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
               int following = snapshot.data.documents[index]["following"];
               print(following);
               int posts = snapshot.data.documents[index]["posts"];
+
+              getfollowers(displayNamecurrentUser,uid);
               return (uid != null) ?
               SingleChildScrollView(
                 child: SafeArea(
@@ -260,6 +319,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                             padding: const EdgeInsets.only(top: 10.0),
                                             child: (bio!=null)?Text(
                                               bio,
+                                              textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontFamily: 'Source Sans Pro',
                                                 fontSize: 15.0,
@@ -291,7 +351,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            OtherFollowersList(displayNamecurrentUser: displayName,uidX: uid,)
+                                                            OtherFollowersList(displayName: displayName,uid: uid,displayNamecurrentUser: displayNamecurrentUser,uidX: uidX,)
                                                     ),
                                                   ),
                                                   child: _buildStatItem("FOLLOWERS",
@@ -303,9 +363,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            OtherFollowersList(displayNamecurrentUser: displayName,uidX: uid,)
+                                                            OtherFollowersList(displayName: displayName,uid: uid,displayNamecurrentUser: displayNamecurrentUser,uidX: uidX,)
                                                     ),
                                                   ),
+
                                                   child: _buildStatItem("FOLLOWING",
                                                       following.toString()),
                                                 ),
@@ -359,9 +420,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               setState(() {
                                                                 followed = true;
                                                               });
-                                                              DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidControllerX.text);
+
+                                                              DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidX,photoUrlX);
+
                                                               // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
-                                                              DatabaseService().increaseFollowing(uid,followingX,displayNamecurrentUser,displayNameX,uidControllerX.text);
+                                                              DatabaseService().increaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid,photoUrl);
                                                             },
                                                             shape: RoundedRectangleBorder(
                                                               side: BorderSide(
@@ -390,12 +453,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                   displayNamecurrentUser);
 
                                                               DatabaseService()
-                                                                  .decreaseFollowing(uid,
-                                                                  1,
-                                                                  displayNamecurrentUser,
-                                                                  displayNameX,
-                                                                  uidControllerX
-                                                                      .text);
+                                                                  .decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
                                                             },
                                                             shape: RoundedRectangleBorder(
                                                               side: BorderSide(

@@ -50,7 +50,6 @@ dependencies:
   flutter_webview_plugin:
   flutter_facebook_login:
   flutter_svg: 0.18.0
-  flutter_twitter_login:
   twitter_login:
   camera: ^0.5.8+5
   torch:
@@ -69,7 +68,7 @@ dependencies:
   video_player: ^0.10.2+5
   thumbnails: 1.0.1
   torch_compat: ^1.0.2
-  lamp: ^0.0.6
+#  lamp: ^0.0.6
   firebase_core: ^0.4.0+9
   provider: ^4.0.5
   holding_gesture: ^0.0.3
@@ -85,6 +84,7 @@ dependencies:
   catcher:
   local_auth:
   http:
+  string_validator: ^0.1.4
 
 dev_dependencies:
   flutter_test:
@@ -143,8 +143,8 @@ flutter:
     - assets/icons/login.svg
     - assets/icons/signup.svg
     - assets/icons/twitter.svg
-    - assets/images/loadingX.gif
     - assets/images/1.jpg
+    - assets/images/loading.gif
     - assets/images/2.jpg
     - assets/images/3.jpg
     - assets/images/empty.png

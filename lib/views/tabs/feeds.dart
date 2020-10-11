@@ -116,7 +116,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   fetchPosts() async {
 
-    DatabaseService().getPosts().then((val){
+    await DatabaseService().getPosts().then((val){
       setState(() {
         postsStream = val;
       });
@@ -146,10 +146,11 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
 
-  getlikes( String displayNamecurrent, String postId) {
+  getlikes( String displayNamecurrent, String postId) async {
 
 
-    Firestore.instance.collection('posts')
+
+    await Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
         .document(displayNameController.text)
@@ -217,14 +218,29 @@ class _FeedsPageState extends State<FeedsPage> {
     var time = '';
 
     if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
-      time = format.format(date);
+    if (diff.inHours > 0) {
+      time = "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+    }
+
+    else if (diff.inSeconds <= 0) {
+      time = "just now";
+    }
+
+
+    else if (diff.inMinutes > 0) {
+      time = "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+    }
     } else if (diff.inDays > 0 && diff.inDays < 7) {
       if (diff.inDays == 1) {
         time = diff.inDays.toString() + ' DAY AGO';
       } else {
         time = diff.inDays.toString() + ' DAYS AGO';
       }
-    } else {
+    }
+
+
+
+     else {
       if (diff.inDays == 7) {
         time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
       } else {
@@ -239,6 +255,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
   File _image;
   bool upload;
+  int likescount;
+  bool loading = false;
 
   Future pickImage() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
@@ -258,9 +276,9 @@ class _FeedsPageState extends State<FeedsPage> {
     print("Done..");
   }
 
-  doubletaplike(int likes, String postId){
+  doubletaplike(int likes, String postId) async {
     if(liked = false) {
-      DatabaseService().likepost(
+       await DatabaseService().likepost(
           likes, postId,
           displayNameController.text);
       setState(() {
@@ -268,7 +286,7 @@ class _FeedsPageState extends State<FeedsPage> {
         print(liked);
       });
     }else{
-      return null;
+      print("ghg");
     }
     // else if (liked = true){
     //   DatabaseService().unlikepost(
@@ -341,6 +359,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         String postId = snapshot.data.documents[index]['postId'];
                         int likes = snapshot.data.documents[index]['likes'];
                         int comments = snapshot.data.documents[index]['comments'];
+                        likescount = likes;
                         readTimestamp(timestamp.seconds);
 
 
@@ -420,7 +439,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                 GestureDetector(
                                   onTap: () => Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
+                                    MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
                                   ),
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
@@ -436,7 +455,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               borderRadius: BorderRadius.circular(40),
 
                                               child: Image(
-                                                image: NetworkImage(photoUrlController.text),
+                                                image: NetworkImage(photoUrl),
                                                 width: 40,
                                                 height: 40,
                                                 fit: BoxFit.cover,
@@ -459,10 +478,10 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
                                 GestureDetector(
-                                  onDoubleTap: () {
-                                    getlikes(displayNameController.text, postId);
+                                  onDoubleTap: () async {
+//                                    getlikes(displayNameController.text, postId);
                                     if (liked == false) {
-                                      DatabaseService().likepost(
+                                      await DatabaseService().likepost(
                                           likes, postId,
                                           displayNameController.text);
                                       setState(() {
@@ -493,7 +512,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                               image: NetworkImage(url),
                                               //image: NetworkImage("posts[i].postImage"),
-                                              placeholder: AssetImage("assets/images/loadingX.gif"),
+                                              placeholder: AssetImage("assets/images/loading.gif"),
                                               width: MediaQuery.of(context).size.width,
 
 
@@ -514,11 +533,17 @@ class _FeedsPageState extends State<FeedsPage> {
                                     Row(
                                       children: <Widget>[
                                         (liked == false)?IconButton(
-                                          onPressed: () {
-                                            DatabaseService().likepost(
+                                          onPressed: () async {
+//                                            setState(() {
+//                                              loading = true;
+//                                              likescount++;
+//                                            });
+
+                                            await DatabaseService().likepost(
                                                 likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = true;
+                                              loading = false;
                                             });
                                           },
                                           icon: Icon(FontAwesomeIcons.thumbsUp),
@@ -528,11 +553,17 @@ class _FeedsPageState extends State<FeedsPage> {
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
                                         ):IconButton(
 
-                                          onPressed: () {
-                                            DatabaseService().unlikepost(
+                                          onPressed: () async {
+//                                            setState(() {
+//                                              loading = true;
+//                                              likescount--;
+//                                            });
+
+                                            await DatabaseService().unlikepost(
                                                 likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = false;
+                                              loading = false;
                                             });
                                           },
 
@@ -543,8 +574,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                           // },
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
                                         ),
-                                        Text(
+                                        (loading == false)?Text(
                                           likes.toString(),style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+
+                                        ):Text(
+                                          likescount.toString(),style: TextStyle(
                                           color: Colors.black,
                                         ),
 
