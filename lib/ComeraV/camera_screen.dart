@@ -500,9 +500,9 @@ class CameraScreenState extends State<CameraScreen>
                             ),
                           );
                           _captureImage();
-                          if(flashOn){
-                            _turnFlash();
-                          }
+//                          if(flashOn){
+//                            _turnFlash();
+//                          }
                         } else {
                           if (_isRecording) {
                             stopVideoRecording();

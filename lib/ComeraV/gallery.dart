@@ -121,7 +121,7 @@ int indexd;
                     height: MediaQuery.of(context).size.height,
                     child: Image.file(
                       File(currentFilePath),
-                      fit: BoxFit.fill,
+                      fit: BoxFit.cover,
                     ),
                   ),
 
@@ -265,7 +265,7 @@ int indexd;
                             child: ButtonTheme(
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               child: Container(
-                                width: 85.0,
+                                width: 95.0,
                                 child: RaisedButton(
                                   color: Colors.white,
                                   onPressed: () {
@@ -277,9 +277,12 @@ int indexd;
                                   child: Row(
                                     children: [
                                       Text("Post",style: TextStyle(
-                                          fontWeight: FontWeight.w400
+                                          fontWeight: FontWeight.bold,
                                       ),),
-                                      Icon(Icons.keyboard_arrow_right),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 10.0),
+                                        child: Icon(Icons.keyboard_arrow_right),
+                                      ),
                                     ],
                                   ),
                                 ),
