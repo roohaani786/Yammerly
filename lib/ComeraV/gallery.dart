@@ -265,7 +265,7 @@ int indexd;
                             child: ButtonTheme(
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               child: Container(
-                                width: 85.0,
+                                width: 95.0,
                                 child: RaisedButton(
                                   color: Colors.white,
                                   onPressed: () {
