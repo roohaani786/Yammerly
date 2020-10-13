@@ -27,14 +27,18 @@ import 'package:image/image.dart' as ImD;
 import 'application.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({Key key}) : super(key: key);
+  final int cam;
+
+  const CameraScreen({Key key,this.cam}) : super(key: key);
 
   @override
-  CameraScreenState createState() => CameraScreenState();
+  CameraScreenState createState() => CameraScreenState(cam: cam);
 }
 
 class CameraScreenState extends State<CameraScreen>
     with AutomaticKeepAliveClientMixin {
+
+  CameraScreenState({this.cam});
   CameraController _controller;
   List<CameraDescription> _cameras;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -45,6 +49,7 @@ class CameraScreenState extends State<CameraScreen>
   bool _hasFlash = false;
   Map<String, dynamic> _profile;
   bool _loading = false;
+  int cam;
 
 
   @override
@@ -121,7 +126,7 @@ class CameraScreenState extends State<CameraScreen>
 
   Future<void> _initCamera() async {
     _cameras = await availableCameras();
-    _controller = CameraController(_cameras[0], ResolutionPreset.veryHigh);
+    _controller = CameraController(_cameras[cam], ResolutionPreset.veryHigh);
     _controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -496,7 +501,7 @@ class CameraScreenState extends State<CameraScreen>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Gallery(filePath: currentCityController.text,),
+                              builder: (context) => Gallery(filePath: currentCityController.text,cam:cam),
                             ),
                           );
                           _captureImage();
@@ -571,8 +576,18 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   Future<void> _onCameraSwitch() async {
-    final CameraDescription cameraDescription =
-        (_controller.description == _cameras[0]) ? _cameras[1] : _cameras[0];
+    //final CameraDescription cameraDescription =
+        if(cam == 0){
+          setState(() {
+            cam = 1;
+          });
+        }else if(cam == 1){
+          setState(() {
+            cam = 0;
+          });
+        };
+        final CameraDescription cameraDescription = _cameras[cam];
+        //(_controller.description == _cameras[0]) ? _cameras[1] : _cameras[0];
     if (_controller != null) {
       await _controller.dispose();
     }

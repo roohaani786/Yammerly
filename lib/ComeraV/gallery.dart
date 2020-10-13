@@ -17,15 +17,17 @@ import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
 class Gallery extends StatefulWidget {
-  Gallery({this.filePath});
   String filePath;
+  int cam;
+  Gallery({this.filePath,this.cam});
   @override
-  _GalleryState createState() => _GalleryState(filePath);
+  _GalleryState createState() => _GalleryState(currentFilePath: filePath,cam: cam);
 }
 
 class _GalleryState extends State<Gallery> {
   String currentFilePath;
-  _GalleryState(this.currentFilePath);
+  int cam;
+  _GalleryState({this.currentFilePath,this.cam});
 
 int indexd;
 
@@ -163,7 +165,10 @@ int indexd;
                                                  context,
                                                  MaterialPageRoute(
                                                    builder: (context) {
-                                                     return CameraScreen();
+                                                     print("comera");
+                                                     print(cam);
+                                                     print("camera");
+                                                     return CameraScreen(cam: 1,);
                                                    },
                                                  ),
                                                );
@@ -229,7 +234,7 @@ int indexd;
                                     context,
                                     MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
                                   );
-                                },
+                                }, child: null,
 //                            child: Row(
 //                              children: [
 //                                Padding(

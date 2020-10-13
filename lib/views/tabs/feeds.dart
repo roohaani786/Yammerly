@@ -623,34 +623,49 @@ class _FeedsPageState extends State<FeedsPage> {
                                     ),
                                     child: Row(
                                       children: [
-                                        Container(
-                                          child: RichText(
-                                            softWrap: true,
-                                            overflow: TextOverflow.visible,
-                                            text: TextSpan(
-                                              text: displayName,
-                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
-                                            ),
-                                          ),
-                                        ),
-
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 3.0),
+                                        Positioned(
+                                          top:1.0,
                                           child: Container(
-
-                                            constraints: BoxConstraints(maxWidth: 250),
                                             child: RichText(
+                                              textAlign: TextAlign.start,
                                               softWrap: true,
                                               overflow: TextOverflow.visible,
                                               text: TextSpan(
-                                                text: description,
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                    fontSize: 15.0),
-
+                                                children: [
+                                                  TextSpan(
+                                                    text: displayName + "  ",
+                                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                                  ),
+                                                  TextSpan(
+                                                    text: description,
+                                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                        fontSize: 15.0),
+                                                  ),
+                                                ],
                                               ),
+
                                             ),
                                           ),
                                         ),
+
+                                        // Padding(
+                                        //   padding: const EdgeInsets.only(left: 3.0),
+                                        //   child: Container(
+                                        //
+                                        //     constraints: BoxConstraints(maxWidth: 250),
+                                        //     child: RichText(
+                                        //       textAlign: TextAlign.start,
+                                        //       softWrap: true,
+                                        //       overflow: TextOverflow.visible,
+                                        //       text: TextSpan(
+                                        //         text: description,
+                                        //         style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                        //             fontSize: 15.0),
+                                        //
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
                                       ],
                                     )
                                 ),

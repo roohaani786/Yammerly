@@ -280,6 +280,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
     ) ??
         false;
   }
+  int cam;
 
   @override
   Widget build(BuildContext context) {
