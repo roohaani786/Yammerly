@@ -498,6 +498,8 @@ class CameraScreenState extends State<CameraScreen>
                       ),
                       onPressed: () {
                         if (!_isRecordingMode) {
+                          print("alam");
+                          print(cam);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

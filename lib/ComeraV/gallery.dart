@@ -18,7 +18,7 @@ import 'package:techstagram/ui/HomePage.dart';
 
 class Gallery extends StatefulWidget {
   String filePath;
-  int cam;
+  final int cam;
   Gallery({this.filePath,this.cam});
   @override
   _GalleryState createState() => _GalleryState(currentFilePath: filePath,cam: cam);
@@ -26,7 +26,7 @@ class Gallery extends StatefulWidget {
 
 class _GalleryState extends State<Gallery> {
   String currentFilePath;
-  int cam;
+  final int cam;
   _GalleryState({this.currentFilePath,this.cam});
 
 int indexd;
@@ -74,7 +74,7 @@ int indexd;
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return CameraScreen();
+                              return CameraScreen(cam: 1,);
                             },
                           ),
                         );
