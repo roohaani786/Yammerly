@@ -424,11 +424,13 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                           ),),
                                         ),
                                       ),
-                                      Text((work!=null)?work:"",style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16.0,
-                                      ),),
+                                      Expanded(
+                                        child: Text((work!=null)?work:"",style: TextStyle(
+                                          color: kPrimaryColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0,
+                                        ),),
+                                      ),
                                     ],
                                   ),
                                 ),

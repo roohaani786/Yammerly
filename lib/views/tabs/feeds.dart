@@ -467,7 +467,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                             SizedBox(
                                               width: 10,
                                             ),
-                                            Text(displayName),
+                                            Text(displayName,style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18.0,
+                                            ),),
                                           ],
                                         ),
                                         IconButton(
@@ -640,7 +643,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                               children: [
                                                 TextSpan(
                                                   text: displayName + "  ",
-                                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                  fontSize: 18.0),
                                                 ),
                                                 TextSpan(
                                                   text: description,

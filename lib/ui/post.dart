@@ -551,7 +551,10 @@ class _postPageState extends State<postPage> {
                                             SizedBox(
                                               width: 10,
                                             ),
-                                            Text(displayName),
+                                            Text(displayName,style: TextStyle(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),),
                                           ],
                                         ),
                                         IconButton(
@@ -709,7 +712,8 @@ class _postPageState extends State<postPage> {
                                             overflow: TextOverflow.visible,
                                             text: TextSpan(
                                               text: displayName,
-                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                              fontSize: 15.0),
                                             ),
                                           ),
                                         ),

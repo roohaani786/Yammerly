@@ -294,10 +294,7 @@ int indexd;
                                       Text("Post",style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                       ),),
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 10.0),
-                                        child: Icon(Icons.keyboard_arrow_right),
-                                      ),
+                                       Icon(Icons.keyboard_arrow_right),
                                     ],
                                   ),
                                 ),
