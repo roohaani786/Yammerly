@@ -18,6 +18,7 @@ import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/ui/ProfileEdit.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
+import 'dart:math' as math;
 //import 'package:techstagram/services/database.dart';
 //import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 //
@@ -204,7 +205,7 @@ class _postPageState extends State<postPage> {
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
-        .document(displayNamecurrentUser)
+        .document(displayNameController.text)
         .get()
         .then((value) {
       if (value.exists) {
@@ -367,13 +368,13 @@ class _postPageState extends State<postPage> {
 
   doubletaplike(int likes, String postId) async{
     if(liked = false) {
+      setState(() {
+        liked = true;
+      });
       await DatabaseService().likepost(
           likes, postId,
           displayNameController.text);
-      setState(() {
-        liked = true;
-        print(liked);
-      });
+
     }
     else {
       print("jhj");
@@ -437,7 +438,7 @@ class _postPageState extends State<postPage> {
                         String photoUrl =
                         snapshot.data.documents[index]['photoURL'];
                         String uid = snapshot.data.documents[index]["uid"];
-
+                        int cam = snapshot.data.documents[index]['cam'];
                         Timestamp timestamp =
                         snapshot.data.documents[index]['timestamp'];
                         String url = snapshot.data.documents[index]['url'];
@@ -566,16 +567,18 @@ class _postPageState extends State<postPage> {
 
 
                                 GestureDetector(
-                                  onDoubleTap: ()async {
+                                  onDoubleTap: () {
+
 //                                    getlikes(displayNameController.text, postId);
                                     if (liked == false) {
-                                      await DatabaseService().likepost(
-                                          likes, postId,
-                                          displayNameController.text);
                                       setState(() {
                                         liked = true;
                                         print(liked);
                                       });
+                                      DatabaseService().likepost(
+                                          likes, postId,
+                                          displayNameController.text);
+
 //                                     return liked;
                                     } else {
                                       print("nahi");
@@ -588,11 +591,28 @@ class _postPageState extends State<postPage> {
                                     onInteractionEnd: (value){
                                       _controller.value = Matrix4.identity();
                                     },
-                                    child: FadeInImage(
+                                    child :(cam == 1)?Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(math.pi),
+                                      child: FadeInImage(
+
+                                        image: NetworkImage(url),
+                                        //image: NetworkImage("posts[i].postImage"),
+                                        placeholder: AssetImage("assets/images/loading.gif"),
+                                        width: MediaQuery.of(context).size.width,
+
+
+
+                                      ),
+                                    ):FadeInImage(
+
                                       image: NetworkImage(url),
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
+
+
+
                                     ),
                                   ),
 
@@ -605,12 +625,14 @@ class _postPageState extends State<postPage> {
                                     Row(
                                       children: <Widget>[
                                         (liked == false)?IconButton(
+
                                           onPressed: () {
-                                            DatabaseService().likepost(
-                                                likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = true;
                                             });
+                                            DatabaseService().likepost(
+                                                likes, postId, displayNameController.text);
+
                                           },
                                           icon: Icon(FontAwesomeIcons.thumbsUp),
                                           color: Colors.deepPurple,
@@ -620,11 +642,12 @@ class _postPageState extends State<postPage> {
                                         ):IconButton(
 
                                           onPressed: () {
-                                            DatabaseService().unlikepost(
-                                                likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = false;
                                             });
+                                            DatabaseService().unlikepost(
+                                                likes, postId, displayNameController.text);
+
                                           },
 
                                           icon: Icon(FontAwesomeIcons.solidThumbsUp),

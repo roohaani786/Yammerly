@@ -11,23 +11,26 @@ import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as ImD;
+import 'dart:math' as math;
 
 import 'auth.dart';
 
 class UploadImage extends StatefulWidget {
   final User userData;
   File file;
-  UploadImage({this.file, this.userData});
+  int cam;
+  UploadImage({this.file, this.userData,this.cam});
 
   @override
-  _UploadImageState createState() => _UploadImageState();
+  _UploadImageState createState() => _UploadImageState(cam: cam);
 }
 
 class _UploadImageState extends State<UploadImage>
     with AutomaticKeepAliveClientMixin<UploadImage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+int cam;
+_UploadImageState({this.cam});
   TextEditingController
   emailController,
       uidController,
@@ -131,6 +134,7 @@ class _UploadImageState extends State<UploadImage>
       "photoURL" :photoUrlController.text,
 //      "email": widget.userData.email,
       "description": descriptionController.text,
+      "cam": cam,
       "likes": 0,
       "comments": 0,
       "url": url,
@@ -148,6 +152,7 @@ class _UploadImageState extends State<UploadImage>
       "photoURL" :photoUrlController.text,
 //      "email": widget.userData.email,
       "description": descriptionController.text,
+      "cam": cam,
       "likes": 0,
       "comments": 0,
       "url": url,
@@ -206,11 +211,23 @@ class _UploadImageState extends State<UploadImage>
             child: Center(
               child: AspectRatio(
                 aspectRatio: 6 / 5,
-                child: Container(
+                child: (cam == 1)?Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.rotationY(math.pi),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+
+                          image: FileImage(file),
+                          fit: BoxFit.cover),
+                    ),
+                  ),
+                ): Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
 
-                        image: FileImage(file), fit: BoxFit.cover),
+                        image: FileImage(file),
+                        fit: BoxFit.cover),
                   ),
                 ),
               ),

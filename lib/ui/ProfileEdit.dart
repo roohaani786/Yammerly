@@ -684,8 +684,8 @@ bool isChanged = false;
                           controller: displayNameController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 15.0){
-                              return 'Display Name should not be greater than 15 words';
+                            if(value.length > 20.0){
+                              return 'Display Name should not be greater than 20 words';
                             }else if(value.length ==0){
                               return 'Display Name should not be null';
                             }else if(!isLowercase(value)){

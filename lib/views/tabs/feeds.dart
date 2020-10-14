@@ -276,15 +276,17 @@ class _FeedsPageState extends State<FeedsPage> {
     print("Done..");
   }
 
-  doubletaplike(int likes, String postId) async {
+  doubletaplike(int likes, String postId)  {
+
+
     if(liked = false) {
-       await DatabaseService().likepost(
-          likes, postId,
-          displayNameController.text);
       setState(() {
         liked = true;
-        print(liked);
       });
+        DatabaseService().likepost(
+          likes, postId,
+          displayNameController.text);
+
     }else{
       print("ghg");
     }
@@ -356,6 +358,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         Timestamp timestamp =
                         snapshot.data.documents[index]['timestamp'];
                         String url = snapshot.data.documents[index]['url'];
+                        int cam = snapshot.data.documents[index]['cam'];
                         String postId = snapshot.data.documents[index]['postId'];
                         int likes = snapshot.data.documents[index]['likes'];
                         int comments = snapshot.data.documents[index]['comments'];
@@ -508,7 +511,20 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                   child: GestureDetector(
 
-                                            child :FadeInImage(
+                                            child :(cam == 1)?Transform(
+                                              alignment: Alignment.center,
+                                              transform: Matrix4.rotationY(math.pi),
+                                              child: FadeInImage(
+
+                                                image: NetworkImage(url),
+                                                //image: NetworkImage("posts[i].postImage"),
+                                                placeholder: AssetImage("assets/images/loading.gif"),
+                                                width: MediaQuery.of(context).size.width,
+
+
+
+                                              ),
+                                            ):FadeInImage(
 
                                               image: NetworkImage(url),
                                               //image: NetworkImage("posts[i].postImage"),
@@ -533,18 +549,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                     Row(
                                       children: <Widget>[
                                         (liked == false)?IconButton(
-                                          onPressed: () async {
-//                                            setState(() {
-//                                              loading = true;
-//                                              likescount++;
-//                                            });
-
-                                            await DatabaseService().likepost(
-                                                likes, postId, displayNameController.text);
-                                            setState(() {
+                                          onPressed: ()  {
+                                             setState(() {
                                               liked = true;
-                                              loading = false;
                                             });
+
+                                            DatabaseService().likepost(
+                                                likes, postId, displayNameController.text);
+
                                           },
                                           icon: Icon(FontAwesomeIcons.thumbsUp),
                                           color: Colors.deepPurple,
@@ -553,18 +565,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
                                         ):IconButton(
 
-                                          onPressed: () async {
-//                                            setState(() {
-//                                              loading = true;
-//                                              likescount--;
-//                                            });
-
-                                            await DatabaseService().unlikepost(
-                                                likes, postId, displayNameController.text);
-                                            setState(() {
+                                          onPressed: ()  {
+                                             setState(() {
                                               liked = false;
-                                              loading = false;
                                             });
+
+                                             DatabaseService().unlikepost(
+                                                likes, postId, displayNameController.text);
                                           },
 
                                           icon: Icon(FontAwesomeIcons.solidThumbsUp),
@@ -626,32 +633,26 @@ class _FeedsPageState extends State<FeedsPage> {
                                       children: [
                                         Container(
                                           child: RichText(
+                                            textAlign: TextAlign.start,
                                             softWrap: true,
                                             overflow: TextOverflow.visible,
                                             text: TextSpan(
-                                              text: displayName,
-                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                              children: [
+                                                TextSpan(
+                                                  text: displayName + "  ",
+                                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                                ),
+                                                TextSpan(
+                                                  text: description,
+                                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                      fontSize: 15.0),
+                                                ),
+                                              ],
                                             ),
+
                                           ),
                                         ),
 
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 3.0),
-                                          child: Container(
-
-                                            constraints: BoxConstraints(maxWidth: 250),
-                                            child: RichText(
-                                              softWrap: true,
-                                              overflow: TextOverflow.visible,
-                                              text: TextSpan(
-                                                text: description,
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                    fontSize: 15.0),
-
-                                              ),
-                                            ),
-                                          ),
-                                        ),
                                       ],
                                     )
                                 ),

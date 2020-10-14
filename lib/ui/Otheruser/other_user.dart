@@ -9,7 +9,7 @@ import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/Otheruser/otherfollowerlist.dart';
 import 'package:techstagram/ui/ProfileEdit.dart';
-
+import 'dart:math' as math;
 import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
@@ -275,6 +275,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
               String displayName = snapshot.data.documents[index]["displayName"];
               String bio = snapshot.data.documents[index]["bio"];
               int followers = snapshot.data.documents[index]["followers"];
+
+              if(followers == 0){
+                  followed = false;
+              }
               int following = snapshot.data.documents[index]["following"];
               print(following);
               int posts = snapshot.data.documents[index]["posts"];
@@ -418,10 +422,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                             onPressed: () {
 
                                                               setState(() {
-                                                                followed = true;
+                                                                getFollowers();
+//                                                                followed = true;
                                                               });
 
-                                                              DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidX,photoUrlX);
+                                                              DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidControllerX.text,photoUrlX);
 
                                                               // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
                                                               DatabaseService().increaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid,photoUrl);
@@ -444,9 +449,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               ),
                                                             ),
                                                             onPressed: () {
-                                                              setState(() {
-                                                                followed = false;
-                                                              });
+
                                                               DatabaseService()
                                                                   .unfollowUser(
                                                                   followers, uid,
@@ -454,6 +457,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                                                               DatabaseService()
                                                                   .decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
+                                                              setState(() {
+                                                                followed = false;
+                                                              });
                                                             },
                                                             shape: RoundedRectangleBorder(
                                                               side: BorderSide(
@@ -590,6 +596,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                           Timestamp timestamp =
                                                           snapshot.data.documents[index]['timestamp'];
                                                           String url = snapshot.data.documents[index]['url'];
+                                                          int cam = snapshot.data.documents[index]['cam'];
                                                           String postId = snapshot.data.documents[index]['postId'];
                                                           int likes = snapshot.data.documents[index]['likes'];
                                                           readTimestamp(timestamp.seconds);
@@ -626,11 +633,21 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                             bottomRight: Radius.circular(8.0),
                                                                           ),
                                                                     
-                                                                        child: Image.network(
-                                                                            url,
-                                                                            // width: 300,
-                                                                            height: 104,
-                                                                            fit:BoxFit.cover,
+                                                                        child: (cam == 1)?Transform(
+                                                                          alignment: Alignment.center,
+                                                                          transform: Matrix4.rotationY(math.pi),
+                                                                          child: Image.network(
+                                                                              url,
+                                                                              // width: 300,
+                                                                              height: 104,
+                                                                              fit:BoxFit.cover,
+
+                                                                          ),
+                                                                        ):Image.network(
+                                                                          url,
+                                                                          // width: 300,
+                                                                          height: 104,
+                                                                          fit:BoxFit.cover,
 
                                                                         ),
                                                                       ),

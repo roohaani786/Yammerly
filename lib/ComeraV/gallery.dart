@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'dart:math' as math;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/ComeraV/video_preview.dart';
 import 'package:path/path.dart' as path;
@@ -17,15 +19,17 @@ import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
 class Gallery extends StatefulWidget {
-  Gallery({this.filePath});
+  Gallery({this.filePath,this.cam});
   String filePath;
+  int cam;
   @override
-  _GalleryState createState() => _GalleryState(filePath);
+  _GalleryState createState() => _GalleryState(filePath,cam);
 }
 
 class _GalleryState extends State<Gallery> {
   String currentFilePath;
-  _GalleryState(this.currentFilePath);
+  int cam;
+  _GalleryState(this.currentFilePath,this.cam);
 
 int indexd;
 
@@ -68,11 +72,12 @@ int indexd;
                       ),),
                       onPressed: () {
                         _deleteFile();
+                        print(cam);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return CameraScreen();
+                              return CameraScreen(cam: cam,);
                             },
                           ),
                         );
@@ -116,13 +121,21 @@ int indexd;
             child: Stack(
                 children: [
 
-
                   Container(
                     height: MediaQuery.of(context).size.height,
-                    child: Image.file(
-                      File(currentFilePath),
-                      fit: BoxFit.cover,
-                    ),
+                    child: (cam == 1)?Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(math.pi),
+                      child: Image.file(
+
+                        File(currentFilePath),
+                        fit: BoxFit.cover,
+                      ),
+                    ): Image.file(
+                        File(currentFilePath),
+                        fit: BoxFit.cover,
+                      ),
+
                   ),
 
 
@@ -159,11 +172,13 @@ int indexd;
                                              ),),
                                              onPressed: () {
                                                _deleteFile();
+                                               print("dsdhj");
+                                               print(cam);
                                                Navigator.push(
                                                  context,
                                                  MaterialPageRoute(
                                                    builder: (context) {
-                                                     return CameraScreen();
+                                                     return CameraScreen(cam: cam,);
                                                    },
                                                  ),
                                                );
@@ -271,7 +286,7 @@ int indexd;
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
+                                      MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),cam: cam)),
                                     );
                                   },
                                   child: Row(

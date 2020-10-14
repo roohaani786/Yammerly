@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:math' as math;
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/Login/login_screen.dart';
@@ -462,6 +463,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                           new Expanded(
                                               child: GridView.builder(
                                                   shrinkWrap: true,
+                                                 controller: ScrollController(),
                                                   //controller: scrollController,
                                                   itemCount: snapshot.data.documents.length,
                                                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -479,7 +481,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                     String photoUrl =
                                                     snapshot.data.documents[index]['photoURL'];
                                                     String uid = snapshot.data.documents[index]["uid"];
-
+                                                    int cam = snapshot.data.documents[index]['cam'];
                                                     Timestamp timestamp =
                                                     snapshot.data.documents[index]['timestamp'];
                                                     String url = snapshot.data.documents[index]['url'];
@@ -515,8 +517,19 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                                 bottomRight: Radius.circular(8.0),
                                                               ),
 
-                                                              child: Image.network(
+                                                              child: (cam == 1)?Transform(
+                                                                alignment: Alignment.center,
+                                                                transform: Matrix4.rotationY(math.pi),
+                                                                child: Image.network(
+                                                                  url,
+                                                                  // width: 300,
+                                                                  height: 104,
+                                                                  fit:BoxFit.cover,
+
+                                                                ),
+                                                              ):Image.network(
                                                                 url,
+                                                                // width: 300,
                                                                 height: 104,
                                                                 fit:BoxFit.cover,
 
