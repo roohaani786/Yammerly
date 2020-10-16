@@ -634,7 +634,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     ),
                                     child: Row(
                                       children: [
-                                        Container(
+                                        Expanded(
                                           child: RichText(
                                             textAlign: TextAlign.start,
                                             softWrap: true,

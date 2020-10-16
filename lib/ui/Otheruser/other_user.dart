@@ -282,6 +282,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
               int following = snapshot.data.documents[index]["following"];
               print(following);
               int posts = snapshot.data.documents[index]["posts"];
+              if(followers == 0){
+
+                followed = false;
+              }
 
               getfollowers(displayNamecurrentUser,uid);
               return (uid != null) ?
@@ -385,71 +389,49 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                     mainAxisAlignment: MainAxisAlignment
                                                         .spaceAround,
                                                     children: [
-                                                      (followed == false)?SizedBox(
+                                                      SizedBox(
                                                         width: 120,
-
                                                         child: (displayName == displayNamecurrentUser)?FlatButton(
-                                                            color: Colors.white,
+                                                          color: Colors.white,
                                                             child: new Text(
                                                               "About me",
                                                               style: TextStyle(
                                                                 color: Colors.black,
                                                               ),
                                                             ),
-                                                            onPressed: () {
-
+                                                              onPressed: () {
                                                               Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(builder: (context) => AboutUser()),
                                                               );
                                                             },
-
                                                             shape: RoundedRectangleBorder(
                                                               side: BorderSide(
                                                                   color: Colors.purple,
                                                                   width: 2.5),
                                                               borderRadius: BorderRadius
                                                                   .circular(30.0),
-                                                            )):FlatButton(
-                                                          
-                                                            color: Colors.white,
-                                                            child: new Text(
-                                                              "Follow",
-                                                              style: TextStyle(
-                                                                color: Colors.purple,
-                                                              ),
+                                                            )
+                                                        ):FlatButton(
+                                                          color: Colors.white,
+                                                          child: new Text(
+                                                            (followed == false)?"Follow":"Unfollow",
+                                                            style: TextStyle(
+                                                              color: (followed == false)?Colors.purple:Colors.red,
                                                             ),
-                                                            onPressed: () {
-
+                                                          ),
+                                                          onPressed: () {
+                                                            if(followed == false){
                                                               setState(() {
-                                                                getFollowers();
-//                                                                followed = true;
+                                                                //getFollowers();
+                                                               followed = true;
                                                               });
 
                                                               DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidControllerX.text,photoUrlX);
 
                                                               // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
                                                               DatabaseService().increaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid,photoUrl);
-                                                            },
-                                                            shape: RoundedRectangleBorder(
-                                                              side: BorderSide(
-                                                                  color: Colors.purple,
-                                                                  width: 2),
-                                                              borderRadius: BorderRadius
-                                                                  .circular(30.0),
-                                                            )),
-                                                      ): SizedBox(
-                                                        width: 120,
-                                                        child: FlatButton(
-                                                            color: Colors.white,
-                                                            child: new Text(
-                                                              "Unfollow",
-                                                              style: TextStyle(
-                                                                color: Colors.redAccent,
-                                                              ),
-                                                            ),
-                                                            onPressed: () {
-
+                                                            }else{
                                                               DatabaseService()
                                                                   .unfollowUser(
                                                                   followers, uid,
@@ -458,17 +440,106 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               DatabaseService()
                                                                   .decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
                                                               setState(() {
+                                                                //getFollowers();
                                                                 followed = false;
                                                               });
-                                                            },
-                                                            shape: RoundedRectangleBorder(
+                                                            }
+                                                              },
+                                                          shape: RoundedRectangleBorder(
                                                               side: BorderSide(
-                                                                  color: Colors.red,
+                                                                  color: (followed == false)?Colors.purple:Colors.red,
                                                                   width: 2),
                                                               borderRadius: BorderRadius
                                                                   .circular(30.0),
                                                             )),
-                                                      ),
+                                                        ),
+
+
+
+//                                                       (followed == false)?SizedBox(
+//                                                         width: 120,
+//
+//                                                         child: (displayName == displayNamecurrentUser)?FlatButton(
+//                                                             color: Colors.white,
+//                                                             child: new Text(
+//                                                               "About me",
+//                                                               style: TextStyle(
+//                                                                 color: Colors.black,
+//                                                               ),
+//                                                             ),
+//                                                             onPressed: () {
+//
+//                                                               Navigator.push(
+//                                                                 context,
+//                                                                 MaterialPageRoute(builder: (context) => AboutUser()),
+//                                                               );
+//                                                             },
+//
+//                                                             shape: RoundedRectangleBorder(
+//                                                               side: BorderSide(
+//                                                                   color: Colors.purple,
+//                                                                   width: 2.5),
+//                                                               borderRadius: BorderRadius
+//                                                                   .circular(30.0),
+//                                                             )):FlatButton(
+//
+//                                                             color: Colors.white,
+//                                                             child: new Text(
+//                                                               "Follow",
+//                                                               style: TextStyle(
+//                                                                 color: Colors.purple,
+//                                                               ),
+//                                                             ),
+//                                                             onPressed: () {
+//
+//                                                               setState(() {
+//                                                                 getFollowers();
+// //                                                                followed = true;
+//                                                               });
+//
+//                                                               DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidControllerX.text,photoUrlX);
+//
+//                                                               // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
+//                                                               DatabaseService().increaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid,photoUrl);
+//                                                             },
+//                                                             shape: RoundedRectangleBorder(
+//                                                               side: BorderSide(
+//                                                                   color: Colors.purple,
+//                                                                   width: 2),
+//                                                               borderRadius: BorderRadius
+//                                                                   .circular(30.0),
+//                                                             )),
+//                                                       ): SizedBox(
+//                                                         width: 120,
+//                                                         child: FlatButton(
+//                                                             color: Colors.white,
+//                                                             child: new Text(
+//                                                               "Unfollow",
+//                                                               style: TextStyle(
+//                                                                 color: Colors.redAccent,
+//                                                               ),
+//                                                             ),
+//                                                             onPressed: () {
+//
+//                                                               DatabaseService()
+//                                                                   .unfollowUser(
+//                                                                   followers, uid,
+//                                                                   displayNamecurrentUser);
+//
+//                                                               DatabaseService()
+//                                                                   .decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
+//                                                               setState(() {
+//                                                                 followed = false;
+//                                                               });
+//                                                             },
+//                                                             shape: RoundedRectangleBorder(
+//                                                               side: BorderSide(
+//                                                                   color: Colors.red,
+//                                                                   width: 2),
+//                                                               borderRadius: BorderRadius
+//                                                                   .circular(30.0),
+//                                                             )),
+//                                                       ),
 
 
 
