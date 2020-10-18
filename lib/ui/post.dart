@@ -146,7 +146,7 @@ class _postPageState extends State<postPage> {
       print(displayNamecurrentUser);
       await Firestore.instance.collection('posts').document(postId).delete();
       await Firestore.instance.collection('users').document(uidX)
-      .collection('posts').document(postId).delete();
+          .collection('posts').document(postId).delete();
 
       Navigator.push(
         context,
@@ -324,7 +324,7 @@ class _postPageState extends State<postPage> {
                     //     .delete();
 
                     Firestore.instance.collection("posts").document(url).get()
-                    .then((doc) {
+                        .then((doc) {
                       if (doc.exists) {
                         doc.reference.delete();
 
@@ -529,43 +529,43 @@ class _postPageState extends State<postPage> {
                                 //     MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
                                 // ),
                                 Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 10,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(40),
-
-                                              child: Image(
-                                                image: NetworkImage(photoUrl),
-                                                width: 40,
-                                                height: 40,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(displayName,style: TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),),
-                                          ],
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.delete_outline, color: Colors.purple,),
-                                          //onPressed: () => createAlertDialog(context,url),
-                                          onPressed: () => deletePost(displayNamecurrentUser, displayName,postId,uidX),
-
-                                        ),
-                                      ],
-                                    ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 10,
                                   ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(40),
+
+                                            child: Image(
+                                              image: NetworkImage(photoUrl),
+                                              width: 40,
+                                              height: 40,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(displayName,style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),),
+                                        ],
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete_outline, color: Colors.purple,),
+                                        //onPressed: () => createAlertDialog(context,url),
+                                        onPressed: () => deletePost(displayNamecurrentUser, displayName,postId,uidX),
+
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 //),
 
 
@@ -713,7 +713,7 @@ class _postPageState extends State<postPage> {
                                             text: TextSpan(
                                               text: displayName,
                                               style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                              fontSize: 15.0),
+                                                  fontSize: 15.0),
                                             ),
                                           ),
                                         ),

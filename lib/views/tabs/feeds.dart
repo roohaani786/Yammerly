@@ -218,18 +218,18 @@ class _FeedsPageState extends State<FeedsPage> {
     var time = '';
 
     if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
-    if (diff.inHours > 0) {
-      time = "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
-    }
+      if (diff.inHours > 0) {
+        time = "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+      }
 
-    else if (diff.inSeconds <= 0) {
-      time = "just now";
-    }
+      else if (diff.inSeconds <= 0) {
+        time = "just now";
+      }
 
 
-    else if (diff.inMinutes > 0) {
-      time = "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
-    }
+      else if (diff.inMinutes > 0) {
+        time = "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+      }
     } else if (diff.inDays > 0 && diff.inDays < 7) {
       if (diff.inDays == 1) {
         time = diff.inDays.toString() + ' DAY AGO';
@@ -240,7 +240,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
 
-     else {
+    else {
       if (diff.inDays == 7) {
         time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
       } else {
@@ -283,7 +283,7 @@ class _FeedsPageState extends State<FeedsPage> {
       setState(() {
         liked = true;
       });
-        DatabaseService().likepost(
+      DatabaseService().likepost(
           likes, postId,
           displayNameController.text);
 
@@ -468,8 +468,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                               width: 10,
                                             ),
                                             Text(displayName,style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18.0,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18.0,
                                             ),),
                                           ],
                                         ),
@@ -514,30 +514,30 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                   child: GestureDetector(
 
-                                            child :(cam == 1)?Transform(
-                                              alignment: Alignment.center,
-                                              transform: Matrix4.rotationY(math.pi),
-                                              child: FadeInImage(
+                                    child :(cam == 1)?Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(math.pi),
+                                      child: FadeInImage(
 
-                                                image: NetworkImage(url),
-                                                //image: NetworkImage("posts[i].postImage"),
-                                                placeholder: AssetImage("assets/images/loading.gif"),
-                                                width: MediaQuery.of(context).size.width,
-
-
-
-                                              ),
-                                            ):FadeInImage(
-
-                                              image: NetworkImage(url),
-                                              //image: NetworkImage("posts[i].postImage"),
-                                              placeholder: AssetImage("assets/images/loading.gif"),
-                                              width: MediaQuery.of(context).size.width,
+                                        image: NetworkImage(url),
+                                        //image: NetworkImage("posts[i].postImage"),
+                                        placeholder: AssetImage("assets/images/loading.gif"),
+                                        width: MediaQuery.of(context).size.width,
 
 
 
-                                            ),
-                                        ),
+                                      ),
+                                    ):FadeInImage(
+
+                                      image: NetworkImage(url),
+                                      //image: NetworkImage("posts[i].postImage"),
+                                      placeholder: AssetImage("assets/images/loading.gif"),
+                                      width: MediaQuery.of(context).size.width,
+
+
+
+                                    ),
+                                  ),
                                 ),
 
 
@@ -553,7 +553,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                       children: <Widget>[
                                         (liked == false)?IconButton(
                                           onPressed: ()  {
-                                             setState(() {
+                                            setState(() {
                                               liked = true;
                                             });
 
@@ -569,11 +569,11 @@ class _FeedsPageState extends State<FeedsPage> {
                                         ):IconButton(
 
                                           onPressed: ()  {
-                                             setState(() {
+                                            setState(() {
                                               liked = false;
                                             });
 
-                                             DatabaseService().unlikepost(
+                                            DatabaseService().unlikepost(
                                                 likes, postId, displayNameController.text);
                                           },
 
@@ -634,7 +634,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     ),
                                     child: Row(
                                       children: [
-                                        Expanded(
+                                        Container(
                                           child: RichText(
                                             textAlign: TextAlign.start,
                                             softWrap: true,
@@ -644,7 +644,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                 TextSpan(
                                                   text: displayName + "  ",
                                                   style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                  fontSize: 18.0),
+                                                      fontSize: 18.0),
                                                 ),
                                                 TextSpan(
                                                   text: description,

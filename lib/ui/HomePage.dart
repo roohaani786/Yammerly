@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                          'Hashtag',
+                          'AIO Chat',
                           style: TextStyle(
                               color: Colors.deepPurple,
                               fontSize: 20.0,

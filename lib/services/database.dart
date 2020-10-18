@@ -10,6 +10,22 @@ class DatabaseService {
 
   DatabaseService({this.uid});
 
+  Future getdisplayName(String uid, String displayName) async {
+
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .snapshots();
+  }
+
+  Future updatephotoURL(String uid, String photoURl) async {
+
+    return await Firestore.instance
+        .collection("posts")
+        .document(uid)
+        .updateData({'photoURL': photoURl});
+  }
+
   getUserByUsername(String displayName) async {
     return Firestore.instance
         .collection('users')

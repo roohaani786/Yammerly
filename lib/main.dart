@@ -12,6 +12,7 @@ import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/ui/fblogin.dart';
 import 'Signup/signup_screen.dart';
+import 'package:rename/rename.dart';
 import 'biometric_auth.dart';
 import 'biometric_auth.dart' as authenticated;
 

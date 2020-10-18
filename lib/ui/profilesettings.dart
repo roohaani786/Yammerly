@@ -151,10 +151,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 22, bottom: 8),
-                  child: Icon(Icons.build),
+                  child: Icon(Icons.build,color: Colors.grey.shade600,),
                 ),
                 Text(
-                  'Version: 1.0.0 (10)',
+                  'AIO Chat-Version: 1.0.0',
                   style: TextStyle(color: Colors.deepPurple),
                 ),
               ],
