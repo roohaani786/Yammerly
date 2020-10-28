@@ -523,6 +523,12 @@ bool isChanged = false;
         .collection("users")
         .document(currUser.uid)
         .setData(data, merge: true);
+
+    Firestore.instance
+        .collection("posts")
+        .document(displayNameController.text)
+        //.where("displayName", isEqualTo: displayNameController.text)
+        .setData(data, merge: true);
 //    DatabaseService().updatePostdisplayName(uidController.text,displayNameController.text);
 //    DatabaseService().updatephotoURL(displayNameController.text,photoUrlController.text);
     snackbarContent = "Profile Updated";

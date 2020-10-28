@@ -437,7 +437,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                   followers, uid,
                                                                   displayNamecurrentUser);
 
-                                                              DatabaseService()
+                                                               DatabaseService()
                                                                   .decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
                                                               setState(() {
                                                                 //getFollowers();

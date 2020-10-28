@@ -161,6 +161,12 @@ class _FeedsPageState extends State<FeedsPage> {
           liked = true;
 
         });
+        print("if me ho bahi tum");
+      }else{
+        setState((){
+          liked = false;
+        });
+        print("else me ho bhaiya tum");
       }
     });
 
@@ -420,7 +426,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                       // Padding(
                                       //   padding: const EdgeInsets.only(left: 100.0),
                                       // ),
-                                      // FlatButton(onPressed: (){},
+                                      // FlatButton( : (){},
                                       //   color: Colors.transparent,
                                       //   child: Row(
                                       //     children: [
