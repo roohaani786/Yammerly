@@ -756,7 +756,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                         (photoUrl!=null)?Padding(
                           padding: const EdgeInsets.only(
-                              top: 80, left: 160.0, right: 160.0),
+                              top: 80, left: 140.0, right: 140.0),
                           child:CircleAvatar(
                             radius: 35,
                             backgroundImage: NetworkImage(photoUrl),

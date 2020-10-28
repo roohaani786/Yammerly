@@ -114,7 +114,6 @@ int indexd;
       child: GestureDetector(
 
         child: Scaffold(
-          backgroundColor: Colors.transparent,
 
           body: Container(
 
@@ -123,6 +122,7 @@ int indexd;
 
                   Container(
                     height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.height,
                     child: (cam == 1)?Transform(
                       alignment: Alignment.center,
                       transform: Matrix4.rotationY(math.pi),
@@ -145,7 +145,6 @@ int indexd;
                     padding: const EdgeInsets.only(top: 30.0,left: 6.0),
                     child: Align(
                       alignment: Alignment.topLeft,
-                      child: Positioned(
                         child: IconButton(icon: Icon(Icons.close,
                         color: Colors.grey.shade200,
                         size: 30.0,), onPressed: (){
@@ -201,8 +200,7 @@ int indexd;
                                 );
                               });
                         },
-                        )
-                      ),
+                        ),
                     ),
                   ),
 
@@ -229,8 +227,6 @@ int indexd;
                     padding: const EdgeInsets.only(right: 50.0,bottom: 3.0),
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: Positioned(
-                        width: 20.0,
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 0.0),
                           child:ButtonTheme(
@@ -264,7 +260,6 @@ int indexd;
                             ),
                           ),
                         ),
-                      ),
                     ),
                   ),
 
@@ -272,11 +267,8 @@ int indexd;
                     padding: const EdgeInsets.only(right: 6.0),
                     child: Align(
                       alignment: Alignment.bottomRight,
-                      child: Positioned(
-                        width: 20.0,
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 20.0,right: 30.0),
-                          child:Expanded(
                             child: ButtonTheme(
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                               child: Container(
@@ -300,9 +292,7 @@ int indexd;
                                 ),
                               ),
                             ),
-                          ),
                         ),
-                      ),
                     ),
                   )
 

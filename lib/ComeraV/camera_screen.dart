@@ -18,9 +18,9 @@ import 'package:techstagram/resources/uploadimage.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:thumbnails/thumbnails.dart';
+//import 'package:thumbnails/thumbnails.dart';
 //import 'package:lamp/lamp.dart';
-import 'package:torch/torch.dart';
+//import 'package:torch/torch.dart';
 import 'package:image/image.dart' as ImD;
 //import 'package:holding_gesture/holding_gesture.dart';
 
@@ -309,7 +309,7 @@ class CameraScreenState extends State<CameraScreen>
       },
       child: Scaffold(
 
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Colors.transparent,
         key: _scaffoldKey,
         extendBody: true,
         body: Stack(
@@ -508,7 +508,7 @@ class CameraScreenState extends State<CameraScreen>
                         );
                         _captureImage();
                         if(flashOn){
-                          _turnFlash();
+                          print("dhjfh");
                         }
                       } else {
                         if (_isRecording) {
@@ -544,18 +544,18 @@ class CameraScreenState extends State<CameraScreen>
     );
   }
 
-  Future _turnFlash() async {
-    bool hasTorch = await Torch.hasTorch;
-    if(hasTorch){
-      (flashOn || cam!=null) ? Torch.turnOn() : Torch.turnOff();
-      var f = await Torch.hasTorch;
-      Torch.flash(Duration(milliseconds: 300));
-      setState((){
-        _hasFlash = f;
-        //flashOn = !flashOn;
-      });
-    }
-  }
+//  Future _turnFlash() async {
+//    bool hasTorch = await Torch.hasTorch;
+//    if(hasTorch){
+//      (flashOn || cam!=null) ? Torch.turnOn() : Torch.turnOff();
+//      var f = await Torch.hasTorch;
+//      Torch.flash(Duration(milliseconds: 300));
+//      setState((){
+//        _hasFlash = f;
+//        //flashOn = !flashOn;
+//      });
+//    }
+//  }
 
   Future<FileSystemEntity> getLastImage() async {
     final Directory extDir = await getApplicationDocumentsDirectory();
@@ -571,9 +571,10 @@ class CameraScreenState extends State<CameraScreen>
     if (extension == '.jpeg') {
       return lastFile;
     } else {
-      String thumb = await Thumbnails.getThumbnail(
-          videoFile: lastFile.path, imageType: ThumbFormat.PNG, quality: 100);
-      return File(thumb);
+//      String thumb = await Thumbnails.getThumbnail(
+//          videoFile: lastFile.path, imageType: ThumbFormat.PNG, quality: 100);
+//      return File(thumb);
+    print("dfdf");
     }
   }
 

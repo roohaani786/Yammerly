@@ -20,6 +20,7 @@ import 'package:techstagram/views/tabs/comments_screen.dart';
 //import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 //
 //import '../../constants3.dart';
+import 'dart:convert';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'dart:math' as math;
 
@@ -55,11 +56,10 @@ class FeedsPage extends StatefulWidget {
 class _FeedsPageState extends State<FeedsPage> {
 
   bool isLoading = true;
-  bool liked = false;
   bool isEditable = false;
   final String displayNamecurrentUser;
 
-  _FeedsPageState({this.displayNamecurrentUser});
+  _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,photoUrlController,
@@ -86,6 +86,9 @@ class _FeedsPageState extends State<FeedsPage> {
   var rotation = 0.0;
   var lastRotation = 0.0;
 
+
+
+
   @override
   void initState() {
 
@@ -102,17 +105,13 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
-
-//    fetchLikes();
-
-    //print("widget bhaiyya");
-    //print(widget.uid);
   }
 
 
   Stream<QuerySnapshot> postsStream;
   final timelineReference = Firestore.instance.collection('posts');
   String postIdX;
+  bool postliked = false;
 
   fetchPosts() async {
 
@@ -148,39 +147,40 @@ class _FeedsPageState extends State<FeedsPage> {
 
   getlikes( String displayNamecurrent, String postId) async {
 
-
+    print(displayNamecurrent);
+    print(postId);
 
     await Firestore.instance.collection('posts')
-        .document(postId)
+        .document(postIdX)
         .collection('likes')
-        .document(displayNameController.text)
+        .document(displayNamecurrent)
         .get()
         .then((value) {
       if (value.exists) {
         setState(() {
-          liked = true;
-
+          _liked = true;
+          print(_liked);
         });
       }
     });
 
   }
 
-//  fetchLikes() async {
-//    currUser = await FirebaseAuth.instance.currentUser();
-//    try {
-//      docSnap = await Firestore.instance
-//          .collection("likes")
-//          .document(currUser.uid)
-//          .get();
-//      setState(() {
-//        isLoading = false;
-//        isEditable = true;
-//      });
-//    } on PlatformException catch (e) {
-//      print("PlatformException in fetching user profile. E  = " + e.message);
-//    }
-//  }
+  fetchLikes() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("likes")
+          .document(currUser.uid)
+          .get();
+      setState(() {
+        isLoading = false;
+        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -209,6 +209,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   var time = "s";
   User currentUser;
+  bool _liked = false;
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
@@ -276,31 +277,23 @@ class _FeedsPageState extends State<FeedsPage> {
     print("Done..");
   }
 
-  doubletaplike(int likes, String postId)  {
-
-
-    if(liked = false) {
-      setState(() {
-        liked = true;
-      });
-      DatabaseService().likepost(
-          likes, postId,
-          displayNameController.text);
-
-    }else{
-      print("ghg");
-    }
-    // else if (liked = true){
-    //   DatabaseService().unlikepost(
-    //       likes, postId,
-    //       displayNameController.text);
-    //   setState(() {
-    //     liked = false;
-    //     print(liked);
-    //   });
-    //
-    // }
-  }
+//  doubletaplike(int likes, String postId)  {
+//
+//
+//
+//    if(_liked == false) {
+//      setState(() {
+//        _liked = true;
+//      });
+//      DatabaseService().likepost(
+//          likes, postId,
+//          displayNameController.text);
+//
+//    }else{
+//      print("ghg");
+//    }
+//
+//  }
   String urlx;
 
   TransformationController _controller = TransformationController();
@@ -310,18 +303,6 @@ class _FeedsPageState extends State<FeedsPage> {
   @override
   Widget build(BuildContext context) {
 
-
-
-
-//    fetchdimensions(String url) async {
-//      File image = new File(url);
-//      var decodedImage = await decodeImageFromList(image.readAsBytesSync());
-//      print(decodedImage.width);
-//      print(decodedImage.height);
-//    }
-
-
-    //print(displayNameController.text);
 
     // TODO: implement build
     return GestureDetector(
@@ -345,7 +326,7 @@ class _FeedsPageState extends State<FeedsPage> {
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
 
-                        postIdX = snapshot.data.documents[index]['email'];
+                        postIdX = snapshot.data.documents[index]['postId'];
                         String email = snapshot.data.documents[index]['email'];
                         String description =
                         snapshot.data.documents[index]['description'];
@@ -365,79 +346,23 @@ class _FeedsPageState extends State<FeedsPage> {
                         likescount = likes;
                         readTimestamp(timestamp.seconds);
 
+                        getlikes(displayNameController.text, postId);
 
-                        getlikes(displayNameController.text,postId);
-//                        fetchdimensions(url);
 
 
 
 
                         if(likes == 0){
 
-                          liked = false;
+                          _liked = false;
                         }
 
 
                         return Container(
-                          child: Container(
                             color: Colors.white,
                             child: Column(
                               children: <Widget>[
-                                (index == 0)?Container(
-                                  color: Colors.transparent,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      FlatButton(
-                                        onPressed:
-                                            (){
-                                          pickImage();
-                                          if (upload == true){
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
-                                          }else{
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,),));
-                                          }
-                                        },
-                                        color: Colors.transparent,
-                                        child: Row(
-                                          children: [
-                                            Icon(FontAwesomeIcons.plus,color: Colors.deepPurpleAccent,),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Text("Add Post",style:
-                                              TextStyle(
-                                                color: Colors.deepPurpleAccent,
-                                              ),),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      // Padding(
-                                      //   padding: const EdgeInsets.only(left: 100.0),
-                                      // ),
-                                      // FlatButton(onPressed: (){},
-                                      //   color: Colors.transparent,
-                                      //   child: Row(
-                                      //     children: [
-                                      //       Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
-                                      //       Padding(
-                                      //         padding: const EdgeInsets.all(8.0),
-                                      //         child: Text("Rate us",style:
-                                      //         TextStyle(
-                                      //           color: Colors.deepPurpleAccent,
-                                      //         ),),
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
-                                    ],
-                                  ),
-                                ): Container(height: 0.0,width: 0.0,),
+                                 Container(height: 0.0,width: 0.0,),
 
                                 GestureDetector(
                                   onTap: () => Navigator.push(
@@ -485,31 +410,22 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                 GestureDetector(
                                   onDoubleTap: () async {
-//                                    getlikes(displayNameController.text, postId);
-                                    if (liked == false) {
+
+
+                                    if (_liked == false) {
+                                      setState(() {
+                                        _liked = true;
+                                        print(_liked);
+                                      });
                                       await DatabaseService().likepost(
                                           likes, postId,
                                           displayNameController.text);
-                                      setState(() {
-                                        liked = true;
-                                        print(liked);
-                                      });
+
 //                                     return liked;
                                     } else {
                                       print("nahi");
                                     }
                                   },
-                                  // onPressed: () {
-                                  // },
-                                  // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-
-                                  // onDoubleTap: (){
-                                  //   print("double tap");
-                                  //   print(liked);
-                                  //   doubletaplike(likes,postId);
-                                  //   print("double tap again");
-                                  //   print(liked);
-                                  // },
                                   onTap: null,
 
                                   child: GestureDetector(
@@ -545,45 +461,36 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
 
-
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Row(
                                       children: <Widget>[
-                                        (liked == false)?IconButton(
-                                          onPressed: ()  {
+
+                                        IconButton(
+                                          padding: EdgeInsets.only(left: 10),
+                                          onPressed: (_liked == true)
+                                              ? () {
                                             setState(() {
-                                              liked = true;
+                                              _liked = false;
+                                              DatabaseService().unlikepost(
+                                                  likes, postId,displayNameController.text);
                                             });
-
-                                            DatabaseService().likepost(
-                                                likes, postId, displayNameController.text);
-
-                                          },
-                                          icon: Icon(FontAwesomeIcons.thumbsUp),
-                                          color: Colors.deepPurple,
-                                          // onPressed: () {
-                                          // },
-                                          // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                        ):IconButton(
-
-                                          onPressed: ()  {
+                                          }
+                                              : () {
                                             setState(() {
-                                              liked = false;
+                                              _liked = true;
+                                              DatabaseService().likepost(
+                                                likes, postId,displayNameController.text );
                                             });
-
-                                            DatabaseService().unlikepost(
-                                                likes, postId, displayNameController.text);
                                           },
-
-                                          icon: Icon(FontAwesomeIcons.solidThumbsUp),
-
-                                          color: Colors.deepPurple,
-                                          // onPressed: () {
-                                          // },
-                                          // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
+                                          icon: (_liked == true)
+                                              ? Icon(Icons.thumb_up)
+                                              : Icon(Icons.thumb_up),
+                                          iconSize: 25,
+                                          color: (_liked == true) ? Colors.redAccent : Colors.grey,
                                         ),
+
                                         (loading == false)?Text(
                                           likes.toString(),style: TextStyle(
                                           color: Colors.black,
@@ -686,7 +593,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ),
                               ],
                             ),
-                          ),
                         );
                       }),
                 ),
@@ -699,12 +605,14 @@ class _FeedsPageState extends State<FeedsPage> {
       ),
     );
   }
+}
 
-//  displayComments(BuildContext context, {String postId, String uid, String url,Timestamp timestamp, String displayName, String photoUrl,String displayNamecurrentUser}){
-//    Navigator.push(context, MaterialPageRoute(builder: (context){
-//    return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
-//    }));
-//  }
+class Student {
+  var name = 'foo';
+  var year = '2018';
+  var liked = false;
+
+  Student(this.name);
 }
 
 

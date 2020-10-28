@@ -847,13 +847,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.17"
-  thumbnails:
-    dependency: "direct main"
-    description:
-      name: thumbnails
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   timeago:
     dependency: "direct main"
     description:
@@ -861,13 +854,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.27"
-  torch:
-    dependency: "direct main"
-    description:
-      name: torch
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.1"
   torch_compat:
     dependency: "direct main"
     description:

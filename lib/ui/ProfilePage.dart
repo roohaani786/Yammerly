@@ -556,17 +556,20 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.only(top: 80,left: 160.0,right: 160.0),
-                      child:(photoUrlController.text!=null)?CircleAvatar(
-                        radius: 35,
-                        backgroundImage: NetworkImage(photoUrlController.text),
+                      padding: const EdgeInsets.only(top: 80,left: 140.0,right: 140.0),
+                      child:(photoUrlController.text!=null)?Align(
+                        alignment: Alignment.center,
+                        child: CircleAvatar(
+                          radius: 40,
+                          backgroundImage: NetworkImage(photoUrlController.text),
 
-                        backgroundColor: Colors.transparent,
+                          backgroundColor: Colors.transparent,
+                        ),
                       ): CircleAvatar(
                         radius: 20,
                         child: IconButton(icon:
                         Icon(FontAwesomeIcons.userCircle,
-                          color: Colors.deepPurple,), onPressed: null),
+                          color: Colors.deepPurple,), onPressed: (){print("hello");}),
                         backgroundColor: Colors.transparent,
                       ),
                     ),

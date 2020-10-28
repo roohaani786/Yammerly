@@ -70,7 +70,10 @@ class _HomePageState extends State<HomePage> {
   int initialindexg;
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,uidController,photoUrlController,phonenumberController,
-      bioController,followers,following,posts;
+      bioController;
+   int followers;
+   int following;
+   int posts;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -92,7 +95,7 @@ class _HomePageState extends State<HomePage> {
       emailController.text = docSnap.data["email"];
       photoUrlController.text = docSnap.data["photoURL"];
       phonenumberController.text = docSnap.data["phonenumber"];
-      bioController.text = docSnap.data["bio"];
+//      bioController.text = docSnap.data["bio"];
       followers = docSnap.data["followers"];
       following  = docSnap.data["following"];
       posts  = docSnap.data["posts"];

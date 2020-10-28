@@ -224,6 +224,7 @@ class CommentsPageState extends State<CommentsPage> {
   @override
   Widget build(BuildContext) {
     return Scaffold(
+      backgroundColor: Colors.white,
 
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -326,17 +327,7 @@ class Comment extends StatelessWidget {
       child: Container(
 
         color: Colors.white,
-        child: GestureDetector(
-          //onTap: () => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX),
-          // onTap: () {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX)),
-          //   );
-          // },
 
-          child: Expanded(
             child: Stack(
               children: [
                 ListTile(
@@ -385,8 +376,7 @@ class Comment extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ),
+
       ),
 
     );
