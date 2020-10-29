@@ -691,9 +691,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
                                                                       GestureDetector(
                                                                         onTap: () {
+                                                                          print(displayName);
+                                                                          print(url);
+                                                                          print(uid);
                                                                           Navigator.push(
                                                                             context,
-                                                                            MaterialPageRoute(builder: (context) => postPage(PostUrl: url)),
+                                                                            MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),//postPage(PostUrl: url)),
                                                                           );
                                                                         },
                                                                         child: ClipRRect(

@@ -504,6 +504,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                         children: [
                                                           GestureDetector(
                                                             onTap: () {
+                                                              print(displayName);
+                                                              print(url);
+                                                              print(uid);
                                                               Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),
