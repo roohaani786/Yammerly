@@ -757,11 +757,14 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                         (photoUrl!=null)?Padding(
                           padding: const EdgeInsets.only(
                               top: 80, left: 140.0, right: 140.0),
-                          child:CircleAvatar(
-                            radius: 35,
-                            backgroundImage: NetworkImage(photoUrl),
+                          child:Align(
+                            alignment: Alignment.center,
+                            child: CircleAvatar(
+                              radius: 35,
+                              backgroundImage: NetworkImage(photoUrl),
 
-                            backgroundColor: Colors.transparent,
+                              backgroundColor: Colors.transparent,
+                            ),
                           ),
                         ):Padding(
                           padding: const EdgeInsets.only(

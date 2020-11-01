@@ -155,21 +155,21 @@ class CameraScreenState extends State<CameraScreen>
 
 
     }
-    else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CameraScreen()),
-      );
-//      Navigator.push(
-//          context,
-//          MaterialPageRoute(
-//              builder: (BuildContext context) => HomePage())).then((res) {
-//        setState(() {
-//          cameraon = true;
-//        });
-//      }
-//      );
-    }
+//     else {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(builder: (context) => CameraScreen()),
+//       );
+// //      Navigator.push(
+// //          context,
+// //          MaterialPageRoute(
+// //              builder: (BuildContext context) => HomePage())).then((res) {
+// //        setState(() {
+// //          cameraon = true;
+// //        });
+// //      }
+// //      );
+//     }
   }
 
   bool flashOn=false;
