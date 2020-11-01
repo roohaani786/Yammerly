@@ -22,13 +22,14 @@ class CommentsPage extends StatefulWidget{
   final String displayName;
   final String photoUrl;
   final String displayNamecurrentUser;
+  final String currUid;
   final int comments;
 
 
-  CommentsPage({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
+  CommentsPage({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser,this.currUid});
 
   @override
-  CommentsPageState createState() => CommentsPageState(comments: comments,postId: postId, uid: uid, postImageUrl: postImageUrl,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
+  CommentsPageState createState() => CommentsPageState(comments: comments,postId: postId, uid: uid, postImageUrl: postImageUrl,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser,currUid: currUid);
 }
 
 class CommentsPageState extends State<CommentsPage> {
@@ -40,13 +41,15 @@ class CommentsPageState extends State<CommentsPage> {
   final String displayName;
   final String photoUrl;
   final String displayNamecurrentUser;
+  final String currUid;
   final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
 
   String CommentId = Uuid().v4();
+  String NotificationId = Uuid().v4();
 
   TextEditingController commentTextEditingController = TextEditingController();
 
-  CommentsPageState({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
+  CommentsPageState({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser,this.currUid});
   // return Firestore.instance
   //     .collection("posts")
   //     .orderBy("timestamp", descending: true)
@@ -143,6 +146,30 @@ class CommentsPageState extends State<CommentsPage> {
         .collection("posts")
         .document(postId)
         .updateData({'comments': comments + 1});
+  }
+
+  Notification() async {
+    print(currUid);
+
+    setState(() {
+      // file = null;
+      NotificationId = Uuid().v4();
+    });
+
+    return await Firestore.instance.collection("users")
+        .document(uid).collection("notification")
+        .document(NotificationId)
+        .setData({"commentId" : CommentId,
+      "notificationId" : NotificationId,
+      "username": displayNamecurrentUser,
+      "comment": commentTextEditingController.text,
+
+      "timestamp": DateTime.now(),
+      "url": photoUrl,
+      "uid": uid,
+      "status" : "Comment",
+    });
+
   }
 
   saveComment() async {
@@ -264,6 +291,7 @@ class CommentsPageState extends State<CommentsPage> {
                     saveComment();
                     SaveCommentI();
                     SaveCommentIP();
+                    Notification();
                   }else{
                     showError();
                     print("error hai bhaiya");

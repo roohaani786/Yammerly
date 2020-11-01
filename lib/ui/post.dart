@@ -170,6 +170,7 @@ class _postPageState extends State<postPage> {
 
   getPosts() async {
     print(PostUrl);
+    print("hii");
     return Firestore.instance
         .collection("posts")
         .where('url', isEqualTo: PostUrl)

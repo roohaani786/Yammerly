@@ -23,6 +23,7 @@ import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'dart:convert';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'dart:math' as math;
+import 'package:uuid/uuid.dart';
 
 
 class FeedsPage extends StatefulWidget {
@@ -180,6 +181,33 @@ class _FeedsPageState extends State<FeedsPage> {
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
+  }
+  String NotificationId = Uuid().v4();
+
+  Notification(String photoUrl, String uid) async {
+    print(uidController.text);
+    print("notification");
+    // String currDisplayName = displayNamecurrentUser;
+
+    setState(() {
+      // file = null;
+      NotificationId = Uuid().v4();
+    });
+
+    return await Firestore.instance.collection("users")
+        .document(uid).collection("notification")
+        .document(NotificationId)
+        .setData({//"commentId" : CommentId,
+      "notificationId" : NotificationId,
+      "username": displayNameController.text,
+      //"comment": commentTextEditingController.text,
+
+      "timestamp": DateTime.now(),
+      "url": photoUrl,
+      "uid": uid,
+      "status" : "Like",
+    });
+
   }
 
   fetchProfileData() async {
@@ -479,6 +507,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           }
                                               : () {
                                             setState(() {
+                                              Notification(photoUrlController.text, uid);
                                               _liked = true;
                                               DatabaseService().likepost(
                                                 likes, postId,displayNameController.text );
@@ -509,7 +538,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                             onPressed: () { //print(displayNameController.text);
                                               Navigator.push(context, MaterialPageRoute(builder: (context){
-                                                return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                                return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text,currUid: uidController.text);
                                               }));
                                             },
                                             // Navigator.push(
