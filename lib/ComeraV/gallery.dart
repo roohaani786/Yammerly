@@ -105,8 +105,6 @@ int indexd;
 
 
 
-
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -129,11 +127,11 @@ int indexd;
                       child: Image.file(
 
                         File(currentFilePath),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ): Image.file(
                         File(currentFilePath),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
 
                   ),
@@ -146,7 +144,7 @@ int indexd;
                     child: Align(
                       alignment: Alignment.topLeft,
                         child: IconButton(icon: Icon(Icons.close,
-                        color: Colors.grey.shade200,
+                        color: Colors.grey.shade400,
                         size: 30.0,), onPressed: (){
                           showDialog(
                               context: context,
@@ -274,7 +272,7 @@ int indexd;
                               child: Container(
                                 width: 95.0,
                                 child: RaisedButton(
-                                  color: Colors.white,
+                                  color: Colors.grey.shade200,
                                   onPressed: () {
                                     Navigator.push(
                                       context,
