@@ -342,6 +342,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         int cam = snapshot.data.documents[index]['cam'];
                         String postId = snapshot.data.documents[index]['postId'];
                         int likes = snapshot.data.documents[index]['likes'];
+                        int counter = snapshot.data.documents[index]['likes'];
                         int comments = snapshot.data.documents[index]['comments'];
                         likescount = likes;
                         readTimestamp(timestamp.seconds);
@@ -473,26 +474,32 @@ class _FeedsPageState extends State<FeedsPage> {
                                               ? () {
                                             setState(() {
                                               _liked = false;
+                                              loading = true;
+                                              counter--;
                                               DatabaseService().unlikepost(
                                                   likes, postId,displayNameController.text);
+                                              loading = true;
                                             });
                                           }
                                               : () {
                                             setState(() {
                                               _liked = true;
+                                              loading = false;
+                                              counter++;
                                               DatabaseService().likepost(
                                                 likes, postId,displayNameController.text );
+                                              loading = true;
                                             });
                                           },
                                           icon: (_liked == true)
                                               ? Icon(Icons.thumb_up)
                                               : Icon(Icons.thumb_up),
                                           iconSize: 25,
-                                          color: (_liked == true) ? Colors.redAccent : Colors.grey,
+                                          color: (_liked == true) ? Colors.deepPurple : Colors.grey,
                                         ),
 
                                         (loading == false)?Text(
-                                          likes.toString(),style: TextStyle(
+                                          counter.toString(),style: TextStyle(
                                           color: Colors.black,
                                         ),
 

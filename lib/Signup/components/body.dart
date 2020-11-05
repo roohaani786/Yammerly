@@ -178,7 +178,7 @@ class _BodyState extends State<Body> {
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
-          AuthService().updatenewUserData(user);
+          AuthService().checkuserexists(user.uid, user, user.displayName);
         } catch (e) {
           showDialog(
               context: context,

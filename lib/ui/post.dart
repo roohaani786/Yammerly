@@ -557,12 +557,12 @@ class _postPageState extends State<postPage> {
                                           ),),
                                         ],
                                       ),
-                                      IconButton(
+                                      (displayName == displayNamecurrentUser)?IconButton(
                                         icon: Icon(Icons.delete_outline, color: Colors.purple,),
                                         //onPressed: () => createAlertDialog(context,url),
                                         onPressed: () => deletePost(displayNamecurrentUser, displayName,postId,uidX),
 
-                                      ),
+                                      ):Container(),
                                     ],
                                   ),
                                 ),
@@ -570,15 +570,15 @@ class _postPageState extends State<postPage> {
 
 
                                 GestureDetector(
-                                  onDoubleTap: () {
+                                  onDoubleTap: () async {
 
-//                                    getlikes(displayNameController.text, postId);
+
                                     if (liked == false) {
                                       setState(() {
                                         liked = true;
                                         print(liked);
                                       });
-                                      DatabaseService().likepost(
+                                      await DatabaseService().likepost(
                                           likes, postId,
                                           displayNameController.text);
 
@@ -637,8 +637,8 @@ class _postPageState extends State<postPage> {
                                                 likes, postId, displayNameController.text);
 
                                           },
-                                          icon: Icon(FontAwesomeIcons.thumbsUp),
-                                          color: Colors.deepPurple,
+                                          icon: Icon(Icons.thumb_up),
+                                          color: Colors.grey,
                                           // onPressed: () {
                                           // },
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
@@ -653,7 +653,7 @@ class _postPageState extends State<postPage> {
 
                                           },
 
-                                          icon: Icon(FontAwesomeIcons.solidThumbsUp),
+                                          icon: Icon(Icons.thumb_up),
 
                                           color: Colors.deepPurple,
                                           // onPressed: () {

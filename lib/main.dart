@@ -47,7 +47,7 @@ class MyAppState extends State<MyApp> {
 
       return MaterialApp(
 
-          title: 'Hashtag',
+          title: 'AIOChat',
           debugShowCheckedModeBanner: false,
 
           //navigatorKey: Catcher.navigatorKey,

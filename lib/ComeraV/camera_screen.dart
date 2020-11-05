@@ -14,6 +14,7 @@ import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
+import 'dart:io';
 //import 'package:torch_compat/torch_compat.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -52,10 +53,18 @@ class CameraScreenState extends State<CameraScreen>
   int cam;
 
 
+
+
   @override
   void initState() {
     _initCamera();
     super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     initPlatformState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -137,6 +146,14 @@ class CameraScreenState extends State<CameraScreen>
 
   @override
   void dispose() {
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     _controller?.dispose();
     super.dispose();
   }
@@ -274,6 +291,7 @@ class CameraScreenState extends State<CameraScreen>
       _image = compressedImage;
     });
   }
+  
 
 
 
@@ -315,37 +333,6 @@ class CameraScreenState extends State<CameraScreen>
         body: Stack(
           children: <Widget>[
 
-            //       FutureBuilder<List<String>>(
-            //           builder: (BuildContext context,
-            //               AsyncSnapshot<List<String>> snapshot) {
-            //           SliverGrid(
-            //               gridDelegate:
-            //               SliverGridDelegateWithFixedCrossAxisCount(
-            //                 crossAxisCount: 3,
-            //                 mainAxisSpacing: 2.0,
-            //                 crossAxisSpacing: 2.0,
-            //               ),
-            //               delegate: SliverChildBuilderDelegate(
-            //                     (context, index) {
-            //                   return GalleryItemThumbnail(
-            //                     heroId: 'itemPanel-$index',
-            //                     height: 150,
-            //                     resource: snapshot.data[index],
-            //                     onTap: () {
-            //                       Application.router.navigateTo(
-            //                         context,
-            //                         "/edit/image?resource=${Uri.encodeComponent(snapshot.data[index])}&id=itemPanel-$index",
-            //                         transition: TransitionType.fadeIn,
-            //                       );
-            //                     },
-            //                   );
-            //                 },
-            //                 childCount: snapshot.data.length,
-            //               ),
-            //             );
-            //             return null;
-            // }
-            //           ),
 
             _buildCameraPreview(),
             Positioned(

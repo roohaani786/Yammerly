@@ -61,7 +61,7 @@ class _IntroPageState extends State<IntroPage> {
           Padding(
             padding: const EdgeInsets.only(left: 25.0),
             child: Text(
-              "Welcome to Hashtag",
+              "Welcome to AIOChat",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
