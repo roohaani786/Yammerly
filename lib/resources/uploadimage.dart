@@ -178,24 +178,7 @@ _UploadImageState({this.cam});
         ),
         actions: <Widget>[
           // uploading ? linearProgress() : Text(''),
-          FlatButton(
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            onPressed: (){
-              if(_formKey.currentState.validate()) {
-                controlUploadAndSave();
-                PostI();
-              }
-            },
-            //onPressed: () => controlUploadAndSave(),
-            child: Text(
-              "Share",
-              style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold),
-            ),
-          )
+
         ],
       ),
       body: uploading
@@ -262,12 +245,12 @@ _UploadImageState({this.cam});
                         controller: descriptionController,
                         enabled: true,
                         validator: (value) {
-                          if(value.length > 25.0){
-                            return 'Caption should not be greater then 25 words';
+                          if(value.length > 200.0){
+                            return 'Caption should not be greater then 200 words';
                           }
                         },
                         keyboardType: TextInputType.multiline,
-                        maxLines: 2,
+                        maxLines: 3,
                         decoration: InputDecoration(
                             labelText: "Write your caption here...",labelStyle: TextStyle(
                           color: Colors.grey,
@@ -280,7 +263,75 @@ _UploadImageState({this.cam});
                     )
 
                   ),
+
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10.0),
+                  //   child: Container(
+                  //     width: 50.0,
+                  //     height: 50.0,
+                  //     child: FlatButton(
+                  //       highlightColor: Colors.transparent,
+                  //       splashColor: Colors.transparent,
+                  //       onPressed: (){
+                  //         if(_formKey.currentState.validate()) {
+                  //           controlUploadAndSave();
+                  //           PostI();
+                  //         }
+                  //       },
+                  //       //onPressed: () => controlUploadAndSave(),
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.only(right: 108.0),
+                  //         child: Icon(Icons.arrow_forward_ios, size: 30,color: Colors.deepPurple,),
+                  //       ),
+                  //       // child: Text(
+                  //       //   "Share",
+                  //       //   style: TextStyle(
+                  //       //       color: Colors.deepPurple,
+                  //       //       fontSize: 16,
+                  //       //       fontWeight: FontWeight.bold),
+                  //       // ),
+                  //       shape: RoundedRectangleBorder(side: BorderSide(
+                  //           color: Colors.deepPurple,
+                  //           width: 2,
+                  //           style: BorderStyle.solid
+                  //       ), borderRadius: BorderRadius.circular(50)),
+                  //     ),
+                  //   ),
+                  // ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        if(_formKey.currentState.validate()) {
+                          controlUploadAndSave();
+                          PostI();
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10.0,right: 10.0),
+                        child: Container(
+                          width: 55,
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurple,
+                            border: Border.all(
+                              color: Colors.deepPurple,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(100),
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
+
               ),
             ),
           )
