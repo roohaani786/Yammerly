@@ -105,6 +105,7 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
+    fetchLikes();
   }
 
 
@@ -468,43 +469,40 @@ class _FeedsPageState extends State<FeedsPage> {
                                     Row(
                                       children: <Widget>[
 
-                                        IconButton(
-                                          padding: EdgeInsets.only(left: 10),
-                                          onPressed: (_liked == true)
-                                              ? () {
-                                            setState(() {
-                                              _liked = false;
-                                              loading = true;
-                                              counter--;
-                                              DatabaseService().unlikepost(
+                                        IgnorePointer(
+                                          ignoring: (loading == true)?true:false,
+                                          ignoringSemantics: true,
+                                          child: IconButton(
+                                            padding: EdgeInsets.only(left: 10),
+                                              onPressed: (_liked == true)
+                                                ? () {
+                                              setState(() {
+                                                _liked = false;
+                                                loading = true;
+//                                              likes--;
+                                                DatabaseService().unlikepost(
+                                                    likes, postId,displayNameController.text);
+                                                loading = false;
+                                              });
+                                            }
+                                                : () {
+                                              setState(() {
+                                                _liked = true;
+                                                loading = true;
+//                                              likes++;
+                                                DatabaseService().likepost(
                                                   likes, postId,displayNameController.text);
-                                              loading = true;
-                                            });
-                                          }
-                                              : () {
-                                            setState(() {
-                                              _liked = true;
-                                              loading = false;
-                                              counter++;
-                                              DatabaseService().likepost(
-                                                likes, postId,displayNameController.text );
-                                              loading = true;
-                                            });
-                                          },
-                                          icon: (_liked == true)
-                                              ? Icon(Icons.thumb_up)
-                                              : Icon(Icons.thumb_up),
-                                          iconSize: 25,
-                                          color: (_liked == true) ? Colors.deepPurple : Colors.grey,
+                                                loading = false;
+                                              });
+                                            },
+                                            icon: Icon(Icons.thumb_up),
+                                            iconSize: 25,
+                                            color: (_liked == true) ? Colors.deepPurple : Colors.grey,
+                                          ),
                                         ),
 
-                                        (loading == false)?Text(
-                                          counter.toString(),style: TextStyle(
-                                          color: Colors.black,
-                                        ),
-
-                                        ):Text(
-                                          likescount.toString(),style: TextStyle(
+                                        Text(
+                                          likes.toString(),style: TextStyle(
                                           color: Colors.black,
                                         ),
 
@@ -519,19 +517,16 @@ class _FeedsPageState extends State<FeedsPage> {
                                                 return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                               }));
                                             },
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: ((context) => CommentsScreen())));
+
 
                                             icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                           ),
                                         ),
                                         Text(comments.toString()),
-                                        // IconButton(
-                                        //   onPressed: () {},
-                                        //   icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
-                                        // ),
+                                         IconButton(
+                                           onPressed: () {},
+                                           icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                         ),
                                       ],
                                     ),
                                     // IconButton(

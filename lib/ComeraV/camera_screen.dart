@@ -291,7 +291,6 @@ class CameraScreenState extends State<CameraScreen>
       _image = compressedImage;
     });
   }
-  
 
 
 

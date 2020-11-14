@@ -379,12 +379,12 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               child :SizedBox(
                                                 width: 110,
                                                 child: FlatButton(
-                                                    color: Colors.transparent,
+                                                    color: Colors.purple,
                                                     //color: Colors.white,
                                                     child: new Text(
                                                       "Edit Profile",
                                                       style: TextStyle(
-                                                        color: Colors.black,
+                                                        color: Colors.white,
                                                         //color: Color(0xffed1e79),
                                                       ),
                                                     ),
