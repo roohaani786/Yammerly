@@ -236,7 +236,7 @@ int indexd;
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
+                                    MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),shared: false,)),
                                   );
                                 },
 //                            child: Row(
