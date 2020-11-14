@@ -100,9 +100,9 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
   print(shared);
   print("shadah");
 
-  await compressPhoto();
+  //await compressPhoto();
 
-  String downloadUrl = await uploadPhoto(file);
+  //String downloadUrl = await uploadPhoto(file);
   savePostInfoToFirestoreShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
   savePostinfoToUserShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
 
