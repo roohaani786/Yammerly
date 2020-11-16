@@ -315,104 +315,117 @@ class CameraScreenState extends State<CameraScreen>
         ),
       );
     }
+    Future<bool> _onWillPop() {
+      return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return HomePage(initialindexg: 1);
+          },
+        ),
+      );
+    }
 
     if (!_controller.value.isInitialized) {
       return Container();
     }
-    return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails details) =>
-          _onHorizontalDrag(details,context),
-      onDoubleTap: (){
-        _onCameraSwitch();
-      },
-      child: Scaffold(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: GestureDetector(
+        onHorizontalDragEnd: (DragEndDetails details) =>
+            _onHorizontalDrag(details,context),
+        onDoubleTap: (){
+          _onCameraSwitch();
+        },
+        child: Scaffold(
 
-        backgroundColor: Colors.transparent,
-        key: _scaffoldKey,
-        extendBody: true,
-        body: Stack(
-          children: <Widget>[
+          backgroundColor: Colors.transparent,
+          key: _scaffoldKey,
+          extendBody: true,
+          body: Stack(
+            children: <Widget>[
 
 
-            _buildCameraPreview(),
-            Positioned(
-              top: 24.0,
-              left: 12.0,
-              child: IconButton(
-                icon: Icon(
-                  Icons.switch_camera,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  _onCameraSwitch();
-                },
-              ),
-            ),
-            Positioned(
-              top: 24.0,
-              right: 12.0,
-              child: IconButton(
-                icon: Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
-                  );
-                },
-              ),
-            ),
-
-            Padding(
-              padding: EdgeInsets.only(top: 24.0),
-              child: Align(
-                alignment: Alignment.topCenter,
+              _buildCameraPreview(),
+              Positioned(
+                top: 24.0,
+                left: 12.0,
                 child: IconButton(
                   icon: Icon(
-                    (flashOn) ? Icons.flash_on : Icons.flash_off,
+                    Icons.switch_camera,
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    setState(() {
-                      flashOn = !flashOn;
-                    });
-
-                    // setState(() {
-                    //   flashOn = !flashOn;
-                    // });
-                    // if (!flashOn) {
-                    //   //Lamp.turnOff();
-                    //   TorchCompat.turnOff();
-                    // } else {
-                    //   TorchCompat.turnOn();
-                    //   //Lamp.turnOn();
-                    // }
+                    _onCameraSwitch();
                   },
-                  //onPressed: () => TorchCompat.turnOff(),
                 ),
               ),
-            ),
-
-
-
-
-
-            if (_isRecordingMode)
               Positioned(
-                left: 0,
-                right: 0,
-                top: 32.0,
-                child: VideoTimer(
-                  key: _timerKey,
+                top: 24.0,
+                right: 12.0,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+                    );
+                  },
                 ),
               ),
 
-          ],
-        ),
+              Padding(
+                padding: EdgeInsets.only(top: 24.0),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: IconButton(
+                    icon: Icon(
+                      (flashOn) ? Icons.flash_on : Icons.flash_off,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        flashOn = !flashOn;
+                      });
 
-        bottomNavigationBar: _buildBottomNavigationBar(),
+                      // setState(() {
+                      //   flashOn = !flashOn;
+                      // });
+                      // if (!flashOn) {
+                      //   //Lamp.turnOff();
+                      //   TorchCompat.turnOff();
+                      // } else {
+                      //   TorchCompat.turnOn();
+                      //   //Lamp.turnOn();
+                      // }
+                    },
+                    //onPressed: () => TorchCompat.turnOff(),
+                  ),
+                ),
+              ),
+
+
+
+
+
+              if (_isRecordingMode)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 32.0,
+                  child: VideoTimer(
+                    key: _timerKey,
+                  ),
+                ),
+
+            ],
+          ),
+
+          bottomNavigationBar: _buildBottomNavigationBar(),
+        ),
       ),
     );
   }

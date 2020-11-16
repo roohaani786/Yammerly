@@ -171,6 +171,12 @@ int indexd;
                                                _deleteFile();
                                                print("dsdhj");
                                                print(cam);
+                                               // Navigator.pop(context,
+                                               // MaterialPageRoute(
+                                               //   builder: (context) {
+                                               //     return CameraScreen(cam: cam,);
+                                               //   }
+                                               // ));
                                                Navigator.push(
                                                  context,
                                                  MaterialPageRoute(
