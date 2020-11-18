@@ -253,6 +253,7 @@ int indexd;
                                     MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),shared: false,)),
                                   );
                                 },
+                                child: Row(),
 //                            child: Row(
 //                              children: [
 //                                Padding(
