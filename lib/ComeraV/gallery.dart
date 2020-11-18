@@ -49,6 +49,14 @@ int indexd;
 
 
   Future<bool> _onWillPop() {
+    // return Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) {
+    //       return CameraScreen(cam: cam,);
+    //     },
+    //   ),
+    // );
     return  showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -171,6 +179,12 @@ int indexd;
                                                _deleteFile();
                                                print("dsdhj");
                                                print(cam);
+                                               // Navigator.pop(context,
+                                               // MaterialPageRoute(
+                                               //   builder: (context) {
+                                               //     return CameraScreen(cam: cam,);
+                                               //   }
+                                               // ));
                                                Navigator.push(
                                                  context,
                                                  MaterialPageRoute(
@@ -236,7 +250,7 @@ int indexd;
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),)),
+                                    MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),shared: false,)),
                                   );
                                 },
 //                            child: Row(

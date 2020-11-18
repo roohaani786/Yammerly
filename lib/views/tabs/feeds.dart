@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/models/posts.dart';
+import 'package:uuid/uuid.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
@@ -85,6 +86,30 @@ class _FeedsPageState extends State<FeedsPage> {
   var xOffset = 50.0;
   var rotation = 0.0;
   var lastRotation = 0.0;
+
+//   savePostInfoToFirestore(String url, String description, String ownerphotourl, String ownerdisplayname, bool shared) {
+//     String postId = Uuid().v4();
+//
+//     Firestore.instance.collection("posts").document(postId).setData({
+//       "OwnerPhotourl" : ownerphotourl,
+//       "OwnerDisplayName" : ownerdisplayname,
+//       "shared" : shared,
+//       "postId": postId,
+//       "uid" : uidController.text,
+//       "displayName": displayNameController.text,
+//       "timestamp": Timestamp.now(),
+//       "email": emailController.text,
+//       "photoURL" :photoUrlController.text,
+// //      "email": widget.userData.email,
+//       "description": descriptionController.text,
+//       "cam": cam,
+//       "likes": 0,
+//       "comments": 0,
+//       "url": url,
+// //      "photourl": widget.userData.photoUrl,
+//     });
+//
+//   }
 
 
 
@@ -523,10 +548,18 @@ class _FeedsPageState extends State<FeedsPage> {
                                           ),
                                         ),
                                         Text(comments.toString()),
-                                         IconButton(
-                                           onPressed: () {},
-                                           icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
-                                         ),
+
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => UploadImage(file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            );
+
+                                            //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
+                                          },
+                                          icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
+                                        ),
                                       ],
                                     ),
                                     // IconButton(

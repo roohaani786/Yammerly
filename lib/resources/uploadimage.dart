@@ -18,11 +18,16 @@ import 'auth.dart';
 class UploadImage extends StatefulWidget {
   final User userData;
   File file;
+  String sharedurl;
   int cam;
-  UploadImage({this.file, this.userData,this.cam});
+  String ownerdiscription;
+  String ownerphotourl;
+  String ownerdisplayname;
+  bool shared;
+  UploadImage({this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
 
   @override
-  _UploadImageState createState() => _UploadImageState(cam: cam);
+  _UploadImageState createState() => _UploadImageState(cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl);
 }
 
 class _UploadImageState extends State<UploadImage>
@@ -30,7 +35,12 @@ class _UploadImageState extends State<UploadImage>
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 int cam;
-_UploadImageState({this.cam});
+String ownerdiscription;
+  String ownerphotourl;
+  String ownerdisplayname;
+  bool shared;
+  String sharedurl;
+_UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
   TextEditingController
   emailController,
       uidController,
@@ -83,16 +93,48 @@ _UploadImageState({this.cam});
     return downloadUrl;
   }
 
-  controlUploadAndSave() async {
+  controlUploadAndSaveShared(bool shared) async{
+  setState(() {
+  uploading = true;
+  });
+  print(shared);
+  print("shadah");
+
+  //await compressPhoto();
+
+  //String downloadUrl = await uploadPhoto(file);
+  savePostInfoToFirestoreShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
+  savePostinfoToUserShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
+
+  //PostI();
+
+  descriptionController.clear();
+  setState(() {
+  // file = null;
+  uploading = false;
+  postId = Uuid().v4();
+  });
+  Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => HomePage()),
+  );
+}
+
+  controlUploadAndSave(bool shared) async {
     setState(() {
       uploading = true;
     });
+    print(shared);
+    print("shadah");
 
     await compressPhoto();
 
     String downloadUrl = await uploadPhoto(file);
-    savePostInfoToFirestore(downloadUrl, descriptionController.text);
-    savePostinfoToUser(downloadUrl, descriptionController.text);
+
+      savePostInfoToFirestore(downloadUrl, descriptionController.text);
+      savePostinfoToUser(downloadUrl, descriptionController.text);
+
+
     //PostI();
 
     descriptionController.clear();
@@ -117,6 +159,59 @@ _UploadImageState({this.cam});
         .collection("users")
         .document(uidController.text)
         .updateData({'posts': posts + 1});
+  }
+
+  savePostInfoToFirestoreShared(String url, String description, String ownerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
+
+    Firestore.instance.collection("posts").document(postId).setData({
+      "OwnerPhotourl" : ownerphotourl,
+      "description" : description,
+      "OwnerDisplayName" : ownerdisplayname,
+      "shared" : shared,
+      "postId": postId,
+      "uid" : uidController.text,
+      "displayName": displayNameController.text,
+      "timestamp": Timestamp.now(),
+      "email": emailController.text,
+      "photoURL" :photoUrlController.text,
+//      "email": widget.userData.email,
+      "description": descriptionController.text,
+      "cam": cam,
+      "likes": 0,
+      "comments": 0,
+      "url": url,
+//      "photourl": widget.userData.photoUrl,
+    });
+
+  }
+
+  savePostinfoToUserShared(String url, String description, String owenerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
+
+    Firestore.instance
+        .collection("users")
+        .document(uidController.text)
+        .collection('posts')
+        .document(postId)
+        .setData({
+      "OwnerPhotourl" : ownerphotourl,
+      "description" : description,
+      "OwnerDisplayName" : ownerdisplayname,
+      "shared" : shared,
+      "postId": postId,
+      "uid" : uidController.text,
+      "displayName": displayNameController.text,
+      "timestamp": Timestamp.now(),
+      "email": emailController.text,
+      "photoURL" :photoUrlController.text,
+//      "email": widget.userData.email,
+      "description": descriptionController.text,
+      "cam": cam,
+      "likes": 0,
+      "comments": 0,
+      "url": url,
+//      "photourl": widget.userData.photoUrl,
+    });
+
   }
 
   savePostinfoToUser(String url, String description){
@@ -198,7 +293,13 @@ _UploadImageState({this.cam});
                   alignment: Alignment.center,
                   transform: Matrix4.rotationY(math.pi),
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: (shared == true)?
+                    BoxDecoration(
+                      image: DecorationImage(
+
+                          image: NetworkImage(sharedurl),
+                          fit: BoxFit.cover),
+                    ):BoxDecoration(
                       image: DecorationImage(
 
                           image: FileImage(file),
@@ -206,7 +307,13 @@ _UploadImageState({this.cam});
                     ),
                   ),
                 ): Container(
-                  decoration: BoxDecoration(
+                  decoration: (shared == true)?
+                  BoxDecoration(
+                    image: DecorationImage(
+                      
+                        image: NetworkImage(sharedurl),
+                        fit: BoxFit.cover),
+                  ):BoxDecoration(
                     image: DecorationImage(
 
                         image: FileImage(file),
@@ -302,10 +409,17 @@ _UploadImageState({this.cam});
                     alignment: Alignment.bottomRight,
                     child: GestureDetector(
                       onTap: () {
-                        if(_formKey.currentState.validate()) {
-                          controlUploadAndSave();
+                        if(shared == true){
+                          print("hai hai");
+                          controlUploadAndSaveShared(shared);
                           PostI();
+                        }else{
+                          if(_formKey.currentState.validate()) {
+                            controlUploadAndSave(shared);
+                            PostI();
+                          }
                         }
+
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(top: 10.0,right: 10.0),
