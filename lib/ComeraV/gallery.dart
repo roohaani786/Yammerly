@@ -49,6 +49,14 @@ int indexd;
 
 
   Future<bool> _onWillPop() {
+    // return Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) {
+    //       return CameraScreen(cam: cam,);
+    //     },
+    //   ),
+    // );
     return  showDialog(
         context: context,
         builder: (BuildContext context) {
