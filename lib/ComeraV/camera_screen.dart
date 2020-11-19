@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluro/fluro.dart';
 import 'package:techstagram/ComeraV/cam.dart';
+import 'package:torch_compat/torch_compat.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -388,6 +389,12 @@ class CameraScreenState extends State<CameraScreen>
                     onPressed: () {
                       setState(() {
                         flashOn = !flashOn;
+//                        if(flashOn == true){
+//                          TorchCompat.turnOn();
+//                        }
+//                        else{
+//                          TorchCompat.turnOff();
+//                        }
                       });
 
                       // setState(() {

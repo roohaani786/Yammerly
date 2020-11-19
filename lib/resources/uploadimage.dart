@@ -266,8 +266,12 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
             onPressed: (){
           Navigator.pop(context);
         }),
-        title: Text(
+        title: (shared==null || shared == false)?Text(
           "New Post",
+          style: TextStyle(
+              color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold),
+        ):Text(
+          "Share Post",
           style: TextStyle(
               color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold),
         ),

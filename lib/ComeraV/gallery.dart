@@ -38,13 +38,13 @@ int indexd;
 
 
 
+
   @override
   void initState() {
 
 
 
     super.initState();
-
   }
 
 
@@ -110,11 +110,10 @@ int indexd;
         false;
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
+
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: GestureDetector(
@@ -312,7 +311,6 @@ int indexd;
                 ],
               ),
           ),
-
         ),
       ),
     );
