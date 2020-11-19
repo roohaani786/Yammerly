@@ -524,8 +524,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
 
-
-
                                       ),
                                     ):FadeInImage(
 
@@ -777,7 +775,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     ):FadeInImage(
 
                                       image: NetworkImage(url,),
-                                      fit: BoxFit.cover,
+
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,

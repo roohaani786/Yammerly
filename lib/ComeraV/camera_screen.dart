@@ -389,12 +389,6 @@ class CameraScreenState extends State<CameraScreen>
                     onPressed: () {
                       setState(() {
                         flashOn = !flashOn;
-//                        if(flashOn == true){
-//                          TorchCompat.turnOn();
-//                        }
-//                        else{
-//                          TorchCompat.turnOff();
-//                        }
                       });
 
                       // setState(() {
