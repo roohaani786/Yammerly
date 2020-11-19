@@ -775,6 +775,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     ):FadeInImage(
 
                                       image: NetworkImage(url,),
+                                      fit: BoxFit.cover,
 
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
