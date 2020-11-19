@@ -18,6 +18,7 @@ import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/ui/ProfileEdit.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
+import 'dart:math' as math;
 //import 'package:techstagram/services/database.dart';
 //import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 //
@@ -145,7 +146,7 @@ class _postPageState extends State<postPage> {
       print(displayNamecurrentUser);
       await Firestore.instance.collection('posts').document(postId).delete();
       await Firestore.instance.collection('users').document(uidX)
-      .collection('posts').document(postId).delete();
+          .collection('posts').document(postId).delete();
 
       Navigator.push(
         context,
@@ -204,7 +205,7 @@ class _postPageState extends State<postPage> {
     Firestore.instance.collection('posts')
         .document(postId)
         .collection('likes')
-        .document(displayNamecurrentUser)
+        .document(displayNameController.text)
         .get()
         .then((value) {
       if (value.exists) {
@@ -323,7 +324,7 @@ class _postPageState extends State<postPage> {
                     //     .delete();
 
                     Firestore.instance.collection("posts").document(url).get()
-                    .then((doc) {
+                        .then((doc) {
                       if (doc.exists) {
                         doc.reference.delete();
 
@@ -367,13 +368,13 @@ class _postPageState extends State<postPage> {
 
   doubletaplike(int likes, String postId) async{
     if(liked = false) {
+      setState(() {
+        liked = true;
+      });
       await DatabaseService().likepost(
           likes, postId,
           displayNameController.text);
-      setState(() {
-        liked = true;
-        print(liked);
-      });
+
     }
     else {
       print("jhj");
@@ -437,7 +438,7 @@ class _postPageState extends State<postPage> {
                         String photoUrl =
                         snapshot.data.documents[index]['photoURL'];
                         String uid = snapshot.data.documents[index]["uid"];
-
+                        int cam = snapshot.data.documents[index]['cam'];
                         Timestamp timestamp =
                         snapshot.data.documents[index]['timestamp'];
                         String url = snapshot.data.documents[index]['url'];
@@ -528,54 +529,59 @@ class _postPageState extends State<postPage> {
                                 //     MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
                                 // ),
                                 Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 10,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(40),
-
-                                              child: Image(
-                                                image: NetworkImage(photoUrl),
-                                                width: 40,
-                                                height: 40,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(displayName),
-                                          ],
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.delete_outline, color: Colors.purple,),
-                                          //onPressed: () => createAlertDialog(context,url),
-                                          onPressed: () => deletePost(displayNamecurrentUser, displayName,postId,uidX),
-
-                                        ),
-                                      ],
-                                    ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 10,
                                   ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(40),
+
+                                            child: Image(
+                                              image: NetworkImage(photoUrl),
+                                              width: 40,
+                                              height: 40,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(displayName,style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),),
+                                        ],
+                                      ),
+                                      (displayName == displayNamecurrentUser)?IconButton(
+                                        icon: Icon(Icons.delete_outline, color: Colors.purple,),
+                                        //onPressed: () => createAlertDialog(context,url),
+                                        onPressed: () => deletePost(displayNamecurrentUser, displayName,postId,uidX),
+
+                                      ):Container(),
+                                    ],
+                                  ),
+                                ),
                                 //),
 
 
                                 GestureDetector(
-                                  onDoubleTap: ()async {
-//                                    getlikes(displayNameController.text, postId);
+                                  onDoubleTap: () async {
+
+
                                     if (liked == false) {
-                                      await DatabaseService().likepost(
-                                          likes, postId,
-                                          displayNameController.text);
                                       setState(() {
                                         liked = true;
                                         print(liked);
                                       });
+                                      await DatabaseService().likepost(
+                                          likes, postId,
+                                          displayNameController.text);
+
 //                                     return liked;
                                     } else {
                                       print("nahi");
@@ -588,11 +594,28 @@ class _postPageState extends State<postPage> {
                                     onInteractionEnd: (value){
                                       _controller.value = Matrix4.identity();
                                     },
-                                    child: FadeInImage(
+                                    child :(cam == 1)?Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(math.pi),
+                                      child: FadeInImage(
+
+                                        image: NetworkImage(url),
+                                        //image: NetworkImage("posts[i].postImage"),
+                                        placeholder: AssetImage("assets/images/loading.gif"),
+                                        width: MediaQuery.of(context).size.width,
+
+
+
+                                      ),
+                                    ):FadeInImage(
+
                                       image: NetworkImage(url),
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
+
+
+
                                     ),
                                   ),
 
@@ -605,29 +628,32 @@ class _postPageState extends State<postPage> {
                                     Row(
                                       children: <Widget>[
                                         (liked == false)?IconButton(
+
                                           onPressed: () {
-                                            DatabaseService().likepost(
-                                                likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = true;
                                             });
+                                            DatabaseService().likepost(
+                                                likes, postId, displayNameController.text);
+
                                           },
-                                          icon: Icon(FontAwesomeIcons.thumbsUp),
-                                          color: Colors.deepPurple,
+                                          icon: Icon(Icons.thumb_up),
+                                          color: Colors.grey,
                                           // onPressed: () {
                                           // },
                                           // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
                                         ):IconButton(
 
                                           onPressed: () {
-                                            DatabaseService().unlikepost(
-                                                likes, postId, displayNameController.text);
                                             setState(() {
                                               liked = false;
                                             });
+                                            DatabaseService().unlikepost(
+                                                likes, postId, displayNameController.text);
+
                                           },
 
-                                          icon: Icon(FontAwesomeIcons.solidThumbsUp),
+                                          icon: Icon(Icons.thumb_up),
 
                                           color: Colors.deepPurple,
                                           // onPressed: () {
@@ -686,7 +712,8 @@ class _postPageState extends State<postPage> {
                                             overflow: TextOverflow.visible,
                                             text: TextSpan(
                                               text: displayName,
-                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,),
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                  fontSize: 15.0),
                                             ),
                                           ),
                                         ),

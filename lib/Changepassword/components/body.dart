@@ -33,6 +33,8 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   bool _obscureText = true;
+  bool _obscureText1 = true;
+  bool _obscureText2 = true;
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   TextEditingController emailInputController;
@@ -303,6 +305,16 @@ class _BodyState extends State<Body> {
       _obscureText = !_obscureText;
     });
   }
+  void _toggle1() {
+    setState(() {
+      _obscureText1 = !_obscureText1;
+    });
+  }
+  void _toggle2() {
+    setState(() {
+      _obscureText2 = !_obscureText2;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -514,13 +526,13 @@ class _BodyState extends State<Body> {
                                           BorderSide(color: Colors.red)),
                                       suffixIcon: GestureDetector(
                                         onTap: () {
-                                          _toggle();
+                                          _toggle1();
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.only(
                                               top: 5.0),
                                           child: new Icon(
-                                            _obscureText
+                                            _obscureText1
                                                 ? FontAwesomeIcons.eyeSlash
                                                 : FontAwesomeIcons.eye,
                                             size: 15.0,
@@ -539,7 +551,7 @@ class _BodyState extends State<Body> {
                                       filled: true,
                                       hintText: "New Password"),
                                   controller: newpwdInputController,
-                                  obscureText: _obscureText,
+                                  obscureText: _obscureText1,
                                   focusNode: _apwd,
                                   onFieldSubmitted: (value) {
                                     _apwd.unfocus();
@@ -589,13 +601,13 @@ class _BodyState extends State<Body> {
                                           BorderSide(color: Colors.red)),
                                       suffixIcon: GestureDetector(
                                         onTap: () {
-                                          _toggle();
+                                          _toggle2();
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.only(
                                               top: 5.0),
                                           child: new Icon(
-                                            _obscureText
+                                            _obscureText2
                                                 ? FontAwesomeIcons.eyeSlash
                                                 : FontAwesomeIcons.eye,
                                             size: 15.0,
@@ -614,7 +626,7 @@ class _BodyState extends State<Body> {
                                       filled: true,
                                       hintText: "Confirm New Password"),
                                   controller: CnewpwdInputController,
-                                  obscureText: _obscureText,
+                                  obscureText: _obscureText2,
                                   focusNode: _cpwd,
                                   onFieldSubmitted: (value) {
                                     _cpwd.unfocus();
@@ -634,7 +646,7 @@ class _BodyState extends State<Body> {
                           child: RoundedButton(
                               text: "Change Password",
                               press: () {
-                                if(newpwdInputController.text == CnewpwdInputController){
+                                if(newpwdInputController.text == CnewpwdInputController.text){
                                   signIn(emailInputController.text,
                                       ppwdInputController.text,newpwdInputController.text);
                                 }else{
@@ -644,7 +656,7 @@ class _BodyState extends State<Body> {
 
                                         return AlertDialog(
                                           content: Text(
-                                            'password dos not match',
+                                            'Password does not Match !',
                                             style: TextStyle(color: Colors.black),
                                           ),
                                           title: Text("Error !", style:

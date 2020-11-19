@@ -59,37 +59,29 @@ class _IntroPageState extends State<IntroPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 25.0),
-            child: Text(
-              "Welcome to Hashtag",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: Colors.deepPurple,
-              ),
-            ),
+            padding: const EdgeInsets.only(left: 160.0),
           ),
-          FlatButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return WelcomeScreen();
-                  },
-                ),
-              );
-            },
 
-            child: Text(
-              "Skip",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: Colors.black,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return WelcomeScreen();
+                    },
+                  ),
+                );
+              },
+              child: Text(
+                "Skip",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.purple,
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -103,18 +95,29 @@ class _IntroPageState extends State<IntroPage> {
         itemBuilder: (context, index) {
           return Column(
             children: <Widget>[
-              SizedBox(
-                height: 15,
+              Padding(
+                padding: const EdgeInsets.only(top: 25.0),
+                child: Text(
+              "Welcome to AIOChat",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25,
+                    color: Colors.deepPurple,
+                  ),
+                ),
               ),
-              index == 1 || index == 2 || index == 3
-                  ? _displayText(list[index].text)
-                  : _displayImage(list[index].id),
-              SizedBox(
-                height: 25,
-              ),
-              index == 1 || index == 2 || index == 3
-                  ? _displayImage(list[index].id)
-                  : _displayText(list[index].text),
+
+Padding(
+  padding: const EdgeInsets.only(top: 50.0),
+),
+//              SizedBox(
+//                height: 15,
+//              ),
+              _displayImage(list[index].id),
+//              SizedBox(
+//                height: 25,
+//              ),
+             _displayText(list[index].text),
             ],
           );
         },
@@ -126,7 +129,7 @@ class _IntroPageState extends State<IntroPage> {
     return Container(
       width: 60,
       height: 60,
-      margin: EdgeInsets.symmetric(vertical: 12),
+      margin: EdgeInsets.symmetric(vertical: 25),
       child: Stack(
         children: <Widget>[
           Align(
@@ -180,7 +183,7 @@ class _IntroPageState extends State<IntroPage> {
     return Text(
       text,
       style: TextStyle(
-        fontWeight: FontWeight.normal,
+        fontWeight: FontWeight.w500,
         fontSize: 15,
       ),
       textAlign: TextAlign.center,
@@ -190,7 +193,7 @@ class _IntroPageState extends State<IntroPage> {
   _displayImage(int path) {
     return Image.asset(
       "assets/images/$path.jpg",
-      height: MediaQuery.of(context).size.height * .5,
+      height: MediaQuery.of(context).size.height * .24,
       width: MediaQuery
           .of(context)
           .size

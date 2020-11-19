@@ -224,6 +224,7 @@ class CommentsPageState extends State<CommentsPage> {
   @override
   Widget build(BuildContext) {
     return Scaffold(
+      backgroundColor: Colors.white,
 
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -255,7 +256,7 @@ class CommentsPageState extends State<CommentsPage> {
               ),
               trailing:IconButton(
                 onPressed: (){
-                  if(commentTextEditingController.text != "" && commentTextEditingController.text.length < 20){
+                  if(commentTextEditingController.text != "" && commentTextEditingController.text.length < 100){
                     setState(() {
                       errordikhaoC = false;
                     });
@@ -326,43 +327,56 @@ class Comment extends StatelessWidget {
       child: Container(
 
         color: Colors.white,
-        child: GestureDetector(
-          //onTap: () => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX),
-          // onTap: () {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX)),
-          //   );
-          // },
 
-          child: Expanded(
             child: Stack(
               children: [
                 ListTile(
                   title: (userName != null || comment != null)?Row(
                     children: [
-                      Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
-                        fontWeight: FontWeight.bold,),),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: Expanded(
-                          //width: 170.0,
-                          child: Text(comment,maxLines: 1,style: TextStyle(fontSize: 15.0,color: Colors.black,
-                          ),),
+                      Expanded(
+                        child: RichText(
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: userName + " :  ",
+                                style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                              ),
+                              TextSpan(
+                                text: comment,
+                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                    fontSize: 15.0),
+                              ),
+                            ],
+                          ),
+
                         ),
-                      ),
+                      )
+//                      Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
+//                        fontWeight: FontWeight.bold,),),
+//                      Padding(
+//                        padding: const EdgeInsets.only(left: 2.0),
+//                        child: Expanded(
+//                          //width: 170.0,
+//                          child: SizedBox(
+//                            width: 108.0,
+//                            child: Text(comment,style: TextStyle(fontSize: 15.0,color: Colors.black,
+//                            ),),
+//                          ),
+//                        ),
+//                      ),
                     ],
                   ):Text(""),
                   leading: (userName != null || comment != null)?CircleAvatar(
                     backgroundImage: CachedNetworkImageProvider(url),
                   ):null,
-                  subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.black),):Text(""),
+                  subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
                 ),
               ],
             ),
-          ),
-        ),
+
       ),
 
     );

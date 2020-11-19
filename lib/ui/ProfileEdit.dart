@@ -15,6 +15,7 @@ import 'package:string_validator/string_validator.dart';
 import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
+import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:image/image.dart' as ImD;
@@ -198,6 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
       "photoURL": photoUrlController.text,
     });
 
+
     setState(() {
       isChanged = false;
     });
@@ -229,6 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
       photoUrlController.text = fileURL;
 
       });
+//      DatabaseService().updatephotoURL(uidController.text,photoUrlController.text);
     });
     savePostInfoToFirestore(photoUrlController.text);
   }
@@ -402,6 +405,7 @@ bool isChanged = false;
 
     else if (docSnap.data["photoURL"].toString().trim() !=
     photoUrlController.text.trim()) {
+//      DatabaseService().updatephotoURL(uidController.text,photoUrlController.text);
     print("photoUrl Changed");
     isChanged = true;
     } //displayName
@@ -519,6 +523,8 @@ bool isChanged = false;
         .collection("users")
         .document(currUser.uid)
         .setData(data, merge: true);
+//    DatabaseService().updatePostdisplayName(uidController.text,displayNameController.text);
+//    DatabaseService().updatephotoURL(displayNameController.text,photoUrlController.text);
     snackbarContent = "Profile Updated";
     if(snackbarContent == "Profile Updated"){
 
@@ -684,8 +690,8 @@ bool isChanged = false;
                           controller: displayNameController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 15.0){
-                              return 'Display Name should not be greater than 15 words';
+                            if(value.length > 20.0){
+                              return 'Display Name should not be greater than 20 words';
                             }else if(value.length ==0){
                               return 'Display Name should not be null';
                             }else if(!isLowercase(value)){

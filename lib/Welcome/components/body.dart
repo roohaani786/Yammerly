@@ -21,7 +21,7 @@ class Body extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                "WELCOME TO HASHTAG",
+                "WELCOME TO AIO-Chat",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: size.height * 0.05),

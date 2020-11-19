@@ -279,7 +279,7 @@ class _BodyState extends State<Body> {
 //        assert(user.getIdToken() != null);
 
 
-          authService.updateUserData(user);
+          AuthService().checkuserexists(user.uid, user, user.displayName);
           loading.add(false);
 
           print("signed in " + user.displayName);

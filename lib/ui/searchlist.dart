@@ -38,7 +38,7 @@ String uidf = CloudFirestoreSearch().uidX;
             Navigator.of(context).pop();
           },
         ),
-        title: Card(
+        title: Container(
           color: Colors.white,
           child: TextField(
             decoration: InputDecoration(

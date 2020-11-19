@@ -456,11 +456,13 @@ class _AboutUserState extends State<AboutUser> {
                                           ),),
                                         ),
                                       ),
-                                      Text(workController.text,style: TextStyle(
-                                        color: kPrimaryColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16.0,
-                                      ),),
+                                      Expanded(
+                                        child: Text(workController.text,style: TextStyle(
+                                          color: kPrimaryColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0,
+                                        ),),
+                                      ),
                                     ],
                                   ),
                                 ),
