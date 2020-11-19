@@ -511,14 +511,28 @@ class _FeedsPageState extends State<FeedsPage> {
                                 },
                                 onTap: null,
 
-                                child: GestureDetector(
+                                child: Container(
+                                  height: 350.0,
+                                  child: GestureDetector(
 
-                                  child :(cam == 1)?Transform(
-                                    alignment: Alignment.center,
-                                    transform: Matrix4.rotationY(math.pi),
-                                    child: FadeInImage(
+                                    child :(cam == 1)?Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(math.pi),
+                                      child: FadeInImage(
+
+                                        image: NetworkImage(url),
+                                        fit: BoxFit.cover,
+                                        //image: NetworkImage("posts[i].postImage"),
+                                        placeholder: AssetImage("assets/images/loading.gif"),
+                                        width: MediaQuery.of(context).size.width,
+
+
+
+                                      ),
+                                    ):FadeInImage(
 
                                       image: NetworkImage(url),
+                                      fit: BoxFit.cover,
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
@@ -526,15 +540,6 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
                                     ),
-                                  ):FadeInImage(
-
-                                    image: NetworkImage(url),
-                                    //image: NetworkImage("posts[i].postImage"),
-                                    placeholder: AssetImage("assets/images/loading.gif"),
-                                    width: MediaQuery.of(context).size.width,
-
-
-
                                   ),
                                 ),
                               ),
@@ -788,14 +793,28 @@ class _FeedsPageState extends State<FeedsPage> {
                                 },
                                 onTap: null,
 
-                                child: GestureDetector(
+                                child: Container(
+                                  height: 350.0,
+                                  child: GestureDetector(
 
-                                  child :(cam == 1)?Transform(
-                                    alignment: Alignment.center,
-                                    transform: Matrix4.rotationY(math.pi),
-                                    child: FadeInImage(
+                                    child :(cam == 1)?Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(math.pi),
+                                      child: FadeInImage(
 
-                                      image: NetworkImage(url),
+                                        image: NetworkImage(url),
+                                        fit: BoxFit.cover,
+                                        //image: NetworkImage("posts[i].postImage"),
+                                        placeholder: AssetImage("assets/images/loading.gif"),
+                                        width: MediaQuery.of(context).size.width,
+
+
+
+                                      ),
+                                    ):FadeInImage(
+
+                                      image: NetworkImage(url,),
+                                        fit: BoxFit.cover,
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
@@ -803,15 +822,6 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
                                     ),
-                                  ):FadeInImage(
-
-                                    image: NetworkImage(url),
-                                    //image: NetworkImage("posts[i].postImage"),
-                                    placeholder: AssetImage("assets/images/loading.gif"),
-                                    width: MediaQuery.of(context).size.width,
-
-
-
                                   ),
                                 ),
                               ),
