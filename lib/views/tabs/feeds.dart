@@ -376,10 +376,6 @@ class _FeedsPageState extends State<FeedsPage> {
                         likescount = likes;
                         readTimestamp(timestamp.seconds);
 
-                        String ownerdisplayName = snapshot.data.documents[index]['OwnerDisplayName'];
-                        String ownerphotourl = snapshot.data.documents[index]['OwnerPhotourl'];
-                        bool shared = snapshot.data.documents[index]['shared'];
-
                         getlikes(displayNameController.text, postId);
 
 
