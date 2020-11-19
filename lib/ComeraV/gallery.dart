@@ -135,11 +135,11 @@ int indexd;
                       child: Image.file(
 
                         File(currentFilePath),
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
                       ),
                     ): Image.file(
                         File(currentFilePath),
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
                       ),
 
                   ),
