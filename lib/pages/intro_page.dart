@@ -79,6 +79,7 @@ class _IntroPageState extends State<IntroPage> {
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                   color: Colors.purple,
+                  fontFamily: "Quicksand-Bold"
                 ),
               ),
             ),
@@ -101,14 +102,15 @@ class _IntroPageState extends State<IntroPage> {
               "Welcome to AIOChat",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 25,
+                    fontSize: 35,
                     color: Colors.deepPurple,
+                    fontFamily: "Cookie-Regular"
                   ),
                 ),
               ),
 
 Padding(
-  padding: const EdgeInsets.only(top: 50.0),
+  padding: const EdgeInsets.only(top: 100.0),
 ),
 //              SizedBox(
 //                height: 15,
@@ -184,7 +186,8 @@ Padding(
       text,
       style: TextStyle(
         fontWeight: FontWeight.w500,
-        fontSize: 15,
+        fontSize: 25,
+        fontFamily: "Cookie-Regular"
       ),
       textAlign: TextAlign.center,
     );

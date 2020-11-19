@@ -138,6 +138,7 @@ class _FeedsPageState extends State<FeedsPage> {
   final timelineReference = Firestore.instance.collection('posts');
   String postIdX;
   bool postliked = false;
+  bool _liked = false;
 
   fetchPosts() async {
 
@@ -235,7 +236,6 @@ class _FeedsPageState extends State<FeedsPage> {
 
   var time = "s";
   User currentUser;
-  bool _liked = false;
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
@@ -353,6 +353,7 @@ class _FeedsPageState extends State<FeedsPage> {
                       itemBuilder: (context, index) {
 
                         postIdX = snapshot.data.documents[index]['postId'];
+                        getlikes(displayNameController.text, postIdX);
                         String email = snapshot.data.documents[index]['email'];
                         String description =
                         snapshot.data.documents[index]['description'];
@@ -376,7 +377,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         likescount = likes;
                         readTimestamp(timestamp.seconds);
 
-                        getlikes(displayNameController.text, postId);
+//                        getlikes(displayNameController.text, postId);
 
 
 
@@ -386,17 +387,14 @@ class _FeedsPageState extends State<FeedsPage> {
 
                           _liked = false;
                         }
+                     return (shared==true)?Container(
 
+                              color: Colors.white,
+                     child: Column(
+                              children: <Widget>[
+                               Container(height: 0.0,width: 0.0,),
 
-
-                        return (shared==true)?Container(
-
-                          color: Colors.white,
-                          child: Column(
-                            children: <Widget>[
-                              Container(height: 0.0,width: 0.0,),
-
-                              GestureDetector(
+                                GestureDetector(
                                 onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
@@ -526,8 +524,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
 
-
-
                                       ),
                                     ):FadeInImage(
 
@@ -543,41 +539,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                   ),
                                 ),
                               ),
-
-                              // Container(
-                              //     width: MediaQuery.of(context).size.width,
-                              //     margin: EdgeInsets.symmetric(
-                              //       horizontal: 14,
-                              //     ),
-                              //     child: Row(
-                              //       children: [
-                              //         Container(
-                              //           child: RichText(
-                              //             textAlign: TextAlign.start,
-                              //             softWrap: true,
-                              //             overflow: TextOverflow.visible,
-                              //             text: TextSpan(
-                              //               children: [
-                              //                 TextSpan(
-                              //                   text: OwnerDisplayName + "  ",
-                              //                   style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                              //                       fontSize: 18.0),
-                              //                 ),
-                              //                 TextSpan(
-                              //                   text: OwnerDiscrition,
-                              //                   style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                              //                       fontSize: 15.0),
-                              //                 ),
-                              //               ],
-                              //             ),
-                              //
-                              //           ),
-                              //         ),
-                              //
-                              //       ],
-                              //     )
-                              // ),
-
 
 
 
@@ -653,7 +614,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                           //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
                                         },
-                                        icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
+                                        icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
                                     ],
                                   ),
@@ -724,10 +685,10 @@ class _FeedsPageState extends State<FeedsPage> {
                             ],
                           ),
                         ):Container(
-                            color: Colors.white,
-                            child: Column(
-                              children: <Widget>[
-                                 Container(height: 0.0,width: 0.0,),
+                          color: Colors.white,
+                          child: Column(
+                            children: <Widget>[
+                              Container(height: 0.0,width: 0.0,),
 
                               GestureDetector(
                                 onTap: () => Navigator.push(
@@ -814,7 +775,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     ):FadeInImage(
 
                                       image: NetworkImage(url,),
-                                        fit: BoxFit.cover,
+
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
@@ -901,7 +862,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                           //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
                                         },
-                                        icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
+                                        icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
                                     ],
                                   ),
@@ -993,5 +954,3 @@ class Student {
 
   Student(this.name);
 }
-
-
