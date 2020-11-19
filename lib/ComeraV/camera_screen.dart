@@ -164,7 +164,7 @@ class CameraScreenState extends State<CameraScreen>
       return;
 
     if (details.primaryVelocity.compareTo(0) == -1) {
-//      dispose();
+      dispose();
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
