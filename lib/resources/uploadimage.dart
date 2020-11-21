@@ -155,7 +155,7 @@ _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,t
 
   ShareIU() async {
     print(uidController);
-    print("helloww");
+    print("bhau");
     //String increment = postsController.text;
     //int incr = int.parse(posts);
     //print(incr);
@@ -452,6 +452,7 @@ _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,t
                           controlUploadAndSaveShared(shared);
                           PostI();
                           ShareI();
+                          ShareIU();
                         }else{
                           if(_formKey.currentState.validate()) {
                             controlUploadAndSave(shared);
