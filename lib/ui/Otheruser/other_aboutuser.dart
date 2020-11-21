@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -307,7 +308,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 key: _formKey,
                 child: Column(children: <Widget>[
 
-                    TextFormField(
+                  (displayNameController.text=="")?Container():TextFormField(
                     controller: displayNameController,
                     enabled: false,
                     keyboardType: TextInputType.text,
@@ -321,12 +322,12 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         borderSide:
                         BorderSide(color: Colors.black, width: 1))),
               ),
+                  (displayNameController.text=="")?Container():SizedBox(
+                    height: 16.0,
+                  ),
 
-              SizedBox(
-                height: 16.0,
-              ),
 
-              TextFormField(
+                  (firstNameController.text=="")?Container():TextFormField(
                 controller: firstNameController,
                 enabled: false,
 
@@ -340,10 +341,10 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (firstNameController.text=="")?Container():SizedBox(
                 height: 16,
               ),
-              TextFormField(
+                  (lastNameController.text=="")?Container():TextFormField(
                 controller: lastNameController,
                 enabled: false,
                 decoration: InputDecoration(
@@ -356,11 +357,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (lastNameController.text=="")?Container():SizedBox(
                 height: 16,
               ),
 
-              TextFormField(
+                  (phoneNumberController.text=="")?Container():TextFormField(
                 controller: phoneNumberController,
                 enabled: false,
                 maxLength: 10,
@@ -378,11 +379,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (phoneNumberController.text=="")?Container():SizedBox(
                 height: 16,
               ),
 
-              TextFormField(
+                  (emailController.text=="")?Container():TextFormField(
                 controller: emailController,
                 enabled: false,
                 keyboardType: TextInputType.emailAddress,
@@ -396,12 +397,12 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (emailController.text=="")?Container():SizedBox(
                 height: 16,
               ),
 
 
-              TextFormField(
+                  (bioController.text=="")?Container():TextFormField(
                 controller: bioController,
                 enabled: false,
                 keyboardType: TextInputType.text,
@@ -416,11 +417,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (bioController.text=="")?Container():SizedBox(
                 height: 16.0,
               ),
 
-              TextFormField(
+                  (genderController.text=="")?Container():TextFormField(
                 controller: genderController,
                 enabled: false,
                 keyboardType: TextInputType.text,
@@ -437,11 +438,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
 
 
 
-              SizedBox(
+                  (genderController.text=="")?Container():SizedBox(
                 height: 16.0,
               ),
 
-              TextFormField(
+                  (relationshipController.text=="")?Container():TextFormField(
                 controller: relationshipController,
                 enabled: false,
                 keyboardType: TextInputType.text,
@@ -456,11 +457,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (relationshipController.text=="")?Container():SizedBox(
                 height: 16,
               ),
 
-              TextFormField(
+                  (linkController.text=="")?Container():TextFormField(
                 controller: linkController,
                 enabled: false,
                 keyboardType: TextInputType.text,
@@ -475,11 +476,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (linkController.text=="")?Container():SizedBox(
                 height: 16,
               ),
 
-              TextFormField(
+                  (workController.text=="")?Container():TextFormField(
                 controller: workController,
                 enabled: false,
                 keyboardType: TextInputType.multiline,
@@ -494,11 +495,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (workController.text=="")?Container():SizedBox(
                 height: 16,
               ),
 
-              TextFormField(
+                  (educationController.text=="")?Container():TextFormField(
                 controller: educationController,
                 enabled: false,
                 keyboardType: TextInputType.multiline,
@@ -513,11 +514,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (educationController.text=="")?Container():SizedBox(
                 height: 16,
               ),
 
-              TextFormField(
+                  (currentCityController.text=="")?Container():TextFormField(
                 controller: currentCityController,
                 enabled: false,
                 keyboardType: TextInputType.multiline,
@@ -532,11 +533,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (currentCityController.text=="")?Container():SizedBox(
                 height: 16,
               ),
 
-              TextFormField(
+                  (pincodeController.text=="")?Container():TextFormField(
                 controller: pincodeController,
                 enabled: false,
                 inputFormatters: [
@@ -554,11 +555,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                         BorderSide(color: Colors.black, width: 1))),
               ),
 
-              SizedBox(
+                  (pincodeController.text=="")?Container():SizedBox(
                 height: 16,
               ),
 
-              TextFormField(
+                  (homeTownController.text=="")?Container():TextFormField(
                 controller: homeTownController,
                 enabled: false,
                 keyboardType: TextInputType.multiline,

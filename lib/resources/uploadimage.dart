@@ -24,10 +24,12 @@ class UploadImage extends StatefulWidget {
   String ownerphotourl;
   String ownerdisplayname;
   bool shared;
-  UploadImage({this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
+  int shares;
+  String ownerPostId;
+  UploadImage({this.ownerPostId,this.shares,this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
 
   @override
-  _UploadImageState createState() => _UploadImageState(cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl);
+  _UploadImageState createState() => _UploadImageState(ownerPostId: ownerPostId,shares:shares,cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl);
 }
 
 class _UploadImageState extends State<UploadImage>
@@ -40,7 +42,9 @@ String ownerdiscription;
   String ownerdisplayname;
   bool shared;
   String sharedurl;
-_UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
+  int shares;
+  String ownerPostId;
+_UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
   TextEditingController
   emailController,
       uidController,
@@ -149,6 +153,18 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
     );
   }
 
+  ShareI() async {
+    print(ownerPostId);
+    print("helloww");
+    //String increment = postsController.text;
+    //int incr = int.parse(posts);
+    //print(incr);
+    Firestore.instance
+        .collection("posts")
+        .document(ownerPostId)
+        .updateData({'shares': shares + 1});
+  }
+
   PostI() async {
     print(postsController);
     print("helloww");
@@ -179,6 +195,7 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       "cam": cam,
       "likes": 0,
       "comments": 0,
+      "shares" : 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
@@ -208,6 +225,7 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       "cam": cam,
       "likes": 0,
       "comments": 0,
+      "shares" : 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
@@ -232,6 +250,7 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       "cam": cam,
       "likes": 0,
       "comments": 0,
+      "shares" : 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
@@ -250,6 +269,7 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       "cam": cam,
       "likes": 0,
       "comments": 0,
+      "shares": 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
@@ -417,10 +437,12 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
                           print("hai hai");
                           controlUploadAndSaveShared(shared);
                           PostI();
+                          ShareI();
                         }else{
                           if(_formKey.currentState.validate()) {
                             controlUploadAndSave(shared);
                             PostI();
+                            ShareI();
                           }
                         }
 

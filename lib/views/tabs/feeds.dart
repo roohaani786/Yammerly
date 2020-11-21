@@ -368,6 +368,7 @@ class _FeedsPageState extends State<FeedsPage> {
               children: [
 
                 new Expanded(
+
                   child: SmartRefresher(
 
                     enablePullDown: true,
@@ -429,6 +430,7 @@ class _FeedsPageState extends State<FeedsPage> {
                           int comments = snapshot.data.documents[index]['comments'];
                           likescount = likes;
                           readTimestamp(timestamp.seconds);
+
 
 //                        getlikes(displayNameController.text, postId);
 
@@ -653,7 +655,58 @@ class _FeedsPageState extends State<FeedsPage> {
                                             },
 
 
-                                            icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
+                                          icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
+                                        ),
+                                      ),
+                                      Text(comments.toString()),
+
+                                      IconButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                          );
+
+                                          //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
+                                        },
+                                        icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                      ),
+                                      //Text(shares.toString()),
+                                    ],
+                                  ),
+                                  // IconButton(
+                                  //   onPressed: () {},
+                                  //   icon: Icon(FontAwesome.bookmark_o),
+                                  // ),
+                                ],
+                              ),
+
+                              Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        child: RichText(
+                                          textAlign: TextAlign.start,
+                                          softWrap: true,
+                                          overflow: TextOverflow.visible,
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: displayName + "  ",
+                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                    fontSize: 18.0),
+                                              ),
+                                              TextSpan(
+                                                text: description,
+                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                    fontSize: 15.0),
+                                              ),
+                                            ],
+
                                           ),
                                         ),
                                         Text(comments.toString()),
@@ -902,7 +955,58 @@ class _FeedsPageState extends State<FeedsPage> {
                                             },
 
 
-                                            icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
+                                          icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                        ),
+                                      ),
+                                      Text(comments.toString()),
+
+                                      IconButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                          );
+
+                                          //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
+                                        },
+                                        icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                      ),
+                                      Text(shares.toString()),
+                                    ],
+                                  ),
+                                  // IconButton(
+                                  //   onPressed: () {},
+                                  //   icon: Icon(FontAwesome.bookmark_o),
+                                  // ),
+                                ],
+                              ),
+
+                              Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        child: RichText(
+                                          textAlign: TextAlign.start,
+                                          softWrap: true,
+                                          overflow: TextOverflow.visible,
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: displayName + "  ",
+                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                    fontSize: 18.0),
+                                              ),
+                                              TextSpan(
+                                                text: description,
+                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                    fontSize: 15.0),
+                                              ),
+                                            ],
+
                                           ),
                                         ),
                                         Text(comments.toString()),
