@@ -154,7 +154,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   child: Icon(Icons.build,color: Colors.grey.shade600,),
                 ),
                 Text(
-                  'AIO Chat-Version: 1.0.0',
+                  'AIO Chat-Version: 1.1.0',
                   style: TextStyle(color: Colors.deepPurple),
                 ),
               ],
