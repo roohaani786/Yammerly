@@ -69,7 +69,11 @@ class _HomePageState extends State<HomePage> {
 
   int initialindexg;
   TextEditingController emailController,urlController,descriptionController,
-      displayNameController,uidController;
+      displayNameController,uidController,photoUrlController,phonenumberController,
+      bioController;
+   int followers;
+   int following;
+   int posts;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -86,9 +90,15 @@ class _HomePageState extends State<HomePage> {
           .collection("users")
           .document(currUser.uid)
           .get();
-      emailController.text = docSnap.data["email"];
       displayNameController.text = docSnap.data["displayName"];
       uidController.text = docSnap.data["uid"];
+      emailController.text = docSnap.data["email"];
+      photoUrlController.text = docSnap.data["photoURL"];
+      phonenumberController.text = docSnap.data["phonenumber"];
+//      bioController.text = docSnap.data["bio"];
+      followers = docSnap.data["followers"];
+      following  = docSnap.data["following"];
+      posts  = docSnap.data["posts"];
       setState(() {
 //        isLoading = false;
 //        isEditable = true;
@@ -107,6 +117,8 @@ class _HomePageState extends State<HomePage> {
     emailController = TextEditingController();
     displayNameController = TextEditingController();
     uidController = TextEditingController();
+    photoUrlController = TextEditingController();
+    phonenumberController = TextEditingController();
 
     super.initState();
     // Subscriptions are created here
@@ -175,11 +187,12 @@ class _HomePageState extends State<HomePage> {
 //    final user = Provider.of<User>(context);
 //    _saveDeviceToken(user.uid);
     return GestureDetector(
-      onTap: () => Navigator.of(context).pop(HomePage()),
+      onTap: (){print("hu");},
+//      onTap: () => Navigator.of(context).pop(HomePage()),
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                          'Hashtag',
+                          'AIO Chat',
                           style: TextStyle(
                               color: Colors.deepPurple,
                               fontSize: 20.0,
@@ -276,7 +289,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
     // TODO: implement build
 
     return GestureDetector(
-      onTap: () => Navigator.of(context).pop(HomePage()),
+      onTap: () => print("hello"),
       child: Scaffold(
         body: DefaultTabController(
           length: 5,
@@ -322,7 +335,6 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
               height: 60.0,
               child: new TabBar(
                 tabs: [
-
                   Tab(
                     icon: IconButton(
                         onPressed: () {
@@ -345,14 +357,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                     icon: new Icon(Icons.notifications, size: 30),
                   ),
                   Tab(
-                    icon: GestureDetector(
-                        onTap: (){
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(initialindexg: 4),
-                            ),
-                          );
-                        },child: new Icon(Icons.account_circle, size: 30)),
+                    icon: new Icon(Icons.account_circle, size: 30),
                   )
                 ],
                 labelColor: Colors.purple,

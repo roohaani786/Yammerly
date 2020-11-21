@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluro/fluro.dart';
+import 'package:techstagram/ComeraV/cam.dart';
+import 'package:torch_compat/torch_compat.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,27 +15,32 @@ import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
+import 'dart:io';
 //import 'package:torch_compat/torch_compat.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:thumbnails/thumbnails.dart';
-import 'package:lamp/lamp.dart';
-import 'package:torch/torch.dart';
+//import 'package:thumbnails/thumbnails.dart';
+//import 'package:lamp/lamp.dart';
+//import 'package:torch/torch.dart';
 import 'package:image/image.dart' as ImD;
 //import 'package:holding_gesture/holding_gesture.dart';
 
 import 'application.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({Key key}) : super(key: key);
+  final int cam;
+
+  const CameraScreen({Key key,this.cam}) : super(key: key);
 
   @override
-  CameraScreenState createState() => CameraScreenState();
+  CameraScreenState createState() => CameraScreenState(cam: cam);
 }
 
 class CameraScreenState extends State<CameraScreen>
     with AutomaticKeepAliveClientMixin {
+
+  CameraScreenState({this.cam});
   CameraController _controller;
   List<CameraDescription> _cameras;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -44,12 +51,21 @@ class CameraScreenState extends State<CameraScreen>
   bool _hasFlash = false;
   Map<String, dynamic> _profile;
   bool _loading = false;
+  int cam;
+
+
 
 
   @override
   void initState() {
     _initCamera();
     super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     initPlatformState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -113,14 +129,14 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   initPlatformState() async {
-    bool hasFlash = await Lamp.hasLamp;
-    print("Device has flash ? $hasFlash");
-    setState(() { _hasFlash = hasFlash; });
+//    bool hasFlash = await Lamp.hasLamp;
+//    print("Device has flash ? $hasFlash");
+//    setState(() { _hasFlash = hasFlash; });
   }
 
   Future<void> _initCamera() async {
     _cameras = await availableCameras();
-    _controller = CameraController(_cameras[0], ResolutionPreset.veryHigh);
+    _controller = CameraController(_cameras[cam], ResolutionPreset.veryHigh);
     _controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -131,6 +147,14 @@ class CameraScreenState extends State<CameraScreen>
 
   @override
   void dispose() {
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     _controller?.dispose();
     super.dispose();
   }
@@ -141,7 +165,7 @@ class CameraScreenState extends State<CameraScreen>
       return;
 
     if (details.primaryVelocity.compareTo(0) == -1) {
-//      dispose();
+      dispose();
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
@@ -149,24 +173,24 @@ class CameraScreenState extends State<CameraScreen>
 
 
     }
-    else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CameraScreen()),
-      );
-//      Navigator.push(
-//          context,
-//          MaterialPageRoute(
-//              builder: (BuildContext context) => HomePage())).then((res) {
-//        setState(() {
-//          cameraon = true;
-//        });
-//      }
-//      );
-    }
+//     else {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(builder: (context) => CameraScreen()),
+//       );
+// //      Navigator.push(
+// //          context,
+// //          MaterialPageRoute(
+// //              builder: (BuildContext context) => HomePage())).then((res) {
+// //        setState(() {
+// //          cameraon = true;
+// //        });
+// //      }
+// //      );
+//     }
   }
 
-  bool flashOn=true;
+  bool flashOn=false;
   File _image;
   FirebaseUser currUser;
 
@@ -185,10 +209,20 @@ class CameraScreenState extends State<CameraScreen>
         upload = true;
       });
     });
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
-    );
+
+    if (_image != null){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+    }else{
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CameraScreen(cam: cam,),));
+    }
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+//    );
     print("Done..");
   }
   String url;
@@ -281,143 +315,117 @@ class CameraScreenState extends State<CameraScreen>
         ),
       );
     }
+    Future<bool> _onWillPop() {
+      return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return HomePage(initialindexg: 1);
+          },
+        ),
+      );
+    }
 
     if (!_controller.value.isInitialized) {
       return Container();
     }
-    return GestureDetector(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: GestureDetector(
         onHorizontalDragEnd: (DragEndDetails details) =>
             _onHorizontalDrag(details,context),
-      onDoubleTap: (){
-        _onCameraSwitch();
-      },
-      child: Scaffold(
-        // floatingActionButton: HoldDetector(
-        //   onHold: startVideoRecording,
-        //   holdTimeout: Duration(milliseconds: 200),
-        //   enableHapticFeedback: true,
-        //   child: FloatingActionButton(
-        //     child: Icon(Icons.camera),
-        //     onPressed: _captureImage,
-        //   ),
-        // ),
-        backgroundColor: Theme.of(context).backgroundColor,
-        key: _scaffoldKey,
-        extendBody: true,
-        body: Stack(
-          children: <Widget>[
+        onDoubleTap: (){
+          _onCameraSwitch();
+        },
+        child: Scaffold(
 
-  //       FutureBuilder<List<String>>(
-  //           builder: (BuildContext context,
-  //               AsyncSnapshot<List<String>> snapshot) {
-  //           SliverGrid(
-  //               gridDelegate:
-  //               SliverGridDelegateWithFixedCrossAxisCount(
-  //                 crossAxisCount: 3,
-  //                 mainAxisSpacing: 2.0,
-  //                 crossAxisSpacing: 2.0,
-  //               ),
-  //               delegate: SliverChildBuilderDelegate(
-  //                     (context, index) {
-  //                   return GalleryItemThumbnail(
-  //                     heroId: 'itemPanel-$index',
-  //                     height: 150,
-  //                     resource: snapshot.data[index],
-  //                     onTap: () {
-  //                       Application.router.navigateTo(
-  //                         context,
-  //                         "/edit/image?resource=${Uri.encodeComponent(snapshot.data[index])}&id=itemPanel-$index",
-  //                         transition: TransitionType.fadeIn,
-  //                       );
-  //                     },
-  //                   );
-  //                 },
-  //                 childCount: snapshot.data.length,
-  //               ),
-  //             );
-  //             return null;
-  // }
-  //           ),
+          backgroundColor: Colors.transparent,
+          key: _scaffoldKey,
+          extendBody: true,
+          body: Stack(
+            children: <Widget>[
 
-            _buildCameraPreview(),
-            Positioned(
-              top: 24.0,
-              left: 12.0,
-              child: IconButton(
-                icon: Icon(
-                  Icons.switch_camera,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  _onCameraSwitch();
-                },
-              ),
-            ),
-            Positioned(
-              top: 24.0,
-              right: 12.0,
-              child: IconButton(
-                icon: Icon(
-                  Icons.close,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
-                  );
-                },
-              ),
-            ),
 
-             Padding(
-               padding: EdgeInsets.only(top: 24.0),
-               child: Align(
-                 alignment: Alignment.topCenter,
-                 child: IconButton(
+              _buildCameraPreview(),
+              Positioned(
+                top: 24.0,
+                left: 12.0,
+                child: IconButton(
                   icon: Icon(
-                    (flashOn) ? Icons.flash_on : Icons.flash_off,
+                    Icons.switch_camera,
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    setState(() {
-                      flashOn = !flashOn;
-                    });
-
-                    // setState(() {
-                    //   flashOn = !flashOn;
-                    // });
-                    // if (!flashOn) {
-                    //   //Lamp.turnOff();
-                    //   TorchCompat.turnOff();
-                    // } else {
-                    //   TorchCompat.turnOn();
-                    //   //Lamp.turnOn();
-                    // }
+                    _onCameraSwitch();
                   },
-                  //onPressed: () => TorchCompat.turnOff(),
-            ),
-               ),
-             ),
-
-
-
-
-
-            if (_isRecordingMode)
+                ),
+              ),
               Positioned(
-                left: 0,
-                right: 0,
-                top: 32.0,
-                child: VideoTimer(
-                  key: _timerKey,
+                top: 24.0,
+                right: 12.0,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+                    );
+                  },
                 ),
               ),
 
-          ],
-        ),
+              Padding(
+                padding: EdgeInsets.only(top: 24.0),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: IconButton(
+                    icon: Icon(
+                      (flashOn) ? Icons.flash_on : Icons.flash_off,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        flashOn = !flashOn;
+                      });
 
-        bottomNavigationBar: _buildBottomNavigationBar(),
+                      // setState(() {
+                      //   flashOn = !flashOn;
+                      // });
+                      // if (!flashOn) {
+                      //   //Lamp.turnOff();
+                      //   TorchCompat.turnOff();
+                      // } else {
+                      //   TorchCompat.turnOn();
+                      //   //Lamp.turnOn();
+                      // }
+                    },
+                    //onPressed: () => TorchCompat.turnOff(),
+                  ),
+                ),
+              ),
+
+
+
+
+
+              if (_isRecordingMode)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 32.0,
+                  child: VideoTimer(
+                    key: _timerKey,
+                  ),
+                ),
+
+            ],
+          ),
+
+          bottomNavigationBar: _buildBottomNavigationBar(),
+        ),
       ),
     );
   }
@@ -439,57 +447,6 @@ class CameraScreenState extends State<CameraScreen>
     );
   }
 
-//  Widget _gallerygrid() {
-//    return SingleChildScrollView(
-//      child: Padding(
-//        padding: const EdgeInsets.only(top: 500.0),
-//        child: Container(
-//          color: Colors.purple,
-//          height: 100.0,
-//          width: double.infinity,
-//          child: Row(
-//            children: [
-//              Container(
-//                height: 100.0,
-//                width: double.infinity,
-//                child: FutureBuilder<List<String>>(
-//                    builder: (BuildContext context,
-//                        AsyncSnapshot<List<String>> snapshot) {
-//                      SliverGrid(
-//                        gridDelegate:
-//                        SliverGridDelegateWithFixedCrossAxisCount(
-//                          crossAxisCount: 3,
-//                          mainAxisSpacing: 2.0,
-//                          crossAxisSpacing: 2.0,
-//                        ),
-//                        delegate: SliverChildBuilderDelegate(
-//                              (context, index) {
-//                            return GalleryItemThumbnail(
-//                              heroId: 'itemPanel-$index',
-//                              height: 150,
-//                              resource: snapshot.data[index],
-//                              onTap: () {
-//                                Application.router.navigateTo(
-//                                  context,
-//                                  "/edit/image?resource=${Uri.encodeComponent(snapshot.data[index])}&id=itemPanel-$index",
-//                                  transition: TransitionType.fadeIn,
-//                                );
-//                              },
-//                            );
-//                          },
-//                          childCount: snapshot.data.length,
-//                        ),
-//                      );
-//                      return null;
-//                    }
-//                ),
-//              ),
-//            ],
-//          ),
-//        ),
-//      ),
-//    );
-//  }
 
   Widget _buildBottomNavigationBar() {
     return Container(
@@ -507,98 +464,78 @@ class CameraScreenState extends State<CameraScreen>
                   icon: Icon(FontAwesomeIcons.photoVideo,
                     color: Colors.white60,), onPressed:
                   (){
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(builder: (context) => pickImage(),));
                 pickImage();
                 if (upload == true){
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
                 }else{
-                  return null;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CameraS(),));
                 }
               }
 
               ),
 
-
-//              FutureBuilder(
-//                future: getLastImage(),
-//                builder: (context, snapshot) {
-//                  if (snapshot.data == null) {
-//                    return Container(
-//                      width: 40.0,
-//                      height: 40.0,
-//                    );
-//                  }
-//                  return GestureDetector(
-//                    onTap: () => Navigator.push(
-//                      context,
-//                      MaterialPageRoute(
-//                        builder: (context) => Gallery(),
-//                      ),
-//                    ),
-//                    child: Container(
-//                      width: 40.0,
-//                      height: 40.0,
-//                      child: ClipRRect(
-//                        borderRadius: BorderRadius.circular(4.0),
-//                        child: Image.file(
-//                          snapshot.data,
-//                          fit: BoxFit.cover,
-//                        ),
-//                      ),
-//                    ),
-//                  );
-//                },
-//              ),
-
               FlatButton(
                 color: Colors.transparent,
-              onPressed: () async => await Lamp.flash(new Duration(seconds: 2)),
+//              onPressed: () async => await Lamp.flash(new Duration(seconds: 2)),
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 28.0,
-                    child: IconButton(
-                      icon: Icon(
-                        (_isRecordingMode)
-                            ? (_isRecording) ? Icons.stop : Icons.videocam
-                            : Icons.camera_alt,
-                        size: 28.0,
-                        color: (_isRecording) ? Colors.red : Colors.black,
-                      ),
-                      onPressed: () {
-                        if (!_isRecordingMode) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Gallery(),
-                            ),
-                          );
-                          _captureImage();
-                          if(flashOn){
-                            _turnFlash();
-                          }
-                        } else {
-                          if (_isRecording) {
-                            stopVideoRecording();
-                          } else {
-                            startVideoRecording();
-                          }
-                        }
-                      },
+                  child: IconButton(
+                    highlightColor: Colors.transparent,
+                    icon: Icon(
+                      (_isRecordingMode)
+                          ? (_isRecording) ? Icons.stop : Icons.videocam
+                          : Icons.camera_alt,
+                      size: 28.0,
+                      color: (_isRecording) ? Colors.red : Colors.black,
                     ),
+                    onPressed: () {
+                      if (!_isRecordingMode) {
+                        print("alam");
+                        print(cam);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Gallery(filePath: currentCityController.text,cam:cam),
+                          ),
+                        );
+                        _captureImage();
+                        if(flashOn){
+                          print("dhjfh");
+                        }
+                      } else {
+                        if (_isRecording) {
+                          stopVideoRecording();
+                        } else {
+                          startVideoRecording();
+                        }
+                      }
+                    },
+                  ),
 
                 ),
               ),
               IconButton(
                 icon: Icon(
-                  (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-                  color: Colors.white,
+                  Icons.camera_alt,color: Colors.transparent,
                 ),
-                onPressed: () {
-                  setState(() {
-                    _isRecordingMode = !_isRecordingMode;
-                  });
-                },
+                onPressed: (){},
+                // icon: Icon(
+                //   (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
+                //   color: Colors.white,
+                // ),
+                // onPressed: () {
+                //   setState(() {
+                //     _isRecordingMode = !_isRecordingMode;
+                //   });
+                // },
               ),
             ],
           ),
@@ -607,18 +544,18 @@ class CameraScreenState extends State<CameraScreen>
     );
   }
 
-  Future _turnFlash() async {
-    bool hasTorch = await Torch.hasTorch;
-    if(hasTorch){
-      flashOn ? Torch.turnOn() : Torch.turnOff();
-      var f = await Torch.hasTorch;
-      Torch.flash(Duration(milliseconds: 300));
-      setState((){
-        _hasFlash = f;
-        //flashOn = !flashOn;
-      });
-    }
-  }
+//  Future _turnFlash() async {
+//    bool hasTorch = await Torch.hasTorch;
+//    if(hasTorch){
+//      (flashOn || cam!=null) ? Torch.turnOn() : Torch.turnOff();
+//      var f = await Torch.hasTorch;
+//      Torch.flash(Duration(milliseconds: 300));
+//      setState((){
+//        _hasFlash = f;
+//        //flashOn = !flashOn;
+//      });
+//    }
+//  }
 
   Future<FileSystemEntity> getLastImage() async {
     final Directory extDir = await getApplicationDocumentsDirectory();
@@ -634,19 +571,30 @@ class CameraScreenState extends State<CameraScreen>
     if (extension == '.jpeg') {
       return lastFile;
     } else {
-      String thumb = await Thumbnails.getThumbnail(
-          videoFile: lastFile.path, imageType: ThumbFormat.PNG, quality: 30);
-      return File(thumb);
+//      String thumb = await Thumbnails.getThumbnail(
+//          videoFile: lastFile.path, imageType: ThumbFormat.PNG, quality: 100);
+//      return File(thumb);
+    print("dfdf");
     }
   }
 
   Future<void> _onCameraSwitch() async {
-    final CameraDescription cameraDescription =
-        (_controller.description == _cameras[0]) ? _cameras[1] : _cameras[0];
+    //final CameraDescription cameraDescription =
+    if(cam == 0){
+      setState(() {
+        cam = 1;
+      });
+    }else if(cam == 1){
+      setState(() {
+        cam = 0;
+      });
+    };
+    final CameraDescription cameraDescription = _cameras[cam];
+    //(_controller.description == _cameras[0]) ? _cameras[1] : _cameras[0];
     if (_controller != null) {
       await _controller.dispose();
     }
-    _controller = CameraController(cameraDescription, ResolutionPreset.medium);
+    _controller = CameraController(cameraDescription, ResolutionPreset.ultraHigh);
     _controller.addListener(() {
       if (mounted) setState(() {});
       if (_controller.value.hasError) {
@@ -679,7 +627,7 @@ class CameraScreenState extends State<CameraScreen>
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Gallery()),
+            builder: (context) => Gallery(filePath: filePath,cam: cam,)),
       );
 
     }

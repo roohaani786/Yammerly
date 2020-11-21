@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/Login/components/background.dart';
+import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Signup/components/or_divider.dart';
 import 'package:techstagram/Signup/components/social_icon.dart';
 import 'package:techstagram/Signup/signup_screen.dart';
@@ -15,7 +16,6 @@ import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:http/http.dart';
 import '../../constants.dart';
 import '../../forgotpassword.dart';
 
@@ -24,7 +24,7 @@ class Body extends StatefulWidget {
 
   const Body({
     Key key,
-    this.icon = Icons.email,
+    this.icon = FontAwesomeIcons.lockOpen,
   }) : super(key: key);
 
   @override
@@ -33,14 +33,18 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   bool _obscureText = true;
+  bool _obscureText1 = true;
+  bool _obscureText2 = true;
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   TextEditingController emailInputController;
-  TextEditingController pwdInputController;
-  bool isUserSignedIn = false;
+  TextEditingController ppwdInputController,pwdInputController,newpwdInputController,CnewpwdInputController;
+  bool isUserSignedIn = true;
 
   final FocusNode _email = FocusNode();
   final FocusNode _pwd = FocusNode();
+  final FocusNode _apwd = FocusNode();
+  final FocusNode _cpwd = FocusNode();
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   fl.FacebookLogin fbLogin = new fl.FacebookLogin();
@@ -56,63 +60,57 @@ class _BodyState extends State<Body> {
   initState() {
     emailInputController = new TextEditingController();
     pwdInputController = new TextEditingController();
+    ppwdInputController = new TextEditingController();
+    newpwdInputController = new TextEditingController();
+    CnewpwdInputController = new TextEditingController();
     super.initState();
     checkIfUserIsSignedIn();
   }
 
-  void checkIfUserIsSignedIn() async {
-    var userSignedIn = await googleSignIn.isSignedIn();
-
-    setState(() {
-      isUserSignedIn = userSignedIn;
-    });
+  @override
+  void dispose() {
+    newpwdInputController.dispose();
+    CnewpwdInputController.dispose();
+    ppwdInputController.dispose();
+   // _newPasswordController.dispose();
+   // _repeatPasswordController.dispose();
+    super.dispose();
   }
 
-//  Future<FirebaseUser> _handleSignIn() async {
-//    FirebaseUser user;
-//    bool userSignedIn = await googleSignIn.isSignedIn();
-//
-//    setState(() {
-//      isUserSignedIn = userSignedIn;
-//    });
-//
-//    if (isUserSignedIn) {
-//      user = await auth.currentUser();
-//    } else {
-//      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
-//      final GoogleSignInAuthentication googleAuth =
-//      await googleUser.authentication;
-//
-//      final AuthCredential credential = GoogleAuthProvider.getCredential(
-//        accessToken: googleAuth.accessToken,
-//        idToken: googleAuth.idToken,
-//      );
-//
-//      user = (await auth.signInWithCredential(credential)).user;
-//      userSignedIn = await googleSignIn.isSignedIn();
-//      setState(() {
-//        isUserSignedIn = userSignedIn;
-//      });
-//    }
-//
-//    return user;
-//  }
+  void _changePassword(String password) async{
+    print(password);
+    //Create an instance of the current user.
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
-  void onGoogleSignIn(BuildContext context) async {
-    FirebaseUser user = await authService.hellogoogleSignIn();
-    print(user);
-    var userSignedIn = await Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage()),
-          (Route<dynamic> route) => false,
-    );
+    //Pass in the password to updatePassword.
+    user.updatePassword(password).then((_){
+      FirebaseAuth.instance
+          .signOut()
+          .then((result) =>
+          Navigator.push(context, new MaterialPageRoute(
+              builder: (context) =>
+              new LoginScreen())
+          ));
+      print("Succesfull changed password");
+      return PasswordChanged();
+    }).catchError((error){
+      print("Password can't be changed" + error.toString());
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
 
-    setState(() {
-      isUserSignedIn = userSignedIn == null ? true : false;
+            return AlertDialog(
+              content: Text(
+                '$error',
+                style: TextStyle(color: Colors.black),
+              ),
+              title: Text("Error !", style:
+              TextStyle(color: Colors.red),),
+            );
+          });
+      //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
     });
   }
-
-  bool errordikhaoL = false;
 
   String emailValidator(String value) {
     Pattern pattern =
@@ -130,65 +128,48 @@ class _BodyState extends State<Body> {
     }
   }
 
-  //twitter Login method
+  void checkIfUserIsSignedIn() async {
+    var userSignedIn = await googleSignIn.isSignedIn();
 
-//  Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
-//    FirebaseUser currentUser;
-//    var twitterLogin = new TwitterLogin(
-//      consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
-//      consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
-//    );
-//
-//    final TwitterLoginResult result = await twitterLogin.authorize();
-//
-//    switch (result.status) {
-//      case TwitterLoginStatus.loggedIn:
-//        var session = result.session;
-//        final AuthCredential credential = TwitterAuthProvider.getCredential(
-//            authToken: session.token, authTokenSecret: session.secret);
-//
-//        final AuthResult user = await auth.signInWithCredential(credential);
-//        assert(user.user.email == null);
-//        assert(user.user.displayName != null);
-//        assert(!user.user.isAnonymous);
-//        assert(await user.user.getIdToken() != null);
-//        currentUser = await auth.currentUser();
-//        assert(user.user.uid == currentUser.uid);
-//        Navigator.pushAndRemoveUntil(
-//          context,
-//          MaterialPageRoute(builder: (context) => HomePage()),
-//              (Route<dynamic> route) => false,
-//        );
-//        return currentUser;
-//
-//        break;
-//      case TwitterLoginStatus.cancelledByUser:
-//        break;
-//      case TwitterLoginStatus.error:
-//        break;
-//    }
-//  }
+    setState(() {
+      isUserSignedIn = userSignedIn;
+    });
+  }
 
-  Future<String> signIn(String email, String password) async {
+
+  bool errordikhaoL = false;
+  bool login = false;
+
+
+  Future<String> signIn(String email,String password,String Npassword) async {
     FirebaseUser user;
     String errorMessage;
 
-    this.setState(() {
-      isLoading = true;
-    });
+    // this.setState(() {
+    //   isLoading = true;
+    // });
 
     try {
       if (_loginFormKey.currentState.validate()) {
         AuthResult result = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
             email: emailInputController.text,
-            password: pwdInputController.text);
+            password: ppwdInputController.text);
         user = result.user;
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-              (Route<dynamic> route) => false,
-        );
+        this.setState(() {
+          login = true;
+        });
+
+        if(login){
+          _changePassword(newpwdInputController.text);
+        }else{
+          print("error hai bro");
+        }
+        // Navigator.pushAndRemoveUntil(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => HomePage()),
+        //       (Route<dynamic> route) => false,
+        // );
       }
     } catch (error) {
       switch (error.code) {
@@ -278,14 +259,12 @@ class _BodyState extends State<Body> {
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
 
-
-          AuthService().checkuserexists(user.uid, user, user.displayName);
+          authService.updateUserData(user);
           loading.add(false);
 
           print("signed in " + user.displayName);
           return user;
         } catch (e) {
-
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -326,6 +305,16 @@ class _BodyState extends State<Body> {
       _obscureText = !_obscureText;
     });
   }
+  void _toggle1() {
+    setState(() {
+      _obscureText1 = !_obscureText1;
+    });
+  }
+  void _toggle2() {
+    setState(() {
+      _obscureText2 = !_obscureText2;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -333,9 +322,19 @@ class _BodyState extends State<Body> {
     Size size = MediaQuery
         .of(context)
         .size;
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple,), onPressed:
+          (){
+            Navigator.pop(context);
+          }
+              ),
+          title: Text("Change Password",style: TextStyle(
+            color: Colors.deepPurple,
+          ),),
+        ),
         body: ResponsiveLayoutBuilder(
           builder: (context, size) =>
               Background(
@@ -350,6 +349,7 @@ class _BodyState extends State<Body> {
                           height: 200.0,
                         ),
                         SizedBox(height: 10.0),
+
                         Padding(
                           padding: const EdgeInsets.only(
                               right: 10.0, top: 30.0, bottom: 0.0, left: 10.0),
@@ -411,6 +411,8 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                         ),
+
+
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Container(
@@ -460,16 +462,20 @@ class _BodyState extends State<Body> {
                                         ),
                                       ),
                                       icon: Icon(
-                                        Icons.lock,
-                                        color: kPrimaryColor,
+                                        FontAwesomeIcons.lock,
+                                        color: Colors.brown.shade300,
                                       ),
                                       border: InputBorder.none,
                                       fillColor: Colors.deepPurple.shade50,
                                       errorText:
                                       loginfail ? 'password not match' : null,
                                       filled: true,
-                                      hintText: "Password"),
-                                  controller: pwdInputController,
+                                      hintText: "Current Password",
+                                    // errorText: checkCurrentPasswordValid
+                                    //     ? null
+                                    //     : "Please double check your current password",
+                                  ),
+                                  controller: ppwdInputController,
                                   obscureText: _obscureText,
                                   focusNode: _pwd,
                                   onFieldSubmitted: (value) {
@@ -485,47 +491,186 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                         ),
-                        RoundedButton(
-                            text: "LOGIN",
-                            press: () {
-//                              if (_loginFormKey.currentState.validate()) {
-//                                FirebaseAuth.instance
-//                                    .signInWithEmailAndPassword(
-//                                    email: emailInputController.text,
-//                                    password: pwdInputController.text)
-//                                    .then((authResult) =>
-//                                    Firestore.instance
-//                                        .collection("users")
-//                                        .document(authResult.user.uid)
-//                                        .get()
-//                                        .then((DocumentSnapshot result) =>
-//                                        Navigator.pushReplacement(
-//                                            context,
-//                                            MaterialPageRoute(
-//                                                builder: (context) =>
-//                                                    HomePage(
-//                                                      title: "hello",
-//                                                      uid: authResult.user.uid,
-//                                                    ))))
-//                                        .catchError((err) => print(err)))
-//                                    .catchError((err) => print(err));
-//                              }
-                              signIn(emailInputController.text,
-                                  pwdInputController.text);
-                            }),
-                        SizedBox(height: 20.0),
-                        AlreadyHaveAnAccountCheck(
-                          press: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return SignUpScreen();
-                                },
+
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Container(
+                            height: 50.0,
+                            width: 250.0,
+                            child: new Theme(
+                              data: new ThemeData(
+                                primaryColor: Colors.deepPurple,
                               ),
-                            );
-                          },
+                              child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                padding: EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+//                              width: size.width * 0.8,
+                                decoration: BoxDecoration(
+                                  color: kPrimaryLightColor,
+                                  borderRadius: BorderRadius.circular(29),
+//                                  border: Border.all(
+//                                    color: (errordikhaoL == true)
+//                                        ? Colors.red
+//                                        : kPrimaryLightColor,
+//                                  ),
+                                ),
+                                child: TextFormField(
+                                  //enableInteractiveSelection: false,
+                                  cursorColor: kPrimaryColor,
+
+                                  decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.only(
+                                          left: 0, right: 3, top: 6, bottom: 12),
+                                      errorBorder: OutlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.red)),
+                                      suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          _toggle1();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 5.0),
+                                          child: new Icon(
+                                            _obscureText1
+                                                ? FontAwesomeIcons.eyeSlash
+                                                : FontAwesomeIcons.eye,
+                                            size: 15.0,
+                                            color: Colors.deepPurple,
+                                          ),
+                                        ),
+                                      ),
+                                      icon: Icon(
+                                        FontAwesomeIcons.lock,
+                                        color: Colors.brown.shade800,
+                                      ),
+                                      border: InputBorder.none,
+                                      fillColor: Colors.deepPurple.shade50,
+                                      errorText:
+                                      loginfail ? 'password not match' : null,
+                                      filled: true,
+                                      hintText: "New Password"),
+                                  controller: newpwdInputController,
+                                  obscureText: _obscureText1,
+                                  focusNode: _apwd,
+                                  onFieldSubmitted: (value) {
+                                    _apwd.unfocus();
+                                    RoundedButton;
+                                  },
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      height: 1.5,
+                                      color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Container(
+                            height: 50.0,
+                            width: 250.0,
+                            child: new Theme(
+                              data: new ThemeData(
+                                primaryColor: Colors.deepPurple,
+                              ),
+                              child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                padding: EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+//                              width: size.width * 0.8,
+                                decoration: BoxDecoration(
+                                  color: kPrimaryLightColor,
+                                  borderRadius: BorderRadius.circular(29),
+//                                  border: Border.all(
+//                                    color: (errordikhaoL == true)
+//                                        ? Colors.red
+//                                        : kPrimaryLightColor,
+//                                  ),
+                                ),
+                                child: TextFormField(
+                                  //enableInteractiveSelection: false,
+                                  cursorColor: kPrimaryColor,
+
+                                  decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.only(
+                                          left: 0, right: 3, top: 6, bottom: 12),
+                                      errorBorder: OutlineInputBorder(
+                                          borderSide:
+                                          BorderSide(color: Colors.red)),
+                                      suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          _toggle2();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 5.0),
+                                          child: new Icon(
+                                            _obscureText2
+                                                ? FontAwesomeIcons.eyeSlash
+                                                : FontAwesomeIcons.eye,
+                                            size: 15.0,
+                                            color: Colors.deepPurple,
+                                          ),
+                                        ),
+                                      ),
+                                      icon: Icon(
+                                        FontAwesomeIcons.lock,
+                                        color: Colors.brown.shade800,
+                                      ),
+                                      border: InputBorder.none,
+                                      fillColor: Colors.deepPurple.shade50,
+                                      errorText:
+                                      loginfail ? 'password not match' : null,
+                                      filled: true,
+                                      hintText: "Confirm New Password"),
+                                  controller: CnewpwdInputController,
+                                  obscureText: _obscureText2,
+                                  focusNode: _cpwd,
+                                  onFieldSubmitted: (value) {
+                                    _cpwd.unfocus();
+                                    RoundedButton;
+                                  },
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      height: 1.5,
+                                      color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: RoundedButton(
+                              text: "Change Password",
+                              press: () {
+                                if(newpwdInputController.text == CnewpwdInputController.text){
+                                  signIn(emailInputController.text,
+                                      ppwdInputController.text,newpwdInputController.text);
+                                }else{
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+
+                                        return AlertDialog(
+                                          content: Text(
+                                            'Password does not Match !',
+                                            style: TextStyle(color: Colors.black),
+                                          ),
+                                          title: Text("Error !", style:
+                                          TextStyle(color: Colors.red),),
+                                        );
+                                      });
+                                }
+
+
+//
+                              }),
+                        ),
+                        SizedBox(height: 15.0),
+
                         Padding(
                           padding: EdgeInsets.only(right: 0.0, top: 10.0),
                           child: Container(
@@ -546,73 +691,7 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                         ),
-                        OrDivider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SocalIcon(
-                                iconSrc: "assets/icons/google-icon.svg",
-                                press: () {
-//                                  signInWithGoogle(success).whenComplete(() {
-//                           if (success == true)
-//                                    Navigator.of(context).push(
-//                                      MaterialPageRoute(
-//                                        builder: (context) {
-//                                          return HomePage(
-////                                    title: "Welcome",
-//                                          );
-//                                        },
-//                                      ),
-//                                    );
-//                           else
-//                             Navigator.pop(
-//                               context
-//                             );
-//
-//                                  });
 
-                                  onGoogleSignIn(context);
-                                }),
-                            SocalIcon(
-                              iconSrc: "assets/icons/facebook.svg",
-                              press: () {
-                                facebookLogin(context).then(
-                                      (user) {
-                                    print('Logged in successfully.');
-
-                                    facebooksuccess ? Navigator
-                                        .pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                HomePage(
-                                                  title: "huhu",
-                                                  uid: "h",
-                                                )),
-                                            (_) => false) : Navigator.pushNamed(
-                                        context, "/Login");
-
-                                    setState(() {
-                                      isFacebookLoginIn = true;
-                                      successMessage =
-                                      'Logged in successfully.\nEmail : ${user
-                                          .email}\nYou can now navigate to Home Page.';
-                                    });
-                                  },
-                                );
-                              },
-                            ),
-                            SocalIcon(
-                              iconSrc: "assets/icons/twitter.svg",
-                              press: () {
-                                print("hello");
-//                                loginWithTwitter(context).then((user) {
-//                                  print('Logged in successfully.');
-//                                });
-                              },
-                            ),
-                          ],
-                        )
                       ],
                     ),
                   ),
@@ -626,6 +705,17 @@ class _BodyState extends State<Body> {
                 ),
               ),
         ),
+      );
+  }
+}
+
+class PasswordChanged extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("success"),
       ),
     );
   }

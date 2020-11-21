@@ -52,7 +52,8 @@ class _ForgotScreen extends State<ForgotScreen> {
                     Text(
                       'We will mail you a link ... Please click on that link to reset your password',
                       style:
-                          TextStyle(color: Color(0xFF6F35A5), fontSize: 20.0),
+                          TextStyle(color: Color(0xFF6F35A5), fontSize: 15.0,
+                          fontFamily: "Quicksand-Bold"),
                     ),
                     Theme(
                       data: ThemeData(hintColor: Colors.blue),
@@ -114,13 +115,14 @@ class _ForgotScreen extends State<ForgotScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
-                          color: Color(0xFF6F35A5),
+                          color: Colors.purple,
                           child: Text(
-                            "Send Mail",
+                            "Send email",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 20.0),
+                                fontSize: 17.0,
+                                fontFamily: "Quicksand-Bold"),
                           ),
                           padding: EdgeInsets.all(10.0),
                         ))

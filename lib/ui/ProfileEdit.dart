@@ -11,12 +11,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:string_validator/string_validator.dart';
 import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
+import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:image/image.dart' as ImD;
+//import 'package:fluttertoast/fluttertoast.dart';
 
 import '../constants3.dart';
 
@@ -32,6 +35,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isLoading = true;
   bool isEditable = true;
   String loadingMessage = "Loading Profile Data";
@@ -134,6 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     });
     uploadFile();
+    return ProfilePage();
     print("Done..");
   }
 
@@ -169,15 +174,19 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
   compressPhoto() async {
+    setState(() {
+      isChanged = true;
+    });
     final directory = await getTemporaryDirectory();
     final path = directory.path;
     ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
     final compressedImage = File('$path/img_$uidController.jpg')
       ..writeAsBytesSync(
-        ImD.encodeJpg(mImageFile, quality: 60),
+        ImD.encodeJpg(mImageFile, quality: 30),
       );
     setState(() {
       _image = compressedImage;
+
     });
   }
 
@@ -189,12 +198,22 @@ class _ProfilePageState extends State<ProfilePage> {
     postReference.document(currUser.uid).updateData({
       "photoURL": photoUrlController.text,
     });
+
+
+    setState(() {
+      isChanged = false;
+    });
+
     print(photoUrlController.text);
+    return ProfilePage();
   }
 
   Future uploadFile() async {
 
-    await compressPhoto();
+   if(_image!=null){
+     await compressPhoto();
+   }
+
 
     StorageReference storageReference =
 
@@ -210,8 +229,9 @@ class _ProfilePageState extends State<ProfilePage> {
 //        _uploadedFileURL = fileURL;
 //        photoUrlController.text = _uploadedFileURL;
       photoUrlController.text = fileURL;
-        isChanged = true;
+
       });
+//      DatabaseService().updatephotoURL(uidController.text,photoUrlController.text);
     });
     savePostInfoToFirestore(photoUrlController.text);
   }
@@ -235,6 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     });
     uploadFile();
+    return ProfilePage();
     print("Done..");
 
   }
@@ -255,6 +276,70 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
 bool isChanged = false;
+  String relationstring = "Select Relationship";
+  String genderstring = "Select Gender";
+
+  String _male = "male";
+  String _female = "female";
+  String _other = "other";
+  String _value;
+  bool tickvalue = false;
+  int check;
+  void _handleRadioValueChange1(String value) {
+    setState(() {
+      _value = value;
+      if(_value=="Male"){
+        setState(() {
+          check = 0;
+        });
+      }else if(_value=="Female"){
+        setState(() {
+          check = 1;
+        });
+      }else if(_value == "other"){
+        setState(() {
+          check = 2;
+          print(tickvalue);
+          tickvalue = true;
+        });
+      }
+      else{
+        setState(() {
+          tickvalue = false;
+        });
+      }
+
+      switch (check) {
+        case 0:
+          genderController.text = _male;
+          //correctScore++;
+          break;
+        case 1:
+          genderController.text = _female;
+          break;
+        case 2:
+          genderController.text = _other;
+          break;
+        default:
+          genderController.text = null;
+      }
+    });
+  }
+
+
+  bool firstnameE = false;
+  bool lastnameE = false;
+  bool phonenumberE = false;
+  bool emailE = false;
+  bool bioE = false;
+  bool websiteE = false;
+  bool educationE = false;
+  bool currentcityE = false;
+  bool hometownE = false;
+  String valueX = "Select Gender";
+
+
+
 
 
 
@@ -274,8 +359,10 @@ bool isChanged = false;
         actions: [
           IconButton(
           onPressed: () async {
-    if (!isEditable)
+            if(_formKey.currentState.validate()) {
+    if (!isEditable) {
     setState(() => isEditable = true);
+    }
     else {
     bool isChanged = true;
     if (docSnap.data["fname"].toString().trim() !=
@@ -295,61 +382,62 @@ bool isChanged = false;
     print("Phone Number Changed");
     isChanged = true;
     } else if (docSnap.data["bio"].toString().trim() !=
-        bioController.text.trim()) {
-      print("Bio Changed");
-      isChanged = true;
-    }   else if (docSnap.data["gender"].toString().trim() !=
-        genderController.text.trim()) {
-      print("Gender Changed");
-      isChanged = true;
+    bioController.text.trim()) {
+    print("Bio Changed");
+    isChanged = true;
+    } else if (docSnap.data["gender"].toString().trim() !=
+    genderController.text.trim()) {
+    print("Gender Changed");
+    isChanged = true;
     }
     else if (docSnap.data["link"].toString().trim() !=
-        linkController.text.trim()) {
-      print("Link Changed");
-      isChanged = true;
+    linkController.text.trim()) {
+    print("Link Changed");
+    isChanged = true;
     }
 
 
     else if (docSnap.data["displayName"].toString().trim() !=
-        displayNameController.text.trim()) {
-      print("displayName Changed");
-      isChanged = true;
+    displayNameController.text.trim()) {
+    print("displayName Changed");
+    isChanged = true;
     }
 
     else if (docSnap.data["photoURL"].toString().trim() !=
-        photoUrlController.text.trim()) {
-      print("photoUrl Changed");
-      isChanged = true;
+    photoUrlController.text.trim()) {
+//      DatabaseService().updatephotoURL(uidController.text,photoUrlController.text);
+    print("photoUrl Changed");
+    isChanged = true;
     } //displayName
 
     else if (docSnap.data["work"].toString().trim() !=
-        workController.text.trim()) {
-      print("work Changed");
-      isChanged = true;
+    workController.text.trim()) {
+    print("work Changed");
+    isChanged = true;
     }//work
 
     else if (docSnap.data["education"].toString().trim() !=
-        educationController.text.trim()) {
-      print("education Changed");
-      isChanged = true;
+    educationController.text.trim() && educationController.text.length > 10.0) {
+    print("education Changed");
+    isChanged = true;
     }//education
 
     else if (docSnap.data["currentCity"].toString().trim() !=
-        currentCityController.text.trim()) {
-      print("currentCity Changed");
-      isChanged = true;
+    currentCityController.text.trim()) {
+    print("currentCity Changed");
+    isChanged = true;
     }//currentCity
 
     else if (docSnap.data["homeTown"].toString().trim() !=
-        homeTownController.text.trim()) {
-      print("homeTown Changed");
-      isChanged = true;
+    homeTownController.text.trim()) {
+    print("homeTown Changed");
+    isChanged = true;
     }//homeTown
 
     else if (docSnap.data["relationship"].toString().trim() !=
-        relationshipController.text.trim()) {
-      print("relationship Changed");
-      isChanged = true;
+    relationshipController.text.trim()) {
+    print("relationship Changed");
+    isChanged = true;
     }
 
 //    else if (docSnap.data["photoURL"].toString().trim() !=
@@ -360,10 +448,55 @@ bool isChanged = false;
 
 
     else if (docSnap.data["pincode"].toString().trim() !=
-        pincodeController.text.trim()) {
-      print("Pincode Changed");
-      isChanged = true;
+    pincodeController.text.trim()) {
+    print("Pincode Changed");
+    isChanged = true;
     }//relationship
+
+    // else if (firstNameController.text!="" && firstNameController.text.length < 10.0){
+    //   isChanged = true;
+    //   firstnameE = true;
+    // }
+    //
+    // else if (lastNameController.text != "" && lastNameController.text.length <10){
+    //   isChanged = true;
+    //   lastnameE = true;
+    // }
+    //
+    // else if (phoneNumberController.text != "" && phoneNumberController.text.length == 10){
+    //   isChanged = true;
+    //   phonenumberE = true;
+    // }
+    //
+    // else if (emailController.text != "" && emailController.text.length < 25){
+    //   isChanged = true;
+    //   emailE = true;
+    // }
+    //
+    // else if (bioController.text.length < 50.0){
+    //   isChanged = true;
+    //   bioE = true;
+    // }
+    //
+    // else if (linkController.text.length < 25.0){
+    //   isChanged = true;
+    //   websiteE = true;
+    // }
+    //
+    // else if(educationController.text.length < 10.0){
+    //   isChanged = true;
+    //   educationE = true;
+    // }
+    //
+    // else if(currentCityController.text.length < 10.0){
+    //   isChanged = true;
+    //   currentcityE = true;
+    // }
+    //
+    // else if (homeTownController.text.length < 15.0){
+    //   isChanged = true;
+    //   hometownE = true;
+    // }
 
     if (isChanged) {
     String snackbarContent = "";
@@ -390,10 +523,12 @@ bool isChanged = false;
         .collection("users")
         .document(currUser.uid)
         .setData(data, merge: true);
+//    DatabaseService().updatePostdisplayName(uidController.text,displayNameController.text);
+//    DatabaseService().updatephotoURL(displayNameController.text,photoUrlController.text);
     snackbarContent = "Profile Updated";
     if(snackbarContent == "Profile Updated"){
 
-      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(initialindexg: 4)));
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(initialindexg: 4)));
     }
     try {
     await currUser.updateEmail(data["email"]);
@@ -426,6 +561,9 @@ bool isChanged = false;
     setState(() => isEditable = false);
     }
     }
+    }else{
+              print("error hai bro");
+            }
 
     }
             ,icon: Icon(Icons.done,
@@ -481,7 +619,7 @@ bool isChanged = false;
     showDialog<void>(
     context: context,// THIS WAS MISSING// user must tap button!
     builder: (BuildContext context) {
-    return (isChanged==false)?AlertDialog(
+    return AlertDialog(
     title: Text('Select image from :-',style: TextStyle(
       fontSize: 15.0,
     ),),
@@ -490,11 +628,12 @@ bool isChanged = false;
     children: <Widget>[
     GestureDetector(
       onTap: (){
-        _scaffoldKey.currentState.removeCurrentSnackBar();
-        setState(() {
-          isChanged = true;
-        });
+//        _scaffoldKey.currentState.removeCurrentSnackBar();
+//        setState(() {
+//          isChanged = true;
+//        });
         pickImagefromCamera();
+        Navigator.of(context, rootNavigator: true).pop(context);
       },
       child: Row(
         children: [
@@ -511,6 +650,7 @@ bool isChanged = false;
       child: GestureDetector(
         onTap: (){
           pickImage();
+          Navigator.of(context, rootNavigator: true).pop(context);
         },
         child: Row(
             children: [
@@ -526,14 +666,13 @@ bool isChanged = false;
     ],
     ),
     ),
-    ):Container();
+    );
 
                       });
                       },
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundImage: NetworkImage(photoUrlController.text),
-
+                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
                         backgroundColor: Colors.transparent,
                       ),
 
@@ -542,262 +681,408 @@ bool isChanged = false;
                       height: 16,
                     ),
 
+                    Form(
+                      autovalidate: true,
+                      key: _formKey,
+                      child: Column(children: <Widget>[
 
-
-                    TextFormField(
-                      controller: firstNameController,
-                      enabled: isEditable,
-                      decoration: InputDecoration(
-                          labelText: "First Name",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
+                        TextFormField(
+                          controller: displayNameController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 20.0){
+                              return 'Display Name should not be greater than 20 words';
+                            }else if(value.length ==0){
+                              return 'Display Name should not be null';
+                            }else if(!isLowercase(value)){
+                              return 'Display Name must be in lower case';
+                            }
+                          },
+                          keyboardType: TextInputType.text,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: "Display Name",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
                                   BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    TextFormField(
-                      controller: lastNameController,
-                      enabled: isEditable,
-                      decoration: InputDecoration(
-                          labelText: "Last Name",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
+                        ),
+
+                        SizedBox(
+                          height: 16.0,
+                        ),
+
+                        TextFormField(
+                          controller: firstNameController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 15.0){
+                              return 'First Name should not be greater the 15 words';
+                            }else if(value.length == 0){
+                              return 'First Name should not be null';
+                            }
+                          },
+                          decoration: InputDecoration(
+                              labelText: "First Name",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
                                   BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
+                        ),
 
-                    TextFormField(
-                      controller: phoneNumberController,
-                      enabled: isEditable,
-                      maxLength: 10,
-                      inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          labelText: "Phone Number",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
-
-                    SizedBox(
-                      height: 16,
-                    ),
-
-                    TextFormField(
-                      controller: emailController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                          labelText: "Email Id",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
+                        SizedBox(
+                          height: 16,
+                        ),
+                        TextFormField(
+                          controller: lastNameController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 15.0){
+                              return 'Last Name should not be greater then 15 words';
+                            }else if(value.length == 0){
+                              return 'Last Name should not be null';
+                            }
+                          },
+                          decoration: InputDecoration(
+                              labelText: "Last Name",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
                                   BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
+                        ),
 
-                    TextFormField(
-                      controller: bioController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                          labelText: "Bio",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    TextFormField(
-                      controller: genderController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.text,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Gender",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
+                        SizedBox(
+                          height: 16,
+                        ),
 
-                    TextFormField(
-                      controller: linkController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.text,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Link",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
+                        TextFormField(
+                          controller: phoneNumberController,
+                          enabled: isEditable,
+                          validator: (value) {
+                             if(value.length < 10.0 && value.length > 0){
+                              return 'Phone number should be of 10 digit';
+                            }else if(value.length > 10.0){
+                              return 'Phone number should be of 10 digit';
+                            }
+                          },
+                          maxLength: 10,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                              labelText: "Phone Number",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
+
+                        SizedBox(
+                          height: 16,
+                        ),
+
+                        TextFormField(
+                          controller: emailController,
+                          enabled: isEditable,
+                          validator: (value) {
+
+                            if(value.length > 30.0){
+                              return 'email should not be greater than 30 words';
+
+                            }else if(value.length ==0){
+                              return 'email should not be null';
+                            }
+                          },
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                              labelText: "Email Id",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
+
+                        SizedBox(
+                          height: 16,
+                        ),
 
 
-                    TextFormField(
-                      controller: displayNameController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.text,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Display Name",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
+                        TextFormField(
+                          controller: bioController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 50.0){
+                              return 'bio should not be greater than 50';
+                            }
+                          },
+                          keyboardType: TextInputType.text,
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                              labelText: "Bio",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
 
-                    TextFormField(
-                      controller: workController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Work",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
+                        SizedBox(
+                          height: 16.0,
+                        ),
 
-                    TextFormField(
-                      controller: educationController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Education",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
-                    ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: new Text(
+                              'Gender :',
+                              style: new TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                  color: Colors.deepPurple
+                              ),
+                            ),
+                          ),
+                        ),
 
-                    TextFormField(
-                      controller: currentCityController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Current City",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+
+                    Align(
+                      alignment: Alignment.center,
+                      child: new DropdownButton<String>(
+                        hint: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: (genderController.text == "")?Text(genderstring):Text(genderController.text),
+                        ),
+                        items: <String>['Male', 'Female','Others'].map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          genderController.text = value;
+                          setState(() {
+                            genderstring = value;
+                          });
+                        },
                       ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
                     ),
 
                     SizedBox(
-                      height: 16,
+                      height: 16.0,
                     ),
 
-                    TextFormField(
-                      controller: pincodeController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Pin Code",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: new Text(
+                          'Relationship :',
+                          style: new TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                              color: Colors.deepPurple
+                          ),
+                        ),
                       ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
                     ),
 
-                    SizedBox(
-                      height: 16,
-                    ),
-
-                    TextFormField(
-                      controller: homeTownController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Home Town",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
+                    Align(
+                      alignment: Alignment.center,
+                      child: new DropdownButton<String>(
+                        hint: Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: (relationshipController.text=="")?Text(relationstring):Text(relationshipController.text),
+                        ),
+                        items: <String>['Single', 'Engaged'].map((String value) {
+                          return new DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          relationshipController.text = value;
+                          setState(() {
+                            relationstring = value;
+                          });
+                        },
                       ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
-                    SizedBox(
-                      height: 16,
                     ),
 
-                    TextFormField(
-                      controller: relationshipController,
-                      enabled: isEditable,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: "Relationship",labelStyle: TextStyle(
-                          color: Colors.deepPurple,fontWeight: FontWeight.bold
-                      ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
+                        SizedBox(
+                          height: 16,
+                        ),
+
+                        TextFormField(
+                          controller: linkController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 20.0){
+                              return 'Website link should not be greater than 20 words';
+                            }
+                          },
+                          keyboardType: TextInputType.text,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: "Website",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
+
+                        SizedBox(
+                          height: 16,
+                        ),
+
+                        TextFormField(
+                          controller: workController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 25.0){
+                              return 'Work should not be greater than 25 words';
+                            }
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: "Work",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
+
+                        SizedBox(
+                          height: 16,
+                        ),
+
+                        TextFormField(
+                          controller: educationController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 20.0){
+                              return 'Education should not be greater then 20 words';
+                            }
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: "Education",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
+
+                        SizedBox(
+                          height: 16,
+                        ),
+
+                        TextFormField(
+                          controller: currentCityController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 15.0){
+                              return 'Current city should not be greater than 15 words';
+                            }
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: "Current City",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
+
+                        SizedBox(
+                          height: 16,
+                        ),
+
+                        TextFormField(
+                          controller: pincodeController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 6.0){
+                              return 'pin code should be of 6 digit';
+                            }
+                            // else if(value.length < 6){
+                            //   return 'pin code should be of 6 digit';
+                            // }
+                          },
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
+                          keyboardType: TextInputType.number,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: "Pin Code",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
+
+                        SizedBox(
+                          height: 16,
+                        ),
+
+                        TextFormField(
+                          controller: homeTownController,
+                          enabled: isEditable,
+                          validator: (value) {
+                            if(value.length > 15.0){
+                              return 'Home town should not be greater then 15 words';
+                            }
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: "Home Town",labelStyle: TextStyle(
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
+                        ),
 
 
-                  ],
-                ),
-              ),
-      ),
+    ],
+    ),
+    ),
+    ],
+     ),
+    ),
+    ),
     );
   }
 }
+
+
+
+

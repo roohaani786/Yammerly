@@ -1,46 +1,71 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:techstagram/components/text_field_container.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:string_validator/string_validator.dart';
+import 'package:techstagram/constants.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/services/database.dart';
+import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/ui/ProfilePage.dart';
+import 'package:image/image.dart' as ImD;
+//import 'package:fluttertoast/fluttertoast.dart';
 
-import '../constants.dart';
 
-class AboutUser extends StatefulWidget{
+
+class AboutUser extends StatefulWidget {
+  static final String pageName = "/ProfilePage";
+  //final User user;
+  String uid;
+  AboutUser({this.uid});
+  //const AboutOtherUser({this.user, Key key}) : super(key: key);
+
   @override
-  _AboutUserState createState() => _AboutUserState();
+  _AboutUserState createState() => _AboutUserState(uid: uid);
 }
 
 class _AboutUserState extends State<AboutUser> {
+
+  String uid;
+  _AboutUserState({this.uid});
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isLoading = true;
-  bool isEditable = false;
+  bool isEditable = true;
   String loadingMessage = "Loading Profile Data";
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      phoneNumberController,
+      phoneNumberController,uidController,
       bioController,genderController,linkController,photoUrlController,
       displayNameController,workController,educationController,
-      currentCityController,homeTownController,relationshipController,
-      followersController,followingController,pinCodeController,userPostsController;
-
-  Map<String, dynamic> _profile;
-  bool _loading = false;
+      currentCityController,homeTownController,relationshipController,pincodeController;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
 
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<FormState> _phoneVerificationKey = GlobalKey<FormState>();
-  TextEditingController _otpController;
-
-  AuthCredential _phoneAuthCredential;
+  Map<String, dynamic> _profile;
+  bool _loading = false;
 
   @override
-  void initState() {
+  initState() {
+    super.initState();
+
+    // Subscriptions are created here
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
     emailController = TextEditingController();
@@ -55,21 +80,17 @@ class _AboutUserState extends State<AboutUser> {
     currentCityController = TextEditingController();
     homeTownController = TextEditingController();
     relationshipController = TextEditingController();
-    followersController = TextEditingController();
-    followingController = TextEditingController();
-    pinCodeController = TextEditingController();
-    userPostsController = TextEditingController();
+    pincodeController = TextEditingController();
 
+    uidController = TextEditingController();
 
     super.initState();
-    // Subscriptions are created here
-    authService.profile.listen((state) => setState(() => _profile = state));
-
-    authService.loading.listen((state) => setState(() => _loading = state));
-
     fetchProfileData();
-
   }
+
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
 
 
 
@@ -77,13 +98,10 @@ class _AboutUserState extends State<AboutUser> {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
 
-      //var database;
-
-
 
       docSnap = await Firestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .document(uid)
           .get();
       firstNameController.text = docSnap.data["fname"];
       lastNameController.text = docSnap.data["surname"];
@@ -98,11 +116,11 @@ class _AboutUserState extends State<AboutUser> {
       educationController.text = docSnap.data["education"];
       currentCityController.text = docSnap.data["currentCity"];
       homeTownController.text = docSnap.data["homeTown"];
-      pinCodeController.text = docSnap.data["pincode"];
       relationshipController.text = docSnap.data["relationship"];
+      pincodeController.text = docSnap.data["pincode"];
 
-//      followersController.text = docSnap.data["followers"];
-//      followingController.text = docSnap.data["following"];
+      uidController.text = docSnap.data["uid"];
+
       setState(() {
         isLoading = false;
         isEditable = true;
@@ -112,614 +130,456 @@ class _AboutUserState extends State<AboutUser> {
     }
   }
 
-  bool errordikhaoN = false;
-  bool _codesent = false;
+  File profileImageFile;
 
-  String validateMobile(String value) {
-// Indian Mobile number are of 10 digit only
+  File _image;
+  String _uploadedFileURL;
 
-    if (value.length == null)
-      return null;
-    else if (value.length > 0 && value.length != 10)
-      setState(() {
-        errordikhaoN = true;
-      });
-    // return 'Mobile Number must be of 10 digit';
 
-    else
-      return null;
+
+
+
+  bool uploading = false;
+
+
+
+  compressPhoto() async {
+    setState(() {
+      isChanged = true;
+    });
+    final directory = await getTemporaryDirectory();
+    final path = directory.path;
+    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
+    final compressedImage = File('$path/img_$uidController.jpg')
+      ..writeAsBytesSync(
+        ImD.encodeJpg(mImageFile, quality: 30),
+      );
+    setState(() {
+      _image = compressedImage;
+
+    });
   }
 
-  Future<void> _submitPhoneNumber() async {
-    /// NOTE: Either append your phone number country code or add in the code itself
-    /// Since I'm in India we use "+91 " as prefix `phoneNumber`
-    String phoneNumber = "+91 " + phoneNumberController.text.toString().trim();
-    print(phoneNumber);
+  final StorageReference storageReference =
+  FirebaseStorage.instance.ref().child("Display Pictures");
+  final postReference = Firestore.instance.collection("users");
 
-    /// The below functions are the callbacks, separated so as to make code more readable
-    void verificationCompleted(AuthCredential phoneAuthCredential) {
-      print('verificationCompleted');
 
-      this._phoneAuthCredential = phoneAuthCredential;
-      print(phoneAuthCredential);
-    }
 
-    void verificationFailed(AuthException error) {
 
-      print(error);
-    }
 
-    void codeSent(String verificationId, [int code]) {
-      setState(() {
-        _codesent = true;
-      });
+  bool isChanged = false;
+  String relationstring = "Select Relationship";
+  String genderstring = "Select Gender";
 
-      print('codeSent');
-    }
+  String _male = "male";
+  String _female = "female";
+  String _other = "other";
+  String _value;
+  bool tickvalue = false;
+  int check;
+  void _handleRadioValueChange1(String value) {
+    setState(() {
+      _value = value;
+      if(_value=="Male"){
+        setState(() {
+          check = 0;
+        });
+      }else if(_value=="Female"){
+        setState(() {
+          check = 1;
+        });
+      }else if(_value == "other"){
+        setState(() {
+          check = 2;
+          print(tickvalue);
+          tickvalue = true;
+        });
+      }
+      else{
+        setState(() {
+          tickvalue = false;
+        });
+      }
 
-    void codeAutoRetrievalTimeout(String verificationId) {
-
-      print('codeAutoRetrievalTimeout');
-    }
-
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      /// Make sure to prefix with your country code
-      phoneNumber: phoneNumber,
-
-      /// `seconds` didn't work. The underlying implementation code only reads in `milliseconds`
-      timeout: Duration(milliseconds: 10000),
-
-      /// If the SIM (with phoneNumber) is in the current device this function is called.
-      /// This function gives `AuthCredential`. Moreover `login` function can be called from this callback
-      verificationCompleted: verificationCompleted,
-
-      /// Called when the verification is failed
-      verificationFailed: verificationFailed,
-
-      /// This is called after the OTP is sent. Gives a `verificationId` and `code`
-      codeSent: codeSent,
-
-      /// After automatic code retrival `tmeout` this function is called
-      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
-    ); // All the callbacks are above
+      switch (check) {
+        case 0:
+          genderController.text = _male;
+          //correctScore++;
+          break;
+        case 1:
+          genderController.text = _female;
+          break;
+        case 2:
+          genderController.text = _other;
+          break;
+        default:
+          genderController.text = null;
+      }
+    });
   }
+
+
+  bool firstnameE = false;
+  bool lastnameE = false;
+  bool phonenumberE = false;
+  bool emailE = false;
+  bool bioE = false;
+  bool websiteE = false;
+  bool educationE = false;
+  bool currentcityE = false;
+  bool hometownE = false;
+  String valueX = "Select Gender";
+
+
 
 
 
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
-
-      key: _scaffoldKey,
-      backgroundColor: Colors.deepPurple.shade50,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("About me",style: TextStyle(
-          color: Colors.deepPurple
-        ),),
+        title: Text(displayNameController.text),
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back,
+            color: Colors.black,),
+        ),
       ),
+      key: _scaffoldKey,
+      backgroundColor: Colors.white,
+//      appBar: AppBar(
+//        title: "Profile".text.white.make(),
+//        leading: IconButton(icon: Icon(Icons.arrow_back, color: Colors.white), onPressed: () => Navigator.pop(context)),
+//        brightness: Brightness.dark,
+//      ),
+      body: Container(
+        color: Colors.white,
+        height: double.maxFinite,
+        width: double.maxFinite,
+        padding: EdgeInsets.all(12),
 
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
+        child: isLoading
+            ? Center(
+            child: Column(
+
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+
+                CircularProgressIndicator(),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(loadingMessage,
+                  style: TextStyle(
+                    color: Colors.deepPurple,
+                  ),)
+              ],
+            ))
+            : SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 4,vertical: 8),
           child: Column(
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
-                  child: Container(
-                    height: 350.0,
-                    width: 450.0,
-
-                      // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-
-
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20.0,top: 10.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                " Personal Details",
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: kPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Pacifico',
-                                ),
-                              ),
-
-                            ),
-                          ),
-
-
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20.0,left: 25.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("First Name",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(firstNameController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Last Name",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(lastNameController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Phonenumber",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(phoneNumberController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Username",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(displayNameController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Email",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(emailController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Gender",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(genderController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Relationship",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(relationshipController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Work",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(workController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Education",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(educationController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Current City",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(currentCityController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("Pin Code",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(pinCodeController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-
-                                Padding(padding: const EdgeInsets.all(2)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 150.0,
-                                      child: Text("HomeTown",style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),),
-                                    ),
-                                    Text(homeTownController.text,style: TextStyle(
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0,
-                                    ),),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-
-
-
-
-                        ],
-                      ),
-                  ),
-                ),
+              Text(
+                "About Me",
+                style: TextStyle(
+                    fontFamily: "Cookie-Regular", fontSize: 25.0),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
+                backgroundColor: Colors.transparent,
+              ),
+              SizedBox(
+                height: 16,
               ),
 
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 18.0,bottom: 30.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Verify phone",style:
-                          TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0
-                          ),),
-                        ),
-                      ),
+              Form(
+                autovalidate: true,
+                key: _formKey,
+                child: Column(children: <Widget>[
 
-                      Container(
-                          child: Form(
-                            key: _phoneVerificationKey,
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 50.0,
-                                  width: 200.0,
-                                  child: TextFieldContainer(
-                                    child: TextFormField(
-                                      style: TextStyle(
-                                          fontSize: 12.0, height: 1.5, color: Colors.black),
-                                      textInputAction: TextInputAction.next,
-                                      cursorColor: kPrimaryColor,
-
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.only(
-                                            left: 0, right: 3, top: 6, bottom: 12),
-                                        errorStyle: TextStyle(
-                                          fontSize: 10.0,
-                                          height: 0.3,
-                                        ),
-                                        icon: Icon(
-                                          Icons.phone_iphone,
-                                          //  size: 12.0,
-                                          color: kPrimaryColor,
-                                        ),
-                                        fillColor: Colors.deepPurple.shade50,
-                                        filled: true,
-                                        hintText: "Phone Number",
-                                      ),
-                                      controller: phoneNumberController,
-                                      //enableInteractiveSelection: false,
-                                      keyboardType: TextInputType.number,
-                                      validator: validateMobile,
-                                    ),
-                                  ),),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: RaisedButton(child: Text("Verify",style: TextStyle(
-                                    color: Colors.white,
-                                  ),),
-                                      color: Colors.deepPurple,
-                                      onPressed: (){
-                                        if (_phoneVerificationKey.currentState.validate()) {
-                                          _submitPhoneNumber();
-                                          if(_codesent){
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) {
-                                                  return SubmitPhoneOTP();
-                                                },
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      }),
-                                ),
-                              ],
-                            ),
-                          )
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text("Verify email",style:
-                          TextStyle(
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0
-                          ),),
-                        ),
-                      ),
-
-                      Container(
-                          child: Form(
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 50.0,
-                                  width: 200.0,
-                                  child: TextFieldContainer(
-                                    child: TextFormField(
-                                      style: TextStyle(
-                                          fontSize: 12.0, height: 1.5, color: Colors.black),
-                                      textInputAction: TextInputAction.next,
-//                    focusNode: _firstName,
-//                    onFieldSubmitted: (term) {
-//                      _fieldFocusChange(context, _firstName, _lastName);
-//                    },
-//                            style: TextStyle(
-//                                fontSize: 20.0,
-//                                height: 2.0,
-//                                color: Colors.black
-//                            ),
-                                      cursorColor: kPrimaryColor,
-
-
-
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        contentPadding: EdgeInsets.only(
-                                            left: 0, right: 3, top: 6, bottom: 12),
-                                        errorStyle: TextStyle(
-                                          fontSize: 10.0,
-                                          height: 0.3,
-                                        ),
-                                        icon: Icon(
-                                          Icons.alternate_email,
-                                          //  size: 12.0,
-                                          color: kPrimaryColor,
-                                        ),
-                                        fillColor: Colors.deepPurple.shade50,
-                                        filled: true,
-                                        hintText: "Email address",
-                                      ),
-//                    controller: firstNameInputController,
-                                      //enableInteractiveSelection: false,
-                                      // keyboardType: TextInputType.name,
-//                      validator: emailValidator,
-                                    ),
-                                  ),),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: RaisedButton(child: Text("Verify",style: TextStyle(
-                                    color: Colors.white,
-                                  ),),
-                                      color: Colors.deepPurple,
-                                      onPressed: (){}),
-                                ),
-                              ],
-                            ),
-                          )
-                      )
-                    ],
+                  (displayNameController.text=="")?Container():TextFormField(
+                    controller: displayNameController,
+                    enabled: false,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Display Name",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
                   ),
-                )
-              )
 
+                  (displayNameController.text=="")?Container():SizedBox(
+                    height: 16.0,
+                  ),
+
+                  (firstNameController.text=="")?Container():TextFormField(
+                    controller: firstNameController,
+                    enabled: false,
+
+                    decoration: InputDecoration(
+                        labelText: "First Name",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (firstNameController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+                  (lastNameController.text=="")?Container():TextFormField(
+                    controller: lastNameController,
+                    enabled: false,
+                    decoration: InputDecoration(
+                        labelText: "Last Name",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (lastNameController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+
+                  (phoneNumberController.text=="")?Container():TextFormField(
+                    controller: phoneNumberController,
+                    enabled: false,
+                    maxLength: 10,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        labelText: "Phone Number",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (phoneNumberController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+
+                  (emailController.text=="")?Container():TextFormField(
+                    controller: emailController,
+                    enabled: false,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                        labelText: "Email Id",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (emailController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+
+
+                  (bioController.text=="")?Container():TextFormField(
+                    controller: bioController,
+                    enabled: false,
+                    keyboardType: TextInputType.text,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                        labelText: "Bio",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (bioController.text=="")?Container():SizedBox(
+                    height: 16.0,
+                  ),
+
+                  (genderController.text=="")?Container():TextFormField(
+                    controller: genderController,
+                    enabled: false,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Gender",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+
+
+                  (genderController.text=="")?Container():SizedBox(
+                    height: 16.0,
+                  ),
+
+                  (relationshipController.text=="")?Container():TextFormField(
+                    controller: relationshipController,
+                    enabled: false,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Relationship",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (relationshipController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+
+                  (linkController.text=="")?Container():TextFormField(
+                    controller: linkController,
+                    enabled: false,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Website",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (linkController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+
+                  (workController.text=="")?Container():TextFormField(
+                    controller: workController,
+                    enabled: false,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Work",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (workController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+
+                  (educationController.text=="")?Container():TextFormField(
+                    controller: educationController,
+                    enabled: false,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Education",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (educationController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+
+                  (currentCityController.text=="")?Container():TextFormField(
+                    controller: currentCityController,
+                    enabled: false,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Current City",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (currentCityController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+
+                  (pincodeController.text=="")?Container():TextFormField(
+                    controller: pincodeController,
+                    enabled: false,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
+                    keyboardType: TextInputType.number,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Pin Code",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+                  (pincodeController.text=="")?Container():SizedBox(
+                    height: 16,
+                  ),
+
+                  (homeTownController.text=="")?Container():TextFormField(
+                    controller: homeTownController,
+                    enabled: false,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 1,
+                    decoration: InputDecoration(
+                        labelText: "Home Town",labelStyle: TextStyle(
+                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                    ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide:
+                            BorderSide(color: Colors.black, width: 1))),
+                  ),
+
+
+                ],
+                ),
+              ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class SubmitPhoneOTP extends StatefulWidget {
-  @override
-  _SubmitPhoneOTPState createState() => _SubmitPhoneOTPState();
-}
-
-class _SubmitPhoneOTPState extends State<SubmitPhoneOTP> {
-  TextEditingController _otpController;
-  AuthCredential _phoneAuthCredential;
-  String _verificationId;
-
-  void _submitOTP() {
-    /// get the `smsCode` from the user
-    String smsCode = _otpController.text.toString().trim();
-
-    /// when used different phoneNumber other than the current (running) device
-    /// we need to use OTP to get `phoneAuthCredential` which is inturn used to signIn/login
-    this._phoneAuthCredential = PhoneAuthProvider.getCredential(
-        verificationId: this._verificationId, smsCode: smsCode);
-
-  }
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(),
-      body: Container(
-        child: Form(
-        child: Row(
-        children: [
-        Container(
-        height: 50.0,
-        width: 250.0,
-        child: TextFieldContainer(
-          child: TextFormField(
-            style: TextStyle(
-                fontSize: 12.0, height: 1.5, color: Colors.black),
-            textInputAction: TextInputAction.next,
-            cursorColor: kPrimaryColor,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(
-                  left: 0, right: 3, top: 6, bottom: 12),
-              errorStyle: TextStyle(
-                fontSize: 10.0,
-                height: 0.3,
-              ),
-              icon: Icon(
-                Icons.textsms,
-                //  size: 12.0,
-                color: kPrimaryColor,
-              ),
-              fillColor: Colors.deepPurple.shade50,
-              filled: true,
-              hintText: "Enter OTP",
-            ),
-          ),
-        ),),
-
-
-      Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: RaisedButton(child: Text("Verify",style: TextStyle(
-      color: Colors.white,
-      ),),
-      color: Colors.deepPurple,
-      onPressed: (){
-        _submitOTP();
-      })),
-      ],
-      ),
-      ),
       ),
     );
   }

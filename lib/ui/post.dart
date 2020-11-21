@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/models/posts.dart';
-import 'package:uuid/uuid.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
@@ -16,20 +15,23 @@ import 'package:techstagram/models/wiggle.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
+import 'package:techstagram/ui/ProfileEdit.dart';
+import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
+import 'dart:math' as math;
 //import 'package:techstagram/services/database.dart';
 //import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 //
 //import '../../constants3.dart';
-import 'dart:convert';
-import 'package:vector_math/vector_math_64.dart' hide Colors;
-import 'dart:math' as math;
 
 
-class FeedsPage extends StatefulWidget {
-  final displayNamecurrentUser;
+class postPage extends StatefulWidget {
+
+
   @override
 
+  final String PostUrl;
+  final String displayNamecurrentUser;
   final Wiggle wiggle;
   final List<Wiggle> wiggles;
   final Timestamp timestamp;
@@ -38,9 +40,11 @@ class FeedsPage extends StatefulWidget {
   final String postId;
   final int likes;
   final String uid;
+  final String uidX;
 
-  FeedsPage(
-      {this.wiggles,
+  postPage(
+      {this.PostUrl,
+        this.wiggles,
         this.wiggle,
         this.timestamp,
         this.description,
@@ -48,24 +52,30 @@ class FeedsPage extends StatefulWidget {
         this.uid,
         this.postId,
         this.displayNamecurrentUser,
-        this.likes});
+        this.likes,
+        this.uidX
+      });
 
   @override
-  _FeedsPageState createState() => _FeedsPageState(displayNamecurrentUser: displayNamecurrentUser);
+  _postPageState createState() => _postPageState(displayNamecurrentUser: displayNamecurrentUser,PostUrl: PostUrl,uidX: uidX);
 }
 
-class _FeedsPageState extends State<FeedsPage> {
+class _postPageState extends State<postPage> {
 
   bool isLoading = true;
+  bool _liked = false;
+  bool loading = false;
   bool isEditable = false;
   final String displayNamecurrentUser;
+  final String PostUrl;
+  final String uidX;
 
-  _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
+  _postPageState({this.displayNamecurrentUser,this.PostUrl,this.uidX});
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,photoUrlController,
       timestampController,likesController,uidController;
-  List<Posts> posts;
+  int posts;
   List<DocumentSnapshot> list;
 
   Map<String, dynamic> _profile;
@@ -78,39 +88,6 @@ class _FeedsPageState extends State<FeedsPage> {
   Posts currentpost;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-
-  double _scale = 1.0;
-  double _previousScale;
-  var yOffset = 400.0;
-  var xOffset = 50.0;
-  var rotation = 0.0;
-  var lastRotation = 0.0;
-
-//   savePostInfoToFirestore(String url, String description, String ownerphotourl, String ownerdisplayname, bool shared) {
-//     String postId = Uuid().v4();
-//
-//     Firestore.instance.collection("posts").document(postId).setData({
-//       "OwnerPhotourl" : ownerphotourl,
-//       "OwnerDisplayName" : ownerdisplayname,
-//       "shared" : shared,
-//       "postId": postId,
-//       "uid" : uidController.text,
-//       "displayName": displayNameController.text,
-//       "timestamp": Timestamp.now(),
-//       "email": emailController.text,
-//       "photoURL" :photoUrlController.text,
-// //      "email": widget.userData.email,
-//       "description": descriptionController.text,
-//       "cam": cam,
-//       "likes": 0,
-//       "comments": 0,
-//       "url": url,
-// //      "photourl": widget.userData.photoUrl,
-//     });
-//
-//   }
-
 
 
 
@@ -130,19 +107,21 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
-    fetchLikes();
+
+//    fetchLikes();
+
+    //print("widget bhaiyya");
+    //print(widget.uid);
   }
 
 
   Stream<QuerySnapshot> postsStream;
   final timelineReference = Firestore.instance.collection('posts');
   String postIdX;
-  bool postliked = false;
-  bool _liked = false;
 
   fetchPosts() async {
 
-    await DatabaseService().getPosts().then((val){
+    getPosts().then((val){
       setState(() {
         postsStream = val;
       });
@@ -151,42 +130,89 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
 
-  void _onHorizontalDrag(DragEndDetails details) {
-    if (details.primaryVelocity == 0)
-      // user have just tapped on screen (no dragging)
-      return ;
 
-    if (details.primaryVelocity.compareTo(0) == -1) {
-//      dispose();
+  deletePost( String displayNamecurrent, String displayName, String postId, String uidX) async {
+    //print(displayNamecurrent)
+
+
+
+
+    if(displayName == displayNamecurrentUser){
+
+      DatabaseService().PostD(uidX,posts);
+      print(postId);
+      print(displayName);
+      print(uidX);
+      print("halelula");
+      print(displayNamecurrentUser);
+      await Firestore.instance.collection('posts').document(postId).delete();
+      await Firestore.instance.collection('users').document(uidX)
+          .collection('posts').document(postId).delete();
+
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 4,)),
       );
-    }
-    else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
-      );
+
+    }else{
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('You are not the owner of this post'),
+              actions: <Widget>[
+
+              ],
+            );
+          });
     }
   }
 
 
-  getlikes( String displayNamecurrent, String postId) async {
+  getPosts() async {
+    print(PostUrl);
+    return Firestore.instance
+        .collection("posts")
+        .where('url', isEqualTo: PostUrl)
+        .snapshots();
+  }
 
-    print(displayNamecurrent);
-    print(postId);
 
-    await Firestore.instance.collection('posts')
-        .document(postIdX)
+
+//  void _onHorizontalDrag(DragEndDetails details) {
+//    if (details.primaryVelocity == 0)
+//      // user have just tapped on screen (no dragging)
+//      return ;
+//
+//    if (details.primaryVelocity.compareTo(0) == -1) {
+////      dispose();
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
+//      );
+//    }
+//    else {
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+//      );
+//    }
+//  }
+
+
+  getlikes( String displayNamecurrent, String postId) {
+
+
+    Firestore.instance.collection('posts')
+        .document(postId)
         .collection('likes')
-        .document(displayNamecurrent)
+        .document(displayNameController.text)
         .get()
         .then((value) {
       if (value.exists) {
         setState(() {
           _liked = true;
-          print(_liked);
+
         });
       }
     });
@@ -221,6 +247,7 @@ class _FeedsPageState extends State<FeedsPage> {
       uidController.text =  docSnap.data["uid"];
       displayNameController.text = docSnap.data["displayName"];
       photoUrlController.text = docSnap.data["photoURL"];
+      posts = docSnap.data["posts"];
 
 
       setState(() {
@@ -282,8 +309,45 @@ class _FeedsPageState extends State<FeedsPage> {
 
   File _image;
   bool upload;
-  int likescount;
-  bool loading = false;
+
+  createAlertDialog(context,url) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Are you sure you want to delete post?'),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    // return Firestore.instance.collection("posts")
+                    //     .document(url)
+                    //     .delete();
+
+                    Firestore.instance.collection("posts").document(url).get()
+                        .then((doc) {
+                      if (doc.exists) {
+                        doc.reference.delete();
+
+                        Navigator.pop(context);
+                      }
+                    });
+                    // DatabaseService()
+                    //     .postReference
+                    //     .document(widget.postId)
+                    //     .get()
+                    //     .then((doc) {
+                    //   if (doc.exists) {
+                    //     doc.reference.delete();
+                    //
+                    //     Navigator.pop(context);
+                    //   }
+                    // });
+                  }),
+            ],
+          );
+        });
+  }
 
   Future pickImage() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
@@ -303,23 +367,21 @@ class _FeedsPageState extends State<FeedsPage> {
     print("Done..");
   }
 
-//  doubletaplike(int likes, String postId)  {
-//
-//
-//
-//    if(_liked == false) {
-//      setState(() {
-//        _liked = true;
-//      });
-//      DatabaseService().likepost(
-//          likes, postId,
-//          displayNameController.text);
-//
-//    }else{
-//      print("ghg");
-//    }
-//
-//  }
+  doubletaplike(int likes, String postId) async{
+    if(_liked = false) {
+      setState(() {
+        _liked = true;
+      });
+      await DatabaseService().likepost(
+          likes, postId,
+          displayNameController.text);
+
+    }
+    else {
+      print("jhj");
+
+    }
+  }
   String urlx;
 
   TransformationController _controller = TransformationController();
@@ -330,14 +392,30 @@ class _FeedsPageState extends State<FeedsPage> {
   Widget build(BuildContext context) {
 
 
+//    fetchdimensions(String url) async {
+//      File image = new File(url);
+//      var decodedImage = await decodeImageFromList(image.readAsBytesSync());
+//      print(decodedImage.width);
+//      print(decodedImage.height);
+//    }
+
+
+    //print(displayNameController.text);
+
     // TODO: implement build
     return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails details) =>
-          _onHorizontalDrag(details),
+
       onTap: () {
         print("hello");
       },
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text("Post", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
+          leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black,), onPressed: (){
+            Navigator.pop(context);
+          }),
+        ),
         key: _scaffoldKey,
         body: StreamBuilder(
           stream: postsStream,
@@ -352,8 +430,7 @@ class _FeedsPageState extends State<FeedsPage> {
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
 
-                        postIdX = snapshot.data.documents[index]['postId'];
-                        getlikes(displayNameController.text, postIdX);
+                        postIdX = snapshot.data.documents[index]['email'];
                         String email = snapshot.data.documents[index]['email'];
                         String description =
                         snapshot.data.documents[index]['description'];
@@ -361,25 +438,25 @@ class _FeedsPageState extends State<FeedsPage> {
                         snapshot.data.documents[index]['displayName'];
                         String photoUrl =
                         snapshot.data.documents[index]['photoURL'];
+
                         String OwnerDisplayName = snapshot.data.documents[index]['OwnerDisplayName'];
                         String OwnerPhotourl = snapshot.data.documents[index]['OwnerPhotourl'];
                         bool shared = snapshot.data.documents[index]['shared'];
-                        String uid = snapshot.data.documents[index]["uid"];
-                        int shares = snapshot.data.documents[index]["shares"];
 
+
+                        String uid = snapshot.data.documents[index]["uid"];
+                        int cam = snapshot.data.documents[index]['cam'];
                         Timestamp timestamp =
                         snapshot.data.documents[index]['timestamp'];
                         String url = snapshot.data.documents[index]['url'];
-                        int cam = snapshot.data.documents[index]['cam'];
                         String postId = snapshot.data.documents[index]['postId'];
                         int likes = snapshot.data.documents[index]['likes'];
-                        int counter = snapshot.data.documents[index]['likes'];
                         int comments = snapshot.data.documents[index]['comments'];
-                        likescount = likes;
                         readTimestamp(timestamp.seconds);
 
-//                        getlikes(displayNameController.text, postId);
 
+                        getlikes(displayNameController.text,postId);
+//                        fetchdimensions(url);
 
 
 
@@ -388,14 +465,17 @@ class _FeedsPageState extends State<FeedsPage> {
 
                           _liked = false;
                         }
-                     return (shared==true)?Container(
 
-                              color: Colors.white,
-                     child: Column(
-                              children: <Widget>[
-                               Container(height: 0.0,width: 0.0,),
+                        //getlikes(displayNameController.text,postId);
 
-                                GestureDetector(
+                        return (shared==true)?Container(
+
+                          color: Colors.white,
+                          child: Column(
+                            children: <Widget>[
+                              Container(height: 0.0,width: 0.0,),
+
+                              GestureDetector(
                                 onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
@@ -525,6 +605,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
 
+
+
                                       ),
                                     ):FadeInImage(
 
@@ -610,14 +692,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
                                           );
 
                                           //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
-                                      Text(shares.toString()),
                                     ],
                                   ),
                                   // IconButton(
@@ -778,7 +859,6 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       image: NetworkImage(url,),
                                       fit: BoxFit.cover,
-
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
@@ -860,15 +940,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
                                           );
 
                                           //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
-                                      // Text(postId),
-                                      Text(shares.toString()),
                                     ],
                                   ),
                                   // IconButton(
@@ -939,6 +1017,15 @@ class _FeedsPageState extends State<FeedsPage> {
                           ),
                         );
 
+//                return FeedTile(
+//                  wiggle: currentpost,
+//                  wiggles: posts,
+//                  description: description,
+//                  timestamp: timestamp,
+//                  url: url,
+//                  postId: postId,
+//                  likes: likes,
+//                );
                       }),
                 ),
               ],
@@ -950,12 +1037,12 @@ class _FeedsPageState extends State<FeedsPage> {
       ),
     );
   }
+
+//  displayComments(BuildContext context, {String postId, String uid, String url,Timestamp timestamp, String displayName, String photoUrl,String displayNamecurrentUser}){
+//    Navigator.push(context, MaterialPageRoute(builder: (context){
+//    return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
+//    }));
+//  }
 }
 
-class Student {
-  var name = 'foo';
-  var year = '2018';
-  var liked = false;
 
-  Student(this.name);
-}

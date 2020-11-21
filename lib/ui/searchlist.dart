@@ -17,8 +17,8 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
   String lname = "";
   String searchKey;
   Stream streamQuery;
-  final String displayNamecurrentUser;
-  final String uidX;
+  final displayNamecurrentUser;
+  final uidX;
 
   _CloudFirestoreSearchState({this.displayNamecurrentUser,this.uidX});
 
@@ -26,7 +26,7 @@ String uidf = CloudFirestoreSearch().uidX;
   @override
   Widget build(BuildContext context) {
     print("cv");
-    print(uidf);
+    print(uidX);
     print("434");
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +38,7 @@ String uidf = CloudFirestoreSearch().uidX;
             Navigator.of(context).pop();
           },
         ),
-        title: Card(
+        title: Container(
           color: Colors.white,
           child: TextField(
             decoration: InputDecoration(
@@ -61,12 +61,13 @@ String uidf = CloudFirestoreSearch().uidX;
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: (searchKey != "" && searchKey != null)?streamQuery
-        : Firestore.instance.collection("users").snapshots(),
+        :
+//        Firestore.instance.collection("users").snapshots(),
 //        (fname != "" && fname != null)
-//            ? Firestore.instance
-//            .collection('users')
-//            .where("searchKeywords", arrayContains: fname)
-//            .snapshots()
+             Firestore.instance
+            .collection('users')
+            .where("searchKeywords", arrayContains: fname)
+            .snapshots(),
 //            : Firestore.instance.collection("users").snapshots(),
         builder: (context, snapshot) {
           return (snapshot.connectionState == ConnectionState.waiting)
@@ -84,7 +85,7 @@ String uidf = CloudFirestoreSearch().uidX;
             itemBuilder: (context, index) {
               DocumentSnapshot sd = snapshot.data.documents[index];
               searchKey = snapshot.data.documents[index]["displayName"];
-              String photoUrl = snapshot.data.documents[index]["photoUrl"];
+              String photoUrl = snapshot.data.documents[index]["photoURL"];
               String uid = snapshot.data.documents[index]["uid"];
               String displayName = snapshot.data.documents[index]["displayName"];
               print(displayName);

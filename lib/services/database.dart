@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/src/widgets/editable_text.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/models/wiggle.dart';
 import 'dart:io';
@@ -8,6 +9,22 @@ class DatabaseService {
   final String uid;
 
   DatabaseService({this.uid});
+
+  Future getdisplayName(String uid, String displayName) async {
+
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .snapshots();
+  }
+
+  Future updatephotoURL(String uid, String photoURl) async {
+
+    return await Firestore.instance
+        .collection("posts")
+        .document(uid)
+        .updateData({'photoURL': photoURl});
+  }
 
   getUserByUsername(String displayName) async {
     return Firestore.instance
@@ -331,33 +348,39 @@ class DatabaseService {
         .updateData({'fame': initialvalue + 1});
   }
 
-  Future likepost(int initialvalue, String postId, String userEmail) async {
-    await Firestore.instance
+
+
+  Future likepost(int initialvalue, String postId, String userEmail)  {
+
+     Firestore.instance
+        .collection("posts")
+        .document(postId)
+        .updateData({'likes': initialvalue + 1});
+
+     Firestore.instance
         .collection("posts")
         .document(postId)
         .collection('likes')
         .document(userEmail)
         .setData({'liked': userEmail});
 
-    return await Firestore.instance
-        .collection("posts")
-        .document(postId)
-        .updateData({'likes': initialvalue + 1});
   }
 
 
-  Future unlikepost(int initialvalue, String postId, String userEmail) async {
-    await Firestore.instance
+  Future unlikepost(int initialvalue, String postId, String userEmail) {
+
+
+    Firestore.instance
+        .collection("posts")
+        .document(postId)
+        .updateData({'likes': initialvalue - 1});
+
+    Firestore.instance
         .collection("posts")
         .document(postId)
         .collection('likes')
         .document(userEmail)
         .delete();
-
-    return await Firestore.instance
-        .collection("posts")
-        .document(postId)
-        .updateData({'likes': initialvalue - 1});
   }
 
 //  Future followingUser(int following, String displayNameX, String displayName) async {
@@ -368,27 +391,41 @@ class DatabaseService {
 //        .updateData({'following': following + 1});
 //  }
 
-  Future unfollowUser(int followers, String uid, String displayName) async {
-    await Firestore.instance
+  Future unfollowUser(int followers, String uid, String displayName) {
+
+
+    Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'followers': followers - 1});
+
+    Firestore.instance
         .collection("users")
         .document(uid)
         .collection('followers')
         .document(displayName)
         .delete();
+  }
+
+  Future PhoneverificationX(String uid) async {
+//    .collection("users")
+//        .document(uid)
+//        .delete(); await Firestore.instance
+
 
     return await Firestore.instance
         .collection("users")
         .document(uid)
-        .updateData({'followers': followers - 1});
+        .updateData({'phoneVerified': true});
   }
 
   Future decreaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
 
     await Firestore.instance
         .collection("users")
-        .document(uidX)
+        .document(uid)
         .collection('following')
-        .document(displayNameX)
+        .document(displayName)
         .delete();
 
 
@@ -402,39 +439,58 @@ class DatabaseService {
 //        else {
           return await Firestore.instance
               .collection("users")
-              .document(uidX)
+              .document(uid)
               .updateData({'following': following - 1});
 //        }
   }
 
-  Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
+  PostD(String uid,int posts) async {
+    //print(postsController);
+    print("helloww");
+    //String increment = postsController.text;
+    //int incr = int.parse(posts);
+    //print(incr);
+    Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'posts': posts - 1});
+  }
+
+  Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX,String photoUrlX) async {
     await Firestore.instance
         .collection("users")
-        .document(uidX)
+        .document(uid)
         .collection('following')
         .document(displayName)
-        .setData({'followingname' : displayName});
+        .setData({'followingname' : displayName,'followinguid' : uidX,'photoUrl' : photoUrlX});
+
         //.updateData({'followingname': uid,});
 
     return await Firestore.instance
         .collection("users")
-        .document(uidX)
+        .document(uid)
         .updateData({'following': following + 1});
   }
   
 
-  Future followUser(int followers, String uid, String displayName) async {
-    await Firestore.instance
+  Future followUser(int followers, String uid, String displayName, String uidX,String photoUrlX) {
+
+    Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'followers': followers + 1});
+
+    Firestore.instance
         .collection("users")
         .document(uid)
         .collection('followers')
         .document(displayName)
-        .setData({'followedby': displayName,});
+        .setData({
+      'followername': displayName,
+      'followeruid': uidX,
+      'photoUrl' : photoUrlX,
+    });
 
-    return await Firestore.instance
-        .collection("users")
-        .document(uid)
-        .updateData({'followers': followers + 1});
   }
 
 
@@ -754,4 +810,6 @@ class DatabaseService {
         .where("users", arrayContains: userName)
         .snapshots();
   }
+
+
 }

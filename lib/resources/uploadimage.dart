@@ -11,26 +11,45 @@ import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as ImD;
+import 'dart:math' as math;
 
 import 'auth.dart';
 
 class UploadImage extends StatefulWidget {
   final User userData;
   File file;
-  UploadImage({this.file, this.userData});
+  String sharedurl;
+  int cam;
+  String ownerdiscription;
+  String ownerphotourl;
+  String ownerdisplayname;
+  bool shared;
+  int shares;
+  String ownerPostId;
+  UploadImage({this.ownerPostId,this.shares,this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
 
   @override
-  _UploadImageState createState() => _UploadImageState();
+  _UploadImageState createState() => _UploadImageState(ownerPostId: ownerPostId,shares:shares,cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl);
 }
 
 class _UploadImageState extends State<UploadImage>
     with AutomaticKeepAliveClientMixin<UploadImage> {
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+int cam;
+String ownerdiscription;
+  String ownerphotourl;
+  String ownerdisplayname;
+  bool shared;
+  String sharedurl;
+  int shares;
+  String ownerPostId;
+_UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
   TextEditingController
   emailController,
       uidController,
       displayNameController,photoUrlController,
-  descriptionController;
+  descriptionController,postsController;
 
 
   Map<String, dynamic> _profile;
@@ -62,7 +81,7 @@ class _UploadImageState extends State<UploadImage>
     ImD.Image mImageFile = ImD.decodeImage(file.readAsBytesSync());
     final compressedImage = File('$path/img_$postId.jpg')
       ..writeAsBytesSync(
-        ImD.encodeJpg(mImageFile, quality: 60),
+        ImD.encodeJpg(mImageFile, quality: 50),
       );
     setState(() {
       file = compressedImage;
@@ -78,16 +97,49 @@ class _UploadImageState extends State<UploadImage>
     return downloadUrl;
   }
 
-  controlUploadAndSave() async {
+  controlUploadAndSaveShared(bool shared) async{
+  setState(() {
+  uploading = true;
+  });
+  print(shared);
+  print("shadah");
+
+  //await compressPhoto();
+
+  //String downloadUrl = await uploadPhoto(file);
+  savePostInfoToFirestoreShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
+  savePostinfoToUserShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
+
+  //PostI();
+
+  descriptionController.clear();
+  setState(() {
+  // file = null;
+  uploading = false;
+  postId = Uuid().v4();
+  });
+  Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => HomePage()),
+  );
+}
+
+  controlUploadAndSave(bool shared) async {
     setState(() {
       uploading = true;
     });
+    print(shared);
+    print("shadah");
 
     await compressPhoto();
 
     String downloadUrl = await uploadPhoto(file);
-    savePostInfoToFirestore(downloadUrl, descriptionController.text);
-    savePostinfoToUser(downloadUrl, descriptionController.text);
+
+      savePostInfoToFirestore(downloadUrl, descriptionController.text);
+      savePostinfoToUser(downloadUrl, descriptionController.text);
+
+
+    //PostI();
 
     descriptionController.clear();
     setState(() {
@@ -99,6 +151,99 @@ class _UploadImageState extends State<UploadImage>
       context,
       MaterialPageRoute(builder: (context) => HomePage()),
     );
+  }
+
+  ShareIU() async {
+    print(uidController);
+    print("helloww");
+    //String increment = postsController.text;
+    //int incr = int.parse(posts);
+    //print(incr);
+    Firestore.instance
+        .collection("users")
+        .document(uidController.text)
+        .collection("posts")
+        .document(ownerPostId)
+        .updateData({'shares': shares + 1});
+  }
+
+  ShareI() async {
+    print(ownerPostId);
+    print("helloww");
+    //String increment = postsController.text;
+    //int incr = int.parse(posts);
+    //print(incr);
+    Firestore.instance
+        .collection("posts")
+        .document(ownerPostId)
+        .updateData({'shares': shares + 1});
+  }
+
+  PostI() async {
+    print(postsController);
+    print("helloww");
+    //String increment = postsController.text;
+    //int incr = int.parse(posts);
+    //print(incr);
+    Firestore.instance
+        .collection("users")
+        .document(uidController.text)
+        .updateData({'posts': posts + 1});
+  }
+
+  savePostInfoToFirestoreShared(String url, String description, String ownerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
+
+    Firestore.instance.collection("posts").document(postId).setData({
+      "OwnerPhotourl" : ownerphotourl,
+      "description" : description,
+      "OwnerDisplayName" : ownerdisplayname,
+      "shared" : shared,
+      "postId": postId,
+      "uid" : uidController.text,
+      "displayName": displayNameController.text,
+      "timestamp": Timestamp.now(),
+      "email": emailController.text,
+      "photoURL" :photoUrlController.text,
+//      "email": widget.userData.email,
+      "description": descriptionController.text,
+      "cam": cam,
+      "likes": 0,
+      "comments": 0,
+      "shares" : 0,
+      "url": url,
+//      "photourl": widget.userData.photoUrl,
+    });
+
+  }
+
+  savePostinfoToUserShared(String url, String description, String owenerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
+
+    Firestore.instance
+        .collection("users")
+        .document(uidController.text)
+        .collection('posts')
+        .document(postId)
+        .setData({
+      "OwnerPhotourl" : ownerphotourl,
+      "description" : description,
+      "OwnerDisplayName" : ownerdisplayname,
+      "shared" : shared,
+      "postId": postId,
+      "uid" : uidController.text,
+      "displayName": displayNameController.text,
+      "timestamp": Timestamp.now(),
+      "email": emailController.text,
+      "photoURL" :photoUrlController.text,
+//      "email": widget.userData.email,
+      "description": descriptionController.text,
+      "cam": cam,
+      "likes": 0,
+      "comments": 0,
+      "shares" : 0,
+      "url": url,
+//      "photourl": widget.userData.photoUrl,
+    });
+
   }
 
   savePostinfoToUser(String url, String description){
@@ -116,7 +261,10 @@ class _UploadImageState extends State<UploadImage>
       "photoURL" :photoUrlController.text,
 //      "email": widget.userData.email,
       "description": descriptionController.text,
+      "cam": cam,
       "likes": 0,
+      "comments": 0,
+      "shares" : 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
@@ -132,7 +280,10 @@ class _UploadImageState extends State<UploadImage>
       "photoURL" :photoUrlController.text,
 //      "email": widget.userData.email,
       "description": descriptionController.text,
+      "cam": cam,
       "likes": 0,
+      "comments": 0,
+      "shares": 0,
       "url": url,
 //      "photourl": widget.userData.photoUrl,
     });
@@ -149,25 +300,18 @@ class _UploadImageState extends State<UploadImage>
             onPressed: (){
           Navigator.pop(context);
         }),
-        title: Text(
+        title: (shared==null || shared == false)?Text(
           "New Post",
+          style: TextStyle(
+              color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold),
+        ):Text(
+          "Share Post",
           style: TextStyle(
               color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         actions: <Widget>[
           // uploading ? linearProgress() : Text(''),
-          FlatButton(
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            onPressed: () => controlUploadAndSave(),
-            child: Text(
-              "Share",
-              style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold),
-            ),
-          )
+
         ],
       ),
       body: uploading
@@ -183,11 +327,35 @@ class _UploadImageState extends State<UploadImage>
             child: Center(
               child: AspectRatio(
                 aspectRatio: 6 / 5,
-                child: Container(
-                  decoration: BoxDecoration(
+                child: (cam == 1)?Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.rotationY(math.pi),
+                  child: Container(
+                    decoration: (shared == true)?
+                    BoxDecoration(
+                      image: DecorationImage(
+
+                          image: NetworkImage(sharedurl),
+                          fit: BoxFit.cover),
+                    ):BoxDecoration(
+                      image: DecorationImage(
+
+                          image: FileImage(file),
+                          fit: BoxFit.cover),
+                    ),
+                  ),
+                ): Container(
+                  decoration: (shared == true)?
+                  BoxDecoration(
+                    image: DecorationImage(
+                      
+                        image: NetworkImage(sharedurl),
+                        fit: BoxFit.cover),
+                  ):BoxDecoration(
                     image: DecorationImage(
 
-                        image: FileImage(file), fit: BoxFit.cover),
+                        image: FileImage(file),
+                        fit: BoxFit.cover),
                   ),
                 ),
               ),
@@ -215,22 +383,108 @@ class _UploadImageState extends State<UploadImage>
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: descriptionController,
-                      enabled: true,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 2,
-                      decoration: InputDecoration(
-                          labelText: "Write your caption here...",labelStyle: TextStyle(
+                    child: Form(
+                      autovalidate: true,
+                      key: _formKey,
+                      child: TextFormField(
+                        controller: descriptionController,
+                        enabled: true,
+                        validator: (value) {
+                          if(value.length > 200.0){
+                            return 'Caption should not be greater then 200 words';
+                          }
+                        },
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                            labelText: "Write your caption here...",labelStyle: TextStyle(
                           color: Colors.grey,
+                        ),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide:
+                                BorderSide(color: Colors.black, width: 1))),
                       ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                              BorderSide(color: Colors.black, width: 1))),
-                    ),
+                    )
+
                   ),
+
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 10.0),
+                  //   child: Container(
+                  //     width: 50.0,
+                  //     height: 50.0,
+                  //     child: FlatButton(
+                  //       highlightColor: Colors.transparent,
+                  //       splashColor: Colors.transparent,
+                  //       onPressed: (){
+                  //         if(_formKey.currentState.validate()) {
+                  //           controlUploadAndSave();
+                  //           PostI();
+                  //         }
+                  //       },
+                  //       //onPressed: () => controlUploadAndSave(),
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.only(right: 108.0),
+                  //         child: Icon(Icons.arrow_forward_ios, size: 30,color: Colors.deepPurple,),
+                  //       ),
+                  //       // child: Text(
+                  //       //   "Share",
+                  //       //   style: TextStyle(
+                  //       //       color: Colors.deepPurple,
+                  //       //       fontSize: 16,
+                  //       //       fontWeight: FontWeight.bold),
+                  //       // ),
+                  //       shape: RoundedRectangleBorder(side: BorderSide(
+                  //           color: Colors.deepPurple,
+                  //           width: 2,
+                  //           style: BorderStyle.solid
+                  //       ), borderRadius: BorderRadius.circular(50)),
+                  //     ),
+                  //   ),
+                  // ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        if(shared == true){
+                          print("hai hai");
+                          controlUploadAndSaveShared(shared);
+                          PostI();
+                          ShareI();
+                        }else{
+                          if(_formKey.currentState.validate()) {
+                            controlUploadAndSave(shared);
+                            PostI();
+                          }
+                        }
+
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10.0,right: 10.0),
+                        child: Container(
+                          width: 55,
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurple,
+                            border: Border.all(
+                              color: Colors.deepPurple,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(100),
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
+
               ),
             ),
           )
@@ -247,6 +501,7 @@ class _UploadImageState extends State<UploadImage>
     photoUrlController = TextEditingController();
     displayNameController = TextEditingController();
     descriptionController = TextEditingController();
+    postsController = TextEditingController();
 
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -256,6 +511,8 @@ class _UploadImageState extends State<UploadImage>
     super.initState();
     fetchProfileData();
   }
+
+  int posts;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -270,6 +527,11 @@ class _UploadImageState extends State<UploadImage>
       emailController.text = docSnap.data["email"];
       displayNameController.text = docSnap.data["displayName"];
       photoUrlController.text = docSnap.data["photoURL"];
+      posts = docSnap.data["posts"];
+
+
+      print(postsController);
+      print("halelula");
 
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);

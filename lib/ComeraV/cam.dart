@@ -37,6 +37,7 @@ class _HomePageState extends State<CameraClass> {
       extendBody: true,
       backgroundColor: Theme.of(context).backgroundColor,
       body: CameraScreen(
+        cam: 0,
         key: _cameraKey,
       ),
     );

@@ -5,15 +5,21 @@ import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
 
 class ProfileSettings extends StatefulWidget {
+  final String email;
+  final String phonenumber;
+  ProfileSettings(this.email,this.phonenumber);
   @override
-  _ProfileSettingsState createState() => _ProfileSettingsState();
+  _ProfileSettingsState createState() => _ProfileSettingsState(email,phonenumber);
 }
 
 class _ProfileSettingsState extends State<ProfileSettings> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
-  bool valuef = false;
+  bool valuef = true;
+  final String email;
+  final String phonenumber;
 
+  _ProfileSettingsState(this.email,this.phonenumber);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -40,12 +46,19 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 onTap: (){
 
                 },
-                  child: Icon(Icons.phone,color: Colors.green,))),
-              SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.blue,)),
+                  child: Icon(Icons.phone,color: Colors.grey,)),
+              trailing: Text(phonenumber,style: TextStyle(
+                color: Colors.deepPurple,
+              ),),),
+              SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,),
+                  trailing: Text(email,style: TextStyle(
+                    color: Colors.deepPurple,
+                  ),),),
               SettingsTile(
                 onTap: (){
                   FirebaseAuth.instance
                       .signOut()
+
                       .then((result) =>
                       Navigator.push(context, new MaterialPageRoute(
                           builder: (context) =>
@@ -57,7 +70,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 title: 'Log out', leading: GestureDetector(
                   child: new Icon(
                     Icons.exit_to_app,
-                    color: Colors.redAccent,
+                    color: Colors.grey,
                   ),
                   onTap: () {
 
@@ -78,9 +91,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             title: 'Notification Settings',titleTextStyle: TextStyle(color: Colors.deepPurple,
               fontWeight: FontWeight.bold),
             tiles: [
-              SettingsTile(title: 'Comments', leading: Icon(Icons.comment,color: Colors.lightBlueAccent,)),
-              SettingsTile(title: 'Tags', leading: Icon(Icons.tag_faces,color: Colors.teal,)),
-              SettingsTile(title: 'Reminders', leading: Icon(Icons.calendar_today,color: Colors.blue.shade800,)),
+              SettingsTile(title: 'Comments', leading: Icon(Icons.comment,color: Colors.grey,)),
+              SettingsTile(title: 'Tags', leading: Icon(Icons.tag_faces,color: Colors.grey,)),
+              SettingsTile(title: 'Reminders', leading: Icon(Icons.calendar_today,color: Colors.grey,)),
             ],
           ),
           SettingsSection(
@@ -90,7 +103,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
               SettingsTile.switchTile(
                   title: 'Use fingerprint',
-                  leading: Icon(Icons.fingerprint,color: Colors.green.shade800,),
+                  leading: Icon(Icons.fingerprint,color: Colors.grey,),
                 switchValue: false,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {
@@ -110,12 +123,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   );
                 },
                 title: 'Change password',
-                leading: Icon(Icons.lock,color: Colors.redAccent.shade100,),
+                leading: Icon(Icons.lock,color: Colors.grey,),
               ),
               SettingsTile.switchTile(
                 title: 'Enable Notifications',
 //                enabled: notificationsEnabled,
-                leading: Icon(Icons.notifications_active,color: Colors.brown,),
+                leading: Icon(Icons.notifications_active,color: Colors.grey,),
                 switchValue: true,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {},
@@ -127,10 +140,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               fontWeight: FontWeight.bold),
             tiles: [
               SettingsTile(
-                  title: 'Terms of Service', leading: Icon(Icons.description,color: Colors.brown.shade700,)),
+                  title: 'Terms of Service', leading: Icon(Icons.description,color: Colors.grey,)),
               SettingsTile(
                   title: 'Privacy Policy',
-                  leading: Icon(Icons.collections_bookmark,color: Colors.brown.shade700)),
+                  leading: Icon(Icons.collections_bookmark,color: Colors.grey)),
             ],
           ),
           CustomSection(
@@ -138,10 +151,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 22, bottom: 8),
-                  child: Icon(Icons.build),
+                  child: Icon(Icons.build,color: Colors.grey.shade600,),
                 ),
                 Text(
-                  'Version: 1.0.0 (10)',
+                  'AIO Chat-Version: 1.0.0',
                   style: TextStyle(color: Colors.deepPurple),
                 ),
               ],
