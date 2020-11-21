@@ -617,7 +617,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
-                                      //Text(shares.toString()),
+                                      Text(shares.toString()),
                                     ],
                                   ),
                                   // IconButton(
@@ -860,13 +860,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
                                           );
 
                                           //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
+                                      // Text(postId),
                                       Text(shares.toString()),
                                     ],
                                   ),

@@ -153,6 +153,20 @@ _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,t
     );
   }
 
+  ShareIU() async {
+    print(uidController);
+    print("helloww");
+    //String increment = postsController.text;
+    //int incr = int.parse(posts);
+    //print(incr);
+    Firestore.instance
+        .collection("users")
+        .document(uidController.text)
+        .collection("posts")
+        .document(ownerPostId)
+        .updateData({'shares': shares + 1});
+  }
+
   ShareI() async {
     print(ownerPostId);
     print("helloww");
@@ -442,7 +456,6 @@ _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,t
                           if(_formKey.currentState.validate()) {
                             controlUploadAndSave(shared);
                             PostI();
-                            ShareI();
                           }
                         }
 
