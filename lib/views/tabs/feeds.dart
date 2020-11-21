@@ -365,6 +365,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         String OwnerPhotourl = snapshot.data.documents[index]['OwnerPhotourl'];
                         bool shared = snapshot.data.documents[index]['shared'];
                         String uid = snapshot.data.documents[index]["uid"];
+                        int shares = snapshot.data.documents[index]["shares"];
 
                         Timestamp timestamp =
                         snapshot.data.documents[index]['timestamp'];
@@ -609,13 +610,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
                                           );
 
                                           //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
+                                      //Text(shares.toString()),
                                     ],
                                   ),
                                   // IconButton(
@@ -858,13 +860,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
                                           );
 
                                           //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
+                                      Text(shares.toString()),
                                     ],
                                   ),
                                   // IconButton(
