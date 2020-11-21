@@ -171,7 +171,6 @@ class CameraScreenState extends State<CameraScreen>
         MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
       );
 
-
     }
 //     else {
 //       Navigator.push(
