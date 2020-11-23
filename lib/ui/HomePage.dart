@@ -259,30 +259,42 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
 
   int initialindexg;
 
+  Future<bool> _onWillPop() {
 
-
-  Future<bool> onWillPop() {
-
-    return showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(false),
-            child: Text("NO"),
-          ),
-          SizedBox(height: 16),
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(true),
-            child: Text("YES"),
-          ),
-        ],
-      ),
-    ) ??
-        false;
+    // return Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) {
+    //       return HomePage(initialindexg: 2);
+    //     },
+    //   ),
+    // );
   }
+
+
+
+  // Future<bool> onWillPop() {
+  //
+  //   return showDialog(
+  //     context: context,
+  //     builder: (context) => new AlertDialog(
+  //       title: new Text('Are you sure?'),
+  //       content: new Text('Do you want to exit an App'),
+  //       actions: <Widget>[
+  //         new GestureDetector(
+  //           onTap: () => Navigator.of(context).pop(false),
+  //           child: Text("NO"),
+  //         ),
+  //         SizedBox(height: 16),
+  //         new GestureDetector(
+  //           onTap: () => Navigator.of(context).pop(true),
+  //           child: Text("YES"),
+  //         ),
+  //       ],
+  //     ),
+  //   ) ??
+  //       false;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -294,38 +306,41 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
         initialIndex: 2,//(initialindexg == null) ? 2 : initialindexg,
 
         child: new Scaffold(
-          body: TabBarView(
-              //(initialindexg == 1)?physics: NeverScrollableScrollPhysics():null,
-            //physics: NeverScrollableScrollPhysics(),
-            children: [
+          body: WillPopScope(
+            onWillPop: () => _onWillPop(),
+            child: TabBarView(
+                //(initialindexg == 1)?physics: NeverScrollableScrollPhysics():null,
+              //physics: NeverScrollableScrollPhysics(),
+              children: [
 
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                      builder: (context) => CameraS(),
-                    ),
-                  );
-                  setState(() {
-                    hidebottombar = true;
-                    hideappbar = true;
-                  });
-                },
-                //child: CameraExampleHome(cameras),
-              ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                        builder: (context) => CameraS(),
+                      ),
+                    );
+                    setState(() {
+                      hidebottombar = true;
+                      hideappbar = true;
+                    });
+                  },
+                  //child: CameraExampleHome(cameras),
+                ),
 
 
-              new Container(
-                child: ChatsPage(),
-              ),
-              new Container(
-                child: FeedsPage(),
-              ),
-              new Container(
-                child: NotificationsPage(),
-              ),
-              new Container(child: AccountBottomIconScreen()),
-            ],
+                new Container(
+                  child: ChatsPage(),
+                ),
+                new Container(
+                  child: FeedsPage(),
+                ),
+                new Container(
+                  child: NotificationsPage(),
+                ),
+                new Container(child: AccountBottomIconScreen()),
+              ],
+            ),
           ),
           bottomNavigationBar: (hidebottombar == true) ? PreferredSize(
             child: Container(),
