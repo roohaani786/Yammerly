@@ -288,88 +288,86 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return GestureDetector(
-      onTap: () => print("hello"),
-      child: Scaffold(
-        body: DefaultTabController(
-          length: 5,
-          initialIndex: (initialindexg == null) ? 2 : initialindexg,
+    return Scaffold(
+      body: DefaultTabController(
+        length: 5,
+        initialIndex: 2,//(initialindexg == null) ? 2 : initialindexg,
 
-          child: new Scaffold(
-            body: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              children: [
+        child: new Scaffold(
+          body: TabBarView(
+              //(initialindexg == 1)?physics: NeverScrollableScrollPhysics():null,
+            //physics: NeverScrollableScrollPhysics(),
+            children: [
 
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (context) => CameraS(),
-                      ),
-                    );
-                    setState(() {
-                      hidebottombar = true;
-                      hideappbar = true;
-                    });
-                  },
-                  //child: CameraExampleHome(cameras),
-                ),
-
-
-                new Container(
-                  child: ChatsPage(),
-                ),
-                new Container(
-                  child: FeedsPage(),
-                ),
-                new Container(
-                  child: NotificationsPage(),
-                ),
-                new Container(child: AccountBottomIconScreen()),
-              ],
-            ),
-            bottomNavigationBar: (hidebottombar == true) ? PreferredSize(
-              child: Container(),
-              preferredSize: Size(0.0, 0.0),
-            ) : new Container(
-              height: 60.0,
-              child: new TabBar(
-                tabs: [
-                  Tab(
-                    icon: IconButton(
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (context) => CameraS(),
-                            ),
-                          );
-                        },
-
-                        icon: new Icon(FontAwesomeIcons.camera, size: 30)),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.blur_circular, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.home, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.notifications, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.account_circle, size: 30),
-                  )
-                ],
-                labelColor: Colors.purple,
-                unselectedLabelColor: Colors.deepPurple,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorPadding: EdgeInsets.all(5.0),
-                indicatorWeight: 3.0,
-                indicatorColor: Colors.deepPurple,
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      builder: (context) => CameraS(),
+                    ),
+                  );
+                  setState(() {
+                    hidebottombar = true;
+                    hideappbar = true;
+                  });
+                },
+                //child: CameraExampleHome(cameras),
               ),
-            ),
-            backgroundColor: Colors.white,
+
+
+              new Container(
+                child: ChatsPage(),
+              ),
+              new Container(
+                child: FeedsPage(),
+              ),
+              new Container(
+                child: NotificationsPage(),
+              ),
+              new Container(child: AccountBottomIconScreen()),
+            ],
           ),
+          bottomNavigationBar: (hidebottombar == true) ? PreferredSize(
+            child: Container(),
+            preferredSize: Size(0.0, 0.0),
+          ) : new Container(
+            height: 60.0,
+            child: new TabBar(
+              tabs: [
+                Tab(
+                  icon: IconButton(
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute(
+                            builder: (context) => CameraS(),
+                          ),
+                        );
+                      },
+
+                      icon: new Icon(FontAwesomeIcons.camera, size: 30)),
+                ),
+                Tab(
+                  icon: new Icon(Icons.blur_circular, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.home, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.notifications, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.account_circle, size: 30),
+                )
+              ],
+              labelColor: Colors.purple,
+              unselectedLabelColor: Colors.deepPurple,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorPadding: EdgeInsets.all(5.0),
+              indicatorWeight: 3.0,
+              indicatorColor: Colors.deepPurple,
+            ),
+          ),
+          backgroundColor: Colors.white,
         ),
       ),
     );
