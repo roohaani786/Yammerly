@@ -21,6 +21,7 @@ import 'package:techstagram/ui/HomePage.dart';
 class Gallery extends StatefulWidget {
   Gallery({this.filePath,this.cam});
   String filePath;
+
   int cam;
   @override
   _GalleryState createState() => _GalleryState(filePath,cam);
@@ -28,7 +29,9 @@ class Gallery extends StatefulWidget {
 
 class _GalleryState extends State<Gallery> {
   String currentFilePath;
+  File _selectedFile;
   int cam;
+  File image;
   _GalleryState(this.currentFilePath,this.cam);
 
 int indexd;
@@ -109,6 +112,42 @@ int indexd;
         }) ??
         false;
   }
+  bool _inProcess=false;
+
+  getImage(File file) async {
+    this.setState((){
+      _inProcess = true;
+    });
+    //File image = await ImagePicker.pickImage(source: source);
+    if(file != null){
+      File cropped = await ImageCropper.cropImage(
+          sourcePath: file.path,
+          aspectRatio: CropAspectRatio(
+              ratioX: 1, ratioY: 1),
+          compressQuality: 100,
+          maxWidth: 700,
+          maxHeight: 700,
+          compressFormat: ImageCompressFormat.jpg,
+          androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.deepOrange,
+            toolbarTitle: "AIO Cropper",
+            statusBarColor: Colors.deepOrange.shade900,
+            backgroundColor: Colors.white,
+          )
+      );
+
+      this.setState((){
+        _selectedFile = cropped;
+        _inProcess = false;
+      });
+    } else {
+      this.setState((){
+        _inProcess = false;
+      });
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -131,12 +170,22 @@ int indexd;
                     child: (cam == 1)?Transform(
                       alignment: Alignment.center,
                       transform: Matrix4.rotationY(math.pi),
-                      child: Image.file(
+                      child: (_selectedFile != null)?Image.file(
 
-                        File(currentFilePath),
+                        _selectedFile,
+                        width: 250,
+                        height: 250,
                         fit: BoxFit.cover,
+                      ):Image.file(
+                        File(currentFilePath),
+                        fit: BoxFit.cover
                       ),
-                    ): Image.file(
+                    ): (_selectedFile != null)?Image.file(
+                      _selectedFile,
+                      width: 250,
+                      height: 250,
+                      fit: BoxFit.cover,
+                    ):Image.file(
                         File(currentFilePath),
                         fit: BoxFit.cover,
                       ),
@@ -246,12 +295,14 @@ int indexd;
                               width: 230.0,
                               child: FlatButton(
                                 color: Colors.transparent,
-                                onPressed: () {
+                                onPressed: () =>
+                                  (_selectedFile == null)?
+                                  getImage(File(currentFilePath)):
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),shared: false,)),
-                                  );
-                                },
+                                    MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,shared: false,)),
+                                  ),
+
                                 child: Row(),
 //                            child: Row(
 //                              children: [
@@ -287,12 +338,16 @@ int indexd;
                                 width: 95.0,
                                 child: RaisedButton(
                                   color: Colors.grey.shade200,
-                                  onPressed: () {
+                                  onPressed: () =>
+                                    //image = File(currentFilePath);
+                                    (_selectedFile == null)?
+
+                                    getImage(File(currentFilePath)):
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),cam: cam)),
-                                    );
-                                  },
+                                      MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,cam: cam)),
+                                    ),
+
                                   child: Row(
                                     children: [
                                       Text("Post",style: TextStyle(
@@ -306,7 +361,14 @@ int indexd;
                             ),
                         ),
                     ),
-                  )
+                  ),
+                  (_inProcess)?Container(
+                    color: Colors.white,
+                    height: MediaQuery.of(context).size.height * 0.95,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ):Center()
 
                 ],
               ),

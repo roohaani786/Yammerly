@@ -953,8 +953,8 @@ bool isChanged = false;
                           controller: workController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 25.0){
-                              return 'Work should not be greater than 25 words';
+                            if(value.length > 35.0){
+                              return 'Work should not be greater than 35 words';
                             }
                           },
                           keyboardType: TextInputType.multiline,
@@ -977,8 +977,8 @@ bool isChanged = false;
                           controller: educationController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 20.0){
-                              return 'Education should not be greater then 20 words';
+                            if(value.length > 30.0){
+                              return 'Education should not be greater then 30 words';
                             }
                           },
                           keyboardType: TextInputType.multiline,
