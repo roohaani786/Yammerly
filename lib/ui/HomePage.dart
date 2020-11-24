@@ -200,21 +200,42 @@ class _HomePageState extends State<HomePage> {
                         ),
 
               backgroundColor: Colors.white,
-              leading: IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.searchengin,
-                  color: Colors.deepPurple,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
-                  );
-                },
+
+              leading: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.camera,
+                      color: Colors.deepPurple,
+                      //size: 10.0,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (context) => CameraS(),
+                        ),
+                      );
+                    },
+                  ),
+
+                ],
               ),
 
                 actions: <Widget>[
+
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.searchengin,
+                      color: Colors.deepPurple,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                      );
+                    },
+                  ),
 
                 IconButton(
                   icon: Icon(
@@ -302,8 +323,8 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
 
     return Scaffold(
       body: DefaultTabController(
-        length: 5,
-        initialIndex: 2,//(initialindexg == null) ? 2 : initialindexg,
+        length: 4,
+        initialIndex: 1,//(initialindexg == null) ? 2 : initialindexg,
 
         child: new Scaffold(
           body: WillPopScope(
@@ -313,20 +334,20 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
               //physics: NeverScrollableScrollPhysics(),
               children: [
 
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (context) => CameraS(),
-                      ),
-                    );
-                    setState(() {
-                      hidebottombar = true;
-                      hideappbar = true;
-                    });
-                  },
-                  //child: CameraExampleHome(cameras),
-                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.of(context, rootNavigator: true).push(
+                //       MaterialPageRoute(
+                //         builder: (context) => CameraS(),
+                //       ),
+                //     );
+                //     setState(() {
+                //       hidebottombar = true;
+                //       hideappbar = true;
+                //     });
+                //   },
+                //   //child: CameraExampleHome(cameras),
+                // ),
 
 
                 new Container(
@@ -349,18 +370,18 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
             height: 60.0,
             child: new TabBar(
               tabs: [
-                Tab(
-                  icon: IconButton(
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(
-                            builder: (context) => CameraS(),
-                          ),
-                        );
-                      },
-
-                      icon: new Icon(FontAwesomeIcons.camera, size: 30)),
-                ),
+                // Tab(
+                //   icon: IconButton(
+                //       onPressed: () {
+                //         Navigator.of(context, rootNavigator: true).push(
+                //           MaterialPageRoute(
+                //             builder: (context) => CameraS(),
+                //           ),
+                //         );
+                //       },
+                //
+                //       icon: new Icon(FontAwesomeIcons.camera, size: 30)),
+                // ),
                 Tab(
                   icon: new Icon(Icons.blur_circular, size: 30),
                 ),
