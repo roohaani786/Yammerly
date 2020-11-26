@@ -32,6 +32,7 @@ class _GalleryState extends State<Gallery> {
   File _selectedFile;
   int cam;
   File image;
+  bool _inProcess=false;
   _GalleryState(this.currentFilePath,this.cam);
 
 int indexd;
@@ -112,7 +113,7 @@ int indexd;
         }) ??
         false;
   }
-  bool _inProcess=false;
+  //bool _inProcess=false;
 
   getImage(File file) async {
     this.setState((){
