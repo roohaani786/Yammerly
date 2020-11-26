@@ -216,7 +216,7 @@ _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,t
 
   }
 
-  savePostinfoToUserShared(String url, String description, String owenerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
+  savePostinfoToUserShared(String url, String description, String ownerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
 
     Firestore.instance
         .collection("users")
@@ -226,6 +226,7 @@ _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,t
         .setData({
       "OwnerPhotourl" : ownerphotourl,
       "description" : description,
+      "Ownerdescription" : ownerdescription,
       "OwnerDisplayName" : ownerdisplayname,
       "shared" : shared,
       "postId": postId,

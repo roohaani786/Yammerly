@@ -139,6 +139,8 @@ class _FeedsPageState extends State<FeedsPage> {
   String postIdX;
   bool postliked = false;
   bool _liked = false;
+  bool localliked = false;
+  String loadinglike = "";
 
   fetchPosts() async {
 
@@ -174,8 +176,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
   getlikes( String displayNamecurrent, String postId) async {
 
-    print(displayNamecurrent);
-    print(postId);
+//    print(displayNamecurrent);
+//    print(postId);
 
     await Firestore.instance.collection('posts')
         .document(postIdX)
@@ -186,7 +188,8 @@ class _FeedsPageState extends State<FeedsPage> {
       if (value.exists) {
         setState(() {
           _liked = true;
-          print(_liked);
+          loadinglike = "done";
+//          print(_liked);
         });
       }
     });
@@ -303,23 +306,6 @@ class _FeedsPageState extends State<FeedsPage> {
     print("Done..");
   }
 
-//  doubletaplike(int likes, String postId)  {
-//
-//
-//
-//    if(_liked == false) {
-//      setState(() {
-//        _liked = true;
-//      });
-//      DatabaseService().likepost(
-//          likes, postId,
-//          displayNameController.text);
-//
-//    }else{
-//      print("ghg");
-//    }
-//
-//  }
   String urlx;
 
   TransformationController _controller = TransformationController();
@@ -353,7 +339,6 @@ class _FeedsPageState extends State<FeedsPage> {
                       itemBuilder: (context, index) {
 
                         postIdX = snapshot.data.documents[index]['postId'];
-                        getlikes(displayNameController.text, postIdX);
                         String email = snapshot.data.documents[index]['email'];
                         String description =
                         snapshot.data.documents[index]['description'];
@@ -375,10 +360,10 @@ class _FeedsPageState extends State<FeedsPage> {
                         int likes = snapshot.data.documents[index]['likes'];
                         int counter = snapshot.data.documents[index]['likes'];
                         int comments = snapshot.data.documents[index]['comments'];
-                        likescount = likes;
+                        int likedlocalcount = likes;
                         readTimestamp(timestamp.seconds);
 
-//                        getlikes(displayNameController.text, postId);
+                        getlikes(displayNameController.text, postIdX);
 
 
 
@@ -452,7 +437,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                 padding: const EdgeInsets.only(bottom: 1.0),
                                 child: Container(
                                   height: 50.0,
-                                  color: Colors.white54,
+                                  color: Colors.grey.shade50,
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 15.0,right: 15.0,),
                                     child: Row(
@@ -479,10 +464,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                             ),),
                                           ],
                                         ),
-                                        IconButton(
-                                          icon: Icon(SimpleLineIcons.options,size: 20.0,),
-                                          onPressed: () {},
-                                        ),
+//                                        IconButton(
+//                                          icon: Icon(SimpleLineIcons.options,size: 20.0,),
+//                                          onPressed: () {},
+//                                        ),
                                       ],
                                     ),
                                   ),
@@ -491,7 +476,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
                               GestureDetector(
-                                onDoubleTap: () async {
+                                onDoubleTap: () {
 
 
                                   if (_liked == false) {
@@ -499,7 +484,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                       _liked = true;
                                       print(_liked);
                                     });
-                                    await DatabaseService().likepost(
+                                    DatabaseService().likepost(
                                         likes, postId,
                                         displayNameController.text);
 
@@ -520,7 +505,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                       child: FadeInImage(
 
                                         image: NetworkImage(url),
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fitHeight,
                                         //image: NetworkImage("posts[i].postImage"),
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
@@ -529,7 +514,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     ):FadeInImage(
 
                                       image: NetworkImage(url),
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.fitHeight,
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
@@ -551,19 +536,24 @@ class _FeedsPageState extends State<FeedsPage> {
                                   Row(
                                     children: <Widget>[
 
-                                      IgnorePointer(
-                                        ignoring: (loading == true)?true:false,
-                                        ignoringSemantics: true,
-                                        child: IconButton(
+                                      IconButton(
                                           padding: EdgeInsets.only(left: 10),
+
                                           onPressed: (_liked == true)
                                               ? () {
                                             setState(() {
                                               _liked = false;
                                               loading = true;
-//                                              likes--;
-                                              DatabaseService().unlikepost(
-                                                  likes, postId,displayNameController.text);
+//                                              localliked = false;
+//                                              likedlocalcount--;
+                                            });
+
+                                            DatabaseService().unlikepost(
+                                                likes, postId,displayNameController.text);
+
+                                            getlikes(displayNamecurrentUser, postId);
+
+                                            setState(() {
                                               loading = false;
                                             });
                                           }
@@ -571,9 +561,16 @@ class _FeedsPageState extends State<FeedsPage> {
                                             setState(() {
                                               _liked = true;
                                               loading = true;
-//                                              likes++;
-                                              DatabaseService().likepost(
-                                                  likes, postId,displayNameController.text);
+//                                              localliked = true;
+//                                              likedlocalcount++;
+                                            });
+
+                                            DatabaseService().likepost(
+                                                likes, postId,displayNameController.text);
+
+                                            getlikes(displayNamecurrentUser, postId);
+
+                                            setState(() {
                                               loading = false;
                                             });
                                           },
@@ -581,9 +578,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                           iconSize: 25,
                                           color: (_liked == true) ? Colors.deepPurple : Colors.grey,
                                         ),
-                                      ),
 
-                                      Text(
+                                     Text(
                                         likes.toString(),style: TextStyle(
                                         color: Colors.black,
                                       ),
@@ -617,7 +613,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
-                                      Text(shares.toString()),
+//                                      Text(shares.toString()),
                                     ],
                                   ),
                                   // IconButton(
@@ -817,7 +813,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               loading = false;
                                             });
                                           }
-                                              : () {
+                                                : () {
                                             setState(() {
                                               _liked = true;
                                               loading = true;
@@ -868,7 +864,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
                                       // Text(postId),
-                                      Text(shares.toString()),
+//                                      Text(shares.toString()),
                                     ],
                                   ),
                                   // IconButton(
@@ -947,15 +943,12 @@ class _FeedsPageState extends State<FeedsPage> {
 
           },
         ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
+          child: IconButton(icon: Icon(FontAwesomeIcons.plusSquare,
+          color: Colors.purple,), onPressed: (){}),
+        ),
       ),
     );
   }
-}
-
-class Student {
-  var name = 'foo';
-  var year = '2018';
-  var liked = false;
-
-  Student(this.name);
 }
