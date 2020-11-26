@@ -31,7 +31,7 @@ class _ChatsPageState extends State<ChatsPage> {
 //      dispose();
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2)),
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
       );
 
 

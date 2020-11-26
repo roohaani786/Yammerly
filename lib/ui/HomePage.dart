@@ -187,21 +187,42 @@ class _HomePageState extends State<HomePage> {
                         ),
 
               backgroundColor: Colors.white,
-              leading: IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.searchengin,
-                  color: Colors.deepPurple,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
-                  );
-                },
+
+              leading: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.camera,
+                      color: Colors.deepPurple,
+                      //size: 10.0,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (context) => CameraS(),
+                        ),
+                      );
+                    },
+                  ),
+
+                ],
               ),
 
                 actions: <Widget>[
+
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.searchengin,
+                      color: Colors.deepPurple,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                      );
+                    },
+                  ),
 
                 IconButton(
                   icon: Icon(
@@ -246,61 +267,74 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
 
   int initialindexg;
 
+  Future<bool> _onWillPop() {
 
-
-  Future<bool> onWillPop() {
-
-    return showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(false),
-            child: Text("NO"),
-          ),
-          SizedBox(height: 16),
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(true),
-            child: Text("YES"),
-          ),
-        ],
-      ),
-    ) ??
-        false;
+    // return Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) {
+    //       return HomePage(initialindexg: 2);
+    //     },
+    //   ),
+    // );
   }
+
+
+
+  // Future<bool> onWillPop() {
+  //
+  //   return showDialog(
+  //     context: context,
+  //     builder: (context) => new AlertDialog(
+  //       title: new Text('Are you sure?'),
+  //       content: new Text('Do you want to exit an App'),
+  //       actions: <Widget>[
+  //         new GestureDetector(
+  //           onTap: () => Navigator.of(context).pop(false),
+  //           child: Text("NO"),
+  //         ),
+  //         SizedBox(height: 16),
+  //         new GestureDetector(
+  //           onTap: () => Navigator.of(context).pop(true),
+  //           child: Text("YES"),
+  //         ),
+  //       ],
+  //     ),
+  //   ) ??
+  //       false;
+  // }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return GestureDetector(
-      onTap: () => print("hello"),
-      child: Scaffold(
-        body: DefaultTabController(
-          length: 5,
-          initialIndex: (initialindexg == null) ? 2 : initialindexg,
+    return Scaffold(
+      body: DefaultTabController(
+        length: 4,
+        initialIndex: 1,//(initialindexg == null) ? 2 : initialindexg,
 
-          child: new Scaffold(
-            body: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
+        child: new Scaffold(
+          body: WillPopScope(
+            onWillPop: () => _onWillPop(),
+            child: TabBarView(
+                //(initialindexg == 1)?physics: NeverScrollableScrollPhysics():null,
+              //physics: NeverScrollableScrollPhysics(),
               children: [
 
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (context) => CameraS(),
-                      ),
-                    );
-                    setState(() {
-                      hidebottombar = true;
-                      hideappbar = true;
-                    });
-                  },
-                  //child: CameraExampleHome(cameras),
-                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.of(context, rootNavigator: true).push(
+                //       MaterialPageRoute(
+                //         builder: (context) => CameraS(),
+                //       ),
+                //     );
+                //     setState(() {
+                //       hidebottombar = true;
+                //       hideappbar = true;
+                //     });
+                //   },
+                //   //child: CameraExampleHome(cameras),
+                // ),
 
 
                 new Container(
@@ -315,48 +349,48 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                 new Container(child: AccountBottomIconScreen()),
               ],
             ),
-            bottomNavigationBar: (hidebottombar == true) ? PreferredSize(
-              child: Container(),
-              preferredSize: Size(0.0, 0.0),
-            ) : new Container(
-              height: 60.0,
-              child: new TabBar(
-                tabs: [
-                  Tab(
-                    icon: IconButton(
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (context) => CameraS(),
-                            ),
-                          );
-                        },
-
-                        icon: new Icon(FontAwesomeIcons.camera, size: 30)),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.blur_circular, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.home, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.notifications, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.account_circle, size: 30),
-                  )
-                ],
-                labelColor: Colors.purple,
-                unselectedLabelColor: Colors.deepPurple,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorPadding: EdgeInsets.all(5.0),
-                indicatorWeight: 3.0,
-                indicatorColor: Colors.deepPurple,
-              ),
-            ),
-            backgroundColor: Colors.white,
           ),
+          bottomNavigationBar: (hidebottombar == true) ? PreferredSize(
+            child: Container(),
+            preferredSize: Size(0.0, 0.0),
+          ) : new Container(
+            height: 60.0,
+            child: new TabBar(
+              tabs: [
+                // Tab(
+                //   icon: IconButton(
+                //       onPressed: () {
+                //         Navigator.of(context, rootNavigator: true).push(
+                //           MaterialPageRoute(
+                //             builder: (context) => CameraS(),
+                //           ),
+                //         );
+                //       },
+                //
+                //       icon: new Icon(FontAwesomeIcons.camera, size: 30)),
+                // ),
+                Tab(
+                  icon: new Icon(Icons.blur_circular, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.home, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.notifications, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.account_circle, size: 30),
+                )
+              ],
+              labelColor: Colors.purple,
+              unselectedLabelColor: Colors.deepPurple,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorPadding: EdgeInsets.all(5.0),
+              indicatorWeight: 3.0,
+              indicatorColor: Colors.deepPurple,
+            ),
+          ),
+          backgroundColor: Colors.white,
         ),
       ),
     );
