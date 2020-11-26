@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:techstagram/utils/utils.dart';
 
 class NotificationsPage extends StatefulWidget {

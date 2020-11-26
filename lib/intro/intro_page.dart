@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
-import 'package:techstagram/pages/step_model.dart';
+import 'package:techstagram/intro/step_model.dart';
 
 class IntroPage extends StatefulWidget {
   @override
