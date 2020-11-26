@@ -9,13 +9,8 @@ import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/Login/components/background.dart';
 import 'package:techstagram/Login/login_screen.dart';
-import 'package:techstagram/Signup/components/or_divider.dart';
-import 'package:techstagram/Signup/components/social_icon.dart';
-import 'package:techstagram/Signup/signup_screen.dart';
-import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/resources/auth.dart';
-import 'package:techstagram/ui/HomePage.dart';
 import '../../constants.dart';
 import '../../forgotpassword.dart';
 
@@ -113,10 +108,11 @@ class _BodyState extends State<Body> {
   }
 
   String emailValidator(String value) {
+
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
-//    var hu = value;
+
     if (!regex.hasMatch(value) && value.length == null) {
       setState(() {
         errordikhaoL = true;
@@ -318,10 +314,9 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+
     bool loginfail = false;
-    Size size = MediaQuery
-        .of(context)
-        .size;
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -480,7 +475,7 @@ class _BodyState extends State<Body> {
                                   focusNode: _pwd,
                                   onFieldSubmitted: (value) {
                                     _pwd.unfocus();
-                                    RoundedButton;
+                                    RoundedButtonX();
                                   },
                                   style: TextStyle(
                                       fontSize: 12.0,
@@ -555,7 +550,7 @@ class _BodyState extends State<Body> {
                                   focusNode: _apwd,
                                   onFieldSubmitted: (value) {
                                     _apwd.unfocus();
-                                    RoundedButton;
+                                    RoundedButtonX();
                                   },
                                   style: TextStyle(
                                       fontSize: 12.0,
@@ -630,7 +625,7 @@ class _BodyState extends State<Body> {
                                   focusNode: _cpwd,
                                   onFieldSubmitted: (value) {
                                     _cpwd.unfocus();
-                                    RoundedButton;
+                                    RoundedButtonX();
                                   },
                                   style: TextStyle(
                                       fontSize: 12.0,
@@ -643,7 +638,7 @@ class _BodyState extends State<Body> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 15.0),
-                          child: RoundedButton(
+                          child: RoundedButtonX(
                               text: "Change Password",
                               press: () {
                                 if(newpwdInputController.text == CnewpwdInputController.text){

@@ -1,69 +1,44 @@
 import 'package:camera/camera.dart';
-import 'package:camera/new/src/support_android/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:firebase/firebase.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:techstagram/ComeraV/cam.dart';
-import 'package:techstagram/models/user.dart';
-import 'package:techstagram/models/wiggle.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
-//import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
-import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
-import 'package:techstagram/ui/other_profile.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
-
-//import '../resources/opencamera.dart';
 import 'messagingsystem.dart';
 import 'searchlist.dart';
 
 
 class HomePage extends StatefulWidget {
-  HomePage({
-    Key key,
-    this.title = "Hashtag",
+
+  HomePage({ Key key, this.title = "Hashtag",
     this.uid,this.initialindexg,
   }) : super(key: key); //update this to include the uid in the constructor
+
   final String title;
   final String uid;
   int initialindexg = 2;
   FirebaseUser user;
-
-
-
-  //include this
-
-  GoogleSignIn _googleSignIn;
-  FirebaseUser _user;
-
-
-  Body(FirebaseUser user, GoogleSignIn signIn) {
-    _user = user;
-    _googleSignIn = signIn;
-  }
 
   @override
   _HomePageState createState() => _HomePageState(initialindexg);
 }
 
 class _HomePageState extends State<HomePage> {
+
+
   TextEditingController taskTitleInputController;
   TextEditingController taskDescripInputController;
   FirebaseUser currentUser;
   FirebaseProvider firebaseProvider;
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   _HomePageState(this.initialindexg);
 
@@ -95,13 +70,11 @@ class _HomePageState extends State<HomePage> {
       emailController.text = docSnap.data["email"];
       photoUrlController.text = docSnap.data["photoURL"];
       phonenumberController.text = docSnap.data["phonenumber"];
-//      bioController.text = docSnap.data["bio"];
       followers = docSnap.data["followers"];
       following  = docSnap.data["following"];
       posts  = docSnap.data["posts"];
       setState(() {
-//        isLoading = false;
-//        isEditable = true;
+
       });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
@@ -125,7 +98,7 @@ class _HomePageState extends State<HomePage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-//    fetchPosts();
+    
     fetchProfileData();
     this.getCurrentUser();
     super.initState();
@@ -140,14 +113,7 @@ class _HomePageState extends State<HomePage> {
     print(currentUser.uid);
   }
 
-
-  _signOut() async {
-    await _firebaseAuth.signOut();
-  }
-
   List<CameraDescription> cameras = [];
-
-
   DateTime currentBackPressTime;
 
   Future<bool> onWillPop() {
@@ -172,14 +138,9 @@ class _HomePageState extends State<HomePage> {
         false;
   }
 
-  final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
 
 
-  _saveDeviceToken(String uid) async {
-    String fcmToken = await _fcm.getToken();
-    DatabaseService(uid: uid).uploadtoken(fcmToken);
-  }
 
 
   @override
@@ -200,21 +161,42 @@ class _HomePageState extends State<HomePage> {
                         ),
 
               backgroundColor: Colors.white,
-              leading: IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.searchengin,
-                  color: Colors.deepPurple,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
-                  );
-                },
+
+              leading: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.camera,
+                      color: Colors.deepPurple,
+                      //size: 10.0,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (context) => CameraS(),
+                        ),
+                      );
+                    },
+                  ),
+
+                ],
               ),
 
                 actions: <Widget>[
+
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.searchengin,
+                      color: Colors.deepPurple,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                      );
+                    },
+                  ),
 
                 IconButton(
                   icon: Icon(
@@ -259,61 +241,74 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
 
   int initialindexg;
 
+  Future<bool> _onWillPop() {
 
-
-  Future<bool> onWillPop() {
-
-    return showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(false),
-            child: Text("NO"),
-          ),
-          SizedBox(height: 16),
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(true),
-            child: Text("YES"),
-          ),
-        ],
-      ),
-    ) ??
-        false;
+    // return Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) {
+    //       return HomePage(initialindexg: 2);
+    //     },
+    //   ),
+    // );
   }
+
+
+
+  // Future<bool> onWillPop() {
+  //
+  //   return showDialog(
+  //     context: context,
+  //     builder: (context) => new AlertDialog(
+  //       title: new Text('Are you sure?'),
+  //       content: new Text('Do you want to exit an App'),
+  //       actions: <Widget>[
+  //         new GestureDetector(
+  //           onTap: () => Navigator.of(context).pop(false),
+  //           child: Text("NO"),
+  //         ),
+  //         SizedBox(height: 16),
+  //         new GestureDetector(
+  //           onTap: () => Navigator.of(context).pop(true),
+  //           child: Text("YES"),
+  //         ),
+  //       ],
+  //     ),
+  //   ) ??
+  //       false;
+  // }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return GestureDetector(
-      onTap: () => print("hello"),
-      child: Scaffold(
-        body: DefaultTabController(
-          length: 5,
-          initialIndex: (initialindexg == null) ? 2 : initialindexg,
+    return Scaffold(
+      body: DefaultTabController(
+        length: 4,
+        initialIndex: 1,//(initialindexg == null) ? 2 : initialindexg,
 
-          child: new Scaffold(
-            body: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
+        child: new Scaffold(
+          body: WillPopScope(
+            onWillPop: () => _onWillPop(),
+            child: TabBarView(
+                //(initialindexg == 1)?physics: NeverScrollableScrollPhysics():null,
+              //physics: NeverScrollableScrollPhysics(),
               children: [
 
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (context) => CameraS(),
-                      ),
-                    );
-                    setState(() {
-                      hidebottombar = true;
-                      hideappbar = true;
-                    });
-                  },
-                  //child: CameraExampleHome(cameras),
-                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.of(context, rootNavigator: true).push(
+                //       MaterialPageRoute(
+                //         builder: (context) => CameraS(),
+                //       ),
+                //     );
+                //     setState(() {
+                //       hidebottombar = true;
+                //       hideappbar = true;
+                //     });
+                //   },
+                //   //child: CameraExampleHome(cameras),
+                // ),
 
 
                 new Container(
@@ -328,48 +323,48 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                 new Container(child: AccountBottomIconScreen()),
               ],
             ),
-            bottomNavigationBar: (hidebottombar == true) ? PreferredSize(
-              child: Container(),
-              preferredSize: Size(0.0, 0.0),
-            ) : new Container(
-              height: 60.0,
-              child: new TabBar(
-                tabs: [
-                  Tab(
-                    icon: IconButton(
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(
-                              builder: (context) => CameraS(),
-                            ),
-                          );
-                        },
-
-                        icon: new Icon(FontAwesomeIcons.camera, size: 30)),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.blur_circular, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.home, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.notifications, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.account_circle, size: 30),
-                  )
-                ],
-                labelColor: Colors.purple,
-                unselectedLabelColor: Colors.deepPurple,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorPadding: EdgeInsets.all(5.0),
-                indicatorWeight: 3.0,
-                indicatorColor: Colors.deepPurple,
-              ),
-            ),
-            backgroundColor: Colors.white,
           ),
+          bottomNavigationBar: (hidebottombar == true) ? PreferredSize(
+            child: Container(),
+            preferredSize: Size(0.0, 0.0),
+          ) : new Container(
+            height: 60.0,
+            child: new TabBar(
+              tabs: [
+                // Tab(
+                //   icon: IconButton(
+                //       onPressed: () {
+                //         Navigator.of(context, rootNavigator: true).push(
+                //           MaterialPageRoute(
+                //             builder: (context) => CameraS(),
+                //           ),
+                //         );
+                //       },
+                //
+                //       icon: new Icon(FontAwesomeIcons.camera, size: 30)),
+                // ),
+                Tab(
+                  icon: new Icon(Icons.blur_circular, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.home, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.notifications, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.account_circle, size: 30),
+                )
+              ],
+              labelColor: Colors.purple,
+              unselectedLabelColor: Colors.deepPurple,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorPadding: EdgeInsets.all(5.0),
+              indicatorWeight: 3.0,
+              indicatorColor: Colors.deepPurple,
+            ),
+          ),
+          backgroundColor: Colors.white,
         ),
       ),
     );

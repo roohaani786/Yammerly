@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
@@ -12,8 +11,6 @@ import 'package:techstagram/ui/ProfileEdit.dart';
 import 'dart:math' as math;
 import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 import 'package:techstagram/ui/post.dart';
-import 'package:techstagram/views/tabs/comments_screen.dart';
-
 import '../HomePage.dart';
 import '../aboutuser.dart';
 
@@ -283,7 +280,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
             ListView.builder(
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
-                DocumentSnapshot sd = snapshot.data.documents[index];
+//                DocumentSnapshot sd = snapshot.data.documents[index];
                 String photoUrl = snapshot.data.documents[index]["photoURL"];
                 String uid = snapshot.data.documents[index]["uid"];
                 String displayName = snapshot.data.documents[index]["displayName"];

@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'Otheruser/other_user.dart';
 
 class FollowersList extends StatefulWidget {
@@ -125,38 +123,15 @@ class _FollowersList extends State<FollowersList> {
                 shape: BoxShape.circle,
               ),child: CircularProgressIndicator()))
               : ListView.builder(
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot sd = snapshot.data.documents[index];
+
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) {
+//              DocumentSnapshot sd = snapshot.data.documents[index];
               searchKey = snapshot.data.documents[index]["followername"];
-              //String photoUrl = snapshot.data.documents[index]["photoUrl"];
               String uid = snapshot.data.documents[index]["followeruid"];
-              //bandekiuid = snapshot.data.documents[index]["uid"];
               String displayName = snapshot.data.documents[index]["followername"];
               print(displayName);
 
-              fetchProfileData() async {
-                //currUser = await FirebaseAuth.instance.currentUser();
-                try {
-                  docSnap = await Firestore.instance
-                      .collection("users")
-                      .document(uid)
-                      .get();
-
-                  displayNameControllerO.text = docSnap.data["displayName"];
-                  uidControllerO.text = docSnap.data["uid"];
-                  emailControllerO.text = docSnap.data["email"];
-                  photoUrlControllerO.text = docSnap.data["photoURL"];
-                  phonenumberControllerO.text = docSnap.data["phonenumber"];
-                  bioControllerO.text = docSnap.data["bio"];
-                  followersO = docSnap.data["followers"];
-                  followingO  = docSnap.data["following"];
-                  postsO  = docSnap.data["posts"];
-
-                } on PlatformException catch (e) {
-                  print("PlatformException in fetching user profile. E  = " + e.message);
-                }
-              }
               return (searchKey!= null)?Card(
                 child: Row(
                   children: <Widget>[

@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/src/widgets/editable_text.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/models/wiggle.dart';
 import 'dart:io';
@@ -565,23 +563,13 @@ class DatabaseService {
 
   //userData from snapshot
   User _userDataFromSnapshot(DocumentSnapshot snapshot) {
+
     return User(
         email: snapshot.data['email'],
-//        block: snapshot.data['block'],
         bio: snapshot.data['bio'],
         displayName: snapshot.data['name'],
         gender: snapshot.data['gender'],
         photoUrl: snapshot.data['photoUrl'] ?? '');
-//        nickname: snapshot.data['nickname'],
-//        isAnonymous: snapshot.data['isAnonymous'],
-//        anonBio: snapshot.data['anonBio'] ?? '',
-//        anonInterest: snapshot.data['anonInterest'] ?? '',
-//        anonDp: snapshot.data['anonDp'] ?? '',
-//        fame: snapshot.data['fame'] ?? 0,
-//        media: snapshot.data['media'] ?? '',
-//        course: snapshot.data['course'] ?? '',
-//        playlist: snapshot.data['playlist'] ?? '',
-//        accoms: snapshot.data['accoms'] ?? '');
   }
 
   //get wiggle stream
@@ -688,55 +676,11 @@ class DatabaseService {
         .snapshots();
   }
 
-  // getPostsUser(TextEditingController uidController) async {
-  //   return Firestore.instance.collection('users')
-  //       .document(uidController.text)
-  //       .collection('posts')
-  //       .orderBy("timestamp", descending: true)
-  //       .snapshots();
-  // }
-
-
-
   getUsers() async {
     return Firestore.instance
         .collection("users")
         .orderBy("timestamp", descending: true)
         .snapshots();
-  }
-
-
-
-  getMyCompatibilityResults(wiggle, userData, compatibilityRoomID) async {
-    return await Firestore.instance
-        .collection("compatibility")
-        .document(compatibilityRoomID)
-        .collection("${userData.name} answers")
-        .snapshots();
-  }
-
-  getFriendCompatibilityResults(wiggle, userData, compatibilityRoomID) async {
-    return await Firestore.instance
-        .collection("compatibility")
-        .document(compatibilityRoomID)
-        .collection("${wiggle.name} answers")
-        .snapshots();
-  }
-
-  getCompatibilityQuestions(wiggle, userData, compatibilityRoomID) async {
-    return await Firestore.instance
-        .collection("compatibility")
-        .document(compatibilityRoomID)
-        .collection("questions")
-        .snapshots();
-  }
-
-  getDocCompatibilityQuestions(wiggle, userData, compatibilityRoomID) async {
-    return await Firestore.instance
-        .collection("compatibility")
-        .document(compatibilityRoomID)
-        .collection("questions")
-        .getDocuments();
   }
 
   getDocMyCompatibilityAnswers(wiggle, userData, compatibilityRoomID) async {

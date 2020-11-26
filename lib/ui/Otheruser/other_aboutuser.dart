@@ -1,27 +1,13 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:string_validator/string_validator.dart';
-import 'package:techstagram/constants.dart';
-import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
-import 'package:techstagram/services/database.dart';
-import 'package:techstagram/ui/HomePage.dart';
-import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:image/image.dart' as ImD;
-//import 'package:fluttertoast/fluttertoast.dart';
-
 
 
 class AboutOtherUser extends StatefulWidget {
@@ -132,14 +118,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   }
 
   File profileImageFile;
-
   File _image;
-  String _uploadedFileURL;
-
-
-
-
-
   bool uploading = false;
 
 
@@ -172,53 +151,8 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   bool isChanged = false;
   String relationstring = "Select Relationship";
   String genderstring = "Select Gender";
-
-  String _male = "male";
-  String _female = "female";
-  String _other = "other";
-  String _value;
   bool tickvalue = false;
   int check;
-  void _handleRadioValueChange1(String value) {
-    setState(() {
-      _value = value;
-      if(_value=="Male"){
-        setState(() {
-          check = 0;
-        });
-      }else if(_value=="Female"){
-        setState(() {
-          check = 1;
-        });
-      }else if(_value == "other"){
-        setState(() {
-          check = 2;
-          print(tickvalue);
-          tickvalue = true;
-        });
-      }
-      else{
-        setState(() {
-          tickvalue = false;
-        });
-      }
-
-      switch (check) {
-        case 0:
-          genderController.text = _male;
-          //correctScore++;
-          break;
-        case 1:
-          genderController.text = _female;
-          break;
-        case 2:
-          genderController.text = _other;
-          break;
-        default:
-          genderController.text = null;
-      }
-    });
-  }
 
 
   bool firstnameE = false;

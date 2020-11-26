@@ -3,9 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:fluro/fluro.dart';
 import 'package:techstagram/ComeraV/cam.dart';
-import 'package:torch_compat/torch_compat.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,18 +13,10 @@ import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
-import 'dart:io';
-//import 'package:torch_compat/torch_compat.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
-//import 'package:thumbnails/thumbnails.dart';
-//import 'package:lamp/lamp.dart';
-//import 'package:torch/torch.dart';
 import 'package:image/image.dart' as ImD;
-//import 'package:holding_gesture/holding_gesture.dart';
-
-import 'application.dart';
 
 class CameraScreen extends StatefulWidget {
   final int cam;
@@ -46,9 +36,7 @@ class CameraScreenState extends State<CameraScreen>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isRecordingMode = false;
   bool _isRecording = false;
-//  bool _isButtonPressed = false;
   final _timerKey = GlobalKey<VideoTimerState>();
-  bool _hasFlash = false;
   Map<String, dynamic> _profile;
   bool _loading = false;
   int cam;
@@ -298,8 +286,6 @@ class CameraScreenState extends State<CameraScreen>
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
 
     super.build(context);
     if (_controller != null) {
@@ -483,7 +469,7 @@ class CameraScreenState extends State<CameraScreen>
 
               FlatButton(
                 color: Colors.transparent,
-//              onPressed: () async => await Lamp.flash(new Duration(seconds: 2)),
+              onPressed: () async => null,
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 28.0,
@@ -588,7 +574,8 @@ class CameraScreenState extends State<CameraScreen>
       setState(() {
         cam = 0;
       });
-    };
+    }
+
     final CameraDescription cameraDescription = _cameras[cam];
     //(_controller.description == _cameras[0]) ? _cameras[1] : _cameras[0];
     if (_controller != null) {

@@ -69,38 +69,6 @@ class _BodyState extends State<Body> {
     });
   }
 
-  Future<FirebaseUser> _handleSignIn() async {
-    FirebaseUser user;
-    bool userSignedIn = await googleSignIn.isSignedIn();
-
-    setState(() {
-      isUserSignedIn = userSignedIn;
-    });
-
-    if (isUserSignedIn) {
-      user = await auth.currentUser();
-      final uid = user.uid;
-      print(uid);
-    } else {
-      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-
-      user = (await auth.signInWithCredential(credential)).user;
-      userSignedIn = await googleSignIn.isSignedIn();
-      setState(() {
-        isUserSignedIn = userSignedIn;
-      });
-    }
-
-    return user;
-  }
 
   void onGoogleSignIn(BuildContext context) async {
     final valid = await usernameCheck(displayNameInputController.text);
@@ -306,7 +274,7 @@ class _BodyState extends State<Body> {
 
   Future<String> signup(String email, String password, String firstname,
       String lastname, String phonenumber, String displayname) async {
-    FirebaseUser user;
+
     String errorMessage;
 
     this.setState(() {
@@ -876,7 +844,7 @@ class _BodyState extends State<Body> {
                         focusNode: _confirmPwd,
                         onFieldSubmitted: (value) {
                           _confirmPwd.unfocus();
-                          RoundedButton;
+                          RoundedButtonX();
                         },
                         cursorColor: kPrimaryColor,
 
@@ -919,7 +887,7 @@ class _BodyState extends State<Body> {
                   ),
                 ),
 
-                RoundedButton(
+                RoundedButtonX(
                   text: "SIGNUP",
                   press: () {
                     signup(emailInputController.text, pwdInputController.text,
