@@ -1,47 +1,34 @@
 import 'package:camera/camera.dart';
-import 'package:camera/new/src/support_android/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:firebase/firebase.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:responsive_layout_builder/responsive_layout_builder.dart';
 import 'package:techstagram/ComeraV/cam.dart';
-import 'package:techstagram/models/user.dart';
-import 'package:techstagram/models/wiggle.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
-//import 'package:techstagram/resources/opencamera.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
-import 'package:techstagram/ui/other_profile.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
-
-//import '../resources/opencamera.dart';
 import 'messagingsystem.dart';
 import 'searchlist.dart';
 
 
 class HomePage extends StatefulWidget {
-  HomePage({
-    Key key,
-    this.title = "Hashtag",
+
+  HomePage({ Key key, this.title = "Hashtag",
     this.uid,this.initialindexg,
   }) : super(key: key); //update this to include the uid in the constructor
+
   final String title;
   final String uid;
   int initialindexg = 2;
   FirebaseUser user;
-
-
 
   //include this
 
@@ -59,6 +46,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
   TextEditingController taskTitleInputController;
   TextEditingController taskDescripInputController;
   FirebaseUser currentUser;
@@ -95,13 +84,11 @@ class _HomePageState extends State<HomePage> {
       emailController.text = docSnap.data["email"];
       photoUrlController.text = docSnap.data["photoURL"];
       phonenumberController.text = docSnap.data["phonenumber"];
-//      bioController.text = docSnap.data["bio"];
       followers = docSnap.data["followers"];
       following  = docSnap.data["following"];
       posts  = docSnap.data["posts"];
       setState(() {
-//        isLoading = false;
-//        isEditable = true;
+
       });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
@@ -125,7 +112,7 @@ class _HomePageState extends State<HomePage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-//    fetchPosts();
+    
     fetchProfileData();
     this.getCurrentUser();
     super.initState();

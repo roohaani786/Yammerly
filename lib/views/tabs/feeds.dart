@@ -139,6 +139,8 @@ class _FeedsPageState extends State<FeedsPage> {
   String postIdX;
   bool postliked = false;
   bool _liked = false;
+  bool localliked = false;
+  String loadinglike = "";
 
   fetchPosts() async {
 
@@ -174,8 +176,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
   getlikes( String displayNamecurrent, String postId) async {
 
-    print(displayNamecurrent);
-    print(postId);
+//    print(displayNamecurrent);
+//    print(postId);
 
     await Firestore.instance.collection('posts')
         .document(postIdX)
@@ -186,7 +188,8 @@ class _FeedsPageState extends State<FeedsPage> {
       if (value.exists) {
         setState(() {
           _liked = true;
-          print(_liked);
+          loadinglike = "done";
+//          print(_liked);
         });
       }
     });
@@ -303,23 +306,6 @@ class _FeedsPageState extends State<FeedsPage> {
     print("Done..");
   }
 
-//  doubletaplike(int likes, String postId)  {
-//
-//
-//
-//    if(_liked == false) {
-//      setState(() {
-//        _liked = true;
-//      });
-//      DatabaseService().likepost(
-//          likes, postId,
-//          displayNameController.text);
-//
-//    }else{
-//      print("ghg");
-//    }
-//
-//  }
   String urlx;
 
   TransformationController _controller = TransformationController();
@@ -331,6 +317,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
     // TODO: implement build
+
     return Scaffold(
       key: _scaffoldKey,
       body: StreamBuilder(
@@ -347,7 +334,7 @@ class _FeedsPageState extends State<FeedsPage> {
                     itemBuilder: (context, index) {
 
                       postIdX = snapshot.data.documents[index]['postId'];
-                      getlikes(displayNameController.text, postIdX);
+     
                       String email = snapshot.data.documents[index]['email'];
                       String description =
                       snapshot.data.documents[index]['description'];
@@ -372,7 +359,8 @@ class _FeedsPageState extends State<FeedsPage> {
                       likescount = likes;
                       readTimestamp(timestamp.seconds);
 
-//                        getlikes(displayNameController.text, postId);
+
+                       getlikes(displayNameController.text, postIdX);
 
 
 
@@ -394,16 +382,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                 context,
                                 MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
                               ),
+
                               child: Container(
                                 padding: EdgeInsets.only(
                                   top: 10,
                                   left: 10,
                                   right: 10.0,
                                 ),
-                                // padding: EdgeInsets.symmetric(
-                                //   horizontal: 10,
-                                //   vertical: 10,
-                                // ),
+                           
                                 child: Column(
                                   children: [
                                     Row(
@@ -430,10 +416,11 @@ class _FeedsPageState extends State<FeedsPage> {
                                             ),),
                                           ],
                                         ),
-                                        IconButton(
-                                          icon: Icon(SimpleLineIcons.options),
-                                          onPressed: () {},
-                                        ),
+
+//                                        IconButton(
+//                                          icon: Icon(SimpleLineIcons.options,size: 20.0,),
+//                                          onPressed: () {},
+//                                        ),
                                       ],
                                     ),
 
@@ -484,25 +471,41 @@ class _FeedsPageState extends State<FeedsPage> {
                             ),
 
 
-                            GestureDetector(
-                              onDoubleTap: () async {
+                              GestureDetector(
+                                onDoubleTap: () {
 
 
-                                if (_liked == false) {
-                                  setState(() {
-                                    _liked = true;
-                                    print(_liked);
-                                  });
-                                  await DatabaseService().likepost(
-                                      likes, postId,
-                                      displayNameController.text);
+                                  if (_liked == false) {
+                                    setState(() {
+                                      _liked = true;
+                                      print(_liked);
+                                    });
+                                    DatabaseService().likepost(
+                                        likes, postId,
+                                        displayNameController.text);
 
 //                                     return liked;
-                                } else {
-                                  print("nahi");
-                                }
-                              },
-                              onTap: null,
+                                  } else {
+                                    print("nahi");
+                                  }
+                                },
+                                onTap: null,
+
+                                child: Container(
+                                  height: 350.0,
+                                  child: GestureDetector(
+
+                                    child :(cam == 1)?Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(math.pi),
+                                      child: FadeInImage(
+
+                                        image: NetworkImage(url),
+                                        fit: BoxFit.fitHeight,
+                                        //image: NetworkImage("posts[i].postImage"),
+                                        placeholder: AssetImage("assets/images/loading.gif"),
+                                        width: MediaQuery.of(context).size.width,
+
 
                               child: Container(
                                 height: 350.0,
@@ -514,7 +517,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     child: FadeInImage(
 
                                       image: NetworkImage(url),
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.fitHeight,
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
@@ -593,6 +596,18 @@ class _FeedsPageState extends State<FeedsPage> {
                                             return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                           }));
                                         },
+
+                                        icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                      ),
+//                                      Text(shares.toString()),
+                                    ],
+                                  ),
+                                  // IconButton(
+                                  //   onPressed: () {},
+                                  //   icon: Icon(FontAwesome.bookmark_o),
+                                  // ),
+                                ],
+                              ),
 
 
                                         icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
@@ -806,6 +821,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             _liked = false;
                                             loading = true;
 //                                              likes--;
+                                            
                                             DatabaseService().unlikepost(
                                                 likes, postId,displayNameController.text);
                                             loading = false;
@@ -815,6 +831,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           setState(() {
                                             _liked = true;
                                             loading = true;
+
 //                                              likes++;
                                             DatabaseService().likepost(
                                                 likes, postId,displayNameController.text);
@@ -843,6 +860,20 @@ class _FeedsPageState extends State<FeedsPage> {
                                             return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                           }));
                                         },
+
+                                        icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                      ),
+                                      // Text(postId),
+//                                      Text(shares.toString()),
+                                    ],
+                                  ),
+                                  // IconButton(
+                                  //   onPressed: () {},
+                                  //   icon: Icon(FontAwesome.bookmark_o),
+                                  // ),
+                                ],
+                              ),
+
 
 
                                         icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
@@ -928,27 +959,25 @@ class _FeedsPageState extends State<FeedsPage> {
                                   fontSize: 10.0,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
 
-                    }),
-              ),
-            ],
-          )
-              : Container();
+                            ],
+                          ),
+                        );
 
-        },
+                      }),
+                ),
+              ],
+            )
+                : Container();
+
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
+          child: IconButton(icon: Icon(FontAwesomeIcons.plusSquare,
+          color: Colors.purple,), onPressed: (){}),
+        ),
       ),
     );
   }
-}
-
-class Student {
-  var name = 'foo';
-  var year = '2018';
-  var liked = false;
-
-  Student(this.name);
 }
