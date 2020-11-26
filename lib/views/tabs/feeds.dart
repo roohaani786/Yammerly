@@ -95,6 +95,30 @@ class _FeedsPageState extends State<FeedsPage> {
     fetchLikes();
   }
 
+  Future pickImage() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+        upload = true;
+      });
+    });
+
+    if (_image != null){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+    }else{
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
+    }
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+//    );
+    print("Done..");
+  }
+
 
   fetchPosts() async {
 
@@ -190,23 +214,6 @@ class _FeedsPageState extends State<FeedsPage> {
     }
 
     return time;
-  }
-
-  Future pickImage() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      setState(() {
-        _image = image;
-        upload = true;
-      });
-    });
-    (_image!=null)?
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
-    ):Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
-    );
   }
 
 
@@ -387,14 +394,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                       transform: Matrix4.rotationY(math.pi),
                                       child: FadeInImage(
                                         image: NetworkImage(url),
-                                        fit: BoxFit.fitHeight,
+                                        fit: BoxFit.cover,
                                         //image: NetworkImage("posts[i].postImage"),
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
                                       ),
                                     ):FadeInImage(
                                       image: NetworkImage(url),
-                                      fit: BoxFit.fitHeight,
+                                      fit: BoxFit.cover,
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
@@ -783,7 +790,7 @@ class _FeedsPageState extends State<FeedsPage> {
           backgroundColor: Colors.white,
           child: Icon(FontAwesomeIcons.plusSquare,color: Colors.purple,),
           onPressed: (){
-
+            pickImage();
           },
         ),
       ),
