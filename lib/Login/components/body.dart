@@ -15,7 +15,6 @@ import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:http/http.dart';
 import '../../constants.dart';
 import '../../forgotpassword.dart';
 
@@ -329,10 +328,9 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+
     bool loginfail = false;
-    Size size = MediaQuery
-        .of(context)
-        .size;
+
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -474,7 +472,7 @@ class _BodyState extends State<Body> {
                                   focusNode: _pwd,
                                   onFieldSubmitted: (value) {
                                     _pwd.unfocus();
-                                    RoundedButton;
+                                    RoundedButtonX();
                                   },
                                   style: TextStyle(
                                       fontSize: 12.0,
@@ -485,7 +483,7 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                         ),
-                        RoundedButton(
+                        RoundedButtonX(
                             text: "LOGIN",
                             press: () {
 //                              if (_loginFormKey.currentState.validate()) {

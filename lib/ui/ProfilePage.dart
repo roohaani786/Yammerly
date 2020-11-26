@@ -3,21 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:techstagram/Login/login_screen.dart';
-import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
-import 'package:techstagram/services/database.dart';
-import 'package:techstagram/ui/Otheruser/other_user.dart';
-import 'package:techstagram/ui/aboutuser.dart';
 import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
-import 'package:techstagram/ui/messagingsystem.dart';
 import 'package:techstagram/ui/post.dart';
-import 'package:techstagram/views/tabs/comments_screen.dart';
-
 import 'HomePage.dart';
 import 'ProfileEdit.dart';
 import 'profilesettings.dart';
@@ -103,7 +94,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     followingController = TextEditingController();
     userPostsController = TextEditingController();
     uidController = TextEditingController();
-    String uiduserX = uid;
 
 
     super.initState();
@@ -460,7 +450,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                             child: GridView.builder(
                                                 shrinkWrap: true,
                                                controller: ScrollController(),
-                                                //controller: scrollController,
                                                 itemCount: snapshot.data.documents.length,
                                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                                     crossAxisCount: 3,
@@ -468,31 +457,37 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                     mainAxisSpacing: 10.0),
                                                 itemBuilder: (context, index) {
 
-                                                  postIdX = snapshot.data.documents[index]['email'];
+                                                  postIdX = snapshot.data.documents[index]['postId'];
+
                                                   String email = snapshot.data.documents[index]['email'];
-                                                  String description =
-                                                  snapshot.data.documents[index]['description'];
-                                                  String displayName =
-                                                  snapshot.data.documents[index]['displayName'];
-                                                  String photoUrl =
-                                                  snapshot.data.documents[index]['photoURL'];
+
+                                                  String description = snapshot.data.documents[index]['description'];
+
+                                                  String displayName = snapshot.data.documents[index]['displayName'];
+
+                                                  String photoUrl = snapshot.data.documents[index]['photoURL'];
+
                                                   String uid = snapshot.data.documents[index]["uid"];
+
                                                   int cam = snapshot.data.documents[index]['cam'];
-                                                  Timestamp timestamp =
-                                                  snapshot.data.documents[index]['timestamp'];
+
+                                                  Timestamp timestamp = snapshot.data.documents[index]['timestamp'];
+
                                                   String url = snapshot.data.documents[index]['url'];
+
                                                   String postId = snapshot.data.documents[index]['postId'];
+
                                                   int likes = snapshot.data.documents[index]['likes'];
+
                                                   readTimestamp(timestamp.seconds);
 
                                                   getlikes(displayNameController.text,postId);
 
 
-
-
                                                   if(likes< 0 || likes == 0){
                                                     liked = false;
                                                   }
+
                                                   return Container(
                                                     color: Colors.grey.shade300,
                                                     child: Column(
@@ -581,13 +576,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     ),
     );
   }
-
-
-  final String _followers = "17K";
-//  final String _posts = "24";
-  final String _following = "45K";
-
-
 }
 
 Widget _buildStatItem(String label, String count) {

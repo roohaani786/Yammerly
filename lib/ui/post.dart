@@ -11,18 +11,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:techstagram/models/wiggle.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
-import 'package:techstagram/ui/ProfileEdit.dart';
-import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'dart:math' as math;
-//import 'package:techstagram/services/database.dart';
-//import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
-//
-//import '../../constants3.dart';
 
 
 class postPage extends StatefulWidget {
@@ -32,27 +25,11 @@ class postPage extends StatefulWidget {
 
   final String PostUrl;
   final String displayNamecurrentUser;
-  final Wiggle wiggle;
-  final List<Wiggle> wiggles;
-  final Timestamp timestamp;
-  final String description;
-  final String url;
-  final String postId;
-  final int likes;
-  final String uid;
   final String uidX;
 
   postPage(
       {this.PostUrl,
-        this.wiggles,
-        this.wiggle,
-        this.timestamp,
-        this.description,
-        this.url,
-        this.uid,
-        this.postId,
         this.displayNamecurrentUser,
-        this.likes,
         this.uidX
       });
 
@@ -266,7 +243,7 @@ class _postPageState extends State<postPage> {
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
-    var format = DateFormat('HH:mm a');
+//    var format = DateFormat('HH:mm a');
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     var diff = now.difference(date);
     var time = '';

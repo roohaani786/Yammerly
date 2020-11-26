@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/models/posts.dart';
-import 'package:uuid/uuid.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
@@ -12,73 +11,41 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:techstagram/models/wiggle.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
-//import 'package:techstagram/services/database.dart';
-//import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
-//
-//import '../../constants3.dart';
-import 'dart:convert';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'dart:math' as math;
 
 
 class FeedsPage extends StatefulWidget {
+
   final displayNamecurrentUser;
+
   @override
 
-  final Wiggle wiggle;
-  final List<Wiggle> wiggles;
-  final Timestamp timestamp;
-  final String description;
-  final String url;
-  final String postId;
-  final int likes;
-  final String uid;
-
-  FeedsPage(
-      {this.wiggles,
-        this.wiggle,
-        this.timestamp,
-        this.description,
-        this.url,
-        this.uid,
-        this.postId,
-        this.displayNamecurrentUser,
-        this.likes});
+  FeedsPage({
+    this.displayNamecurrentUser,
+  });
 
   @override
   _FeedsPageState createState() => _FeedsPageState(displayNamecurrentUser: displayNamecurrentUser);
+
 }
 
 class _FeedsPageState extends State<FeedsPage> {
 
-  bool isLoading = true;
-  bool isEditable = false;
-  final String displayNamecurrentUser;
 
-  _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
-  String loadingMessage = "Loading Profile Data";
-  TextEditingController emailController,urlController,descriptionController,
-      displayNameController,photoUrlController,
-      timestampController,likesController,uidController;
+  final String displayNamecurrentUser;
   List<Posts> posts;
   List<DocumentSnapshot> list;
-
   Map<String, dynamic> _profile;
   bool _loading = false;
-
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
-
   ScrollController scrollController = new ScrollController();
   Posts currentpost;
-
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
 
   double _scale = 1.0;
   double _previousScale;
@@ -86,32 +53,27 @@ class _FeedsPageState extends State<FeedsPage> {
   var xOffset = 50.0;
   var rotation = 0.0;
   var lastRotation = 0.0;
+  var time = "s";
+  User currentUser;
 
-//   savePostInfoToFirestore(String url, String description, String ownerphotourl, String ownerdisplayname, bool shared) {
-//     String postId = Uuid().v4();
-//
-//     Firestore.instance.collection("posts").document(postId).setData({
-//       "OwnerPhotourl" : ownerphotourl,
-//       "OwnerDisplayName" : ownerdisplayname,
-//       "shared" : shared,
-//       "postId": postId,
-//       "uid" : uidController.text,
-//       "displayName": displayNameController.text,
-//       "timestamp": Timestamp.now(),
-//       "email": emailController.text,
-//       "photoURL" :photoUrlController.text,
-// //      "email": widget.userData.email,
-//       "description": descriptionController.text,
-//       "cam": cam,
-//       "likes": 0,
-//       "comments": 0,
-//       "url": url,
-// //      "photourl": widget.userData.photoUrl,
-//     });
-//
-//   }
+  File _image;
+  bool upload;
+  int likescount;
+  bool loading = false;
+
+  Stream<QuerySnapshot> postsStream;
+  final timelineReference = Firestore.instance.collection('posts');
+  String postIdX;
+  bool _liked = false;
 
 
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  TextEditingController emailController,urlController,descriptionController,
+      displayNameController,photoUrlController,
+      timestampController,likesController,uidController;
+
+  _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
 
 
   @override
@@ -134,14 +96,6 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
 
-  Stream<QuerySnapshot> postsStream;
-  final timelineReference = Firestore.instance.collection('posts');
-  String postIdX;
-  bool postliked = false;
-  bool _liked = false;
-  bool localliked = false;
-  String loadinglike = "";
-
   fetchPosts() async {
 
     await DatabaseService().getPosts().then((val){
@@ -151,11 +105,7 @@ class _FeedsPageState extends State<FeedsPage> {
     });
   }
 
-
   getlikes( String displayNamecurrent, String postId) async {
-
-//    print(displayNamecurrent);
-//    print(postId);
 
     await Firestore.instance.collection('posts')
         .document(postIdX)
@@ -166,12 +116,9 @@ class _FeedsPageState extends State<FeedsPage> {
       if (value.exists) {
         setState(() {
           _liked = true;
-          loadinglike = "done";
-//          print(_liked);
         });
       }
     });
-
   }
 
   fetchLikes() async {
@@ -181,10 +128,6 @@ class _FeedsPageState extends State<FeedsPage> {
           .collection("likes")
           .document(currUser.uid)
           .get();
-      setState(() {
-        isLoading = false;
-        isEditable = true;
-      });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
@@ -202,25 +145,14 @@ class _FeedsPageState extends State<FeedsPage> {
       uidController.text =  docSnap.data["uid"];
       displayNameController.text = docSnap.data["displayName"];
       photoUrlController.text = docSnap.data["photoURL"];
-
-
-      setState(() {
-        isLoading = false;
-        isEditable = true;
-      });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
 
-
-
-  var time = "s";
-  User currentUser;
-
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
-    var format = DateFormat('HH:mm a');
+//    var format = DateFormat('HH:mm a');
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     var diff = now.difference(date);
     var time = '';
@@ -260,12 +192,6 @@ class _FeedsPageState extends State<FeedsPage> {
     return time;
   }
 
-
-  File _image;
-  bool upload;
-  int likescount;
-  bool loading = false;
-
   Future pickImage() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
@@ -281,20 +207,12 @@ class _FeedsPageState extends State<FeedsPage> {
       context,
       MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
     );
-    print("Done..");
   }
-
-  String urlx;
-
-  TransformationController _controller = TransformationController();
-
 
 
   @override
   Widget build(BuildContext context) {
 
-
-    // TODO: implement build
     return GestureDetector(
       child: Scaffold(
         key: _scaffoldKey,
@@ -312,47 +230,52 @@ class _FeedsPageState extends State<FeedsPage> {
                       itemBuilder: (context, index) {
 
                         postIdX = snapshot.data.documents[index]['postId'];
+
                         String email = snapshot.data.documents[index]['email'];
-                        String description =
-                        snapshot.data.documents[index]['description'];
-                        String displayName =
-                        snapshot.data.documents[index]['displayName'];
-                        String photoUrl =
-                        snapshot.data.documents[index]['photoURL'];
+
+                        String description = snapshot.data.documents[index]['description'];
+
+                        String displayName = snapshot.data.documents[index]['displayName'];
+
+                        String photoUrl = snapshot.data.documents[index]['photoURL'];
+
                         String OwnerDisplayName = snapshot.data.documents[index]['OwnerDisplayName'];
+
                         String OwnerPhotourl = snapshot.data.documents[index]['OwnerPhotourl'];
+
                         bool shared = snapshot.data.documents[index]['shared'];
+
                         String uid = snapshot.data.documents[index]["uid"];
+
                         int shares = snapshot.data.documents[index]["shares"];
 
-                        Timestamp timestamp =
-                        snapshot.data.documents[index]['timestamp'];
+                        Timestamp timestamp = snapshot.data.documents[index]['timestamp'];
+
                         String url = snapshot.data.documents[index]['url'];
+
                         int cam = snapshot.data.documents[index]['cam'];
+
                         String postId = snapshot.data.documents[index]['postId'];
+
                         int likes = snapshot.data.documents[index]['likes'];
-                        int counter = snapshot.data.documents[index]['likes'];
+
                         int comments = snapshot.data.documents[index]['comments'];
-                        int likedlocalcount = likes;
+
                         readTimestamp(timestamp.seconds);
 
                         getlikes(displayNameController.text, postIdX);
-
-
-
 
 
                         if(likes == 0){
 
                           _liked = false;
                         }
-                        return (shared==true)?Container(
 
+                        return (shared==true)?Container(
                           color: Colors.white,
                           child: Column(
                             children: <Widget>[
                               Container(height: 0.0,width: 0.0,),
-
                               GestureDetector(
                                 onTap: () => Navigator.push(
                                   context,
@@ -364,20 +287,18 @@ class _FeedsPageState extends State<FeedsPage> {
                                     left: 10,
                                     right: 10.0,
                                   ),
-                                  // padding: EdgeInsets.symmetric(
-                                  //   horizontal: 10,
-                                  //   vertical: 10,
-                                  // ),
+
                                   child: Column(
                                     children: [
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
+
                                           Row(
                                             children: <Widget>[
+
                                               ClipRRect(
                                                 borderRadius: BorderRadius.circular(40),
-
                                                 child: Image(
                                                   image: NetworkImage(photoUrl),
                                                   width: 40,
@@ -394,18 +315,18 @@ class _FeedsPageState extends State<FeedsPage> {
                                               ),),
                                             ],
                                           ),
+
                                           IconButton(
                                             icon: Icon(SimpleLineIcons.options),
                                             onPressed: () {},
                                           ),
                                         ],
                                       ),
-
                                     ],
                                   ),
-
                                 ),
                               ),
+
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 1.0),
                                 child: Container(
@@ -420,7 +341,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                           children: <Widget>[
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(40),
-
                                               child: Image(
                                                 image: NetworkImage(OwnerPhotourl),
                                                 width: 30,
@@ -437,10 +357,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                             ),),
                                           ],
                                         ),
-//                                        IconButton(
-//                                          icon: Icon(SimpleLineIcons.options,size: 20.0,),
-//                                          onPressed: () {},
-//                                        ),
                                       ],
                                     ),
                                   ),
@@ -451,19 +367,14 @@ class _FeedsPageState extends State<FeedsPage> {
                               GestureDetector(
                                 onDoubleTap: () {
 
-
                                   if (_liked == false) {
                                     setState(() {
                                       _liked = true;
-                                      print(_liked);
                                     });
+
                                     DatabaseService().likepost(
                                         likes, postId,
                                         displayNameController.text);
-
-//                                     return liked;
-                                  } else {
-                                    print("nahi");
                                   }
                                 },
                                 onTap: null,
@@ -471,60 +382,45 @@ class _FeedsPageState extends State<FeedsPage> {
                                 child: Container(
                                   height: 350.0,
                                   child: GestureDetector(
-
-                                    child :(cam == 1)?Transform(
+                                    child : (cam == 1)? Transform(
                                       alignment: Alignment.center,
                                       transform: Matrix4.rotationY(math.pi),
                                       child: FadeInImage(
-
                                         image: NetworkImage(url),
                                         fit: BoxFit.fitHeight,
                                         //image: NetworkImage("posts[i].postImage"),
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
-
                                       ),
                                     ):FadeInImage(
-
                                       image: NetworkImage(url),
                                       fit: BoxFit.fitHeight,
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
-
-
-
                                     ),
                                   ),
                                 ),
                               ),
 
-
-
-
-
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
+
                                   Row(
                                     children: <Widget>[
 
                                       IconButton(
                                         padding: EdgeInsets.only(left: 10),
-
                                         onPressed: (_liked == true)
                                             ? () {
                                           setState(() {
                                             _liked = false;
                                             loading = true;
-//                                              localliked = false;
-//                                              likedlocalcount--;
                                           });
 
                                           DatabaseService().unlikepost(
                                               likes, postId,displayNameController.text);
-
-                                          getlikes(displayNamecurrentUser, postId);
 
                                           setState(() {
                                             loading = false;
@@ -534,14 +430,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                           setState(() {
                                             _liked = true;
                                             loading = true;
-//                                              localliked = true;
-//                                              likedlocalcount++;
                                           });
 
                                           DatabaseService().likepost(
                                               likes, postId,displayNameController.text);
-
-                                          getlikes(displayNamecurrentUser, postId);
 
                                           setState(() {
                                             loading = false;
@@ -556,23 +448,25 @@ class _FeedsPageState extends State<FeedsPage> {
                                         likes.toString(),style: TextStyle(
                                         color: Colors.black,
                                       ),
-
                                       ),
 
                                       Padding(
                                         padding: const EdgeInsets.only(top: 3.0),
                                         child: IconButton(
 
-                                          onPressed: () { //print(displayNameController.text);
+                                          onPressed: () {
+
                                             Navigator.push(context, MaterialPageRoute(builder: (context){
                                               return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
+
                                           },
 
 
                                           icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                         ),
                                       ),
+
                                       Text(comments.toString()),
 
                                       IconButton(
@@ -581,18 +475,11 @@ class _FeedsPageState extends State<FeedsPage> {
                                             context,
                                             MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
                                           );
-
-                                          //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
-//                                      Text(shares.toString()),
                                     ],
                                   ),
-                                  // IconButton(
-                                  //   onPressed: () {},
-                                  //   icon: Icon(FontAwesome.bookmark_o),
-                                  // ),
                                 ],
                               ),
 
@@ -603,6 +490,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                   ),
                                   child: Row(
                                     children: [
+
                                       Container(
                                         child: RichText(
                                           textAlign: TextAlign.start,
@@ -610,6 +498,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           overflow: TextOverflow.visible,
                                           text: TextSpan(
                                             children: [
+
                                               TextSpan(
                                                 text: displayName + "  ",
                                                 style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
@@ -622,15 +511,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                               ),
                                             ],
                                           ),
-
                                         ),
                                       ),
-
                                     ],
                                   )
                               ),
 
-                              // caption
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 margin: EdgeInsets.symmetric(
@@ -653,19 +539,25 @@ class _FeedsPageState extends State<FeedsPage> {
                                   ),
                                 ),
                               ),
+
                             ],
                           ),
+
                         ):Container(
                           color: Colors.white,
                           child: Column(
                             children: <Widget>[
-                              Container(height: 0.0,width: 0.0,),
+
+                              Container(
+                                height: 0.0,width: 0.0,
+                                ),
 
                               GestureDetector(
                                 onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
                                 ),
+
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 10,
@@ -674,11 +566,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
+
                                       Row(
                                         children: <Widget>[
+
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(40),
-
                                             child: Image(
                                               image: NetworkImage(photoUrl),
                                               width: 40,
@@ -708,20 +601,16 @@ class _FeedsPageState extends State<FeedsPage> {
                               GestureDetector(
                                 onDoubleTap: () async {
 
-
                                   if (_liked == false) {
                                     setState(() {
                                       _liked = true;
                                       print(_liked);
                                     });
+
                                     await DatabaseService().likepost(
                                         likes, postId,
                                         displayNameController.text);
-
-//                                     return liked;
-                                  } else {
-                                    print("nahi");
-                                  }
+                                    }
                                 },
                                 onTap: null,
 
@@ -733,40 +622,27 @@ class _FeedsPageState extends State<FeedsPage> {
                                       alignment: Alignment.center,
                                       transform: Matrix4.rotationY(math.pi),
                                       child: FadeInImage(
-
                                         image: NetworkImage(url),
                                         fit: BoxFit.cover,
                                         //image: NetworkImage("posts[i].postImage"),
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
-
-
-
                                       ),
-                                    ):FadeInImage(
 
+                                    ):FadeInImage(
                                       image: NetworkImage(url,),
                                       fit: BoxFit.cover,
-
-                                      //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
-
-
-
                                     ),
                                   ),
                                 ),
                               ),
 
-
-
-
-
-
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
+
                                   Row(
                                     children: <Widget>[
 
@@ -790,7 +666,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                             setState(() {
                                               _liked = true;
                                               loading = true;
-//                                              likes++;
                                               DatabaseService().likepost(
                                                   likes, postId,displayNameController.text);
                                               loading = false;
@@ -806,23 +681,21 @@ class _FeedsPageState extends State<FeedsPage> {
                                         likes.toString(),style: TextStyle(
                                         color: Colors.black,
                                       ),
-
                                       ),
 
                                       Padding(
                                         padding: const EdgeInsets.only(top: 3.0),
                                         child: IconButton(
 
-                                          onPressed: () { //print(displayNameController.text);
+                                          onPressed: () {
                                             Navigator.push(context, MaterialPageRoute(builder: (context){
                                               return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
                                           },
-
-
                                           icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                         ),
                                       ),
+
                                       Text(comments.toString()),
 
                                       IconButton(
@@ -831,19 +704,11 @@ class _FeedsPageState extends State<FeedsPage> {
                                             context,
                                             MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
                                           );
-
-                                          //savePostInfoToFirestore(url,description,photoUrl,displayName,true);
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
                                       ),
-                                      // Text(postId),
-//                                      Text(shares.toString()),
                                     ],
                                   ),
-                                  // IconButton(
-                                  //   onPressed: () {},
-                                  //   icon: Icon(FontAwesome.bookmark_o),
-                                  // ),
                                 ],
                               ),
 
@@ -854,6 +719,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                   ),
                                   child: Row(
                                     children: [
+
                                       Container(
                                         child: RichText(
                                           textAlign: TextAlign.start,
@@ -873,15 +739,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                               ),
                                             ],
                                           ),
-
                                         ),
                                       ),
-
                                     ],
                                   )
                               ),
 
-                              // caption
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 margin: EdgeInsets.symmetric(
@@ -907,19 +770,21 @@ class _FeedsPageState extends State<FeedsPage> {
                             ],
                           ),
                         );
-
-                      }),
+                      },
+                  ),
                 ),
               ],
             )
                 : Container();
-
-          },
+            },
         ),
+
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
-          child: IconButton(icon: Icon(FontAwesomeIcons.plusSquare,
-            color: Colors.purple,), onPressed: (){}),
+          child: Icon(FontAwesomeIcons.plusSquare,color: Colors.purple,),
+          onPressed: (){
+
+          },
         ),
       ),
     );

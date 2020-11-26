@@ -4,13 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:techstagram/ComeraV/cam.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/repository.dart';
-import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
@@ -30,17 +28,6 @@ class HomePage extends StatefulWidget {
   int initialindexg = 2;
   FirebaseUser user;
 
-  //include this
-
-  GoogleSignIn _googleSignIn;
-  FirebaseUser _user;
-
-
-  Body(FirebaseUser user, GoogleSignIn signIn) {
-    _user = user;
-    _googleSignIn = signIn;
-  }
-
   @override
   _HomePageState createState() => _HomePageState(initialindexg);
 }
@@ -52,7 +39,6 @@ class _HomePageState extends State<HomePage> {
   TextEditingController taskDescripInputController;
   FirebaseUser currentUser;
   FirebaseProvider firebaseProvider;
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   _HomePageState(this.initialindexg);
 
@@ -127,14 +113,7 @@ class _HomePageState extends State<HomePage> {
     print(currentUser.uid);
   }
 
-
-  _signOut() async {
-    await _firebaseAuth.signOut();
-  }
-
   List<CameraDescription> cameras = [];
-
-
   DateTime currentBackPressTime;
 
   Future<bool> onWillPop() {
@@ -159,14 +138,9 @@ class _HomePageState extends State<HomePage> {
         false;
   }
 
-  final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
 
 
-  _saveDeviceToken(String uid) async {
-    String fcmToken = await _fcm.getToken();
-    DatabaseService(uid: uid).uploadtoken(fcmToken);
-  }
 
 
   @override

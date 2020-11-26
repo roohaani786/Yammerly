@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:techstagram/constants.dart';
 
-class RoundedButton extends StatelessWidget {
+class RoundedButtonX extends StatelessWidget {
   final String text;
   final Function press;
   final Color color, textColor;
 
-  const RoundedButton({
+  const RoundedButtonX({
     Key key,
     this.text,
     this.press,
@@ -16,7 +16,7 @@ class RoundedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 6),
       width: 200.0,
