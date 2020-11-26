@@ -296,13 +296,16 @@ int indexd;
                               width: 230.0,
                               child: FlatButton(
                                 color: Colors.transparent,
-                                onPressed: () =>
-                                  (_selectedFile == null)?
-                                  getImage(File(currentFilePath)):
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,shared: false,)),
-                                  ),
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),shared: false,)),
+                                ),
+                                  // (_selectedFile == null)?
+                                  // getImage(File(currentFilePath)):
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,shared: false,)),
+                                  // ),
 
                                 child: Row(),
 //                            child: Row(
@@ -339,15 +342,18 @@ int indexd;
                                 width: 95.0,
                                 child: RaisedButton(
                                   color: Colors.grey.shade200,
-                                  onPressed: () =>
+                                  onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => UploadImage(file: File(currentFilePath),shared: false,)),
+                                  ),
                                     //image = File(currentFilePath);
-                                    (_selectedFile == null)?
-
-                                    getImage(File(currentFilePath)):
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,cam: cam)),
-                                    ),
+                                    // (_selectedFile == null)?
+                                    //
+                                    // getImage(File(currentFilePath)):
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,cam: cam)),
+                                    // ),
 
                                   child: Row(
                                     children: [
