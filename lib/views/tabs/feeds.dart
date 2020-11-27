@@ -65,6 +65,8 @@ class _FeedsPageState extends State<FeedsPage> {
   final timelineReference = Firestore.instance.collection('posts');
   String postIdX;
   bool _liked = false;
+  var like = new List();
+  int likeint;
 
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -139,7 +141,15 @@ class _FeedsPageState extends State<FeedsPage> {
         .then((value) {
       if (value.exists) {
         setState(() {
+          likeint = int.parse(postId);
           _liked = true;
+          like[likeint] = "true";
+        });
+      }else{
+        setState(() {
+          likeint = int.parse(postId);
+          _liked = false;
+          like[likeint] = "false";
         });
       }
     });
@@ -276,6 +286,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         if(likes == 0){
 
                           _liked = false;
+                          like[likeint] = "false";
                         }
 
                         return (shared==true)?Container(
@@ -419,10 +430,11 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       IconButton(
                                         padding: EdgeInsets.only(left: 10),
-                                        onPressed: (_liked == true)
+                                        onPressed: (like[likeint] == "true")
                                             ? () {
                                           setState(() {
                                             _liked = false;
+                                            like[likeint] = "false";
                                             loading = true;
                                           });
 
@@ -436,6 +448,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             : () {
                                           setState(() {
                                             _liked = true;
+                                            like[likeint] = "true";
                                             loading = true;
                                           });
 
@@ -448,7 +461,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         },
                                         icon: Icon(Icons.thumb_up),
                                         iconSize: 25,
-                                        color: (_liked == true) ? Colors.deepPurple : Colors.grey,
+                                        color: (like[likeint] == "true") ? Colors.deepPurple : Colors.grey,
                                       ),
 
                                       Text(
@@ -658,10 +671,11 @@ class _FeedsPageState extends State<FeedsPage> {
                                         ignoringSemantics: true,
                                         child: IconButton(
                                           padding: EdgeInsets.only(left: 10),
-                                          onPressed: (_liked == true)
+                                          onPressed: (like[likeint] == "true")
                                               ? () {
                                             setState(() {
                                               _liked = false;
+                                              like[likeint] = "false";
                                               loading = true;
 //                                              likes--;
                                               DatabaseService().unlikepost(
@@ -672,6 +686,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               : () {
                                             setState(() {
                                               _liked = true;
+                                              like[likeint] = "true";
                                               loading = true;
                                               DatabaseService().likepost(
                                                   likes, postId,displayNameController.text);
@@ -680,7 +695,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           },
                                           icon: Icon(Icons.thumb_up),
                                           iconSize: 25,
-                                          color: (_liked == true) ? Colors.deepPurple : Colors.grey,
+                                          color: (like[likeint] == "true") ? Colors.deepPurple : Colors.grey,
                                         ),
                                       ),
 
