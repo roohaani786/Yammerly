@@ -11,6 +11,7 @@ import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
+import 'package:techstagram/views/tabs/feed.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
 import 'messagingsystem.dart';
@@ -318,6 +319,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                   child: FeedsPage(),
                 ),
                 new Container(
+                  //child: FeedsPage(),
                   child: NotificationsPage(),
                 ),
                 new Container(child: AccountBottomIconScreen()),

@@ -282,18 +282,18 @@ class _GalleryState extends State<Gallery> {
                           child: FlatButton(
                             color: Colors.transparent,
                             onPressed: () =>
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      UploadImage(file: File(currentFilePath),
-                                        shared: false,)),
-                                ),
-                            // (_selectedFile == null)?
-                            // getImage(File(currentFilePath)):
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,shared: false,)),
-                            // ),
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) =>
+                                //       UploadImage(file: File(currentFilePath),
+                                //         shared: false,)),
+                                // ),
+                            (_selectedFile == null)?
+                            getImage(File(currentFilePath)):
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,shared: false,)),
+                            ),
 
                             child: Row(),
 //                            child: Row(
@@ -332,20 +332,20 @@ class _GalleryState extends State<Gallery> {
                           child: RaisedButton(
                             color: Colors.grey.shade200,
                             onPressed: () =>
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      UploadImage(file: File(currentFilePath),
-                                        shared: false,)),
-                                ),
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) =>
+                                //       UploadImage(file: File(currentFilePath),
+                                //         shared: false,)),
+                                // ),
                             //image = File(currentFilePath);
-                            // (_selectedFile == null)?
-                            //
-                            // getImage(File(currentFilePath)):
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,cam: cam)),
-                            // ),
+                            (_selectedFile == null)?
+
+                            getImage(File(currentFilePath)):
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,cam: cam)),
+                            ),
 
                             child: Row(
                               children: [
