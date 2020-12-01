@@ -98,36 +98,47 @@ class _GalleryState extends State<Gallery> {
   //bool _inProcess=false;
 
   getImage(File file) async {
-    this.setState(() {
-      _inProcess = true;
-    });
-    //File image = await ImagePicker.pickImage(source: source);
-    if (file != null) {
-      File cropped = await ImageCropper.cropImage(
-          sourcePath: file.path,
-          aspectRatio: CropAspectRatio(
-              ratioX: 1, ratioY: 1),
-          compressQuality: 100,
-          maxWidth: 700,
-          maxHeight: 700,
-          compressFormat: ImageCompressFormat.jpg,
-          androidUiSettings: AndroidUiSettings(
-            toolbarColor: Colors.deepOrange,
-            toolbarTitle: "AIO Cropper",
-            statusBarColor: Colors.deepOrange.shade900,
-            backgroundColor: Colors.white,
-          )
-      );
+    print("aa gayaaaa");
+    if(_selectedFile == null){
+      this.setState(() {
+        _inProcess = true;
+      });
+      //File image = await ImagePicker.pickImage(source: source);
+      if (file != null) {
+        File cropped = await ImageCropper.cropImage(
+            sourcePath: file.path,
+            aspectRatio: CropAspectRatio(
+                ratioX: 1, ratioY: 1),
+            compressQuality: 100,
+            maxWidth: 700,
+            maxHeight: 700,
+            compressFormat: ImageCompressFormat.jpg,
+            androidUiSettings: AndroidUiSettings(
+              toolbarColor: Colors.deepPurple,
+              toolbarTitle: "AIO Cropper",
+              statusBarColor: Colors.deepPurple.shade900,
+              backgroundColor: Colors.white,
+            )
+        );
 
-      this.setState(() {
-        _selectedFile = cropped;
-        _inProcess = false;
-      });
-    } else {
-      this.setState(() {
-        _inProcess = false;
-      });
+        this.setState(() {
+          _selectedFile = cropped;
+          _inProcess = false;
+        });
+      } else {
+        this.setState(() {
+          _inProcess = false;
+        });
+      }
+    }else{
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =>
+            UploadImage(file: File(currentFilePath),
+              shared: false,)),
+      );
     }
+
   }
 
 
@@ -332,6 +343,7 @@ class _GalleryState extends State<Gallery> {
                           child: RaisedButton(
                             color: Colors.grey.shade200,
                             onPressed: () =>
+                            getImage(File(currentFilePath)),
                                 // Navigator.push(
                                 //   context,
                                 //   MaterialPageRoute(builder: (context) =>
@@ -339,13 +351,13 @@ class _GalleryState extends State<Gallery> {
                                 //         shared: false,)),
                                 // ),
                             //image = File(currentFilePath);
-                            (_selectedFile == null)?
-
-                            getImage(File(currentFilePath)):
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,cam: cam)),
-                            ),
+                            // (_selectedFile == null)?
+                            //
+                            // getImage(File(currentFilePath)):
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,cam: cam)),
+                            // ),
 
                             child: Row(
                               children: [
