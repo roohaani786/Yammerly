@@ -136,7 +136,7 @@ class _GalleryState extends State<Gallery> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) =>
-            UploadImage(file: File(currentFilePath),
+            UploadImage(file: _selectedFile,
               shared: false,)),
       );
     }
@@ -174,7 +174,7 @@ class _GalleryState extends State<Gallery> {
                       _selectedFile,
                       width: 250,
                       height: 250,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ) : Image.file(
                         File(currentFilePath),
                         fit: BoxFit.cover
@@ -183,7 +183,7 @@ class _GalleryState extends State<Gallery> {
                     _selectedFile,
                     width: 250,
                     height: 250,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                   ) : Image.file(
                     File(currentFilePath),
                     fit: BoxFit.cover,
