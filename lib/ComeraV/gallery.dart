@@ -97,6 +97,8 @@ class _GalleryState extends State<Gallery> {
 
   //bool _inProcess=false;
 
+
+
   getImage(File file) async {
     print("aa gayaaaa");
     if(_selectedFile == null){
@@ -190,6 +192,18 @@ class _GalleryState extends State<Gallery> {
                 ),
 
 
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 30.0, left: 6.0),
+                //   child: Align(
+                //     alignment: Alignment.topRight,
+                //     child: IconButton(icon: Icon(Icons.edit,
+                //       color: Colors.grey.shade400,
+                //       size: 30.0,), onPressed: () {
+                //       getimageditor(File(currentFilePath));
+                //     },
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.only(top: 30.0, left: 6.0),
                   child: Align(
@@ -259,6 +273,8 @@ class _GalleryState extends State<Gallery> {
                     ),
                   ),
                 ),
+
+
 
 //            Padding(
 //              padding: const EdgeInsets.only(top: 30.0,right: 6.0),

@@ -156,7 +156,7 @@ class CameraScreenState extends State<CameraScreen>
       dispose();
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 0)),
       );
 
 

@@ -86,6 +86,7 @@ dependencies:
   local_auth:
   http:
   string_validator: ^0.1.4
+  image_editor_pro: ^1.0.6
 
 
 dev_dependencies:

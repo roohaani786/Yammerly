@@ -17,6 +17,7 @@ import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'dart:math' as math;
+import 'package:image_cropper/image_cropper.dart';
 
 
 class FeedsPage extends StatefulWidget {
@@ -97,23 +98,66 @@ class _FeedsPageState extends State<FeedsPage> {
     fetchLikes();
   }
 
-  Future pickImage() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      setState(() {
-        _image = image;
-        upload = true;
-      });
-    });
+  File crop;
 
-    if (_image != null){
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
-    }else{
+  Future pickImage() async {
+    if(_image == null){
+      // ignore: deprecated_member_use
+      await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+        setState(() async {
+          if(image != null){
+            crop = await ImageCropper.cropImage(
+                sourcePath: image.path,
+                aspectRatio: CropAspectRatio(
+                    ratioX: 1, ratioY: 1),
+                compressQuality: 100,
+                maxWidth: 700,
+                maxHeight: 700,
+                compressFormat: ImageCompressFormat.jpg,
+                androidUiSettings: AndroidUiSettings(
+                  toolbarColor: Colors.deepPurple,
+                  toolbarTitle: "AIO Cropper",
+                  statusBarColor: Colors.deepPurple.shade900,
+                  backgroundColor: Colors.white,
+                )
+            );
+            upload = true;
+            _image = crop;
+            if(_image != null){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+            }else{
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
+            }
+
+          }else{
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
+          }
+
+        });
+      });
+      if (_image != null){
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+      }else{
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
+      }
+    }else if(crop == null){
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
     }
+
+
+
 //    Navigator.push(
 //      context,
 //      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
@@ -144,12 +188,6 @@ class _FeedsPageState extends State<FeedsPage> {
           //likeint = int.parse(postId);
           _liked = true;
           //like[likeint] = "true";
-        });
-      }else{
-        setState(() {
-          //likeint = int.parse(postId);
-          _liked = false;
-          //like[likeint] = "false";
         });
       }
     });
