@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
 
   final String title;
   final String uid;
-  int initialindexg = 2;
+  int initialindexg = 1;
   FirebaseUser user;
 
   @override

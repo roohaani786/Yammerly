@@ -116,10 +116,14 @@ class _GalleryState extends State<Gallery> {
             maxHeight: 700,
             compressFormat: ImageCompressFormat.jpg,
             androidUiSettings: AndroidUiSettings(
-              toolbarColor: Colors.deepPurple,
+              toolbarColor: Colors.white,
               toolbarTitle: "AIO Cropper",
-              statusBarColor: Colors.deepPurple.shade900,
+              activeControlsWidgetColor: Colors.purple,
+              toolbarWidgetColor: Colors.deepPurple,
+              statusBarColor: Colors.purple,
               backgroundColor: Colors.white,
+              showCropGrid: false,
+              dimmedLayerColor: Colors.black54,
             )
         );
 

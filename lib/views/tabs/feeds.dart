@@ -128,10 +128,14 @@ class _FeedsPageState extends State<FeedsPage> {
                 maxHeight: 700,
                 compressFormat: ImageCompressFormat.jpg,
                 androidUiSettings: AndroidUiSettings(
-                  toolbarColor: Colors.deepPurple,
+                  toolbarColor: Colors.white,
                   toolbarTitle: "AIO Cropper",
-                  statusBarColor: Colors.deepPurple.shade900,
+                  activeControlsWidgetColor: Colors.purple,
+                  toolbarWidgetColor: Colors.deepPurple,
+                  statusBarColor: Colors.purple,
                   backgroundColor: Colors.white,
+                  showCropGrid: false,
+                  dimmedLayerColor: Colors.black54,
                 )
             );
             upload = true;
@@ -338,17 +342,15 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         readTimestamp(timestamp.seconds);
 
-                        getlikes(displayNameController.text, postIdX, index);
+                        getlikes(displayNamecurrentUser, postIdX, index);
+
+//                        if(likes == 0){
+//
+//                          _likes[index] = true;
+////
+//                        }
 
 
-
-
-                        if(likes == 0){
-
-                          _likes[index] = false;
-                          _likes[index] = false;
-                          //like[likeint] = "false";
-                        }
 
                         return (shared==true)?Container(
                           color: Colors.white,
@@ -493,6 +495,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                         padding: EdgeInsets.only(left: 10),
                                         onPressed: (_likes[index] == true)
                                             ? () {
+
+
                                           setState(() {
                                             _likes[index] = false;
                                             //like[likeint] = "false";
