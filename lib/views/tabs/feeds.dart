@@ -18,6 +18,7 @@ import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'dart:math' as math;
 import 'package:image_cropper/image_cropper.dart';
+import 'package:uuid/uuid.dart';
 
 
 class FeedsPage extends StatefulWidget {
@@ -57,6 +58,7 @@ class _FeedsPageState extends State<FeedsPage> {
   var lastRotation = 0.0;
   var time = "s";
   User currentUser;
+  String NotificationId = Uuid().v4();
 
   File _image;
   bool upload;
@@ -343,6 +345,30 @@ class _FeedsPageState extends State<FeedsPage> {
                         readTimestamp(timestamp.seconds);
 
                         getlikes(displayNamecurrentUser, postIdX, index);
+
+                        Notification() async {
+                          //print(currUid);
+
+                          setState(() {
+                            // file = null;
+                            NotificationId = Uuid().v4();
+                          });
+
+                          return await Firestore.instance.collection("users")
+                              .document(uid).collection("notification")
+                              .document(NotificationId)
+                              .setData({"likes" : likes+1,
+                            "notificationId" : NotificationId,
+                            "username": displayNamecurrentUser,
+                            //"comment": commentTextEditingController.text,
+
+                            "timestamp": DateTime.now(),
+                            "url": photoUrl,
+                            "uid": uid,
+                            "status" : "like",
+                          });
+
+                        }
 
 //                        if(likes == 0){
 //

@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
 //
-            body: TabLayoutDemo(initialindexg),
+            body: TabLayoutDemo(initialindexg,uidController.text),
 
           ),
         );
@@ -227,20 +227,22 @@ class _HomePageState extends State<HomePage> {
 List<CameraDescription> cameras = [];
 
 class TabLayoutDemo extends StatefulWidget {
-  TabLayoutDemo(this.initialindexg);
+  TabLayoutDemo(this.initialindexg,this.currUid);
 
   int initialindexg;
+  String currUid;
   @override
-  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg);
+  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg,currUid);
 }
 
 bool hideappbar = false;
 bool hidebottombar = false;
 
 class _TabLayoutDemoState extends State<TabLayoutDemo> {
-  _TabLayoutDemoState(this.initialindexg);
+  _TabLayoutDemoState(this.initialindexg,this.currUid);
 
   int initialindexg;
+  String currUid;
 
   Future<bool> _onWillPop() {
 
@@ -320,7 +322,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                 ),
                 new Container(
                   //child: FeedsPage(),
-                  child: NotificationsPage(),
+                  child: NotificationsPage(currUid: currUid),
                 ),
                 new Container(child: AccountBottomIconScreen()),
               ],

@@ -35,6 +35,7 @@ class CommentsPageState extends State<CommentsPage> {
   final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
 
   String CommentId = Uuid().v4();
+  String NotificationId = Uuid().v4();
 
   TextEditingController commentTextEditingController = TextEditingController();
 
@@ -126,6 +127,30 @@ class CommentsPageState extends State<CommentsPage> {
       title: Text("Error !", style:
       TextStyle(color: Colors.red),),
     );
+  }
+
+  Notification() async {
+    //print(currUid);
+
+    setState(() {
+      // file = null;
+      NotificationId = Uuid().v4();
+    });
+
+    return await Firestore.instance.collection("users")
+        .document(uid).collection("notification")
+        .document(NotificationId)
+        .setData({"commentId" : CommentId,
+      "notificationId" : NotificationId,
+      "username": displayNamecurrentUser,
+      "comment": commentTextEditingController.text,
+
+      "timestamp": DateTime.now(),
+      "url": photoUrl,
+      "uid": uid,
+      "status" : "Comment",
+    });
+
   }
 
   SaveCommentIP() async {
@@ -256,6 +281,7 @@ class CommentsPageState extends State<CommentsPage> {
                     saveComment();
                     SaveCommentI();
                     SaveCommentIP();
+                    Notification();
                   }else{
                     showError();
                     print("error hai bhaiya");
