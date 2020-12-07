@@ -366,6 +366,7 @@ class _FeedsPageState extends State<FeedsPage> {
                             "url": photoUrl,
                             "uid": uid,
                             "status" : "like",
+                            "postId" : postId,
                           });
 
                         }
@@ -545,6 +546,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                           DatabaseService().likepost(
                                               likes, postId,displayNameController.text);
+                                          Notification();
 
                                           setState(() {
                                             loading = false;
@@ -778,6 +780,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             loading = true;
                                             DatabaseService().likepost(
                                                 likes, postId,displayNameController.text);
+                                            Notification();
                                             loading = false;
                                           });
                                         },

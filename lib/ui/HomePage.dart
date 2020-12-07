@@ -80,6 +80,8 @@ class _HomePageState extends State<HomePage> {
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
+    print(uidController.text);
+    print("bajbaj");
   }
 
 
@@ -215,7 +217,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
 //
-            body: TabLayoutDemo(initialindexg,uidController.text),
+            body: TabLayoutDemo(initialindexg,uidController.text,displayNameController.text),
 
           ),
         );
@@ -227,22 +229,24 @@ class _HomePageState extends State<HomePage> {
 List<CameraDescription> cameras = [];
 
 class TabLayoutDemo extends StatefulWidget {
-  TabLayoutDemo(this.initialindexg,this.currUid);
+  TabLayoutDemo(this.initialindexg,this.currUid,this.displaynameCurruser);
 
-  int initialindexg;
-  String currUid;
+  final int initialindexg;
+  final String currUid;
+  final String displaynameCurruser;
   @override
-  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg,currUid);
+  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg,currUid,displaynameCurruser);
 }
 
 bool hideappbar = false;
 bool hidebottombar = false;
 
 class _TabLayoutDemoState extends State<TabLayoutDemo> {
-  _TabLayoutDemoState(this.initialindexg,this.currUid);
+  _TabLayoutDemoState(this.initialindexg,this.currUid,this.displaynameCurruser);
 
-  int initialindexg;
-  String currUid;
+  final int initialindexg;
+  final String currUid;
+  final String displaynameCurruser;
 
   Future<bool> _onWillPop() {
 
@@ -318,7 +322,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                   child: ChatsPage(),
                 ),
                 new Container(
-                  child: FeedsPage(),
+                  child: FeedsPage(displayNamecurrentUser: displaynameCurruser,),
                 ),
                 new Container(
                   //child: FeedsPage(),
@@ -355,6 +359,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> {
                 ),
                 Tab(
                   icon: new Icon(Icons.notifications, size: 30),
+                  //text: new Text(curARRrUid),
                 ),
                 Tab(
                   icon: new Icon(Icons.account_circle, size: 30),

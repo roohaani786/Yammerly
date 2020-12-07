@@ -36,8 +36,8 @@ class NotificationsPageState extends State<NotificationsPage> {
 
 
   retrieveNotifications(){
-    // print("user");
-    // print(displayNamecurrentUser);
+     print("bhujm");
+     print(currUid);
     return  StreamBuilder(
       stream: NotificationRefrence.document(currUid)
           .collection("notification")
@@ -109,10 +109,10 @@ class NotificationsPageState extends State<NotificationsPage> {
 
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text("Comments", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
-          leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black,), onPressed: (){
-            Navigator.pop(context);
-          }),
+          title: Text("Notifications", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
+          // leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black,), onPressed: (){
+          //   Navigator.pop(context);
+          // }),
         ),
         //appBar: header(context, strTitle: "Comments"),
 
