@@ -20,7 +20,7 @@ import 'searchlist.dart';
 
 class HomePage extends StatefulWidget {
 
-  HomePage({ Key key, this.title = "Hashtag",
+  HomePage({ Key key, this.title = "Yammerly",
     this.uid,this.initialindexg,
   }) : super(key: key); //update this to include the uid in the constructor
 
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                          'AIO Chat',
+                          'Yammerly',
                           style: TextStyle(
                               color: Colors.deepPurple,
                               fontSize: 20.0,

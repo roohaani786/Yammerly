@@ -154,7 +154,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   child: Icon(Icons.build,color: Colors.grey.shade600,),
                 ),
                 Text(
-                  'Version: 1.2.0',
+                  'Version: 1.4.0',
                   style: TextStyle(color: Colors.purple),
                 ),
               ],
