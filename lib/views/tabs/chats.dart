@@ -126,18 +126,6 @@ class _ChatsPageState extends State<ChatsPage> {
                     image,
                     notificationHeader,
                     notificationText,
-                    IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.circleNotch,
-                        color: Colors.deepPurple,
-                      ),
-                      onPressed: () {
-//                        Navigator.push(
-//                          context,
-//                          MaterialPageRoute(builder: (context) => PhoneV()),
-//                        );
-                      },
-                    ),
                   ],
                 ),
               ],

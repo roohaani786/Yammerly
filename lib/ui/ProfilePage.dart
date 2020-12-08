@@ -367,11 +367,13 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               child: FlatButton(
                                                   color: Colors.purple,
                                                   //color: Colors.white,
-                                                  child: new Text(
-                                                    "Edit Profile",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      //color: Color(0xffed1e79),
+                                                  child: Center(
+                                                    child: new Text(
+                                                      "Edit Profile",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        //color: Color(0xffed1e79),
+                                                      ),
                                                     ),
                                                   ),
                                                   onPressed: () {
