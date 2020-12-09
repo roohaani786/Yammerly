@@ -179,6 +179,7 @@ class _BodyState extends State<Body> {
 
     try {
       if (_loginFormKey.currentState.validate()) {
+        print("bhaibhia");
         AuthResult result = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
             email: emailInputController.text,
