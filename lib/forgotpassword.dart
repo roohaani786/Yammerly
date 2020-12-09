@@ -17,6 +17,28 @@ class ForgotScreen extends StatefulWidget {
 class _ForgotScreen extends State<ForgotScreen> {
   String email = "";
   var _formKey = GlobalKey<FormState>();
+  Pattern pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
+
+  String emailValidator(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+//    var hu = value;
+    if (!regex.hasMatch(value) && value.length == null) {
+      return "please enter valid email";
+      // setState(() {
+      //   errordikhaoL = true;
+      // });
+    } else {
+      email = value;
+      // setState(() {
+      //   errordikhaoL = false;
+      // });
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +82,10 @@ class _ForgotScreen extends State<ForgotScreen> {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 15.0),
                         child: TextFormField(
+                          //validator: emailValidator,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            RegExp regex = new RegExp(pattern);
+                            if (!regex.hasMatch(value)&&value.isEmpty) {
                               return "please enter your email";
                             } else {
                               email = value;

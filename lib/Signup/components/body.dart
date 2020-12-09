@@ -16,6 +16,7 @@ import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/components/text_field_container.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
+import 'package:flutter/services.dart';
 
 import '../../constants.dart';
 
@@ -668,6 +669,7 @@ class _BodyState extends State<Body> {
                         ),
                       ),
                       child: TextFormField(
+                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
                         style: TextStyle(
                             fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
@@ -722,6 +724,7 @@ class _BodyState extends State<Body> {
                         ),
                       ),
                       child: TextFormField(
+                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@.]'))],
                         style: TextStyle(
                             fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
