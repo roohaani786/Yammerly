@@ -56,11 +56,6 @@ class _ForgotScreen extends State<ForgotScreen> {
     FirebaseUser user;
     String errorMessage;
     final valid = await useremailCheck(emailInputController.text);
-    // this.setState(() {
-    //   isLoading = true;
-    // });
-
-    //try {
 
       if (_formKey.currentState.validate()) {
         if (!valid) {
@@ -74,11 +69,6 @@ class _ForgotScreen extends State<ForgotScreen> {
               msg:
               "Reset password link has sent to your mail");
           Navigator.pop(context);
-          // Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) =>
-          //             CheckMail()));
 
         }else if(valid){
           showDialog(
@@ -101,54 +91,7 @@ class _ForgotScreen extends State<ForgotScreen> {
                 );
               });
         }
-
       }
-    // } catch (error) {
-    //   switch (error.code) {
-    //     case "ERROR_INVALID_EMAIL":
-    //       errorMessage = "The email address is badly formatted.";
-    //       break;
-    //     case "ERROR_WRONG_PASSWORD":
-    //       errorMessage = "Your email or password is wrong.";
-    //       break;
-    //     case "ERROR_USER_NOT_FOUND":
-    //       errorMessage = "User with this email doesn't exist.";
-    //       break;
-    //     case "ERROR_USER_DISABLED":
-    //       errorMessage = "User with this email has been disabled.";
-    //       break;
-    //     case "ERROR_TOO_MANY_REQUESTS":
-    //       errorMessage = "Too many requests. Try again later.";
-    //       break;
-    //     case "ERROR_OPERATION_NOT_ALLOWED":
-    //       errorMessage = "Signing in with Email and Password is not enabled.";
-    //       break;
-    //     default:
-    //       errorMessage =
-    //       "An error occurred, maybe due to unfilled fields, internet or other issue.";
-    //   }
-    //
-    //   Future.error(errorMessage);
-    // }
-
-    // if (errorMessage != null) {
-    //   this.setState(() {
-    //     isLoading = false;
-    //   });
-    //   showDialog(
-    //       context: context,
-    //       builder: (BuildContext context) {
-    //         return AlertDialog(
-    //           content: Text(
-    //             '$errorMessage',
-    //             style: TextStyle(color: Colors.black),
-    //           ),
-    //           title: Text("Error !", style:
-    //           TextStyle(color: Colors.red),),
-    //         );
-    //       });
-    // }
-
     return null;
   }
 
