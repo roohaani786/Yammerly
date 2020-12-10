@@ -172,7 +172,11 @@ class _ForgotScreen extends State<ForgotScreen> {
                             RegExp regex = new RegExp(pattern);
                             if (value.isEmpty) {
                               return "please enter your email";
-                            } else if(!value.contains("@gmail.com")){
+                            } else if(!value.contains("@")){
+                              return "invalid email address";
+                            } else if(!value.contains(".com")){
+                              return "invalid email address";
+                            } else if(value.contains("@.com")){
                               return "invalid email address";
                             } else {
                               email = value;
