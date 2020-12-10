@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:techstagram/Login/components/background.dart';
@@ -23,6 +24,14 @@ class _ForgotScreen extends State<ForgotScreen> {
   Pattern pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
+
+  Future<bool> useremailCheck(String email) async {
+    final result = await Firestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .getDocuments();
+    return result.documents.isEmpty;
+  }
 
   String emailValidator(String value) {
     Pattern pattern =
@@ -52,22 +61,47 @@ class _ForgotScreen extends State<ForgotScreen> {
     // });
 
     try {
+
+      final valid = await useremailCheck(email);
       if (_formKey.currentState.validate()) {
-        print("bahia bhia");
-        print(email);
-        FirebaseAuth.instance
-            .sendPasswordResetEmail(email: email)
-            .then((value) => print("Check you mail"));
-        Fluttertoast.showToast(
-            timeInSecForIosWeb: 100,
-            msg:
-            "Reset password link has sent to your mail");
-        Navigator.pop(context);
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) =>
-        //             CheckMail()));
+        if (valid) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+
+                return AlertDialog(
+                  title: Text("Error"),
+                  content: Text("email does not exists!", style: TextStyle(
+                      color: Colors.deepPurple
+                  )),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text("Close"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              });
+        }else{
+          print("bahia bhia");
+          print(email);
+          FirebaseAuth.instance
+              .sendPasswordResetEmail(email: email)
+              .then((value) => print("Check you mail"));
+          Fluttertoast.showToast(
+              timeInSecForIosWeb: 100,
+              msg:
+              "Reset password link has sent to your mail");
+          Navigator.pop(context);
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) =>
+          //             CheckMail()));
+        }
+
       }
     } catch (error) {
       switch (error.code) {
