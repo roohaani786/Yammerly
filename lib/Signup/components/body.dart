@@ -287,7 +287,7 @@ class _BodyState extends State<Body> {
         if (pwdInputController.text ==
             confirmPwdInputController.text) {
 
-          final valid = await usernameCheck(displayNameInputController.text);
+          bool valid = await usernameCheck(displayNameInputController.text);
           if (!valid) {
             showDialog(
                 context: context,

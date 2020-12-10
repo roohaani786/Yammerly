@@ -55,16 +55,32 @@ class _ForgotScreen extends State<ForgotScreen> {
   Future<String> resetPass(String email) async {
     FirebaseUser user;
     String errorMessage;
-
+    final valid = await useremailCheck(emailInputController.text);
     // this.setState(() {
     //   isLoading = true;
     // });
 
-    try {
+    //try {
 
-      final valid = await useremailCheck(email);
       if (_formKey.currentState.validate()) {
-        if (valid) {
+        if (!valid) {
+          print("bahia bhia");
+          print(email);
+          FirebaseAuth.instance
+              .sendPasswordResetEmail(email: email)
+              .then((value) => print("Check you mail"));
+          Fluttertoast.showToast(
+              timeInSecForIosWeb: 100,
+              msg:
+              "Reset password link has sent to your mail");
+          Navigator.pop(context);
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (BuildContext context) =>
+          //             CheckMail()));
+
+        }else if(valid){
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -84,70 +100,54 @@ class _ForgotScreen extends State<ForgotScreen> {
                   ],
                 );
               });
-        }else{
-          print("bahia bhia");
-          print(email);
-          FirebaseAuth.instance
-              .sendPasswordResetEmail(email: email)
-              .then((value) => print("Check you mail"));
-          Fluttertoast.showToast(
-              timeInSecForIosWeb: 100,
-              msg:
-              "Reset password link has sent to your mail");
-          Navigator.pop(context);
-          // Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) =>
-          //             CheckMail()));
         }
 
       }
-    } catch (error) {
-      switch (error.code) {
-        case "ERROR_INVALID_EMAIL":
-          errorMessage = "The email address is badly formatted.";
-          break;
-        case "ERROR_WRONG_PASSWORD":
-          errorMessage = "Your email or password is wrong.";
-          break;
-        case "ERROR_USER_NOT_FOUND":
-          errorMessage = "User with this email doesn't exist.";
-          break;
-        case "ERROR_USER_DISABLED":
-          errorMessage = "User with this email has been disabled.";
-          break;
-        case "ERROR_TOO_MANY_REQUESTS":
-          errorMessage = "Too many requests. Try again later.";
-          break;
-        case "ERROR_OPERATION_NOT_ALLOWED":
-          errorMessage = "Signing in with Email and Password is not enabled.";
-          break;
-        default:
-          errorMessage =
-          "An error occurred, maybe due to unfilled fields, internet or other issue.";
-      }
+    // } catch (error) {
+    //   switch (error.code) {
+    //     case "ERROR_INVALID_EMAIL":
+    //       errorMessage = "The email address is badly formatted.";
+    //       break;
+    //     case "ERROR_WRONG_PASSWORD":
+    //       errorMessage = "Your email or password is wrong.";
+    //       break;
+    //     case "ERROR_USER_NOT_FOUND":
+    //       errorMessage = "User with this email doesn't exist.";
+    //       break;
+    //     case "ERROR_USER_DISABLED":
+    //       errorMessage = "User with this email has been disabled.";
+    //       break;
+    //     case "ERROR_TOO_MANY_REQUESTS":
+    //       errorMessage = "Too many requests. Try again later.";
+    //       break;
+    //     case "ERROR_OPERATION_NOT_ALLOWED":
+    //       errorMessage = "Signing in with Email and Password is not enabled.";
+    //       break;
+    //     default:
+    //       errorMessage =
+    //       "An error occurred, maybe due to unfilled fields, internet or other issue.";
+    //   }
+    //
+    //   Future.error(errorMessage);
+    // }
 
-      Future.error(errorMessage);
-    }
-
-    if (errorMessage != null) {
-      this.setState(() {
-        isLoading = false;
-      });
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              content: Text(
-                '$errorMessage',
-                style: TextStyle(color: Colors.black),
-              ),
-              title: Text("Error !", style:
-              TextStyle(color: Colors.red),),
-            );
-          });
-    }
+    // if (errorMessage != null) {
+    //   this.setState(() {
+    //     isLoading = false;
+    //   });
+    //   showDialog(
+    //       context: context,
+    //       builder: (BuildContext context) {
+    //         return AlertDialog(
+    //           content: Text(
+    //             '$errorMessage',
+    //             style: TextStyle(color: Colors.black),
+    //           ),
+    //           title: Text("Error !", style:
+    //           TextStyle(color: Colors.red),),
+    //         );
+    //       });
+    // }
 
     return null;
   }
