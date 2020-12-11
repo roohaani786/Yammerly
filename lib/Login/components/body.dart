@@ -278,7 +278,7 @@ class _BodyState extends State<Body> {
 //        assert(user.getIdToken() != null);
 
 
-          AuthService().checkuserexists(user.uid, user, user.displayName);
+          AuthService().updateUserData(user);
           loading.add(false);
 
           print("signed in " + user.displayName);
@@ -598,15 +598,6 @@ class _BodyState extends State<Body> {
                                     });
                                   },
                                 );
-                              },
-                            ),
-                            SocalIcon(
-                              iconSrc: "assets/icons/twitter.svg",
-                              press: () {
-                                print("hello");
-//                                loginWithTwitter(context).then((user) {
-//                                  print('Logged in successfully.');
-//                                });
                               },
                             ),
                           ],
