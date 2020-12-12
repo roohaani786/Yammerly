@@ -8,7 +8,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="AIOChat"
+        android:label="Yammerly"
         android:icon="@mipmap/ic_launcher">
 
         <uses-library
