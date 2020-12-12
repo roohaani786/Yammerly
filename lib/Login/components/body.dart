@@ -248,7 +248,7 @@ class _BodyState extends State<Body> {
 
     var facebookLogin = FacebookLogin();
     var facebookLoginResult =
-    await facebookLogin.logIn(['email']);
+    await facebookLogin.logIn(['public_profile']);
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
         print("Error");
@@ -576,39 +576,33 @@ class _BodyState extends State<Body> {
                               press: () {
                                 facebookLogin(context).then(
                                       (user) {
-                                    print('Logged in successfully.');
 
-                                    facebooksuccess ? Navigator
-                                        .pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                HomePage(
-                                                  title: "huhu",
-                                                  uid: "h",
-                                                )),
-                                            (_) => false) : Navigator.pushNamed(
-                                        context, "/Login");
 
                                     setState(() {
                                       isFacebookLoginIn = true;
                                       successMessage =
-                                      'Logged in successfully.\nEmail : ${user
-                                          .email}\nYou can now navigate to Home Page.';
+                                      'Logged in successfully.\nDisplay Name : ${user
+                                          .displayName}\nYou can now navigate to Home Page.';
                                     });
+                                    if(isFacebookLoginIn == true){
+                                      facebooksuccess ? Navigator
+                                          .pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+
+                                                  HomePage(
+                                                    title: "huhu",
+                                                    uid: "h",
+                                                  )),
+                                              (_) => false) : Navigator.pushNamed(
+                                          context, "/Login");
+                                    }
                                   },
                                 );
                               },
                             ),
-                            SocalIcon(
-                              iconSrc: "assets/icons/twitter.svg",
-                              press: () {
-                                print("hello");
-//                                loginWithTwitter(context).then((user) {
-//                                  print('Logged in successfully.');
-//                                });
-                              },
-                            ),
+
                           ],
                         )
                       ],

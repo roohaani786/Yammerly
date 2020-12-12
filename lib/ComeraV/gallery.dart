@@ -117,7 +117,7 @@ class _GalleryState extends State<Gallery> {
             compressFormat: ImageCompressFormat.jpg,
             androidUiSettings: AndroidUiSettings(
               toolbarColor: Colors.white,
-              toolbarTitle: "AIO Cropper",
+              toolbarTitle: "Yammerly Cropper",
               activeControlsWidgetColor: Colors.purple,
               toolbarWidgetColor: Colors.deepPurple,
               statusBarColor: Colors.purple,
