@@ -82,8 +82,6 @@ class _ChatsPageState extends State<ChatsPage> {
 
 
     return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails details) =>
-          _onHorizontalDrag(details),
 
       onTap: () => print("hui"),
 
