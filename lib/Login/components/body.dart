@@ -17,6 +17,7 @@ import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import '../../constants.dart';
 import '../../forgotpassword.dart';
+import 'package:flutter/services.dart';
 
 class Body extends StatefulWidget {
   final IconData icon;
@@ -178,6 +179,7 @@ class _BodyState extends State<Body> {
 
     try {
       if (_loginFormKey.currentState.validate()) {
+        print("bhaibhia");
         AuthResult result = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
             email: emailInputController.text,
@@ -369,7 +371,7 @@ class _BodyState extends State<Body> {
                                 ),
                               ),
                               child: TextFormField(
-
+                                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@.]'))],
                                 style: TextStyle(
                                     fontSize: 12.0,
                                     height: 1.6,
