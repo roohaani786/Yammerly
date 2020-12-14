@@ -10,7 +10,6 @@ import 'package:techstagram/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
@@ -69,10 +68,6 @@ class _FeedsPageState extends State<FeedsPage> {
   Stream<QuerySnapshot> postsStream;
   final timelineReference = Firestore.instance.collection('posts');
   String postIdX;
-  //bool _liked = false;
-  //var like = new List();
-  //int likeint;
-
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -100,20 +95,9 @@ class _FeedsPageState extends State<FeedsPage> {
     fetchPosts();
     fetchProfileData();
     fetchLikes();
-    //getPostCount();
   }
 
   File crop;
-
-  // getPostCount() async {
-  //   await DatabaseService().getPosts().then((val){
-  //     setState(() {
-  //       Plength = val;
-  //     });
-  //   });
-  //   print("yaha ai bhai length");
-  //   print(Plength);
-  // }
 
   Future pickImage() async {
     if(_image == null){
@@ -174,13 +158,6 @@ class _FeedsPageState extends State<FeedsPage> {
           context,
           MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
     }
-
-
-
-//    Navigator.push(
-//      context,
-//      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
-//    );
     print("Done..");
   }
 
@@ -347,10 +324,8 @@ class _FeedsPageState extends State<FeedsPage> {
                         getlikes(displayNamecurrentUser, postIdX, index);
 
                         Notification() async {
-                          //print(currUid);
 
                           setState(() {
-                            // file = null;
                             NotificationId = Uuid().v4();
                           });
 
@@ -360,24 +335,13 @@ class _FeedsPageState extends State<FeedsPage> {
                               .setData({"likes" : likes+1,
                             "notificationId" : NotificationId,
                             "username": displayNamecurrentUser,
-                            //"comment": commentTextEditingController.text,
-
                             "timestamp": DateTime.now(),
                             "url": photoUrl,
                             "uid": uid,
                             "status" : "like",
                             "postId" : postId,
                           });
-
                         }
-
-//                        if(likes == 0){
-//
-//                          _likes[index] = true;
-////
-//                        }
-
-
 
                         return (shared==true)?Container(
                           color: Colors.white,
