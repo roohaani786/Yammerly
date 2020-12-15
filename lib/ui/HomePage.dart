@@ -31,13 +31,10 @@ class HomePage extends StatefulWidget {
   FirebaseUser user;
 
   @override
-  _HomePageState createState() => _HomePageState(initialindexg);
+  _HomePageState createState() => _HomePageState(1);
 }
 
 final PageController _pageController = PageController(initialPage: 1,keepPage: true);
-
-
-
 
 class _HomePageState extends State<HomePage> {
 
@@ -63,8 +60,6 @@ class _HomePageState extends State<HomePage> {
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
-
-
 
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
@@ -123,7 +118,6 @@ class _HomePageState extends State<HomePage> {
       ],
     );
     super.initState();
-
   }
 
   void getCurrentUser() async {
@@ -162,10 +156,6 @@ class _HomePageState extends State<HomePage> {
 
   final FirebaseMessaging _fcm = FirebaseMessaging();
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
 //    final user = Provider.of<User>(context);
@@ -174,14 +164,10 @@ class _HomePageState extends State<HomePage> {
       onTap: (){print("hu");},
 //      onTap: () => Navigator.of(context).pop(HomePage()),
       child: Scaffold(
-//
         body: myPageView,
-
       ),
     );
   }
-
-
 }
 
 List<CameraDescription> cameras = [];
@@ -193,7 +179,7 @@ class TabLayoutDemo extends StatefulWidget {
   final String currUid;
   final String displaynameCurruser;
   @override
-  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg,currUid,displaynameCurruser);
+  _TabLayoutDemoState createState() => _TabLayoutDemoState(1,currUid,displaynameCurruser);
 }
 
 bool hideappbar = false;
@@ -201,7 +187,7 @@ bool hidebottombar = false;
 
 class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProviderStateMixin{
   _TabLayoutDemoState(this.initialindexg,this.currUid,this.displaynameCurruser);
-  TabController _tabController;
+  TabController tabController;
 
 
   final int initialindexg;
@@ -211,10 +197,10 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    this._tabController = TabController(length: 4, vsync: this,);
+    this.tabController = TabController(length: 4, vsync: this,);
   }
 
-  Future<bool> _onWillPop() {
+  //Future<bool> _onWillPop() {
 
     // return Navigator.push(
     //   context,
@@ -224,7 +210,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     //     },
     //   ),
     // );
-  }
+  //}
 
 
 
@@ -287,12 +273,10 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                 );
               },
             ),
-
           ],
         ),
 
         actions: <Widget>[
-
           IconButton(
             icon: Icon(
               FontAwesomeIcons.searchengin,
@@ -319,91 +303,80 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
               );
             },
           ),
-
         ],
       ),
-      body: WillPopScope(
-        onWillPop: () => _onWillPop(),
-        child: DefaultTabController(
-          length: 4,
-          initialIndex: 1,//(initialindexg == null) ? 2 : initialindexg,
+      body: DefaultTabController(
+        length: 4,
+        initialIndex: 1,//(initialindexg == null) ? 2 : initialindexg,
 
-          child: Scaffold(
-            body: WillPopScope(
-              onWillPop: () => _onWillPop(),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: NotificationListener(
-                      onNotification: (notification) {
-                        if (notification is ScrollStartNotification) {
-                          dragStartDetails = notification.dragDetails;
-                        }
-                        if (notification is OverscrollNotification) {
-                          drag = _pageController.position.drag(dragStartDetails, () {});
-                          drag.update(notification.dragDetails);
-                        }
-                        if (notification is ScrollEndNotification) {
-                          drag?.cancel();
-                        }
-                        return true;
-                      },
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: [
-
-
-                          new Container(
-                            child: ChatsPage(),
-                          ),
-                          new Container(
-                            child: FeedsPage(displayNamecurrentUser: displaynameCurruser,),
-                          ),
-                          new Container(
-                            //child: FeedsPage(),
-                            child: NotificationsPage(currUid: currUid),
-                          ),
-                          new Container(child: AccountBottomIconScreen()),
-                        ],
+        child: Scaffold(
+          body: Column(
+            children: [
+              Expanded(
+                child: NotificationListener(
+                  onNotification: (notification) {
+                    if (notification is ScrollStartNotification) {
+                      dragStartDetails = notification.dragDetails;
+                    }
+                    if (notification is OverscrollNotification) {
+                      drag = _pageController.position.drag(dragStartDetails, () {});
+                      drag.update(notification.dragDetails);
+                    }
+                    if (notification is ScrollEndNotification) {
+                      drag?.cancel();
+                    }
+                    return true;
+                  },
+                  child: TabBarView(
+                    controller: tabController,
+                    children: [
+                      new Container(
+                        child: ChatsPage(),
                       ),
-                    ),
+                      new Container(
+                        child: FeedsPage(displayNamecurrentUser: displaynameCurruser,),
+                      ),
+                      new Container(
+                        //child: FeedsPage(),
+                        child: NotificationsPage(currUid: currUid),
+                      ),
+                      new Container(child: AccountBottomIconScreen()),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-            bottomNavigationBar: new Container(
-              height: 60.0,
-              child: new TabBar(
-                controller: _tabController,
-                tabs: [
-
-                  Tab(
-                    icon: new Icon(Icons.blur_circular, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.home, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.notifications, size: 30),
-                    //text: new Text(curARRrUid),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.account_circle, size: 30),
-                  )
-                ],
-                labelColor: Colors.purple,
-                unselectedLabelColor: Colors.deepPurple,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorPadding: EdgeInsets.all(5.0),
-                indicatorWeight: 3.0,
-                indicatorColor: Colors.deepPurple,
-              ),
-            ),
-            backgroundColor: Colors.white,
+            ],
           ),
+          bottomNavigationBar: new Container(
+            height: 60.0,
+            child: new TabBar(
+              controller: tabController,
+              tabs: [
+                Tab(
+                  icon: new Icon(Icons.blur_circular, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.home, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.notifications, size: 30),
+                  //text: new Text(curARRrUid),
+                ),
+                Tab(
+                  icon: new Icon(Icons.account_circle, size: 30),
+                )
+              ],
+              labelColor: Colors.purple,
+              unselectedLabelColor: Colors.deepPurple,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorPadding: EdgeInsets.all(5.0),
+              indicatorWeight: 3.0,
+              indicatorColor: Colors.deepPurple,
+            ),
+          ),
+          backgroundColor: Colors.white,
         ),
       ),
     );
   }
-
 }

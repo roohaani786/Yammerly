@@ -68,7 +68,12 @@ class _ForgotScreen extends State<ForgotScreen> {
               timeInSecForIosWeb: 100,
               msg:
               "Reset password link has sent to your mail");
-          Navigator.pop(context);
+         // Navigator.pop(context);
+          Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute(
+              builder: (context) => LoginScreen(),
+            ),
+          );
 
         }else if(valid){
           showDialog(
