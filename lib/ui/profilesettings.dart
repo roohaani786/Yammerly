@@ -23,14 +23,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   final String email;
   final String phonenumber;
   final bool emailVerification;
-  FirebaseUser user;
+  //FirebaseUser user;
   final auth = FirebaseAuth.instance;
   Timer timer;
- // User user;
+  User user;
 
   Future<String> emailVerify(String email) async {
 
-    user = auth.currentUser as FirebaseUser;
+    user = auth.currentUser;
 
     print("bahia bhia");
     print(email);
@@ -61,7 +61,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   Future<void> checkEmailVerified() async {
-    user = auth.currentUser as FirebaseUser;
+    user = auth.currentUser;
     await user.reload();
     if (user.isEmailVerified) {
       timer.cancel();
