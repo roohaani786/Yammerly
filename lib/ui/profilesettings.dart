@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -22,11 +24,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   final String phonenumber;
   final bool emailVerification;
   FirebaseUser user;
+  final auth = FirebaseAuth.instance;
+  Timer timer;
+ // User user;
 
   Future<String> emailVerify(String email) async {
-    // FirebaseUser user;
-    // String errorMessage;
-    //final valid = await useremailCheck(emailInputController.text);
+
+    user = auth.currentUser as FirebaseUser;
 
     print("bahia bhia");
     print(email);
@@ -42,52 +46,33 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       print("An error occured while trying to send email        verification");
       print(e.message);
     }
-    // FirebaseAuth.instance
-    //     .sendPasswordResetEmail(email: email)
-    //     .then((value) => print("Check you mail"));
-
-
-    // if (_formKey.currentState.validate()) {
-    //   if (!valid) {
-    //     print("bahia bhia");
-    //     print(email);
-    //     FirebaseAuth.instance
-    //         .sendPasswordResetEmail(email: email)
-    //         .then((value) => print("Check you mail"));
-    //     Fluttertoast.showToast(
-    //         timeInSecForIosWeb: 100,
-    //         msg:
-    //         "Reset password link has sent to your mail");
-    //     // Navigator.pop(context);
-    //     Navigator.of(context, rootNavigator: true).push(
-    //       MaterialPageRoute(
-    //         builder: (context) => LoginScreen(),
-    //       ),
-    //     );
-    //
-    //   }else if(valid){
-    //     showDialog(
-    //         context: context,
-    //         builder: (BuildContext context) {
-    //
-    //           return AlertDialog(
-    //             title: Text("Error"),
-    //             content: Text("email does not exists!", style: TextStyle(
-    //                 color: Colors.deepPurple
-    //             )),
-    //             actions: <Widget>[
-    //               FlatButton(
-    //                 child: Text("Close"),
-    //                 onPressed: () {
-    //                   Navigator.of(context).pop();
-    //                 },
-    //               )
-    //             ],
-    //           );
-    //         });
-    //   }
-    // }
     return null;
+  }
+
+  @override
+  void initState(){
+    // user = auth.currentUser as FirebaseUser;
+    // user.sendEmailVerification();
+
+    timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      checkEmailVerified();
+    });
+    super.initState();
+  }
+
+  Future<void> checkEmailVerified() async {
+    user = auth.currentUser as FirebaseUser;
+    await user.reload();
+    if (user.isEmailVerified) {
+      timer.cancel();
+      print("ho gaya bhai");
+    }
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   _ProfileSettingsState(this.email,this.phonenumber,this.emailVerification);
