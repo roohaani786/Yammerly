@@ -28,6 +28,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   bool isLoading = true;
   bool isEditable = false;
+  bool emailVerify;
   final String uid;
   _AccountBottomIconScreenState({this.uid});
   String loadingMessage = "Loading Profile Data";
@@ -78,6 +79,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     lastNameController = TextEditingController();
     emailController = TextEditingController();
     phonenumberController = TextEditingController();
+    //emailVerificationController = TextEditingController();
     pinCodeController = TextEditingController();
     bioController = TextEditingController();
     genderController = TextEditingController();
@@ -160,6 +162,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       emailController.text = docSnap.data["email"];
       photoUrlController.text = docSnap.data["photoURL"];
       phonenumberController.text = docSnap.data["phonenumber"];
+      emailVerify = docSnap.data["emailVerified"];
       bioController.text = docSnap.data["bio"];
       followers = docSnap.data["followers"];
       following  = docSnap.data["following"];
@@ -251,7 +254,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text)),
+                              MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify)),
                             );
                           },
                           ),
@@ -264,10 +267,12 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                       //color: Colors.white,
                       icon: new Icon(Icons.settings),
                       onPressed: () {
+                        print("babbu bhai");
+                        print(emailVerify);
 
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text)),
+                          MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify)),
                         );
                       },
                     ),

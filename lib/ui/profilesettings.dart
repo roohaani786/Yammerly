@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProfileSettings extends StatefulWidget {
   final String email;
   final String phonenumber;
-  ProfileSettings(this.email,this.phonenumber);
+  final bool emailVerification;
+  ProfileSettings(this.email,this.phonenumber,this.emailVerification);
   @override
-  _ProfileSettingsState createState() => _ProfileSettingsState(email,phonenumber);
+  _ProfileSettingsState createState() => _ProfileSettingsState(email,phonenumber,emailVerification);
 }
 
 class _ProfileSettingsState extends State<ProfileSettings> {
@@ -18,8 +20,77 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   bool valuef = true;
   final String email;
   final String phonenumber;
+  final bool emailVerification;
+  FirebaseUser user;
 
-  _ProfileSettingsState(this.email,this.phonenumber);
+  Future<String> emailVerify(String email) async {
+    // FirebaseUser user;
+    // String errorMessage;
+    //final valid = await useremailCheck(emailInputController.text);
+
+    print("bahia bhia");
+    print(email);
+    try {
+      print("try");
+      await user.sendEmailVerification();
+      Fluttertoast.showToast(
+          timeInSecForIosWeb: 100,
+          msg:
+          "email Verification link has been sent to your mail");
+      return user.uid;
+    } catch (e) {
+      print("An error occured while trying to send email        verification");
+      print(e.message);
+    }
+    // FirebaseAuth.instance
+    //     .sendPasswordResetEmail(email: email)
+    //     .then((value) => print("Check you mail"));
+
+
+    // if (_formKey.currentState.validate()) {
+    //   if (!valid) {
+    //     print("bahia bhia");
+    //     print(email);
+    //     FirebaseAuth.instance
+    //         .sendPasswordResetEmail(email: email)
+    //         .then((value) => print("Check you mail"));
+    //     Fluttertoast.showToast(
+    //         timeInSecForIosWeb: 100,
+    //         msg:
+    //         "Reset password link has sent to your mail");
+    //     // Navigator.pop(context);
+    //     Navigator.of(context, rootNavigator: true).push(
+    //       MaterialPageRoute(
+    //         builder: (context) => LoginScreen(),
+    //       ),
+    //     );
+    //
+    //   }else if(valid){
+    //     showDialog(
+    //         context: context,
+    //         builder: (BuildContext context) {
+    //
+    //           return AlertDialog(
+    //             title: Text("Error"),
+    //             content: Text("email does not exists!", style: TextStyle(
+    //                 color: Colors.deepPurple
+    //             )),
+    //             actions: <Widget>[
+    //               FlatButton(
+    //                 child: Text("Close"),
+    //                 onPressed: () {
+    //                   Navigator.of(context).pop();
+    //                 },
+    //               )
+    //             ],
+    //           );
+    //         });
+    //   }
+    // }
+    return null;
+  }
+
+  _ProfileSettingsState(this.email,this.phonenumber,this.emailVerification);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -51,9 +122,16 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 color: Colors.deepPurple,
               ),),),
               SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,),
-                  trailing: Text(email,style: TextStyle(
+                  trailing: (emailVerification == true)?Text("Verified",style: TextStyle(
                     color: Colors.deepPurple,
-                  ),),),
+                  ),):FlatButton(
+                    onPressed: () {
+                      emailVerify(email);
+                    },
+                    child: Text("Verify your email",style: TextStyle(
+                      color: Colors.red,
+                    ),),
+                  ),),
               SettingsTile(
                 onTap: (){
                   FirebaseAuth.instance
