@@ -152,14 +152,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
     });
   }
+  String Purl;
 
   final StorageReference storageReference =
   FirebaseStorage.instance.ref().child("Display Pictures");
   final postReference = Firestore.instance.collection("users");
 
-  savePostInfoToFirestore(String url) {
-    postReference.document(currUser.uid).updateData({
-      "photoURL": photoUrlController.text,
+  savePostInfoToFirestore(String url,String uid) {
+    postReference.document(uid).updateData({
+      "photoURL": url,
     });
 
 
@@ -190,10 +191,11 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
 
       photoUrlController.text = fileURL;
+      Purl = fileURL;
 
       });
     });
-    savePostInfoToFirestore(photoUrlController.text);
+    savePostInfoToFirestore(Purl,uidController.text);
   }
 
 
@@ -329,11 +331,6 @@ class _ProfilePageState extends State<ProfilePage> {
     isChanged = true;
     }
 
-//    else if (docSnap.data["photoURL"].toString().trim() !=
-//        photoUrlController.text.trim()) {
-//      print("photoURL Changed");
-//      isChanged = true;
-//    }
 
 
     else if (docSnap.data["pincode"].toString().trim() !=
@@ -517,10 +514,6 @@ class _ProfilePageState extends State<ProfilePage> {
     children: <Widget>[
     GestureDetector(
       onTap: (){
-//        _scaffoldKey.currentState.removeCurrentSnackBar();
-//        setState(() {
-//          isChanged = true;
-//        });
         pickImagefromCamera();
         Navigator.of(context, rootNavigator: true).pop(context);
       },
@@ -590,8 +583,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           keyboardType: TextInputType.text,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Display Name",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -603,47 +597,62 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 16.0,
                         ),
 
-                        TextFormField(
-                          controller: firstNameController,
-                          enabled: isEditable,
-                          validator: (value) {
-                            if(value.length > 15.0){
-                              return 'First Name should not be greater the 15 words';
-                            }else if(value.length == 0){
-                              return 'First Name should not be null';
-                            }
-                          },
-                          decoration: InputDecoration(
-                              labelText: "First Name",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
-                          ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                  BorderSide(color: Colors.black, width: 1))),
-                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width*0.45,
+                              child: TextFormField(
+                                controller: firstNameController,
+                                enabled: isEditable,
+                                validator: (value) {
+                                  if(value.length > 15.0){
+                                    return 'First Name should not be greater the 15 words';
+                                  }else if(value.length == 0){
+                                    return 'First Name should not be null';
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                                    labelText: "First Name",labelStyle: TextStyle(
+                                    color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
+                                ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide:
+                                        BorderSide(color: Colors.black, width: 1))),
+                              ),
+                            ),
 
-                        SizedBox(
-                          height: 16,
-                        ),
-                        TextFormField(
-                          controller: lastNameController,
-                          enabled: isEditable,
-                          validator: (value) {
-                            if(value.length > 15.0){
-                              return 'Last Name should not be greater then 15 words';
-                            }else if(value.length == 0){
-                              return 'Last Name should not be null';
-                            }
-                          },
-                          decoration: InputDecoration(
-                              labelText: "Last Name",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
-                          ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                  BorderSide(color: Colors.black, width: 1))),
+                            SizedBox(
+                              height: 16,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 0.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width*0.45,
+                                child: TextFormField(
+                                  controller: lastNameController,
+                                  enabled: isEditable,
+                                  validator: (value) {
+                                    if(value.length > 15.0){
+                                      return 'Last Name should not be greater then 15 words';
+                                    }else if(value.length == 0){
+                                      return 'Last Name should not be null';
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Last Name",labelStyle: TextStyle(
+                                      color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
+                                  ),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide:
+                                          BorderSide(color: Colors.black, width: 1))),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
 
                         SizedBox(
@@ -660,14 +669,15 @@ class _ProfilePageState extends State<ProfilePage> {
                               return 'Phone number should be of 10 digit';
                             }
                           },
-                          maxLength: 10,
+                          //maxLength: 10,
                           inputFormatters: [
                             WhitelistingTextInputFormatter.digitsOnly
                           ],
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Phone Number",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -693,8 +703,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Email Id",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -716,99 +727,108 @@ class _ProfilePageState extends State<ProfilePage> {
                             }
                           },
                           keyboardType: TextInputType.text,
-                          maxLines: 3,
+                          maxLines: 2,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                               labelText: "Bio",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
                                   BorderSide(color: Colors.black, width: 1))),
                         ),
-
                         SizedBox(
                           height: 16.0,
                         ),
-
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: new Text(
-                              'Gender :',
-                              style: new TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15.0,
-                                  color: Colors.deepPurple
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            children: [
+                              Column(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: new Text(
+                                      'Gender :',
+                                      style: new TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13.0,
+                                          color: Colors.deepPurple
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: new DropdownButton<String>(
+                                      hint: Padding(
+                                        padding: const EdgeInsets.only(left: 13.0),
+                                        child: (genderController.text == "")?Text(genderstring):Text(genderController.text),
+                                      ),
+                                      items: <String>['Male', 'Female','Others'].map((String value) {
+                                        return new DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        genderController.text = value;
+                                        setState(() {
+                                          genderstring = value;
+                                        });
+                                      },
+                                    ),
+                                  )
+                                ],
                               ),
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 88.0),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10.0),
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: new Text(
+                                          'Relationship :',
+                                          style: new TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13.0,
+                                              color: Colors.deepPurple
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: new DropdownButton<String>(
+                                        hint: Padding(
+                                          padding: const EdgeInsets.only(left: 10.0),
+                                          child: (relationshipController.text=="")?Text(relationstring):Text(relationshipController.text),
+                                        ),
+                                        items: <String>['Single', 'Engaged'].map((String value) {
+                                          return new DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          relationshipController.text = value;
+                                          setState(() {
+                                            relationstring = value;
+                                          });
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
                         ),
 
 
-                    Align(
-                      alignment: Alignment.center,
-                      child: new DropdownButton<String>(
-                        hint: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: (genderController.text == "")?Text(genderstring):Text(genderController.text),
-                        ),
-                        items: <String>['Male', 'Female','Others'].map((String value) {
-                          return new DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          genderController.text = value;
-                          setState(() {
-                            genderstring = value;
-                          });
-                        },
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 16.0,
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: new Text(
-                          'Relationship :',
-                          style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
-                              color: Colors.deepPurple
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Align(
-                      alignment: Alignment.center,
-                      child: new DropdownButton<String>(
-                        hint: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: (relationshipController.text=="")?Text(relationstring):Text(relationshipController.text),
-                        ),
-                        items: <String>['Single', 'Engaged'].map((String value) {
-                          return new DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          relationshipController.text = value;
-                          setState(() {
-                            relationstring = value;
-                          });
-                        },
-                      ),
-                    ),
 
                         SizedBox(
                           height: 16,
@@ -825,8 +845,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           keyboardType: TextInputType.text,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Website",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -849,8 +870,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           keyboardType: TextInputType.multiline,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Work",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -873,8 +895,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           keyboardType: TextInputType.multiline,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Education",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -897,8 +920,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           keyboardType: TextInputType.multiline,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Current City",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -927,8 +951,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           keyboardType: TextInputType.number,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Pin Code",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -951,8 +976,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           keyboardType: TextInputType.multiline,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Home Town",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
