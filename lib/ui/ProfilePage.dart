@@ -254,7 +254,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify)),
+                              MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
                             );
                           },
                           ),
@@ -272,7 +272,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify)),
+                          MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
                         );
                       },
                     ),
