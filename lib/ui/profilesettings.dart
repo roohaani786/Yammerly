@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:techstagram/services/database.dart';
 //import 'package:techstagram/models/users.dart';
 
@@ -35,7 +35,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     FirebaseUser firebaseUser = await auth.currentUser();
     print("hogaya bhai");
 
-    Fluttertoast.showToast(msg: "email verificatin link has sent to you mail");
+    Fluttertoast.showToast(msg: "Verification link has been sent to you mail");
 
     await firebaseUser.sendEmailVerification();
 

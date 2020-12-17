@@ -1,10 +1,11 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/models/user.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthService {
   // Dependencies
@@ -141,6 +142,7 @@ class AuthService {
 
     }, merge: true);
   }
+
 
   void updatenewUserData(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
