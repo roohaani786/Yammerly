@@ -6,6 +6,7 @@ import 'package:settings_ui/settings_ui.dart';
 import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:techstagram/services/database.dart';
 //import 'package:techstagram/models/users.dart';
 
 class ProfileSettings extends StatefulWidget {
@@ -38,11 +39,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
     await firebaseUser.sendEmailVerification();
 
-    //checkEmailVerified();
-
-    // timer = Timer.periodic(Duration(seconds: 2), (timer) {
-    //   checkEmailVerified();
-    // });
   }
 
 
@@ -82,25 +78,16 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
   Future<void> checkEmailVerified() async {
 
-    print("bhai bhai");
-    print(uid);
-    print(emailVerification);
-
     FirebaseUser firebaseUser = await auth.currentUser();
-    print(firebaseUser.isEmailVerified);
 
     await firebaseUser.reload();
     if (firebaseUser.isEmailVerified) {
       timer.cancel();
       print(firebaseUser.email);
-      await Firestore.instance
-          .collection("users")
-          .document(uid)
-          .updateData({'emailVerified': true});
+      DatabaseService().updateEmailVerification(uid);
       setState(() {
         emailVerification = true;
       });
-      print("ho gaya bhai");
     }
   }
 

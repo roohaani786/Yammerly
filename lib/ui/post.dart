@@ -153,6 +153,8 @@ class _postPageState extends State<postPage> {
     return Firestore.instance
         .collection("posts")
         .where('url', isEqualTo: PostUrl)
+        .where("displayName", isEqualTo: displayNamecurrentUser)
+        .where("uid", isEqualTo: uidX)
         .snapshots();
   }
 
@@ -502,8 +504,11 @@ class _postPageState extends State<postPage> {
                                         ),
 
                                         IconButton(
-                                          icon: Icon(SimpleLineIcons.options),
-                                          onPressed: () {},
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () {
+                                            deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                            Navigator.pop(context);
+                                          },
                                         ),
                                       ],
                                     ),
@@ -778,8 +783,10 @@ class _postPageState extends State<postPage> {
                                       ],
                                     ),
                                     IconButton(
-                                      icon: Icon(SimpleLineIcons.options),
-                                      onPressed: () {},
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () {
+                                        deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                      },
                                     ),
                                   ],
                                 ),

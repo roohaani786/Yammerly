@@ -16,6 +16,13 @@ class DatabaseService {
         .snapshots();
   }
 
+  Future updateEmailVerification(String uid,) async{
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'emailVerified': true});
+  }
+
   Future updatephotoURL(String uid, String photoURl) async {
 
     return await Firestore.instance

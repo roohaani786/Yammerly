@@ -244,6 +244,17 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
             alignment: Alignment.center,
             child: Stack(
                 children: [
+                  Container(
+                    height : MediaQuery.of(context).size.height*0.30,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage('https://media.istockphoto.com/photos/green-leaves-on-white-picture-id1225155638?b=1&k=6&m=1225155638&s=170667a&w=0&h=9pdm942Mjk1RfAHuhsYRnOoKPhPVvgFaYkBthuJlF_Q='),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    //color: Colors.lightBlueAccent,
+                  ),
                   Align(
                     alignment: Alignment.topRight,
                       child: IconButton(
