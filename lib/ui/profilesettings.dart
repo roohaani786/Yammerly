@@ -35,7 +35,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     FirebaseUser firebaseUser = await auth.currentUser();
     print("hogaya bhai");
 
-    Fluttertoast.showToast(msg: "email verificatin link has sent to you mail");
+    Fluttertoast.showToast(
+        timeInSecForIosWeb:100,
+        msg: "email verificatin link has sent to you mail");
 
     await firebaseUser.sendEmailVerification();
 
@@ -129,7 +131,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   color: Colors.deepPurple,
                 ),),),
               SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,),
-                trailing: (emailVerification == true)?Text("Verified",style: TextStyle(
+                trailing: (email != null)?(emailVerification == true)?Text("Verified",style: TextStyle(
                   color: Colors.deepPurple,
                 ),):FlatButton(
                   onPressed: () {
@@ -138,7 +140,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   child: Text("Verify your email",style: TextStyle(
                     color: Colors.red,
                   ),),
-                ),),
+                ):Text("No Email",style: TextStyle(
+                  color: Colors.red,
+                ),),),
               SettingsTile(
                 onTap: (){
                   FirebaseAuth.instance

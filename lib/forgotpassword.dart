@@ -65,7 +65,7 @@ class _ForgotScreen extends State<ForgotScreen> {
               .sendPasswordResetEmail(email: email)
               .then((value) => print("Check you mail"));
           Fluttertoast.showToast(
-              timeInSecForIosWeb: 100,
+              timeInSecForIosWeb:100,
               msg:
               "Reset password link has sent to your mail");
          // Navigator.pop(context);

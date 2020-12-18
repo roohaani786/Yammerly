@@ -407,7 +407,7 @@ class _ProfilePageState extends State<ProfilePage> {
     data["relationship"] = relationshipController.text.trim();//relationship
     Firestore.instance
         .collection("users")
-        .document(currUser.uid)
+        .document(uidController.text)
         .setData(data, merge: true);
 //    DatabaseService().updatePostdisplayName(uidController.text,displayNameController.text);
 //    DatabaseService().updatephotoURL(displayNameController.text,photoUrlController.text);
@@ -741,8 +741,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 16.0,
                         ),
+
+
                         Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery.of(context).size.width*1,
                           child: Row(
                             children: [
                               Column(
@@ -781,8 +783,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   )
                                 ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 88.0),
+                              Align(
+                                //padding: const EdgeInsets.only(left: 88.0),
+                                alignment: Alignment.centerRight,
                                 child: Column(
                                   children: [
                                     Padding(

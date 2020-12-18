@@ -114,8 +114,6 @@ class _postPageState extends State<postPage> {
     //print(displayNamecurrent)
 
 
-
-
     if(displayName == displayNamecurrentUser){
 
       DatabaseService().PostD(uidX,posts);
@@ -128,10 +126,7 @@ class _postPageState extends State<postPage> {
       await Firestore.instance.collection('users').document(uidX)
           .collection('posts').document(postId).delete();
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 4,)),
-      );
+      Navigator.pop(context);
 
     }else{
       return showDialog(
