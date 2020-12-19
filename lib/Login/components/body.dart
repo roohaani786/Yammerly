@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
@@ -15,11 +16,12 @@ import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
+
 import '../../constants.dart';
 import '../../forgotpassword.dart';
-import 'package:flutter/services.dart';
 
 class Body extends StatefulWidget {
+
   final IconData icon;
 
   const Body({
@@ -32,16 +34,14 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  bool _obscureText = true;
 
+  bool _obscureText = true;
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
   bool isUserSignedIn = false;
-
   final FocusNode _email = FocusNode();
   final FocusNode _pwd = FocusNode();
-
   final FirebaseAuth auth = FirebaseAuth.instance;
   fl.FacebookLogin fbLogin = new fl.FacebookLogin();
   bool isFacebookLoginIn = false;
@@ -49,7 +49,7 @@ class _BodyState extends State<Body> {
   String successMessage = '';
   bool isLoading = false;
   bool facebooksuccess = false;
-
+  bool errordikhaoL = false;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   @override
@@ -68,36 +68,7 @@ class _BodyState extends State<Body> {
     });
   }
 
-//  Future<FirebaseUser> _handleSignIn() async {
-//    FirebaseUser user;
-//    bool userSignedIn = await googleSignIn.isSignedIn();
-//
-//    setState(() {
-//      isUserSignedIn = userSignedIn;
-//    });
-//
-//    if (isUserSignedIn) {
-//      user = await auth.currentUser();
-//    } else {
-//      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
-//      final GoogleSignInAuthentication googleAuth =
-//      await googleUser.authentication;
-//
-//      final AuthCredential credential = GoogleAuthProvider.getCredential(
-//        accessToken: googleAuth.accessToken,
-//        idToken: googleAuth.idToken,
-//      );
-//
-//      user = (await auth.signInWithCredential(credential)).user;
-//      userSignedIn = await googleSignIn.isSignedIn();
-//      setState(() {
-//        isUserSignedIn = userSignedIn;
-//      });
-//    }
-//
-//    return user;
-//  }
-
+  //Google signin method
   void onGoogleSignIn(BuildContext context) async {
     FirebaseUser user = await authService.hellogoogleSignIn();
     print(user);
@@ -112,13 +83,12 @@ class _BodyState extends State<Body> {
     });
   }
 
-  bool errordikhaoL = false;
-
+  //email Validator
   String emailValidator(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
-//    var hu = value;
+
     if (!regex.hasMatch(value) && value.length == null) {
       setState(() {
         errordikhaoL = true;
@@ -130,45 +100,7 @@ class _BodyState extends State<Body> {
     }
   }
 
-  //twitter Login method
-
-//  Future<FirebaseUser> loginWithTwitter(BuildContext context) async {
-//    FirebaseUser currentUser;
-//    var twitterLogin = new TwitterLogin(
-//      consumerKey: '5A5BOBPJhlu1PcymNvWYo7PST',
-//      consumerSecret: 'iKMjVT371WTyZ2nzmbW1YM59uAfIPobWOf1HSxvUHTflaeqdhu',
-//    );
-//
-//    final TwitterLoginResult result = await twitterLogin.authorize();
-//
-//    switch (result.status) {
-//      case TwitterLoginStatus.loggedIn:
-//        var session = result.session;
-//        final AuthCredential credential = TwitterAuthProvider.getCredential(
-//            authToken: session.token, authTokenSecret: session.secret);
-//
-//        final AuthResult user = await auth.signInWithCredential(credential);
-//        assert(user.user.email == null);
-//        assert(user.user.displayName != null);
-//        assert(!user.user.isAnonymous);
-//        assert(await user.user.getIdToken() != null);
-//        currentUser = await auth.currentUser();
-//        assert(user.user.uid == currentUser.uid);
-//        Navigator.pushAndRemoveUntil(
-//          context,
-//          MaterialPageRoute(builder: (context) => HomePage()),
-//              (Route<dynamic> route) => false,
-//        );
-//        return currentUser;
-//
-//        break;
-//      case TwitterLoginStatus.cancelledByUser:
-//        break;
-//      case TwitterLoginStatus.error:
-//        break;
-//    }
-//  }
-
+  //manual signin
   Future<String> signIn(String email, String password) async {
     FirebaseUser user;
     String errorMessage;
@@ -240,10 +172,9 @@ class _BodyState extends State<Body> {
     return user.uid;
   }
 
-  //facebook login method
-
   PublishSubject loading = PublishSubject();
 
+  //facebook login method
   Future<FirebaseUser> facebookLogin(BuildContext context) async {
     loading.add(true);
 
@@ -254,11 +185,9 @@ class _BodyState extends State<Body> {
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
         print("Error");
-//        onLoginStatusChanged(false);
         break;
       case FacebookLoginStatus.cancelledByUser:
         print("CancelledByUser");
-//        onLoginStatusChanged(false);
         break;
       case FacebookLoginStatus.loggedIn:
         print("LoggedIn");
@@ -274,13 +203,9 @@ class _BodyState extends State<Body> {
               credential))
               .user;
           (await FirebaseAuth.instance.currentUser()).uid;
-//        assert(user.email != null);
-//        assert(user.displayName != null);
-//        assert(user.isAnonymous);
-//        assert(user.getIdToken() != null);
-
 
           AuthService().checkuserexists(user.uid, user, user.displayName);
+
           loading.add(false);
 
           print("signed in " + user.displayName);
@@ -306,14 +231,12 @@ class _BodyState extends State<Body> {
                 );
               });
     }
-//        onLoginStatusChanged(true);
         break;
     }
 
   }
 
   //facebook logout method
-
   Future<bool> facebookLoginout() async {
     await auth.signOut();
     await fbLogin.logOut();
@@ -321,7 +244,6 @@ class _BodyState extends State<Body> {
   }
 
   //Password padlock toggle
-
   void _toggle() {
     setState(() {
       _obscureText = !_obscureText;
@@ -360,7 +282,6 @@ class _BodyState extends State<Body> {
                               margin: EdgeInsets.symmetric(vertical: 5),
                               padding:
                               EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
-//                              width: size.width * 0.8,
                               decoration: BoxDecoration(
                                 color: kPrimaryLightColor,
                                 borderRadius: BorderRadius.circular(29),
@@ -427,11 +348,7 @@ class _BodyState extends State<Body> {
                                 decoration: BoxDecoration(
                                   color: kPrimaryLightColor,
                                   borderRadius: BorderRadius.circular(29),
-//                                  border: Border.all(
-//                                    color: (errordikhaoL == true)
-//                                        ? Colors.red
-//                                        : kPrimaryLightColor,
-//                                  ),
+//
                                 ),
                                 child: TextFormField(
                                   //enableInteractiveSelection: false,
@@ -488,32 +405,13 @@ class _BodyState extends State<Body> {
                         RoundedButtonX(
                             text: "LOGIN",
                             press: () {
-//                              if (_loginFormKey.currentState.validate()) {
-//                                FirebaseAuth.instance
-//                                    .signInWithEmailAndPassword(
-//                                    email: emailInputController.text,
-//                                    password: pwdInputController.text)
-//                                    .then((authResult) =>
-//                                    Firestore.instance
-//                                        .collection("users")
-//                                        .document(authResult.user.uid)
-//                                        .get()
-//                                        .then((DocumentSnapshot result) =>
-//                                        Navigator.pushReplacement(
-//                                            context,
-//                                            MaterialPageRoute(
-//                                                builder: (context) =>
-//                                                    HomePage(
-//                                                      title: "hello",
-//                                                      uid: authResult.user.uid,
-//                                                    ))))
-//                                        .catchError((err) => print(err)))
-//                                    .catchError((err) => print(err));
-//                              }
+//
                               signIn(emailInputController.text,
                                   pwdInputController.text);
                             }),
+
                         SizedBox(height: 20.0),
+
                         AlreadyHaveAnAccountCheck(
                           press: () {
                             Navigator.push(
@@ -526,6 +424,7 @@ class _BodyState extends State<Body> {
                             );
                           },
                         ),
+
                         Padding(
                           padding: EdgeInsets.only(right: 0.0, top: 10.0),
                           child: Container(
@@ -546,39 +445,25 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                         ),
+
                         OrDivider(),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
+
                             SocalIcon(
                                 iconSrc: "assets/icons/google-icon.svg",
                                 press: () {
-//                                  signInWithGoogle(success).whenComplete(() {
-//                           if (success == true)
-//                                    Navigator.of(context).push(
-//                                      MaterialPageRoute(
-//                                        builder: (context) {
-//                                          return HomePage(
-////                                    title: "Welcome",
-//                                          );
-//                                        },
-//                                      ),
-//                                    );
-//                           else
-//                             Navigator.pop(
-//                               context
-//                             );
 //
-//                                  });
-
                                   onGoogleSignIn(context);
                                 }),
+
                             SocalIcon(
                               iconSrc: "assets/icons/facebook.svg",
                               press: () {
                                 facebookLogin(context).then(
                                       (user) {
-
 
                                     setState(() {
                                       isFacebookLoginIn = true;
@@ -586,13 +471,13 @@ class _BodyState extends State<Body> {
                                       'Logged in successfully.\nDisplay Name : ${user
                                           .displayName}\nYou can now navigate to Home Page.';
                                     });
+
                                     if(isFacebookLoginIn == true){
                                       facebooksuccess ? Navigator
                                           .pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-
                                                   HomePage(
                                                     title: "huhu",
                                                     uid: "h",
@@ -604,13 +489,13 @@ class _BodyState extends State<Body> {
                                 );
                               },
                             ),
-
                           ],
                         )
                       ],
                     ),
                   ),
                 ) : CircularProgressIndicator(
+
                   strokeWidth: 5.0,
                   semanticsLabel: 'loading...',
                   semanticsValue: 'loading...',
@@ -618,6 +503,7 @@ class _BodyState extends State<Body> {
                   valueColor: new AlwaysStoppedAnimation<Color>(
                       Colors.deepPurple),
                 ),
+
               ),
         ),
       ),

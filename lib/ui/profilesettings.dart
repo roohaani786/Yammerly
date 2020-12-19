@@ -1,25 +1,28 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/services/database.dart';
-//import 'package:techstagram/models/users.dart';
 
 class ProfileSettings extends StatefulWidget {
+
   final String email;
   final String phonenumber;
   final bool emailVerification;
   final String uid;
+
   ProfileSettings(this.email,this.phonenumber,this.emailVerification,this.uid);
+
   @override
+
   _ProfileSettingsState createState() => _ProfileSettingsState(email,phonenumber,emailVerification,uid);
+
 }
 
 class _ProfileSettingsState extends State<ProfileSettings> {
+
   bool lockInBackground = true;
   bool notificationsEnabled = true;
   bool valuef = true;
@@ -30,63 +33,26 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   final auth = FirebaseAuth.instance;
   Timer timer;
 
-  void sendVerificationEmail() async{
-    print("andar aaya");
-    FirebaseUser firebaseUser = await auth.currentUser();
-    print("hogaya bhai");
-
-    Fluttertoast.showToast(
-        timeInSecForIosWeb:100,
-        msg: "Verificatin link has been sent to you mail");
-
-    await firebaseUser.sendEmailVerification();
-
-  }
-
-
-  // Future<String> emailVerify(String email) async {
-  //
-  //   FirebaseUser firebaseUser = await auth.currentUser();
-  //
-  //   print("bahia bhia");
-  //   print(email);
-  //   try {
-  //     print("try");
-  //     await firebaseUser.sendEmailVerification();
-  //     Fluttertoast.showToast(
-  //         timeInSecForIosWeb: 100,
-  //         msg:
-  //         "email Verification link has been sent to your mail");
-  //     return currUser.uid;
-  //   } catch (e) {
-  //     print("An error occured while trying to send email verification");
-  //     print(e.message);
-  //   }
-  //   return null;
-  // }
-
-
-
   @override
   void initState(){
-    // user = auth.currentUser as FirebaseUser;
-//    user.sendEmailVerification();
 
     timer = Timer.periodic(Duration(seconds: 2), (timer) {
       checkEmailVerified();
     });
+
     super.initState();
   }
 
   Future<void> checkEmailVerified() async {
 
     FirebaseUser firebaseUser = await auth.currentUser();
-
     await firebaseUser.reload();
+
     if (firebaseUser.isEmailVerified) {
       timer.cancel();
       print(firebaseUser.email);
       DatabaseService().updateEmailVerification(uid);
+
       setState(() {
         emailVerification = true;
       });
@@ -102,7 +68,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   _ProfileSettingsState(this.email,this.phonenumber,this.emailVerification,this.uid);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -110,10 +75,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         TextStyle(
             color: Colors.deepPurple
         )),
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple,), onPressed: (){
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: Colors.deepPurple,),
+            onPressed: () {
           Navigator.pop(context);
         }),
       ),
+
       body: SettingsList(
         // backgroundColor: Colors.orange,
         sections: [
@@ -130,12 +98,16 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 trailing: Text(phonenumber,style: TextStyle(
                   color: Colors.deepPurple,
                 ),),),
-              SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,),
+
+              SettingsTile(
+
+                title: 'Email', leading: Icon(Icons.email, color: Colors.grey,),
+
                 trailing: (email != null)?(emailVerification == true)?Text("Verified",style: TextStyle(
                   color: Colors.deepPurple,
                 ),):FlatButton(
                   onPressed: () {
-                    sendVerificationEmail();
+                    DatabaseService().sendVerificationEmail();
                   },
                   child: Text("Verify your email",style: TextStyle(
                     color: Colors.red,
@@ -143,6 +115,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 ):Text("No Email",style: TextStyle(
                   color: Colors.red,
                 ),),),
+
+
               SettingsTile(
                 onTap: (){
                   FirebaseAuth.instance
@@ -204,6 +178,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   }
                 },
               ),
+
               SettingsTile(
                 onTap: (){
                   Navigator.push(context, new MaterialPageRoute(
@@ -224,6 +199,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               ),
             ],
           ),
+
           SettingsSection(
             title: 'Miscellaneous',titleTextStyle: TextStyle(color: Colors.deepPurple,
               fontWeight: FontWeight.bold),

@@ -43,7 +43,6 @@ class User {
     data['link'] = user.link;
     data['posts'] = user.posts;
     data['phone'] = user.phone;
-
     data['work'] = user.work;
     data['education'] = user.education;
     data['currentCity'] = user.currentCity;
@@ -64,16 +63,12 @@ class User {
     this.bio = mapData['bio'];
     this.posts = mapData['posts'];
     this.phone = mapData['phone'];
-
     this.work = mapData['work'];
     this.education = mapData['education'];
     this.currentCity = mapData['currentCity'];
     this.homeTown = mapData['homeTown'];
     this.relationship = mapData['relationship'];
   }
-
-
-
 }
 
 

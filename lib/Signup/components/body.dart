@@ -26,6 +26,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
   TextEditingController firstNameInputController;
   TextEditingController lastNameInputController;
@@ -47,8 +48,20 @@ class _BodyState extends State<Body> {
   bool _obscureText1 = true;
   bool isUserSignedIn = false;
   bool facebooksuccess = false;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseUser user;
+  PublishSubject loading = PublishSubject();
+  bool errordikhao = false;
+  bool errordikhaoP = false;
+  bool errordikhaoN = false;
+  bool errordikhaoDN = false;
+  bool isLoading = false;
+  int initialindexg;
+  fl.FacebookLogin fbLogin = new fl.FacebookLogin();
+  bool isFacebookLoginIn = false;
+  String errorMessage = '';
+  String successMessage = '';
 
-  //final FocusNode _signup = FoucsNode();
   @override
   initState() {
     firstNameInputController = new TextEditingController();
@@ -69,7 +82,6 @@ class _BodyState extends State<Body> {
       isUserSignedIn = userSignedIn;
     });
   }
-
 
   void onGoogleSignIn(BuildContext context) async {
     final valid = await usernameCheck(displayNameInputController.text);
@@ -109,13 +121,8 @@ class _BodyState extends State<Body> {
     }
   }
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  FirebaseUser user;
-  PublishSubject loading = PublishSubject();
-
   Future<FirebaseUser> facebookLogin(BuildContext context) async {
     loading.add(true);
-
 
     var facebookLogin = FacebookLogin();
     var facebookLoginResult =
@@ -123,11 +130,9 @@ class _BodyState extends State<Body> {
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
         print("Error");
-//        onLoginStatusChanged(false);
         break;
       case FacebookLoginStatus.cancelledByUser:
         print("CancelledByUser");
-//        onLoginStatusChanged(false);
         break;
       case FacebookLoginStatus.loggedIn:
         print("LoggedIn");
@@ -143,10 +148,6 @@ class _BodyState extends State<Body> {
               credential))
               .user;
           (await FirebaseAuth.instance.currentUser()).uid;
-//        assert(user.email != null);
-//        assert(user.displayName != null);
-//        assert(user.isAnonymous);
-//        assert(user.getIdToken() != null);
           AuthService().checkuserexists(user.uid, user, user.displayName);
         } catch (e) {
           showDialog(
@@ -168,13 +169,10 @@ class _BodyState extends State<Body> {
                 );
               });
         }
-//        onLoginStatusChanged(true);
         break;
     }
 
   }
-
-  bool errordikhao = false;
 
   String emailValidator(String value) {
     Pattern pattern =
@@ -191,8 +189,6 @@ class _BodyState extends State<Body> {
     }
   }
 
-  bool errordikhaoP = false;
-
   String pwdValidator(String value) {
     if (value.length < 8) {
 //      return 'Password must be longer than 8 characters';
@@ -206,14 +202,7 @@ class _BodyState extends State<Body> {
     }
   }
 
-  bool errordikhaoN = false;
-  bool errordikhaoDN = false;
-  bool isLoading = false;
-  int initialindexg;
-
   String validateDisplayName(String value) {
-// Indian Mobile number are of 10 digit only
-
     if (value.length == 0){
       print(value.length);
       setState(() {
@@ -221,9 +210,6 @@ class _BodyState extends State<Body> {
       });
     }
 
-
-
-    // return 'Mobile Number must be of 10 digit';
 
     else {
       setState(() {
@@ -246,12 +232,6 @@ class _BodyState extends State<Body> {
     else
       return null;
   }
-
-  fl.FacebookLogin fbLogin = new fl.FacebookLogin();
-  bool isFacebookLoginIn = false;
-  String errorMessage = '';
-  String successMessage = '';
-
 
   void _toggle() {
     setState(() {
@@ -309,9 +289,6 @@ class _BodyState extends State<Body> {
                   );
                 });
           }
-//          this.setState(() {
-//            isLoading = true;
-//          });
 
           else {
             FirebaseAuth.instance
@@ -488,15 +465,12 @@ class _BodyState extends State<Body> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-//                Text(
-//                  "SIGNUP",
-//                  style: TextStyle(fontWeight: FontWeight.bold),
-//                ),
-//                SizedBox(height: size.height * 0.001),
+
                 SvgPicture.asset(
                   "assets/icons/signup.svg",
                   height: size.height * 0.20,
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                       right: 10.0, top: 1.0, bottom: 1.0, left: 10.0),
@@ -512,14 +486,7 @@ class _BodyState extends State<Body> {
                         onFieldSubmitted: (term) {
                           _fieldFocusChange(context, _firstName, _lastName);
                         },
-//                            style: TextStyle(
-//                                fontSize: 20.0,
-//                                height: 2.0,
-//                                color: Colors.black
-//                            ),
                         cursorColor: kPrimaryColor,
-
-
 
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -539,14 +506,10 @@ class _BodyState extends State<Body> {
                           hintText: "First name",
                         ),
                         controller: firstNameInputController,
-                        //enableInteractiveSelection: false,
-                        // keyboardType: TextInputType.name,
-//                      validator: emailValidator,
                       ),
                     ),
                   ),
                 ),
-
 
                 Padding(
                   padding: const EdgeInsets.only(
@@ -564,7 +527,6 @@ class _BodyState extends State<Body> {
                           _fieldFocusChange(context, _lastName, _displayName);
                         },
                         cursorColor: kPrimaryColor,
-
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.only(
@@ -582,9 +544,6 @@ class _BodyState extends State<Body> {
                           hintText: "Last name",
                         ),
                         controller: lastNameInputController,
-                        //enableInteractiveSelection: false,
-                        //  keyboardType: TextInputType.name,
-//                      validator: emailValidator,
                       ),
                     ),
                   ),
@@ -640,9 +599,6 @@ class _BodyState extends State<Body> {
                   ),
                   controller: displayNameInputController,
                   validator: validateDisplayName,
-                  //enableInteractiveSelection: false,
-                  //  keyboardType: TextInputType.name,
-//                      validator: emailValidator,
                 ),
               ),
             ),
@@ -696,9 +652,6 @@ class _BodyState extends State<Body> {
                             hintText: "Phone number (optional)"),
                         controller: phoneNumberController,
                         validator: validateMobile,
-                        //enableInteractiveSelection: false,
-//                        keyboardType: TextInputType.number,
-//                      validator: emailValidator,
                       ),
                     ),
                   ),
@@ -755,9 +708,6 @@ class _BodyState extends State<Body> {
                             hintText: "Email"),
                         controller: emailInputController,
                         validator: emailValidator,
-                        //enableInteractiveSelection: false,
-//                        keyboardType: TextInputType.emailAddress,
-//                      validator: emailValidator,
                       ),
                     ),
                   ),
@@ -826,8 +776,6 @@ class _BodyState extends State<Body> {
                             hintText: "Create password"),
                         controller: pwdInputController,
                         validator: pwdValidator,
-                       // enableInteractiveSelection: false,
-//                      validator: emailValidator,
                       ),
                     ),
                   ),
@@ -883,8 +831,6 @@ class _BodyState extends State<Body> {
                             hintText: "Confirm password"),
                         controller: confirmPwdInputController,
                         obscureText: _obscureText1,
-                        //enableInteractiveSelection: false,
-//                      validator: emailValidator,
                       ),
                     ),
                   ),
@@ -897,61 +843,6 @@ class _BodyState extends State<Body> {
                         firstNameInputController.text,
                         lastNameInputController.text,
                         phoneNumberController.text,displayNameInputController.text);
-
-//                    if (_registerFormKey.currentState.validate()) {
-//                      if (pwdInputController.text ==
-//                          confirmPwdInputController.text) {
-//                        FirebaseAuth.instance
-//                            .createUserWithEmailAndPassword(
-//                            email: emailInputController.text,
-//                            password: pwdInputController.text)
-//                            .then((authResult) =>
-//                            Firestore.instance
-//                                .collection("users")
-//                                .document(authResult.user.uid)
-//                                .setData({
-//                              "uid": authResult.user.uid,
-//                              "fname": firstNameInputController.text,
-//                              "surname": lastNameInputController.text,
-//                              "phonenumber": phoneNumberController.text,
-//                              "email": emailInputController.text,
-//                            })
-//                                .then((result) =>
-//                            {
-//                              Navigator.pushAndRemoveUntil(
-//                                  context,
-//                                  MaterialPageRoute(
-//                                      builder: (context) => HomePage()),
-//                                      (_) => false),
-//                              firstNameInputController.clear(),
-//                              lastNameInputController.clear(),
-//                              phoneNumberController.clear(),
-//                              emailInputController.clear(),
-//                              pwdInputController.clear(),
-//                              confirmPwdInputController.clear()
-//                            })
-//                                .catchError(
-//                                    (err) => print(Errors.show(err.code))))
-//                            .catchError((err) => print(Errors.show(err)));
-//                      } else {
-//                        showDialog(
-//                            context: context,
-//                            builder: (BuildContext context) {
-//                              return AlertDialog(
-//                                title: Text("Error"),
-//                                content: Text("The passwords do not match"),
-//                                actions: <Widget>[
-//                                  FlatButton(
-//                                    child: Text("Close"),
-//                                    onPressed: () {
-//                                      Navigator.of(context).pop();
-//                                    },
-//                                  )
-//                                ],
-//                              );
-//                            });
-//                      }
-//                    }
                   },
                 ),
                 SizedBox(height: size.height * 0.01),
@@ -972,29 +863,18 @@ class _BodyState extends State<Body> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+
                     SocalIcon(
                         iconSrc: "assets/icons/google-icon.svg",
                         press: () {
-//                          signInWithGoogle(success).whenComplete(() {
-////                            if (success == true)
-//                            Navigator.of(context).push(
-//                              MaterialPageRoute(
-//                                builder: (context) {
-//                                  return HomePage(
-////                                    title: "Welcome",
-//                                  );
-//                                },
-//                              ),
-//                            );
-//                          });
                           onGoogleSignIn(context);
                         }),
+
                     SocalIcon(
                       iconSrc: "assets/icons/facebook.svg",
                       press: () {
                         facebookLogin(context).then(
                               (user) {
-
 
                             setState(() {
                               isFacebookLoginIn = true;
@@ -1008,7 +888,6 @@ class _BodyState extends State<Body> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-
                                           HomePage(
                                             title: "huhu",
                                             uid: "h",
@@ -1037,30 +916,8 @@ class _BodyState extends State<Body> {
   }
 }
 
-
 _fieldFocusChange(BuildContext context, FocusNode currentFocus,
     FocusNode nextFocus) {
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
-}
-
-class Errors {
-  static String show(String errorCode) {
-    switch (errorCode) {
-      case 'ERROR_EMAIL_ALREADY_IN_USE':
-        return "This e-mail address is already in use, please use a different e-mail address.";
-
-      case 'ERROR_INVALID_EMAIL':
-        return "The email address is badly formatted.";
-
-      case 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
-        return "The e-mail address in your Facebook account has been registered in the system before. Please login by trying other methods with this e-mail address.";
-
-      case 'ERROR_WRONG_PASSWORD':
-        return "E-mail address or password is incorrect.";
-
-      default:
-        return "An error has occurred";
-    }
-  }
 }
