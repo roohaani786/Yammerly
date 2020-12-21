@@ -14,6 +14,7 @@ import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:image/image.dart' as ImD;
+import 'dart:math';
 
 class ProfilePage extends StatefulWidget {
   static final String pageName = "/ProfilePage";
@@ -159,9 +160,15 @@ class _ProfilePageState extends State<ProfilePage> {
   final postReference = Firestore.instance.collection("users");
 
   savePostInfoToFirestore(String url,String uid) {
-    postReference.document(uid).updateData({
-      "photoURL": url,
+    postReference.where('uid', isEqualTo: uid).getDocuments()
+    .then((docs) {
+      Firestore.instance.document(uid).updateData({'photoUrl': url}).then((val) {
+        print("update ho gaya");
+      });
     });
+    // postReference.document(uid).updateData({
+    //   "photoURL": url,
+    // });
 
 
     setState(() {
@@ -178,12 +185,13 @@ class _ProfilePageState extends State<ProfilePage> {
      await compressPhoto();
    }
 
+   Random randomno = new Random();
 
     StorageReference storageReference =
 
     FirebaseStorage.instance
         .ref()
-        .child('users');
+        .child('users/${randomno.nextInt(5000).toString()}.jpg');
     StorageUploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.onComplete;
     print('File Uploaded');
@@ -409,6 +417,8 @@ class _ProfilePageState extends State<ProfilePage> {
         .collection("users")
         .document(uidController.text)
         .setData(data, merge: true);
+    print(uidController.text);
+    print("babbu bhai bhai");
 //    DatabaseService().updatePostdisplayName(uidController.text,displayNameController.text);
 //    DatabaseService().updatephotoURL(displayNameController.text,photoUrlController.text);
     snackbarContent = "Profile Updated";
@@ -554,6 +564,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                       child: CircleAvatar(
                         radius: 50,
+                        //backgroundImage: NetworkImage(photoUrlController.text),
                         backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
                         backgroundColor: Colors.transparent,
                       ),
