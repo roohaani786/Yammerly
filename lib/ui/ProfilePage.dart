@@ -230,9 +230,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height*0.20;
     //print("jhj");
     //print(followersController.text);
     return Scaffold(
@@ -245,7 +246,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
             child: Stack(
                 children: [
                   Container(
-                    height : MediaQuery.of(context).size.height*0.30,
+                    height : MediaQuery.of(context).size.height*0.20,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -289,17 +290,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                   ),
 
-
-                  // Image.asset(
-                  //   "assets/images/social.jpg",
-                  //   height: MediaQuery.of(context).size.height,
-                  //   width: MediaQuery.of(context).size.width,
-                  //   fit: BoxFit.fitHeight,
-                  // ),
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 110.0),
+                      padding: const EdgeInsets.only(top: 100),
                       child: Column(
                         children: [
                           Container(
@@ -307,140 +301,123 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             width: 340.0,
 
                               // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
+                              child: Row(
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
 
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10.0),
-                                    child: Text(
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 25.0,left: 120),
+                                        child: Text(
 
-                                      displayNameController.text,
-                                      style: TextStyle(
-                                        fontSize: 26.0,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Pacifico',
+                                          displayNameController.text,
+                                          style: TextStyle(
+                                            fontSize: 26.0,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Pacifico',
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10.0),
-                                    child: Text(
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 5.0, left: 110),
+                                        child: Text(
 
-                                      bioController.text,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Source Sans Pro',
-                                        fontSize: 15.0,
-                                        color: Colors.grey.shade700,
-                                        letterSpacing: 2.5,
-                                        fontWeight: FontWeight.bold,
+                                          bioController.text,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontFamily: 'Source Sans Pro',
+                                            fontSize: 15.0,
+                                            color: Colors.grey.shade700,
+                                            letterSpacing: 2.5,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                    width: 200,
-//                                      child: Divider(
-//                                        color: Colors.teal.shade700,
-//                                      ),
-                                  ),
+                                      SizedBox(
+                                        height: 10,
+                                        width: 200,
+                                      ),
 
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Container(
-//                                        child: Row(
-//                                          children: [
-//                                            SizedBox(
-//                                              width: 110,
-//                                              child: FlatButton(
-//                                                  color: Colors.transparent,
-//                                                  child: new Text(
-//                                                    "About Me",
-//                                                    style: TextStyle(
-//                                                      color: Colors.black,
-//                                                    ),
-//                                                  ),
-//                                                  onPressed: () {
-//
-//                                                    Navigator.push(
-//                                                      context,
-//                                                      MaterialPageRoute(builder: (context) => AboutUser()),
-//                                                    );
-//                                                  },
-//                                                  shape: RoundedRectangleBorder(
-//                                                    side: BorderSide(color: Colors.purple, width: 2.5),
-//                                                    borderRadius: BorderRadius.circular(30.0),
-//                                                  )),
-//                                            ),
-//                                            Padding(
-//                                              padding: const EdgeInsets.only(left: 20.0),
-//                                              child:
-                                            child :SizedBox(
-                                              width: 110,
-                                              child: FlatButton(
-                                                  color: Colors.purple,
-                                                  //color: Colors.white,
-                                                  child: Center(
-                                                    child: new Text(
-                                                      "Edit Profile",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        //color: Color(0xffed1e79),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => ProfilePage()),
-                                                    );
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                    side: BorderSide(
-                                                        color: Colors.purple,
-                                                        //color: Color(0xffed1e79),
-                                                        width: 2.5),
-                                                    borderRadius: BorderRadius.circular(30.0),
-                                                  )),
+                                      Container(
+                                        height: 60.0,
+                                        width: width*0.73,
+                                        margin: EdgeInsets.only(top: 8.0),
+                                        decoration: BoxDecoration(
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: <Widget>[
+                                            _buildStatItem("POSTS", posts.toString()),
+                                            GestureDetector(
+                                                onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => FollowersList(displayNamecurrentUserX:displayNameController.text,uidX: uidController.text,)),
+                                                ),
+                                                child: _buildStatItem("FOLLOWERS", followers.toString())
                                             ),
+
+                                            GestureDetector(
+                                                onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                                ),
+                                                child: _buildStatItem("FOLLOWING", following.toString())
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 160.0),
+                                    child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: Container(
+                                        
+                                        child :SizedBox(
+                                          width: 40,
+                                          height: 40.0,
+                                          child: Ink(
+                                            decoration: const ShapeDecoration(
+                                              color: Colors.purple,
+                                              shape: CircleBorder(),
+                                            ),
+                                            child: IconButton(
+                                                color: Colors.white,
+                                                icon: Icon(
+                                                    FontAwesomeIcons.userEdit,
+                                                  size: 20,
+                                                ),
+                                                //color: Colors.white,
+                                                // child: Padding(
+                                                //   padding: const EdgeInsets.only(right:50.0),
+                                                //   child: Icon(
+                                                //     FontAwesomeIcons.userEdit,
+                                                //     color: Colors.white,
+                                                //     size: 24.0,
+                                                //   ),
+                                                // ),
+                                                onPressed: () {
+
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                  );
+                                                }
+                                                ),
+                                          ),
+                                        ),
 //                                            ),
 //                                          ],
 //                                        ),
+                                      ),
                                     ),
-                                  ),
-
-                                  Container(
-                                    height: 60.0,
-                                    margin: EdgeInsets.only(top: 8.0),
-                                    decoration: BoxDecoration(
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: <Widget>[
-                                        GestureDetector(
-                                            onTap: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => FollowersList(displayNamecurrentUserX:displayNameController.text,uidX: uidController.text,)),
-                                            ),
-                                            child: _buildStatItem("FOLLOWERS", followers.toString())
-                                        ),
-                                        _buildStatItem("POSTS", posts.toString()),
-                                        GestureDetector(
-                                            onTap: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
-                                            ),
-                                            child: _buildStatItem("FOLLOWING", following.toString())
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
+                                  )
                                 ],
                               ),
                           ),
@@ -558,17 +535,26 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.only(top: 80,left: 140.0,right: 140.0),
+                    padding: const EdgeInsets.only(top: 145,right: 250.0),
                     child:(photoUrlController.text!=null)?Align(
                       alignment: Alignment.center,
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundImage: NetworkImage(photoUrlController.text),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 5,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(photoUrlController.text),
 
-                        backgroundColor: Colors.transparent,
+                          backgroundColor: Colors.transparent,
+                        ),
                       ),
                     ): CircleAvatar(
-                      radius: 20,
+                      radius: 50,
                       child: IconButton(icon:
                       Icon(FontAwesomeIcons.userCircle,
                         color: Colors.deepPurple,), onPressed: (){print("hello");}),
