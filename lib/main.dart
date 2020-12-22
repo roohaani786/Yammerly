@@ -127,7 +127,7 @@ class _LoginCheckState extends State<LoginCheck> {
         if (snapshot.hasData) {
 
           print("Already Loggedin");
-          return HomePage();
+          return HomePage(initialindexg: 2);
 
         } else {
           print("Not loggedIn");

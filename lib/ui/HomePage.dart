@@ -27,14 +27,14 @@ class HomePage extends StatefulWidget {
 
   final String title;
   final String uid;
-  int initialindexg = 1;
+  int initialindexg = 2;
   FirebaseUser user;
 
   @override
-  _HomePageState createState() => _HomePageState(1);
+  _HomePageState createState() => _HomePageState(2);
 }
 
-final PageController _pageController = PageController(initialPage: 1,keepPage: true);
+final PageController _pageController = PageController(initialPage: 2,keepPage: true);
 
 class _HomePageState extends State<HomePage> {
 
@@ -307,7 +307,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
       ),
       body: DefaultTabController(
         length: 4,
-        initialIndex: 1,//(initialindexg == null) ? 2 : initialindexg,
+        initialIndex: initialindexg,//(initialindexg == null) ? 2 : initialindexg,
 
         child: Scaffold(
           body: Column(

@@ -126,7 +126,9 @@ class _postPageState extends State<postPage> {
       await Firestore.instance.collection('users').document(uidX)
           .collection('posts').document(postId).delete();
 
-      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(
+          builder: (BuildContext context) => HomePage(initialindexg: 4)));
 
     }else{
       return showDialog(
@@ -501,8 +503,53 @@ class _postPageState extends State<postPage> {
                                         IconButton(
                                           icon: Icon(Icons.delete),
                                           onPressed: () {
-                                            deletePost(displayNamecurrentUser, displayName, postId, uidX);
-                                            Navigator.pop(context);
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    backgroundColor: Colors.white,
+                                                    title: Text("Delete post ?"),
+                                                    content: Text(
+                                                        "Are you sure you wanna delete this post.",
+                                                        style: TextStyle(
+                                                            color: Colors.deepPurple
+                                                        )),
+                                                    actions: <Widget>[
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(right: 120.0),
+
+                                                        child: Column(
+                                                          children: [
+                                                            FlatButton(
+                                                              child: Text("yes", style:
+                                                              TextStyle(
+                                                                color: Colors.red,
+                                                              ),),
+                                                              onPressed: () {
+                                                                deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                                                Navigator.push(
+                                                                    context, MaterialPageRoute(
+                                                                    builder: (BuildContext context) => HomePage(initialindexg: 4)));
+                                                              },
+                                                            ),
+                                                            FlatButton(
+                                                              child: Text("No", style:
+                                                              TextStyle(
+                                                                color: Colors.black,
+                                                              ),),
+                                                              onPressed: () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                            )
+                                                          ],
+                                                        ),
+
+                                                      )
+                                                    ],
+                                                  );
+                                                });
+                                            //deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                            //Navigator.pop(context);
                                           },
                                         ),
                                       ],
@@ -780,7 +827,52 @@ class _postPageState extends State<postPage> {
                                     IconButton(
                                       icon: Icon(Icons.delete),
                                       onPressed: () {
-                                        deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                backgroundColor: Colors.white,
+                                                title: Text("Delete post ?"),
+                                                content: Text(
+                                                    "Are you sure you wanna delete this post.",
+                                                    style: TextStyle(
+                                                        color: Colors.deepPurple
+                                                    )),
+                                                actions: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: 120.0),
+
+                                                    child: Column(
+                                                      children: [
+                                                        FlatButton(
+                                                          child: Text("yes", style:
+                                                          TextStyle(
+                                                            color: Colors.red,
+                                                          ),),
+                                                          onPressed: () {
+                                                            deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                                            Navigator.push(
+                                                                context, MaterialPageRoute(
+                                                                builder: (BuildContext context) => HomePage(initialindexg: 4)));
+                                                          },
+                                                        ),
+                                                        FlatButton(
+                                                          child: Text("No", style:
+                                                          TextStyle(
+                                                            color: Colors.black,
+                                                          ),),
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                        )
+                                                      ],
+                                                    ),
+
+                                                  )
+                                                ],
+                                              );
+                                            });
+                                        //deletePost(displayNamecurrentUser, displayName, postId, uidX);
                                       },
                                     ),
                                   ],

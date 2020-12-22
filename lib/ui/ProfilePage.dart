@@ -262,7 +262,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                           //color: Colors.white,
                           icon: new Icon(Icons.settings),
                           onPressed: () {
-
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
@@ -408,12 +407,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                   )),
                                             ),
 //                                            ),
-
-
-
-
-
-
 //                                          ],
 //                                        ),
                                     ),
