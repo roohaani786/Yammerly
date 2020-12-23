@@ -1,15 +1,22 @@
+import 'dart:io';
+import 'dart:math';
+import 'package:image/image.dart' as ImD;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/utils/utils.dart';
+import '../constants.dart';
 import 'HomePage.dart';
 import 'ProfileEdit.dart';
 import 'profilesettings.dart';
@@ -36,7 +43,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      bioController,genderController,linkController,photoUrlController,
+      bioController,genderController,linkController,photoUrlController,coverPhotoUrlController,
       displayNameController,workController,educationController,
       phonenumberController,
       currentCityController,homeTownController,relationshipController,
@@ -86,6 +93,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     genderController = TextEditingController();
     linkController = TextEditingController();
     photoUrlController = TextEditingController();
+    coverPhotoUrlController = TextEditingController();
     displayNameController = TextEditingController();
     workController = TextEditingController();
     educationController = TextEditingController();
@@ -114,6 +122,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   int followers;
   int following;
   int posts;
+  String coverPhotoUrl;
   String uidCurrUser;
   String postIdX;
 
@@ -168,6 +177,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       followers = docSnap.data["followers"];
       following  = docSnap.data["following"];
       posts  = docSnap.data["posts"];
+      coverPhotoUrlController.text = docSnap.data['coverPhotoUrl'];
 
       setState(() {
         isLoading = false;
@@ -179,6 +189,109 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
+
+  File _image;
+
+  Future pickImagefromCamera() async {
+    await ImagePicker.pickImage(source: ImageSource.camera).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+    uploadFile();
+    return AccountBottomIconScreen();
+
+  }
+
+  Future pickImage() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+    uploadFile();
+    return ProfilePage();
+  }
+
+  bool isChanged = false;
+
+  compressPhoto() async {
+    setState(() {
+      isChanged = true;
+    });
+    final directory = await getTemporaryDirectory();
+    final path = directory.path;
+    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
+    final compressedImage = File('$path/img_$uidController.jpg')
+      ..writeAsBytesSync(
+        ImD.encodeJpg(mImageFile, quality: 30),
+      );
+    setState(() {
+      _image = compressedImage;
+
+    });
+  }
+
+  Future uploadFile() async {
+
+    if(_image!=null){
+      await compressPhoto();
+    }
+
+    Random randomno = new Random();
+
+    StorageReference storageReference =
+
+    FirebaseStorage.instance
+        .ref()
+        .child('users/${randomno.nextInt(5000).toString()}.jpg');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+
+        coverPhotoUrlController.text = fileURL;
+        Purl = fileURL;
+
+      });
+    });
+    savePostInfoToFirestore(coverPhotoUrlController.text,uidController.text);
+  }
+
+  final postReference = Firestore.instance.collection("users");
+
+  savePostInfoToFirestore(String url,String uid) {
+    // postReference.where('uid', isEqualTo: uid).getDocuments()
+    //     .then((docs) {
+    //   Firestore.instance.document(uid).setData({'coverPhotoUrl': url}).then((val) {
+    //     print("update ho gaya");
+    //   });
+    // });
+
+    print(url);
+    print("babab");
+
+    Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'coverPhotoUrl': url});
+    // postReference.document(uid).updateData({
+    //   "photoURL": url,
+    // });
+
+
+    setState(() {
+      isChanged = false;
+    });
+
+
+    print("cover photo");
+    print(coverPhotoUrlController.text);
+    return ProfilePage();
+  }
+
+  String Purl;
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
@@ -261,7 +374,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
             alignment: Alignment.center,
             child: Stack(
                 children: [
-                  Container(
+                  (coverPhotoUrlController.text == null)?Container(
                     height : MediaQuery.of(context).size.height*0.20,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
@@ -271,20 +384,90 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                       ),
                     ),
                     //color: Colors.lightBlueAccent,
+                  ):Container(
+                    height : MediaQuery.of(context).size.height*0.20,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(coverPhotoUrlController.text),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    //color: Colors.lightBlueAccent,
                   ),
                   Align(
                     alignment: Alignment.topRight,
-                      child: IconButton(
-                          color: Colors.purple,
-                          //color: Colors.white,
-                          icon: new Icon(Icons.settings),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
-                            );
-                          },
+                      child: Column(
+                        children: [
+                          IconButton(
+                              color: Colors.purple,
+                              //color: Colors.white,
+                              icon: new Icon(Icons.settings),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
+                                );
+                              },
+                              ),
+                          IconButton(
+                            color: Colors.purple,
+                            //color: Colors.white,
+                            icon: new Icon(Icons.edit),
+                              onPressed: (){
+                                showDialog<void>(
+                                    context: context,// THIS WAS MISSING// user must tap button!
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Select image from :-',style: TextStyle(
+                                          fontSize: 15.0,
+                                        ),),
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              GestureDetector(
+                                                onTap: (){
+                                                  pickImagefromCamera();
+                                                  Navigator.of(context, rootNavigator: true).pop(context);
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 20.0),
+                                                      child: Text('Camera'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 20.0),
+                                                child: GestureDetector(
+                                                  onTap: (){
+                                                    pickImage();
+                                                    Navigator.of(context, rootNavigator: true).pop(context);
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(left: 20.0),
+                                                        child: Text('Gallery'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+
+                                    });
+                              },
                           ),
+                        ],
+                      ),
                   ),
 
                   // Align(
@@ -314,7 +497,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         children: [
                           Container(
                             height: 270.0,
-                            width: 340.0,
+                            width: width,
 
                               // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
                               child: Row(
@@ -323,41 +506,60 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 25.0,left: 120),
-                                        child: Text(
+                                      Container(
+                                        width: deviceWidth*0.85,
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 25.0,left: 120),
+                                              child: Text(
 
-                                          displayNameController.text,
-                                          style: TextStyle(
-                                            fontSize: 26.0,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Pacifico',
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 5.0, left: 110),
-                                        child: Text(
+                                                displayNameController.text,
+                                                style: TextStyle(
+                                                  fontSize: 26.0,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Pacifico',
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 5.0, left: 110),
+                                              child: Text(
 
-                                          bioController.text,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontFamily: 'Source Sans Pro',
-                                            fontSize: 15.0,
-                                            color: Colors.grey.shade700,
-                                            letterSpacing: 2.5,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                                bioController.text,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontFamily: 'Source Sans Pro',
+                                                  fontSize: 15.0,
+                                                  color: Colors.grey.shade700,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              // child: Text(
+                                              //
+                                              //   bioController.text,
+                                              //   textAlign: TextAlign.center,
+                                              //   style: TextStyle(
+                                              //     fontFamily: 'Source Sans Pro',
+                                              //     fontSize: 15.0,
+                                              //     color: Colors.grey.shade700,
+                                              //     letterSpacing: 2.5,
+                                              //     fontWeight: FontWeight.bold,
+                                              //   ),
+                                              // ),
+                                            ),
+                                          ],
+                                        )
                                       ),
+
                                       SizedBox(
                                         height: 10,
                                         width: 200,
                                       ),
 
                                       Container(
-                                        height: 60.0,
+                                        height: 40.0,
                                         width: width*0.73,
                                         margin: EdgeInsets.only(top: 8.0),
                                         decoration: BoxDecoration(
@@ -393,44 +595,38 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                     padding: const EdgeInsets.only(top: 160.0),
                                     child: Align(
                                       alignment: Alignment.topRight,
-                                      child: Container(
-                                        
-                                        child :SizedBox(
-                                          width: 40,
-                                          height: 40.0,
-                                          child: Ink(
-                                            decoration: const ShapeDecoration(
-                                              color: Colors.purple,
-                                              shape: CircleBorder(),
-                                            ),
-                                            child: IconButton(
-                                                color: Colors.white,
-                                                icon: Icon(
-                                                    FontAwesomeIcons.userEdit,
-                                                  size: 20,
-                                                ),
-                                                //color: Colors.white,
-                                                // child: Padding(
-                                                //   padding: const EdgeInsets.only(right:50.0),
-                                                //   child: Icon(
-                                                //     FontAwesomeIcons.userEdit,
-                                                //     color: Colors.white,
-                                                //     size: 24.0,
-                                                //   ),
-                                                // ),
-                                                onPressed: () {
-
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => ProfilePage()),
-                                                  );
-                                                }
-                                                ),
+                                      child: SizedBox(
+                                        width: 40,
+                                        height: 40.0,
+                                        child: Ink(
+                                          decoration: const ShapeDecoration(
+                                            color: Colors.purple,
+                                            shape: CircleBorder(),
                                           ),
+                                          child: IconButton(
+                                              color: Colors.white,
+                                              icon: Icon(
+                                                  FontAwesomeIcons.userEdit,
+                                                size: 20,
+                                              ),
+                                              //color: Colors.white,
+                                              // child: Padding(
+                                              //   padding: const EdgeInsets.only(right:50.0),
+                                              //   child: Icon(
+                                              //     FontAwesomeIcons.userEdit,
+                                              //     color: Colors.white,
+                                              //     size: 24.0,
+                                              //   ),
+                                              // ),
+                                              onPressed: () {
+
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                );
+                                              }
+                                              ),
                                         ),
-//                                            ),
-//                                          ],
-//                                        ),
                                       ),
                                     ),
                                   )
