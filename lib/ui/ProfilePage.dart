@@ -9,6 +9,7 @@ import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
 import 'package:techstagram/ui/post.dart';
+import 'package:techstagram/utils/utils.dart';
 import 'HomePage.dart';
 import 'ProfileEdit.dart';
 import 'profilesettings.dart';
@@ -234,6 +235,21 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height*0.20;
+
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
+
+    final image = Image.asset(
+      AvailableImages.emptyState['assetPath'],
+    );
+
+    final notificationHeader = Container(
+      padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
+      child: Text(
+        "No Posts Yet !",
+        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
+      ),
+    );
     //print("jhj");
     //print(followersController.text);
     return Scaffold(
@@ -271,24 +287,24 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                           ),
                   ),
 
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: IconButton(
-                      color: Colors.purple,
-                      //color: Colors.white,
-                      icon: new Icon(Icons.settings),
-                      onPressed: () {
-                        print("babbu bhai");
-                        print(emailVerify);
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
-                        );
-                      },
-                    ),
-
-                  ),
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: IconButton(
+                  //     color: Colors.purple,
+                  //     //color: Colors.white,
+                  //     icon: new Icon(Icons.settings),
+                  //     onPressed: () {
+                  //       print("babbu bhai");
+                  //       print(emailVerify);
+                  //
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
+                  //       );
+                  //     },
+                  //   ),
+                  //
+                  // ),
 
                   Align(
                     alignment: Alignment.center,
@@ -431,7 +447,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               child: StreamBuilder(
                                   stream: userPostsStream,
                                   builder: (context, snapshot) {
-                                    return snapshot.hasData
+                                    return (posts != 0)
                                         ? Column(
                                       children: [
                                         new Expanded(
@@ -523,7 +539,34 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                             )
                                         ),
                                       ],
-                                    ): Container();
+                                    ): Container(
+                                      padding: EdgeInsets.only(
+                                        top: 5.0,
+                                        left: 30.0,
+                                        right: 30.0,
+                                        bottom: 5.0,
+                                      ),
+                                      //height: 200,
+                                      height: deviceHeight * 0.20,
+                                      width: deviceWidth,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          //pageTitle,
+                                          // SizedBox(
+                                          //   height: deviceHeight * 0.1,
+                                          // ),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              image,
+                                              notificationHeader,
+                                              //notificationText,
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
                                   }
                               ),
                               //child: Image.network(uidCurrUser),

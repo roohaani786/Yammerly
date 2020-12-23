@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
+import 'package:techstagram/utils/utils.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'dart:math' as math;
@@ -65,6 +66,8 @@ class _FeedsPageState extends State<FeedsPage> {
   int likescount;
   bool loading = false;
   int Plength;
+
+
 
   Stream<QuerySnapshot> postsStream;
   final timelineReference = Firestore.instance.collection('posts');
@@ -184,9 +187,6 @@ class _FeedsPageState extends State<FeedsPage> {
     print("Done..");
   }
 
-
-
-
   fetchPosts() async {
 
     await DatabaseService().getPosts().then((val){
@@ -291,6 +291,21 @@ class _FeedsPageState extends State<FeedsPage> {
   @override
   Widget build(BuildContext context) {
 
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
+
+    final image = Image.asset(
+      AvailableImages.emptyState['assetPath'],
+    );
+
+    final notificationHeader = Container(
+      padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
+      child: Text(
+        "No Posts",
+        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
+      ),
+    );
+
     return GestureDetector(
       child: Scaffold(
         key: _scaffoldKey,
@@ -370,14 +385,6 @@ class _FeedsPageState extends State<FeedsPage> {
                           });
 
                         }
-
-//                        if(likes == 0){
-//
-//                          _likes[index] = true;
-////
-//                        }
-
-
 
                         return (shared==true)?Container(
                           color: Colors.white,
@@ -887,7 +894,33 @@ class _FeedsPageState extends State<FeedsPage> {
                 ),
               ],
             )
-                : Container();
+                : Container(
+              padding: EdgeInsets.only(
+                top: 40.0,
+                left: 30.0,
+                right: 30.0,
+                bottom: 30.0,
+              ),
+              height: deviceHeight,
+              width: deviceWidth,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  //pageTitle,
+                  SizedBox(
+                    height: deviceHeight * 0.1,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      image,
+                      notificationHeader,
+                      //notificationText,
+                    ],
+                  ),
+                ],
+              ),
+            );
             },
         ),
 
@@ -900,5 +933,7 @@ class _FeedsPageState extends State<FeedsPage> {
         ),
       ),
     );
+
+
   }
 }
