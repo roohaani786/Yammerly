@@ -1,23 +1,22 @@
+import 'dart:io';
+import 'dart:math';
+import 'package:image/image.dart' as ImD;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:techstagram/Login/login_screen.dart';
-import 'package:techstagram/constants.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
-import 'package:techstagram/services/database.dart';
-import 'package:techstagram/ui/Otheruser/other_user.dart';
-import 'package:techstagram/ui/aboutuser.dart';
 import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
-import 'package:techstagram/ui/messagingsystem.dart';
 import 'package:techstagram/ui/post.dart';
-import 'package:techstagram/views/tabs/comments_screen.dart';
-
+import 'package:techstagram/utils/utils.dart';
+import '../constants.dart';
 import 'HomePage.dart';
 import 'ProfileEdit.dart';
 import 'profilesettings.dart';
@@ -37,13 +36,14 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   bool isLoading = true;
   bool isEditable = false;
+  bool emailVerify;
   final String uid;
   _AccountBottomIconScreenState({this.uid});
   String loadingMessage = "Loading Profile Data";
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      bioController,genderController,linkController,photoUrlController,
+      bioController,genderController,linkController,photoUrlController,coverPhotoUrlController,
       displayNameController,workController,educationController,
       phonenumberController,
       currentCityController,homeTownController,relationshipController,
@@ -87,11 +87,13 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     lastNameController = TextEditingController();
     emailController = TextEditingController();
     phonenumberController = TextEditingController();
+    // emailVerificationController = TextEditingController();
     pinCodeController = TextEditingController();
     bioController = TextEditingController();
     genderController = TextEditingController();
     linkController = TextEditingController();
     photoUrlController = TextEditingController();
+    coverPhotoUrlController = TextEditingController();
     displayNameController = TextEditingController();
     workController = TextEditingController();
     educationController = TextEditingController();
@@ -103,7 +105,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     followingController = TextEditingController();
     userPostsController = TextEditingController();
     uidController = TextEditingController();
-    String uiduserX = uid;
 
 
     super.initState();
@@ -121,6 +122,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   int followers;
   int following;
   int posts;
+  String coverPhotoUrl;
   String uidCurrUser;
   String postIdX;
 
@@ -170,10 +172,12 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       emailController.text = docSnap.data["email"];
       photoUrlController.text = docSnap.data["photoURL"];
       phonenumberController.text = docSnap.data["phonenumber"];
+      emailVerify = docSnap.data["emailVerified"];
       bioController.text = docSnap.data["bio"];
       followers = docSnap.data["followers"];
       following  = docSnap.data["following"];
       posts  = docSnap.data["posts"];
+      coverPhotoUrlController.text = docSnap.data['coverPhotoUrl'];
 
       setState(() {
         isLoading = false;
@@ -185,6 +189,108 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
+
+  File _image;
+
+  Future pickImagefromCamera() async {
+    await ImagePicker.pickImage(source: ImageSource.camera).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+    uploadFile();
+    return AccountBottomIconScreen();
+
+  }
+
+  Future pickImage() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+    uploadFile();
+    return ProfilePage();
+  }
+
+  bool isChanged = false;
+
+  compressPhoto() async {
+    setState(() {
+      isChanged = true;
+    });
+    final directory = await getTemporaryDirectory();
+    final path = directory.path;
+    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
+    final compressedImage = File('$path/img_$uidController.jpg')
+      ..writeAsBytesSync(
+        ImD.encodeJpg(mImageFile, quality: 30),
+      );
+    setState(() {
+      _image = compressedImage;
+
+    });
+  }
+
+  Future uploadFile() async {
+
+    if(_image!=null){
+      await compressPhoto();
+    }
+
+    Random randomno = new Random();
+
+    StorageReference storageReference =
+
+    FirebaseStorage.instance
+        .ref()
+        .child('users/${randomno.nextInt(5000).toString()}.jpg');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+
+        coverPhotoUrlController.text = fileURL;
+        Purl = fileURL;
+        print("lets see see");
+        print(coverPhotoUrlController.text);
+        savePostInfoToFirestore(coverPhotoUrlController.text,uidController.text);
+
+      });
+    });
+
+  }
+
+  final postReference = Firestore.instance.collection("users");
+
+  savePostInfoToFirestore(String url,String uid) {
+    // postReference.where('uid', isEqualTo: uid).getDocuments()
+    //     .then((docs) {
+    //   Firestore.instance.document(uid).setData({'coverPhotoUrl': url}).then((val) {
+    //     print("update ho gaya");
+    //   });
+    // });
+
+    print(url);
+    print("babab");
+
+    Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'coverPhotoUrl': url});
+
+    setState(() {
+      isChanged = false;
+    });
+
+
+    print("cover photo");
+    print(coverPhotoUrlController.text);
+    return ProfilePage();
+  }
+
+  String Purl;
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
@@ -237,362 +343,511 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height*0.20;
+
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
+
+    final image = Image.asset(
+      AvailableImages.emptyState['assetPath'],
+    );
+
+    final notificationHeader = Container(
+      padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
+      child: Text(
+        "No Posts Yet !",
+        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
+      ),
+    );
     //print("jhj");
     //print(followersController.text);
-    return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails details) =>
-          _onHorizontalDrag(details),
-      onTap: () => null,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        key: _scaffoldKey,
-        body:  SingleChildScrollView(
-          child: SafeArea(
-            child: Align(
-              alignment: Alignment.center,
-              child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                        child: IconButton(
-                            color: Colors.purple,
-                            //color: Colors.white,
-                            icon: new Icon(Icons.settings),
-                            onPressed: () {
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text)),
-                              );
-                            },
-                            ),
-                    ),
-
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        color: Colors.purple,
-                        //color: Colors.white,
-                        icon: new Icon(Icons.settings),
-                        onPressed: () {
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text)),
-                          );
-                        },
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      key: _scaffoldKey,
+      body:  SingleChildScrollView(
+        child: SafeArea(
+          child: Align(
+            alignment: Alignment.center,
+            child: Stack(
+                children: [
+                  (coverPhotoUrlController.text == null)?Container(
+                    height : MediaQuery.of(context).size.height*0.20,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage('https://media.istockphoto.com/photos/green-leaves-on-white-picture-id1225155638?b=1&k=6&m=1225155638&s=170667a&w=0&h=9pdm942Mjk1RfAHuhsYRnOoKPhPVvgFaYkBthuJlF_Q='),
+                        fit: BoxFit.fill,
                       ),
-
                     ),
-
-
-                    // Image.asset(
-                    //   "assets/images/social.jpg",
-                    //   height: MediaQuery.of(context).size.height,
-                    //   width: MediaQuery.of(context).size.width,
-                    //   fit: BoxFit.fitHeight,
-                    // ),
-                    Align(
-                      alignment: Alignment.center,
+                    //color: Colors.lightBlueAccent,
+                  ):Container(
+                    height : MediaQuery.of(context).size.height*0.20,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(coverPhotoUrlController.text),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    //color: Colors.lightBlueAccent,
+                  ),
+                  Align(
+                    alignment: Alignment.topRight,
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 110.0),
+                        padding: const EdgeInsets.only(right: 15.0,top: 5.0),
                         child: Column(
                           children: [
                             Container(
-                              height: 270.0,
-                              width: 340.0,
-
-                                // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 10.0),
-                                      child: Text(
-
-                                        displayNameController.text,
-                                        style: TextStyle(
-                                          fontSize: 26.0,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Pacifico',
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 10.0),
-                                      child: Text(
-
-                                        bioController.text,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontFamily: 'Source Sans Pro',
-                                          fontSize: 15.0,
-                                          color: Colors.grey.shade700,
-                                          letterSpacing: 2.5,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                      width: 200,
-//                                      child: Divider(
-//                                        color: Colors.teal.shade700,
-//                                      ),
-                                    ),
-
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: Container(
-//                                        child: Row(
-//                                          children: [
-//                                            SizedBox(
-//                                              width: 110,
-//                                              child: FlatButton(
-//                                                  color: Colors.transparent,
-//                                                  child: new Text(
-//                                                    "About Me",
-//                                                    style: TextStyle(
-//                                                      color: Colors.black,
-//                                                    ),
-//                                                  ),
-//                                                  onPressed: () {
-//
-//                                                    Navigator.push(
-//                                                      context,
-//                                                      MaterialPageRoute(builder: (context) => AboutUser()),
-//                                                    );
-//                                                  },
-//                                                  shape: RoundedRectangleBorder(
-//                                                    side: BorderSide(color: Colors.purple, width: 2.5),
-//                                                    borderRadius: BorderRadius.circular(30.0),
-//                                                  )),
-//                                            ),
-//                                            Padding(
-//                                              padding: const EdgeInsets.only(left: 20.0),
-//                                              child:
-                                              child :SizedBox(
-                                                width: 110,
-                                                child: FlatButton(
-                                                    color: Colors.purple,
-                                                    //color: Colors.white,
-                                                    child: new Text(
-                                                      "Edit Profile",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        //color: Color(0xffed1e79),
+                              height: 40.0,
+                              width: 40.0,
+                              decoration: const ShapeDecoration(
+                                color: Colors.deepPurple,
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                  color: Colors.white,
+                                  //color: Colors.white,
+                                  icon: new Icon(
+                                      Icons.settings,
+                                    size: 20.0,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
+                                    );
+                                  },
+                                  ),
+                            ),
+                            SizedBox(
+                              height: deviceHeight*0.090,
+                            ),
+                            Container(
+                              height: 40.0,
+                              width: 40.0,
+                              decoration: const ShapeDecoration(
+                                color: Colors.deepPurple,
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                color: Colors.white,
+                                //color: Colors.white,
+                                icon: new Icon(
+                                    Icons.edit,
+                                  size: 20,
+                                ),
+                                  onPressed: (){
+                                    showDialog<void>(
+                                        context: context,// THIS WAS MISSING// user must tap button!
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Select image from :-',style: TextStyle(
+                                              fontSize: 15.0,
+                                            ),),
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      pickImagefromCamera();
+                                                      Navigator.of(context, rootNavigator: true).pop(context);
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left: 20.0),
+                                                          child: Text('Camera'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 20.0),
+                                                    child: GestureDetector(
+                                                      onTap: (){
+                                                        pickImage();
+                                                        Navigator.of(context, rootNavigator: true).pop(context);
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 20.0),
+                                                            child: Text('Gallery'),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
-                                                    onPressed: () {
-
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(builder: (context) => ProfilePage()),
-                                                      );
-                                                    },
-                                                    shape: RoundedRectangleBorder(
-                                                      side: BorderSide(
-                                                          color: Colors.purple,
-                                                          //color: Color(0xffed1e79),
-                                                          width: 2.5),
-                                                      borderRadius: BorderRadius.circular(30.0),
-                                                    )),
+                                                  ),
+                                                ],
                                               ),
-//                                            ),
+                                            ),
+                                          );
 
-
-
-
-
-
-//                                          ],
-//                                        ),
-                                      ),
-                                    ),
-
-                                    Container(
-                                      height: 60.0,
-                                      margin: EdgeInsets.only(top: 8.0),
-                                      decoration: BoxDecoration(
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: <Widget>[
-                                          GestureDetector(
-                                              onTap: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => FollowersList(displayNamecurrentUserX:displayNameController.text,uidX: uidController.text,)),
-                                              ),
-                                              child: _buildStatItem("FOLLOWERS", followers.toString())
-                                          ),
-                                          _buildStatItem("POSTS", posts.toString()),
-                                          GestureDetector(
-                                              onTap: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
-                                              ),
-                                              child: _buildStatItem("FOLLOWING", following.toString())
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
-                                  ],
-                                ),
+                                        });
+                                  },
+                              ),
                             ),
+                          ],
+                        ),
+                      ),
+                  ),
+
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: IconButton(
+                  //     color: Colors.purple,
+                  //     //color: Colors.white,
+                  //     icon: new Icon(Icons.settings),
+                  //     onPressed: () {
+                  //       print("babbu bhai");
+                  //       print(emailVerify);
+                  //
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
+                  //       );
+                  //     },
+                  //   ),
+                  //
+                  // ),
+
+                  Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 100,),
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 270.0,
+                            width: width,
+
+                              // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                              child: Row(
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+
+                                      Container(
+                                        width: deviceWidth*0.85,
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 25.0,left: 120),
+                                              child: Text(
+
+                                                displayNameController.text,
+                                                style: TextStyle(
+                                                  fontSize: 26.0,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Pacifico',
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 5.0, left: 110),
+                                              child: Text(
+
+                                                bioController.text,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontFamily: 'Source Sans Pro',
+                                                  fontSize: 15.0,
+                                                  color: Colors.grey.shade700,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              // child: Text(
+                                              //
+                                              //   bioController.text,
+                                              //   textAlign: TextAlign.center,
+                                              //   style: TextStyle(
+                                              //     fontFamily: 'Source Sans Pro',
+                                              //     fontSize: 15.0,
+                                              //     color: Colors.grey.shade700,
+                                              //     letterSpacing: 2.5,
+                                              //     fontWeight: FontWeight.bold,
+                                              //   ),
+                                              // ),
+                                            ),
+                                          ],
+                                        )
+                                      ),
+
+                                      SizedBox(
+                                        height: 10,
+                                        width: 200,
+                                      ),
+
+                                      Container(
+                                        height: 40.0,
+                                        width: width*0.73,
+                                        margin: EdgeInsets.only(top: 8.0),
+                                        decoration: BoxDecoration(
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: <Widget>[
+                                            _buildStatItem("POSTS", posts.toString()),
+                                            GestureDetector(
+                                                onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => FollowersList(displayNamecurrentUserX:displayNameController.text,uidX: uidController.text,)),
+                                                ),
+                                                child: _buildStatItem("FOLLOWERS", followers.toString())
+                                            ),
+
+                                            GestureDetector(
+                                                onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => FollowingList(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
+                                                ),
+                                                child: _buildStatItem("FOLLOWING", following.toString())
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 170.0,),
+                                    child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: SizedBox(
+                                        width: 40,
+                                        height: 40.0,
+                                        child: Ink(
+                                          decoration: const ShapeDecoration(
+                                            color: Colors.deepPurple,
+                                            shape: CircleBorder(),
+                                          ),
+                                          child: IconButton(
+                                              color: Colors.white,
+                                              icon: Icon(
+                                                  FontAwesomeIcons.userEdit,
+                                                size: 20,
+                                              ),
+                                              //color: Colors.white,
+                                              // child: Padding(
+                                              //   padding: const EdgeInsets.only(right:50.0),
+                                              //   child: Icon(
+                                              //     FontAwesomeIcons.userEdit,
+                                              //     color: Colors.white,
+                                              //     size: 24.0,
+                                              //   ),
+                                              // ),
+                                              onPressed: () {
+
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                );
+                                              }
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                          ),
 
 
-                            Container(
-                              height: MediaQuery.of(context).size.height -300.0,
-                              //height: 200.0,
-                              width: 340.0,
+                          Container(
+                            height: MediaQuery.of(context).size.height -300.0,
+                            //height: 200.0,
+                            width: 340.0,
 
-                                child: StreamBuilder(
-                                    stream: userPostsStream,
-                                    builder: (context, snapshot) {
-                                      return snapshot.hasData
-                                          ? Column(
-                                        children: [
-                                          new Expanded(
-                                              child: GridView.builder(
-                                                  shrinkWrap: true,
-                                                 controller: ScrollController(),
-                                                  //controller: scrollController,
-                                                  itemCount: snapshot.data.documents.length,
-                                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 3,
-                                                      crossAxisSpacing: 10.0,
-                                                      mainAxisSpacing: 10.0),
-                                                  itemBuilder: (context, index) {
+                              child: StreamBuilder(
+                                  stream: userPostsStream,
+                                  builder: (context, snapshot) {
+                                    return (posts != 0)
+                                        ? Column(
+                                      children: [
+                                        new Expanded(
+                                            child: GridView.builder(
+                                                shrinkWrap: true,
+                                               controller: ScrollController(),
+                                                itemCount: snapshot.data.documents.length,
+                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 3,
+                                                    crossAxisSpacing: 10.0,
+                                                    mainAxisSpacing: 10.0),
+                                                itemBuilder: (context, index) {
 
-                                                    postIdX = snapshot.data.documents[index]['email'];
-                                                    String email = snapshot.data.documents[index]['email'];
-                                                    String description =
-                                                    snapshot.data.documents[index]['description'];
-                                                    String displayName =
-                                                    snapshot.data.documents[index]['displayName'];
-                                                    String photoUrl =
-                                                    snapshot.data.documents[index]['photoURL'];
-                                                    String uid = snapshot.data.documents[index]["uid"];
-                                                    int cam = snapshot.data.documents[index]['cam'];
-                                                    Timestamp timestamp =
-                                                    snapshot.data.documents[index]['timestamp'];
-                                                    String url = snapshot.data.documents[index]['url'];
-                                                    String postId = snapshot.data.documents[index]['postId'];
-                                                    int likes = snapshot.data.documents[index]['likes'];
-                                                    readTimestamp(timestamp.seconds);
+                                                  postIdX = snapshot.data.documents[index]['postId'];
 
-                                                    getlikes(displayNameController.text,postId);
+                                                  String email = snapshot.data.documents[index]['email'];
+
+                                                  String description = snapshot.data.documents[index]['description'];
+
+                                                  String displayName = snapshot.data.documents[index]['displayName'];
+
+                                                  String photoUrl = snapshot.data.documents[index]['photoURL'];
+
+                                                  String uid = snapshot.data.documents[index]["uid"];
+
+                                                  int cam = snapshot.data.documents[index]['cam'];
+
+                                                  Timestamp timestamp = snapshot.data.documents[index]['timestamp'];
+
+                                                  String url = snapshot.data.documents[index]['url'];
+
+                                                  String postId = snapshot.data.documents[index]['postId'];
+
+                                                  int likes = snapshot.data.documents[index]['likes'];
+
+                                                  readTimestamp(timestamp.seconds);
+
+                                                  getlikes(displayNameController.text,postId);
 
 
+                                                  if(likes< 0 || likes == 0){
+                                                    liked = false;
+                                                  }
 
+                                                  return Container(
+                                                    color: Colors.grey.shade300,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),
+                                                            );
+                                                          },
+                                                          child: ClipRRect(
+                                                            borderRadius: BorderRadius.only(
+                                                              topLeft: Radius.circular(8.0),
+                                                              topRight: Radius.circular(8.0),
+                                                              bottomLeft: Radius.circular(8.0),
+                                                              bottomRight: Radius.circular(8.0),
+                                                            ),
 
-                                                    if(likes< 0 || likes == 0){
-                                                      liked = false;
-                                                    }
-                                                    return Container(
-                                                      color: Colors.grey.shade300,
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                        children: [
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),
-                                                              );
-                                                            },
-                                                            child: ClipRRect(
-                                                              borderRadius: BorderRadius.only(
-                                                                topLeft: Radius.circular(8.0),
-                                                                topRight: Radius.circular(8.0),
-                                                                bottomLeft: Radius.circular(8.0),
-                                                                bottomRight: Radius.circular(8.0),
-                                                              ),
-
-                                                              child: (cam == 1)?Transform(
-                                                                alignment: Alignment.center,
-                                                                transform: Matrix4.rotationY(math.pi),
-                                                                child: Image.network(
-                                                                  url,
-                                                                  // width: 300,
-                                                                  height: 104,
-                                                                  fit:BoxFit.cover,
-
-                                                                ),
-                                                              ):Image.network(
+                                                            child: (cam == 1)?Transform(
+                                                              alignment: Alignment.center,
+                                                              transform: Matrix4.rotationY(math.pi),
+                                                              child: Image.network(
                                                                 url,
                                                                 // width: 300,
                                                                 height: 104,
                                                                 fit:BoxFit.cover,
 
                                                               ),
+                                                            ):Image.network(
+                                                              url,
+                                                              // width: 300,
+                                                              height: 104,
+                                                              fit:BoxFit.cover,
+
                                                             ),
                                                           ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
 
-                                              )
+                                            )
+                                        ),
+                                      ],
+                                    ): Container(
+                                      padding: EdgeInsets.only(
+                                        top: 5.0,
+                                        left: 30.0,
+                                        right: 30.0,
+                                        bottom: 5.0,
+                                      ),
+                                      //height: 200,
+                                      height: deviceHeight * 0.20,
+                                      width: deviceWidth,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          //pageTitle,
+                                          // SizedBox(
+                                          //   height: deviceHeight * 0.1,
+                                          // ),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              image,
+                                              notificationHeader,
+                                              //notificationText,
+                                            ],
                                           ),
                                         ],
-                                      ): Container();
-                                    }
-                                ),
-                                //child: Image.network(uidCurrUser),
-                            )
+                                      ),
+                                    );
+                                  }
+                              ),
+                              //child: Image.network(uidCurrUser),
+                          )
 
-                          ],
-                        ),
+                        ],
                       ),
                     ),
+                  ),
 
-                    Padding(
-                      padding: const EdgeInsets.only(top: 80,left: 140.0,right: 140.0),
-                      child:(photoUrlController.text!=null)?Align(
-                        alignment: Alignment.center,
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundImage: NetworkImage(photoUrlController.text),
-
-                          backgroundColor: Colors.transparent,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 145,right: 250.0),
+                    child:(photoUrlController.text!=null)?Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          //borderRadius: BorderRadius.circular(100),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 5,
+                          ),
                         ),
-                      ): CircleAvatar(
-                        radius: 20,
-                        child: IconButton(icon:
-                        Icon(FontAwesomeIcons.userCircle,
-                          color: Colors.deepPurple,), onPressed: (){print("hello");}),
-                        backgroundColor: Colors.transparent,
+                        child: Container(
+                          height: 100,
+                          width: 100.0,
+                          child: Image(
+                            image: NetworkImage(photoUrlController.text),
+                            fit: BoxFit.cover,
+                          ),
+                          //backgroundImage: NetworkImage(photoUrlController.text)
+                        )
+                        // child: CircleAvatar(
+                        //   radius: 50,
+                        //   backgroundImage: NetworkImage(photoUrlController.text),
+                        //
+                        //   backgroundColor: Colors.transparent,
+                        // ),
                       ),
+                    ): CircleAvatar(
+                      radius: 50,
+                      child: IconButton(icon:
+                      Icon(FontAwesomeIcons.userCircle,
+                        color: Colors.deepPurple,), onPressed: (){print("hello");}),
+                      backgroundColor: Colors.transparent,
                     ),
+                  ),
 
 
 
 
 
-                  ],
-                    ),
-            ),
-        ),
+                ],
+                  ),
+          ),
       ),
     ),
     );
   }
-
-
-  final String _followers = "17K";
-//  final String _posts = "24";
-  final String _following = "45K";
-
-
 }
 
 Widget _buildStatItem(String label, String count) {

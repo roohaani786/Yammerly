@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:techstagram/widgets/ChatAppBar.dart';
-import 'package:techstagram/widgets/ChatListWidget.dart';
-import 'package:techstagram/widgets/InputWidget.dart';
-
-import 'HomePage.dart';
 
 class ConversationPage extends StatefulWidget {
   @override

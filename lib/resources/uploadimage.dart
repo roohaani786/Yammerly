@@ -5,14 +5,11 @@ import 'package:techstagram/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as ImD;
 import 'dart:math' as math;
-
 import 'auth.dart';
 
 class UploadImage extends StatefulWidget {
@@ -24,52 +21,43 @@ class UploadImage extends StatefulWidget {
   String ownerphotourl;
   String ownerdisplayname;
   bool shared;
-  UploadImage({this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
+  int shares;
+  String ownerPostId;
+  UploadImage({this.ownerPostId,this.shares,this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
 
   @override
-  _UploadImageState createState() => _UploadImageState(cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl);
+  _UploadImageState createState() => _UploadImageState(ownerPostId: ownerPostId,shares:shares,cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl);
 }
 
-class _UploadImageState extends State<UploadImage>
-    with AutomaticKeepAliveClientMixin<UploadImage> {
+class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClientMixin<UploadImage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-int cam;
-String ownerdiscription;
+
+  int cam;
+  String ownerdiscription;
   String ownerphotourl;
   String ownerdisplayname;
   bool shared;
   String sharedurl;
-_UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
+  int shares;
+  String ownerPostId;
+  _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
   TextEditingController
   emailController,
       uidController,
       displayNameController,photoUrlController,
   descriptionController,postsController;
 
-
   Map<String, dynamic> _profile;
   bool _loading = false;
-
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
-
-
   File file;
-//  TextEditingController descriptionTextEditingController =
-//  TextEditingController();
   bool uploading = false;
   final StorageReference storageReference =
   FirebaseStorage.instance.ref().child("Post Pictures");
   final postReference = Firestore.instance.collection("posts");
   String postId = Uuid().v4();
-
-  // removeImage() {
-  //   descriptionTextEditingController.clear();
-  //   setState(() {
-  //     widget.file = null;
-  //   });
-  // }
 
   compressPhoto() async {
     final directory = await getTemporaryDirectory();
@@ -97,23 +85,17 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
   setState(() {
   uploading = true;
   });
-  print(shared);
-  print("shadah");
 
-  //await compressPhoto();
-
-  //String downloadUrl = await uploadPhoto(file);
   savePostInfoToFirestoreShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
   savePostinfoToUserShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
 
-  //PostI();
-
   descriptionController.clear();
+
   setState(() {
-  // file = null;
   uploading = false;
   postId = Uuid().v4();
   });
+
   Navigator.push(
   context,
   MaterialPageRoute(builder: (context) => HomePage()),
@@ -134,12 +116,8 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       savePostInfoToFirestore(downloadUrl, descriptionController.text);
       savePostinfoToUser(downloadUrl, descriptionController.text);
 
-
-    //PostI();
-
     descriptionController.clear();
     setState(() {
-      // file = null;
       uploading = false;
       postId = Uuid().v4();
     });
@@ -149,12 +127,24 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
     );
   }
 
+  ShareIU() async {
+
+    Firestore.instance
+        .collection("users")
+        .document(uidController.text)
+        .collection("posts")
+        .document(ownerPostId)
+        .updateData({'shares': shares + 1});
+  }
+
+  ShareI() async {
+    Firestore.instance
+        .collection("posts")
+        .document(ownerPostId)
+        .updateData({'shares': shares + 1});
+  }
+
   PostI() async {
-    print(postsController);
-    print("helloww");
-    //String increment = postsController.text;
-    //int incr = int.parse(posts);
-    //print(incr);
     Firestore.instance
         .collection("users")
         .document(uidController.text)
@@ -174,18 +164,16 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       "timestamp": Timestamp.now(),
       "email": emailController.text,
       "photoURL" :photoUrlController.text,
-//      "email": widget.userData.email,
       "description": descriptionController.text,
       "cam": cam,
       "likes": 0,
       "comments": 0,
+      "shares" : 0,
       "url": url,
-//      "photourl": widget.userData.photoUrl,
     });
-
   }
 
-  savePostinfoToUserShared(String url, String description, String owenerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
+  savePostinfoToUserShared(String url, String description, String ownerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
 
     Firestore.instance
         .collection("users")
@@ -195,6 +183,7 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
         .setData({
       "OwnerPhotourl" : ownerphotourl,
       "description" : description,
+      "Ownerdescription" : ownerdescription,
       "OwnerDisplayName" : ownerdisplayname,
       "shared" : shared,
       "postId": postId,
@@ -203,15 +192,13 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       "timestamp": Timestamp.now(),
       "email": emailController.text,
       "photoURL" :photoUrlController.text,
-//      "email": widget.userData.email,
       "description": descriptionController.text,
       "cam": cam,
       "likes": 0,
       "comments": 0,
+      "shares" : 0,
       "url": url,
-//      "photourl": widget.userData.photoUrl,
     });
-
   }
 
   savePostinfoToUser(String url, String description){
@@ -227,17 +214,17 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       "timestamp": Timestamp.now(),
       "email": emailController.text,
       "photoURL" :photoUrlController.text,
-//      "email": widget.userData.email,
       "description": descriptionController.text,
       "cam": cam,
       "likes": 0,
       "comments": 0,
+      "shares" : 0,
       "url": url,
-//      "photourl": widget.userData.photoUrl,
     });
   }
 
   savePostInfoToFirestore(String url, String description) {
+
     postReference.document(postId).setData({
       "postId": postId,
       "uid" : uidController.text,
@@ -245,15 +232,13 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       "timestamp": Timestamp.now(),
       "email": emailController.text,
       "photoURL" :photoUrlController.text,
-//      "email": widget.userData.email,
       "description": descriptionController.text,
       "cam": cam,
       "likes": 0,
       "comments": 0,
+      "shares": 0,
       "url": url,
-//      "photourl": widget.userData.photoUrl,
     });
-
   }
 
   displayUploadFormScreen() {
@@ -266,16 +251,17 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
             onPressed: (){
           Navigator.pop(context);
         }),
-        title: Text(
+        title: (shared==null || shared == false)?Text(
           "New Post",
           style: TextStyle(
               color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold),
+        ):Text(
+          "Share Post",
+          style: TextStyle(
+              color: Colors.deepPurple, fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        actions: <Widget>[
-          // uploading ? linearProgress() : Text(''),
-
-        ],
       ),
+
       body: uploading
           ? Container(
         alignment: Alignment.center,
@@ -413,6 +399,7 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
                           print("hai hai");
                           controlUploadAndSaveShared(shared);
                           PostI();
+                          ShareI();
                         }else{
                           if(_formKey.currentState.validate()) {
                             controlUploadAndSave(shared);
@@ -489,10 +476,6 @@ _UploadImageState({this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerd
       displayNameController.text = docSnap.data["displayName"];
       photoUrlController.text = docSnap.data["photoURL"];
       posts = docSnap.data["posts"];
-
-
-      print(postsController);
-      print("halelula");
 
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);

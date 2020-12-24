@@ -83,7 +83,7 @@ String uidf = CloudFirestoreSearch().uidX;
               : ListView.builder(
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
-              DocumentSnapshot sd = snapshot.data.documents[index];
+//              DocumentSnapshot sd = snapshot.data.documents[index];
               searchKey = snapshot.data.documents[index]["displayName"];
               String photoUrl = snapshot.data.documents[index]["photoURL"];
               String uid = snapshot.data.documents[index]["uid"];

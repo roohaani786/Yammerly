@@ -1,24 +1,17 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:techstagram/models/comment.dart';
-import 'package:techstagram/models/like.dart';
-import 'package:techstagram/models/message.dart';
-import 'package:techstagram/models/post.dart';
 import 'package:techstagram/models/user.dart';
 
 class FirebaseProvider {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _firestore = Firestore.instance;
   User user;
-  Post post;
-  Like like;
-  Message _message;
-  Comment comment;
+//  Post post;
+//  Message _message;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   StorageReference _storageReference;
 
@@ -109,23 +102,6 @@ class FirebaseProvider {
     return url;
   }
 
-  Future<void> addPostToDb(User currentUser, String imgUrl, String caption, String location) {
-    CollectionReference _collectionRef = _firestore
-        .collection("users")
-        .document(currentUser.uid)
-        .collection("posts");
-
-    post = Post(
-        currentUserUid: currentUser.uid,
-        imgUrl: imgUrl,
-        caption: caption,
-        location: location,
-        postOwnerName: currentUser.displayName,
-        postOwnerPhotoUrl: currentUser.photoUrl,
-        time: FieldValue.serverTimestamp());
-
-    return _collectionRef.add(post.toMap(post));
-  }
 
   Future<User> retrieveUserDetails(FirebaseUser user) async {
     DocumentSnapshot _documentSnapshot =
@@ -350,57 +326,6 @@ class FirebaseProvider {
     return userList;
   }
 
-  void uploadImageMsgToDb(String url, String receiverUid, String senderuid) {
-    _message = Message.withoutMessage(
-        receiverUid: receiverUid,
-        senderUid: senderuid,
-        photoUrl: url,
-        timestamp: FieldValue.serverTimestamp(),
-        type: 'image');
-    var map = Map<String, dynamic>();
-    map['senderUid'] = _message.senderUid;
-    map['receiverUid'] = _message.receiverUid;
-    map['type'] = _message.type;
-    map['timestamp'] = _message.timestamp;
-    map['photoUrl'] = _message.photoUrl;
-
-    print("Map : ${map}");
-    _firestore
-        .collection("messages")
-        .document(_message.senderUid)
-        .collection(receiverUid)
-        .add(map)
-        .whenComplete(() {
-      print("Messages added to db");
-    });
-
-    _firestore
-        .collection("messages")
-        .document(receiverUid)
-        .collection(_message.senderUid)
-        .add(map)
-        .whenComplete(() {
-      print("Messages added to db");
-    });
-  }
-
-  Future<void> addMessageToDb(Message message, String receiverUid) async {
-    print("Message : ${message.message}");
-    var map = message.toMap();
-
-    print("Map : $map");
-    await _firestore
-        .collection("messages")
-        .document(message.senderUid)
-        .collection(receiverUid)
-        .add(map);
-
-    return _firestore
-        .collection("messages")
-        .document(receiverUid)
-        .collection(message.senderUid)
-        .add(map);
-  }
 
   Future<List<DocumentSnapshot>> fetchFeed(FirebaseUser user) async {
     List<String> followingUIDs = List<String>();

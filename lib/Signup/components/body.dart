@@ -16,6 +16,7 @@ import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/components/text_field_container.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
+import 'package:flutter/services.dart';
 
 import '../../constants.dart';
 
@@ -69,38 +70,6 @@ class _BodyState extends State<Body> {
     });
   }
 
-  Future<FirebaseUser> _handleSignIn() async {
-    FirebaseUser user;
-    bool userSignedIn = await googleSignIn.isSignedIn();
-
-    setState(() {
-      isUserSignedIn = userSignedIn;
-    });
-
-    if (isUserSignedIn) {
-      user = await auth.currentUser();
-      final uid = user.uid;
-      print(uid);
-    } else {
-      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-
-      user = (await auth.signInWithCredential(credential)).user;
-      userSignedIn = await googleSignIn.isSignedIn();
-      setState(() {
-        isUserSignedIn = userSignedIn;
-      });
-    }
-
-    return user;
-  }
 
   void onGoogleSignIn(BuildContext context) async {
     final valid = await usernameCheck(displayNameInputController.text);
@@ -306,7 +275,7 @@ class _BodyState extends State<Body> {
 
   Future<String> signup(String email, String password, String firstname,
       String lastname, String phonenumber, String displayname) async {
-    FirebaseUser user;
+
     String errorMessage;
 
     this.setState(() {
@@ -318,7 +287,7 @@ class _BodyState extends State<Body> {
         if (pwdInputController.text ==
             confirmPwdInputController.text) {
 
-          final valid = await usernameCheck(displayNameInputController.text);
+          bool valid = await usernameCheck(displayNameInputController.text);
           if (!valid) {
             showDialog(
                 context: context,
@@ -700,6 +669,7 @@ class _BodyState extends State<Body> {
                         ),
                       ),
                       child: TextFormField(
+                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
                         style: TextStyle(
                             fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
@@ -754,6 +724,7 @@ class _BodyState extends State<Body> {
                         ),
                       ),
                       child: TextFormField(
+                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@.]'))],
                         style: TextStyle(
                             fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
@@ -876,7 +847,7 @@ class _BodyState extends State<Body> {
                         focusNode: _confirmPwd,
                         onFieldSubmitted: (value) {
                           _confirmPwd.unfocus();
-                          RoundedButton;
+                          RoundedButtonX();
                         },
                         cursorColor: kPrimaryColor,
 
@@ -919,7 +890,7 @@ class _BodyState extends State<Body> {
                   ),
                 ),
 
-                RoundedButton(
+                RoundedButtonX(
                   text: "SIGNUP",
                   press: () {
                     signup(emailInputController.text, pwdInputController.text,
@@ -1023,40 +994,32 @@ class _BodyState extends State<Body> {
                       press: () {
                         facebookLogin(context).then(
                               (user) {
-                            print('Logged in successfully.');
 
-                            facebooksuccess ? Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        HomePage(
-                                          title: "huhu",
-                                          uid: "h",
-                                        )),
-                                    (_) => false) : Navigator.pushNamed(
-                                context, "/nayasignup");
 
                             setState(() {
                               isFacebookLoginIn = true;
                               successMessage =
-                              'Logged in successfully.\nEmail : ${user
-                                  .email}\nYou can now navigate to Home Page.';
+                              'Logged in successfully.\nDisplay Name : ${user
+                                  .displayName}\nYou can now navigate to Home Page.';
                             });
+                            if(isFacebookLoginIn == true){
+                              facebooksuccess ? Navigator
+                                  .pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+
+                                          HomePage(
+                                            title: "huhu",
+                                            uid: "h",
+                                          )),
+                                      (_) => false) : Navigator.pushNamed(
+                                  context, "/Login");
+                            }
                           },
                         );
                       },
                     ),
-                    SocalIcon(
-                        iconSrc: "assets/icons/twitter.svg",
-                        press: () {
-//                        Navigator.pushReplacementNamed(context, "/Twit");
-//                          loginWithTwitter(context).then(
-//                                (user) {
-//                              print('Logged in successfully.');
-//                            },
-//                          );
-                        print("hello");
-                        })
                   ],
                 )
               ],

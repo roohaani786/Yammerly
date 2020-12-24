@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,19 +8,13 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
-import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:image/image.dart' as ImD;
-//import 'package:fluttertoast/fluttertoast.dart';
-
-import '../constants3.dart';
+import 'dart:math';
 
 class ProfilePage extends StatefulWidget {
   static final String pageName = "/ProfilePage";
@@ -127,9 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   File profileImageFile;
-
   File _image;
-  String _uploadedFileURL;
 
   Future pickImage() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
@@ -139,38 +130,11 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     uploadFile();
     return ProfilePage();
-    print("Done..");
   }
 
 
-
-//  Future<String> uploadPhoto(mImageFile) async {
-//    StorageUploadTask mStorageUploadTask =
-//    storageReference.child("dp_$uidController.jpg").putFile(mImageFile);
-//    StorageTaskSnapshot storageTaskSnapshot =
-//    await mStorageUploadTask.onComplete;
-//    String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
-//    return downloadUrl;
-//  }
-
   bool uploading = false;
 
-//  controlUploadAndSave() async {
-//    setState(() {
-//      uploading = true;
-//    });
-//
-//   await compressPhoto();
-//
-//    String downloadUrl = await uploadPhoto(_image);
-//    savePostInfoToFirestore(downloadUrl);
-//
-//    setState(() {
-//      // file = null;
-//      uploading = false;
-//    });
-////    Navigator.pop(context);
-//  }
 
 
   compressPhoto() async {
@@ -189,15 +153,22 @@ class _ProfilePageState extends State<ProfilePage> {
 
     });
   }
+  String Purl;
 
   final StorageReference storageReference =
   FirebaseStorage.instance.ref().child("Display Pictures");
   final postReference = Firestore.instance.collection("users");
 
-  savePostInfoToFirestore(String url) {
-    postReference.document(currUser.uid).updateData({
-      "photoURL": photoUrlController.text,
+  savePostInfoToFirestore(String url,String uid) {
+    postReference.where('uid', isEqualTo: uid).getDocuments()
+    .then((docs) {
+      Firestore.instance.document(uid).updateData({'photoUrl': url}).then((val) {
+        print("update ho gaya");
+      });
     });
+    // postReference.document(uid).updateData({
+    //   "photoURL": url,
+    // });
 
 
     setState(() {
@@ -214,38 +185,26 @@ class _ProfilePageState extends State<ProfilePage> {
      await compressPhoto();
    }
 
+   Random randomno = new Random();
 
     StorageReference storageReference =
 
     FirebaseStorage.instance
         .ref()
-        .child('users');
+        .child('users/${randomno.nextInt(5000).toString()}.jpg');
     StorageUploadTask uploadTask = storageReference.putFile(_image);
     await uploadTask.onComplete;
     print('File Uploaded');
     storageReference.getDownloadURL().then((fileURL) {
       setState(() {
 
-//        _uploadedFileURL = fileURL;
-//        photoUrlController.text = _uploadedFileURL;
       photoUrlController.text = fileURL;
+      Purl = fileURL;
 
       });
-//      DatabaseService().updatephotoURL(uidController.text,photoUrlController.text);
     });
-    savePostInfoToFirestore(photoUrlController.text);
+    savePostInfoToFirestore(Purl,uidController.text);
   }
-
-
-
-
-//  savePostInfoToFirestore(String url, String description) {
-//    storageReference.document(currUser).setData({
-//
-//      "photoURL": photoUrlController.text,
-////      "photourl": widget.userData.photoUrl,
-//    });
-//  }
 
 
   Future pickImagefromCamera() async {
@@ -256,75 +215,15 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     uploadFile();
     return ProfilePage();
-    print("Done..");
 
   }
 
 
-
-//  Future<void> updateProfilePicture(File profilePictureUrl) async {
-//    String uid = uidController.text;
-//    DocumentReference ref = Firestore.instance.collection("users").document(
-//        uid); //reference of the user's document node in database/users. This node is created using uid
-//    var data = {
-//      'photoURL': profilePictureUrl,
-//    };
-//    await ref.setData(data, merge: true); // set the photoURL
-//  }
-
-
-
-
-bool isChanged = false;
+  bool isChanged = false;
   String relationstring = "Select Relationship";
   String genderstring = "Select Gender";
-
-  String _male = "male";
-  String _female = "female";
-  String _other = "other";
-  String _value;
   bool tickvalue = false;
   int check;
-  void _handleRadioValueChange1(String value) {
-    setState(() {
-      _value = value;
-      if(_value=="Male"){
-        setState(() {
-          check = 0;
-        });
-      }else if(_value=="Female"){
-        setState(() {
-          check = 1;
-        });
-      }else if(_value == "other"){
-        setState(() {
-          check = 2;
-          print(tickvalue);
-          tickvalue = true;
-        });
-      }
-      else{
-        setState(() {
-          tickvalue = false;
-        });
-      }
-
-      switch (check) {
-        case 0:
-          genderController.text = _male;
-          //correctScore++;
-          break;
-        case 1:
-          genderController.text = _female;
-          break;
-        case 2:
-          genderController.text = _other;
-          break;
-        default:
-          genderController.text = null;
-      }
-    });
-  }
 
 
   bool firstnameE = false;
@@ -440,11 +339,6 @@ bool isChanged = false;
     isChanged = true;
     }
 
-//    else if (docSnap.data["photoURL"].toString().trim() !=
-//        photoUrlController.text.trim()) {
-//      print("photoURL Changed");
-//      isChanged = true;
-//    }
 
 
     else if (docSnap.data["pincode"].toString().trim() !=
@@ -521,8 +415,10 @@ bool isChanged = false;
     data["relationship"] = relationshipController.text.trim();//relationship
     Firestore.instance
         .collection("users")
-        .document(currUser.uid)
+        .document(uidController.text)
         .setData(data, merge: true);
+    print(uidController.text);
+    print("babbu bhai bhai");
 //    DatabaseService().updatePostdisplayName(uidController.text,displayNameController.text);
 //    DatabaseService().updatephotoURL(displayNameController.text,photoUrlController.text);
     snackbarContent = "Profile Updated";
@@ -628,10 +524,6 @@ bool isChanged = false;
     children: <Widget>[
     GestureDetector(
       onTap: (){
-//        _scaffoldKey.currentState.removeCurrentSnackBar();
-//        setState(() {
-//          isChanged = true;
-//        });
         pickImagefromCamera();
         Navigator.of(context, rootNavigator: true).pop(context);
       },
@@ -672,6 +564,7 @@ bool isChanged = false;
                       },
                       child: CircleAvatar(
                         radius: 50,
+                        //backgroundImage: NetworkImage(photoUrlController.text),
                         backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
                         backgroundColor: Colors.transparent,
                       ),
@@ -701,8 +594,9 @@ bool isChanged = false;
                           keyboardType: TextInputType.text,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Display Name",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -714,47 +608,62 @@ bool isChanged = false;
                           height: 16.0,
                         ),
 
-                        TextFormField(
-                          controller: firstNameController,
-                          enabled: isEditable,
-                          validator: (value) {
-                            if(value.length > 15.0){
-                              return 'First Name should not be greater the 15 words';
-                            }else if(value.length == 0){
-                              return 'First Name should not be null';
-                            }
-                          },
-                          decoration: InputDecoration(
-                              labelText: "First Name",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
-                          ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                  BorderSide(color: Colors.black, width: 1))),
-                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width*0.45,
+                              child: TextFormField(
+                                controller: firstNameController,
+                                enabled: isEditable,
+                                validator: (value) {
+                                  if(value.length > 15.0){
+                                    return 'First Name should not be greater the 15 words';
+                                  }else if(value.length == 0){
+                                    return 'First Name should not be null';
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                                    labelText: "First Name",labelStyle: TextStyle(
+                                    color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
+                                ),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide:
+                                        BorderSide(color: Colors.black, width: 1))),
+                              ),
+                            ),
 
-                        SizedBox(
-                          height: 16,
-                        ),
-                        TextFormField(
-                          controller: lastNameController,
-                          enabled: isEditable,
-                          validator: (value) {
-                            if(value.length > 15.0){
-                              return 'Last Name should not be greater then 15 words';
-                            }else if(value.length == 0){
-                              return 'Last Name should not be null';
-                            }
-                          },
-                          decoration: InputDecoration(
-                              labelText: "Last Name",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
-                          ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide:
-                                  BorderSide(color: Colors.black, width: 1))),
+                            SizedBox(
+                              height: 16,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 0.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width*0.45,
+                                child: TextFormField(
+                                  controller: lastNameController,
+                                  enabled: isEditable,
+                                  validator: (value) {
+                                    if(value.length > 15.0){
+                                      return 'Last Name should not be greater then 15 words';
+                                    }else if(value.length == 0){
+                                      return 'Last Name should not be null';
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Last Name",labelStyle: TextStyle(
+                                      color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
+                                  ),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide:
+                                          BorderSide(color: Colors.black, width: 1))),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
 
                         SizedBox(
@@ -771,14 +680,15 @@ bool isChanged = false;
                               return 'Phone number should be of 10 digit';
                             }
                           },
-                          maxLength: 10,
+                          //maxLength: 10,
                           inputFormatters: [
                             WhitelistingTextInputFormatter.digitsOnly
                           ],
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Phone Number",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -804,8 +714,9 @@ bool isChanged = false;
                           },
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Email Id",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -827,99 +738,111 @@ bool isChanged = false;
                             }
                           },
                           keyboardType: TextInputType.text,
-                          maxLines: 3,
+                          maxLines: 2,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                               labelText: "Bio",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide:
                                   BorderSide(color: Colors.black, width: 1))),
                         ),
-
                         SizedBox(
                           height: 16.0,
                         ),
 
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: new Text(
-                              'Gender :',
-                              style: new TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15.0,
-                                  color: Colors.deepPurple
+
+                        Container(
+                          width: MediaQuery.of(context).size.width*1,
+                          child: Row(
+                            children: [
+                              Column(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: new Text(
+                                      'Gender :',
+                                      style: new TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13.0,
+                                          color: Colors.deepPurple
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: new DropdownButton<String>(
+                                      hint: Padding(
+                                        padding: const EdgeInsets.only(left: 13.0),
+                                        child: (genderController.text == "")?Text(genderstring):Text(genderController.text),
+                                      ),
+                                      items: <String>['Male', 'Female','Others'].map((String value) {
+                                        return new DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        genderController.text = value;
+                                        setState(() {
+                                          genderstring = value;
+                                        });
+                                      },
+                                    ),
+                                  )
+                                ],
                               ),
-                            ),
+                              Align(
+                                //padding: const EdgeInsets.only(left: 88.0),
+                                alignment: Alignment.centerRight,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10.0),
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: new Text(
+                                          'Relationship :',
+                                          style: new TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13.0,
+                                              color: Colors.deepPurple
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: new DropdownButton<String>(
+                                        hint: Padding(
+                                          padding: const EdgeInsets.only(left: 10.0),
+                                          child: (relationshipController.text=="")?Text(relationstring):Text(relationshipController.text),
+                                        ),
+                                        items: <String>['Single', 'Engaged'].map((String value) {
+                                          return new DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          relationshipController.text = value;
+                                          setState(() {
+                                            relationstring = value;
+                                          });
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
                         ),
 
 
-                    Align(
-                      alignment: Alignment.center,
-                      child: new DropdownButton<String>(
-                        hint: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: (genderController.text == "")?Text(genderstring):Text(genderController.text),
-                        ),
-                        items: <String>['Male', 'Female','Others'].map((String value) {
-                          return new DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          genderController.text = value;
-                          setState(() {
-                            genderstring = value;
-                          });
-                        },
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 16.0,
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: new Text(
-                          'Relationship :',
-                          style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
-                              color: Colors.deepPurple
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Align(
-                      alignment: Alignment.center,
-                      child: new DropdownButton<String>(
-                        hint: Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: (relationshipController.text=="")?Text(relationstring):Text(relationshipController.text),
-                        ),
-                        items: <String>['Single', 'Engaged'].map((String value) {
-                          return new DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          relationshipController.text = value;
-                          setState(() {
-                            relationstring = value;
-                          });
-                        },
-                      ),
-                    ),
 
                         SizedBox(
                           height: 16,
@@ -936,8 +859,9 @@ bool isChanged = false;
                           keyboardType: TextInputType.text,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Website",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -953,15 +877,16 @@ bool isChanged = false;
                           controller: workController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 25.0){
-                              return 'Work should not be greater than 25 words';
+                            if(value.length > 35.0){
+                              return 'Work should not be greater than 35 words';
                             }
                           },
                           keyboardType: TextInputType.multiline,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Work",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -977,15 +902,16 @@ bool isChanged = false;
                           controller: educationController,
                           enabled: isEditable,
                           validator: (value) {
-                            if(value.length > 20.0){
-                              return 'Education should not be greater then 20 words';
+                            if(value.length > 30.0){
+                              return 'Education should not be greater then 30 words';
                             }
                           },
                           keyboardType: TextInputType.multiline,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Education",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -1008,8 +934,9 @@ bool isChanged = false;
                           keyboardType: TextInputType.multiline,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Current City",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -1038,8 +965,9 @@ bool isChanged = false;
                           keyboardType: TextInputType.number,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Pin Code",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -1062,8 +990,9 @@ bool isChanged = false;
                           keyboardType: TextInputType.multiline,
                           maxLines: 1,
                           decoration: InputDecoration(
+                              contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                               labelText: "Home Town",labelStyle: TextStyle(
-                              color: Colors.deepPurple,fontWeight: FontWeight.bold
+                              color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),

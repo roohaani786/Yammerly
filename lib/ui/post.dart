@@ -11,18 +11,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:techstagram/models/wiggle.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
-import 'package:techstagram/ui/ProfileEdit.dart';
-import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'dart:math' as math;
-//import 'package:techstagram/services/database.dart';
-//import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
-//
-//import '../../constants3.dart';
 
 
 class postPage extends StatefulWidget {
@@ -32,27 +25,11 @@ class postPage extends StatefulWidget {
 
   final String PostUrl;
   final String displayNamecurrentUser;
-  final Wiggle wiggle;
-  final List<Wiggle> wiggles;
-  final Timestamp timestamp;
-  final String description;
-  final String url;
-  final String postId;
-  final int likes;
-  final String uid;
   final String uidX;
 
   postPage(
       {this.PostUrl,
-        this.wiggles,
-        this.wiggle,
-        this.timestamp,
-        this.description,
-        this.url,
-        this.uid,
-        this.postId,
         this.displayNamecurrentUser,
-        this.likes,
         this.uidX
       });
 
@@ -63,7 +40,8 @@ class postPage extends StatefulWidget {
 class _postPageState extends State<postPage> {
 
   bool isLoading = true;
-  bool liked = false;
+  bool _liked = false;
+  bool loading = false;
   bool isEditable = false;
   final String displayNamecurrentUser;
   final String PostUrl;
@@ -76,6 +54,8 @@ class _postPageState extends State<postPage> {
       timestampController,likesController,uidController;
   int posts;
   List<DocumentSnapshot> list;
+
+  List<bool> _likes = List.filled(10000,false);
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -134,8 +114,6 @@ class _postPageState extends State<postPage> {
     //print(displayNamecurrent)
 
 
-
-
     if(displayName == displayNamecurrentUser){
 
       DatabaseService().PostD(uidX,posts);
@@ -149,9 +127,8 @@ class _postPageState extends State<postPage> {
           .collection('posts').document(postId).delete();
 
       Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 4,)),
-      );
+          context, MaterialPageRoute(
+          builder: (BuildContext context) => HomePage(initialindexg: 4)));
 
     }else{
       return showDialog(
@@ -173,6 +150,8 @@ class _postPageState extends State<postPage> {
     return Firestore.instance
         .collection("posts")
         .where('url', isEqualTo: PostUrl)
+        .where("displayName", isEqualTo: displayNamecurrentUser)
+        .where("uid", isEqualTo: uidX)
         .snapshots();
   }
 
@@ -199,23 +178,23 @@ class _postPageState extends State<postPage> {
 //  }
 
 
-  getlikes( String displayNamecurrent, String postId) {
+  getlikes( String displayNamecurrent, String postId, int index) async {
 
-
-    Firestore.instance.collection('posts')
-        .document(postId)
+    await Firestore.instance.collection('posts')
+        .document(postIdX)
         .collection('likes')
-        .document(displayNameController.text)
+        .document(displayNamecurrent)
         .get()
         .then((value) {
       if (value.exists) {
         setState(() {
-          liked = true;
-
+          //likeint = int.parse(postId);
+          //_liked = true;
+          _likes[index] = true;
+          //like[likeint] = "true";
         });
       }
     });
-
   }
 
   fetchLikes() async {
@@ -265,7 +244,7 @@ class _postPageState extends State<postPage> {
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
-    var format = DateFormat('HH:mm a');
+//    var format = DateFormat('HH:mm a');
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     var diff = now.difference(date);
     var time = '';
@@ -367,9 +346,9 @@ class _postPageState extends State<postPage> {
   }
 
   doubletaplike(int likes, String postId) async{
-    if(liked = false) {
+    if(_liked = false) {
       setState(() {
-        liked = true;
+        _liked = true;
       });
       await DatabaseService().likepost(
           likes, postId,
@@ -410,7 +389,7 @@ class _postPageState extends State<postPage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text("Post", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
+          title: Text("Posts", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
           leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black,), onPressed: (){
             Navigator.pop(context);
           }),
@@ -425,114 +404,168 @@ class _postPageState extends State<postPage> {
 
                 new Expanded(
                   child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (context, index) {
+                    controller: scrollController,
+                    itemCount: snapshot.data.documents.length,
 
-                        postIdX = snapshot.data.documents[index]['email'];
-                        String email = snapshot.data.documents[index]['email'];
-                        String description =
-                        snapshot.data.documents[index]['description'];
-                        String displayName =
-                        snapshot.data.documents[index]['displayName'];
-                        String photoUrl =
-                        snapshot.data.documents[index]['photoURL'];
-                        String uid = snapshot.data.documents[index]["uid"];
-                        int cam = snapshot.data.documents[index]['cam'];
-                        Timestamp timestamp =
-                        snapshot.data.documents[index]['timestamp'];
-                        String url = snapshot.data.documents[index]['url'];
-                        String postId = snapshot.data.documents[index]['postId'];
-                        int likes = snapshot.data.documents[index]['likes'];
-                        int comments = snapshot.data.documents[index]['comments'];
-                        readTimestamp(timestamp.seconds);
+                    itemBuilder: (context, index) {
+
+                      int len = snapshot.data.documents.length;
+
+                      postIdX = snapshot.data.documents[index]['postId'];
+
+                      String email = snapshot.data.documents[index]['email'];
+
+                      String description = snapshot.data.documents[index]['description'];
+
+                      String displayName = snapshot.data.documents[index]['displayName'];
+
+                      String photoUrl = snapshot.data.documents[index]['photoURL'];
+
+                      String OwnerDisplayName = snapshot.data.documents[index]['OwnerDisplayName'];
+
+                      String OwnerPhotourl = snapshot.data.documents[index]['OwnerPhotourl'];
+
+                      bool shared = snapshot.data.documents[index]['shared'];
+
+                      String uid = snapshot.data.documents[index]["uid"];
+
+                      int shares = snapshot.data.documents[index]["shares"];
+
+                      Timestamp timestamp = snapshot.data.documents[index]['timestamp'];
+
+                      String url = snapshot.data.documents[index]['url'];
+
+                      int cam = snapshot.data.documents[index]['cam'];
+
+                      String postId = snapshot.data.documents[index]['postId'];
+
+                      int likes = snapshot.data.documents[index]['likes'];
+
+                      int comments = snapshot.data.documents[index]['comments'];
+
+                      readTimestamp(timestamp.seconds);
+
+                      getlikes(displayNamecurrentUser, postIdX, index);
+
+//                        if(likes == 0){
+//
+//                          _likes[index] = true;
+////
+//                        }
 
 
-                        getlikes(displayNameController.text,postId);
-//                        fetchdimensions(url);
 
+                      return (shared==true)?Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: <Widget>[
+                            Container(height: 0.0,width: 0.0,),
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.only(
+                                  top: 10,
+                                  left: 10,
+                                  right: 10.0,
+                                ),
 
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
 
+                                        Row(
+                                          children: <Widget>[
 
-                        if(likes == 0){
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(40),
+                                              child: Image(
+                                                image: NetworkImage(photoUrl),
+                                                width: 40,
+                                                height: 40,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(displayName,style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18.0,
+                                            ),),
+                                          ],
+                                        ),
 
-                          liked = false;
-                        }
+                                        IconButton(
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    backgroundColor: Colors.white,
+                                                    title: Text("Delete post ?"),
+                                                    content: Text(
+                                                        "Are you sure you wanna delete this post.",
+                                                        style: TextStyle(
+                                                            color: Colors.deepPurple
+                                                        )),
+                                                    actions: <Widget>[
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(right: 120.0),
 
-                        //getlikes(displayNameController.text,postId);
+                                                        child: Column(
+                                                          children: [
+                                                            FlatButton(
+                                                              child: Text("yes", style:
+                                                              TextStyle(
+                                                                color: Colors.red,
+                                                              ),),
+                                                              onPressed: () {
+                                                                deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                                                Navigator.push(
+                                                                    context, MaterialPageRoute(
+                                                                    builder: (BuildContext context) => HomePage(initialindexg: 4)));
+                                                              },
+                                                            ),
+                                                            FlatButton(
+                                                              child: Text("No", style:
+                                                              TextStyle(
+                                                                color: Colors.black,
+                                                              ),),
+                                                              onPressed: () {
+                                                                Navigator.pop(context);
+                                                              },
+                                                            )
+                                                          ],
+                                                        ),
 
-                        return Container(
-                          child: Container(
-                            color: Colors.white,
-                            child: Column(
-                              children: <Widget>[
-                                (index == 0)?Container(
-                                  color: Colors.transparent,
-                                  // child: Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.center,
-                                  //   children: [
-                                  //     FlatButton(
-                                  //       onPressed:
-                                  //           (){
-                                  //         pickImage();
-                                  //         if (upload == true){
-                                  //           Navigator.push(
-                                  //               context,
-                                  //               MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
-                                  //         }else{
-                                  //           Navigator.push(
-                                  //               context,
-                                  //               MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,),));
-                                  //         }
-                                  //       },
-                                  //       color: Colors.transparent,
-                                  //       child: Row(
-                                  //         children: [
-                                  //           Icon(FontAwesomeIcons.plus,color: Colors.deepPurpleAccent,),
-                                  //           Padding(
-                                  //             padding: const EdgeInsets.all(8.0),
-                                  //             child: Text("Add Post",style:
-                                  //             TextStyle(
-                                  //               color: Colors.deepPurpleAccent,
-                                  //             ),),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ),
-                                  //
-                                  //     Padding(
-                                  //       padding: const EdgeInsets.only(left: 100.0),
-                                  //     ),
-                                  //     FlatButton(onPressed: (){},
-                                  //       color: Colors.transparent,
-                                  //       child: Row(
-                                  //         children: [
-                                  //           Icon(FontAwesomeIcons.star,color: Colors.deepPurpleAccent,),
-                                  //           Padding(
-                                  //             padding: const EdgeInsets.all(8.0),
-                                  //             child: Text("Rate us",style:
-                                  //             TextStyle(
-                                  //               color: Colors.deepPurpleAccent,
-                                  //             ),),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // ),
-                                ):
-                                Container(height: 0.0,width: 0.0,),
+                                                      )
+                                                    ],
+                                                  );
+                                                });
+                                            //deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                            //Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
 
-                                // GestureDetector(
-                                //   onTap: () => Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
-                                // ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 10,
-                                  ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 1.0),
+                              child: Container(
+                                height: 50.0,
+                                color: Colors.grey.shade50,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 15.0,right: 15.0,),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
@@ -540,265 +573,486 @@ class _postPageState extends State<postPage> {
                                         children: <Widget>[
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(40),
-
                                             child: Image(
-                                              image: NetworkImage(photoUrl),
-                                              width: 40,
-                                              height: 40,
+                                              image: NetworkImage(OwnerPhotourl),
+                                              width: 30,
+                                              height: 30,
                                               fit: BoxFit.cover,
                                             ),
                                           ),
                                           SizedBox(
                                             width: 10,
                                           ),
-                                          Text(displayName,style: TextStyle(
-                                            fontSize: 18.0,
+                                          Text(OwnerDisplayName,style: TextStyle(
                                             fontWeight: FontWeight.bold,
+                                            fontSize: 12.0,
                                           ),),
                                         ],
                                       ),
-                                      (displayName == displayNamecurrentUser)?IconButton(
-                                        icon: Icon(Icons.delete_outline, color: Colors.purple,),
-                                        //onPressed: () => createAlertDialog(context,url),
-                                        onPressed: () => deletePost(displayNamecurrentUser, displayName,postId,uidX),
-
-                                      ):Container(),
                                     ],
                                   ),
                                 ),
-                                //),
+                              ),
+                            ),
 
 
-                                GestureDetector(
-                                  onDoubleTap: () async {
+                            GestureDetector(
+                              onDoubleTap: () {
 
+                                if (_likes[index] == false) {
+                                  setState(() {
+                                    _likes[index] = true;
+                                  });
 
-                                    if (liked == false) {
-                                      setState(() {
-                                        liked = true;
-                                        print(liked);
-                                      });
-                                      await DatabaseService().likepost(
-                                          likes, postId,
-                                          displayNameController.text);
+                                  DatabaseService().likepost(
+                                      likes, postId,
+                                      displayNameController.text);
+                                }
+                              },
+                              onTap: null,
 
-//                                     return liked;
-                                    } else {
-                                      print("nahi");
-                                    }
-                                  },
-
-
-                                  child: InteractiveViewer(
-                                    transformationController: _controller,
-                                    onInteractionEnd: (value){
-                                      _controller.value = Matrix4.identity();
-                                    },
-                                    child :(cam == 1)?Transform(
-                                      alignment: Alignment.center,
-                                      transform: Matrix4.rotationY(math.pi),
-                                      child: FadeInImage(
-
-                                        image: NetworkImage(url),
-                                        //image: NetworkImage("posts[i].postImage"),
-                                        placeholder: AssetImage("assets/images/loading.gif"),
-                                        width: MediaQuery.of(context).size.width,
-
-
-
-                                      ),
-                                    ):FadeInImage(
-
+                              child: Container(
+                                height: 350.0,
+                                child: GestureDetector(
+                                  child : (cam == 1)? Transform(
+                                    alignment: Alignment.center,
+                                    transform: Matrix4.rotationY(math.pi),
+                                    child: FadeInImage(
                                       image: NetworkImage(url),
+                                      fit: BoxFit.cover,
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
-
-
-
                                     ),
+                                  ):FadeInImage(
+                                    image: NetworkImage(url),
+                                    fit: BoxFit.cover,
+                                    //image: NetworkImage("posts[i].postImage"),
+                                    placeholder: AssetImage("assets/images/loading.gif"),
+                                    width: MediaQuery.of(context).size.width,
                                   ),
-
                                 ),
+                              ),
+                            ),
 
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
 
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        (liked == false)?IconButton(
 
-                                          onPressed: () {
-                                            setState(() {
-                                              liked = true;
-                                            });
-                                            DatabaseService().likepost(
-                                                likes, postId, displayNameController.text);
+                                    IconButton(
+                                      padding: EdgeInsets.only(left: 10),
+                                      onPressed: (_likes[index] == true)
+                                          ? () {
 
-                                          },
-                                          icon: Icon(Icons.thumb_up),
-                                          color: Colors.grey,
-                                          // onPressed: () {
-                                          // },
-                                          // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                        ):IconButton(
 
-                                          onPressed: () {
-                                            setState(() {
-                                              liked = false;
-                                            });
-                                            DatabaseService().unlikepost(
-                                                likes, postId, displayNameController.text);
+                                        setState(() {
+                                          _likes[index] = false;
+                                          //like[likeint] = "false";
+                                          loading = true;
+                                        });
 
-                                          },
+                                        DatabaseService().unlikepost(
+                                            likes, postId,displayNameController.text);
 
-                                          icon: Icon(Icons.thumb_up),
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      }
+                                          : () {
+                                        setState(() {
+                                          _likes[index] = true;
+                                          //like[likeint] = "true";
+                                          loading = true;
+                                        });
 
-                                          color: Colors.deepPurple,
-                                          // onPressed: () {
-                                          // },
-                                          // icon: Icon(FontAwesome.thumbs_up,color: Colors.deepPurple,),
-                                        ),
-                                        Text(
-                                          likes.toString(),style: TextStyle(
-                                          color: Colors.black,
-                                        ),
+                                        DatabaseService().likepost(
+                                            likes, postId,displayNameController.text);
 
-                                        ),
-
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 3.0),
-                                          child: IconButton(
-
-                                            onPressed: () { print(displayNameController.text);
-                                            Navigator.push(context, MaterialPageRoute(builder: (context){
-                                              return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text,comments: comments,);
-                                              //return CommentsPage(postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
-                                            }));
-                                            },
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: ((context) => CommentsScreen())));
-
-                                            icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
-                                          ),
-                                        ),
-                                        Text(comments.toString()),
-                                        // IconButton(
-                                        //   onPressed: () {},
-                                        //   icon: Icon(Icons.share,color: Colors.deepPurpleAccent),
-                                        // ),
-                                      ],
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      },
+                                      icon: Icon(Icons.thumb_up),
+                                      iconSize: 25,
+                                      color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
                                     ),
-                                    // IconButton(
-                                    //   onPressed: () {},
-                                    //   icon: Icon(FontAwesome.bookmark_o),
-                                    // ),
+
+                                    Text(
+                                      likes.toString(),style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 3.0),
+                                      child: IconButton(
+
+                                        onPressed: () {
+
+                                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                                            return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          }));
+
+                                        },
+
+
+                                        icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
+                                      ),
+                                    ),
+
+                                    Text(comments.toString()),
+
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                        );
+                                      },
+                                      icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                    ),
                                   ],
-                                ),
-
-                                Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    margin: EdgeInsets.symmetric(
-                                      horizontal: 14,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          child: RichText(
-                                            softWrap: true,
-                                            overflow: TextOverflow.visible,
-                                            text: TextSpan(
-                                              text: displayName,
-                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                  fontSize: 15.0),
-                                            ),
-                                          ),
-                                        ),
-
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 3.0),
-                                          child: Container(
-
-                                            constraints: BoxConstraints(maxWidth: 250),
-                                            child: RichText(
-                                              softWrap: true,
-                                              overflow: TextOverflow.visible,
-                                              text: TextSpan(
-                                                text: description,
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                    fontSize: 15.0),
-
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                ),
-
-                                // caption
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                    vertical: 5,
-                                  ),
-//                                child: RichText(
-//                                  softWrap: true,
-//                                  overflow: TextOverflow.visible,
-//                                  text: TextSpan(
-//                                    children: [
-//                                      TextSpan(
-//                                        text: displayName,
-//                                        style: TextStyle(
-//                                            fontWeight: FontWeight.bold,
-//                                            color: Colors.black),
-//                                      ),
-//                                      // TextSpan(
-//                                      //   text: " mlkl",
-//                                      //   style: TextStyle(color: Colors.black),
-//                                      // ),
-//                                    ],
-//                                  ),
-//                                ),
-                                ),
-
-                                // post date
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                  ),
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    readTimestamp(timestamp.seconds),
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 10.0,
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                          // height: 150.0,
-                          // width: 150.0,
-                          //child: Image.network(url),
-                        );
 
-//                return FeedTile(
-//                  wiggle: currentpost,
-//                  wiggles: posts,
-//                  description: description,
-//                  timestamp: timestamp,
-//                  url: url,
-//                  postId: postId,
-//                  likes: likes,
-//                );
-                      }),
+                            Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
+                                child: Row(
+                                  children: [
+
+                                    Container(
+                                      child: RichText(
+                                        textAlign: TextAlign.start,
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible,
+                                        text: TextSpan(
+                                          children: [
+
+                                            TextSpan(
+                                              text: displayName + "  ",
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                  fontSize: 18.0),
+                                            ),
+                                            TextSpan(
+                                              text: description,
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                  fontSize: 15.0),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                            ),
+
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 5,
+                              ),
+                            ),
+
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                horizontal: 14,
+                              ),
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                readTimestamp(timestamp.seconds),
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10.0,
+                                ),
+                              ),
+                            ),
+
+                          ],
+                        ),
+
+                      ):Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: <Widget>[
+
+                            Container(
+                              height: 0.0,width: 0.0,
+                            ),
+
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
+                              ),
+
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 10,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+
+                                    Row(
+                                      children: <Widget>[
+
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(40),
+                                          child: Image(
+                                            image: NetworkImage(photoUrl),
+                                            width: 40,
+                                            height: 40,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(displayName,style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.0,
+                                        ),),
+                                      ],
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                backgroundColor: Colors.white,
+                                                title: Text("Delete post ?"),
+                                                content: Text(
+                                                    "Are you sure you wanna delete this post.",
+                                                    style: TextStyle(
+                                                        color: Colors.deepPurple
+                                                    )),
+                                                actions: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(right: 120.0),
+
+                                                    child: Column(
+                                                      children: [
+                                                        FlatButton(
+                                                          child: Text("yes", style:
+                                                          TextStyle(
+                                                            color: Colors.red,
+                                                          ),),
+                                                          onPressed: () {
+                                                            deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                                            Navigator.push(
+                                                                context, MaterialPageRoute(
+                                                                builder: (BuildContext context) => HomePage(initialindexg: 4)));
+                                                          },
+                                                        ),
+                                                        FlatButton(
+                                                          child: Text("No", style:
+                                                          TextStyle(
+                                                            color: Colors.black,
+                                                          ),),
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                        )
+                                                      ],
+                                                    ),
+
+                                                  )
+                                                ],
+                                              );
+                                            });
+                                        //deletePost(displayNamecurrentUser, displayName, postId, uidX);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+
+                            GestureDetector(
+                              onDoubleTap: () async {
+
+                                if (_likes[index] == false) {
+                                  setState(() {
+                                    _likes[index] = true;
+                                    //print(_liked);
+                                  });
+
+                                  await DatabaseService().likepost(
+                                      likes, postId,
+                                      displayNameController.text);
+                                }
+                              },
+                              onTap: null,
+
+                              child: Container(
+                                height: 350.0,
+                                child: GestureDetector(
+
+                                  child :(cam == 1)?Transform(
+                                    alignment: Alignment.center,
+                                    transform: Matrix4.rotationY(math.pi),
+                                    child: FadeInImage(
+                                      image: NetworkImage(url),
+                                      fit: BoxFit.cover,
+                                      //image: NetworkImage("posts[i].postImage"),
+                                      placeholder: AssetImage("assets/images/loading.gif"),
+                                      width: MediaQuery.of(context).size.width,
+                                    ),
+
+                                  ):FadeInImage(
+                                    image: NetworkImage(url,),
+                                    fit: BoxFit.cover,
+                                    placeholder: AssetImage("assets/images/loading.gif"),
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+
+                                Row(
+                                  children: <Widget>[
+
+                                    IconButton(
+                                      padding: EdgeInsets.only(left: 10),
+                                      onPressed: (_likes[index] == true)
+                                          ? () {
+                                        setState(() {
+                                          _likes[index] = false;
+                                          //like[likeint] = "false";
+                                          loading = true;
+//                                              likes--;
+                                          DatabaseService().unlikepost(
+                                              likes, postId,displayNameController.text);
+                                          loading = false;
+                                        });
+                                      }
+                                          : () {
+                                        setState(() {
+                                          _likes[index] = true;
+                                          //like[likeint] = "true";
+                                          loading = true;
+                                          DatabaseService().likepost(
+                                              likes, postId,displayNameController.text);
+                                          loading = false;
+                                        });
+                                      },
+                                      icon: Icon(Icons.thumb_up),
+                                      iconSize: 25,
+                                      color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
+                                    ),
+
+                                    Text(
+                                      likes.toString(),style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 3.0),
+                                      child: IconButton(
+
+                                        onPressed: () {
+                                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                                            return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          }));
+                                        },
+                                        icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
+                                      ),
+                                    ),
+
+                                    Text(comments.toString()),
+
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                        );
+                                      },
+                                      icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
+                                child: Row(
+                                  children: [
+
+                                    Container(
+                                      child: RichText(
+                                        textAlign: TextAlign.start,
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: displayName + "  ",
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                  fontSize: 18.0),
+                                            ),
+                                            TextSpan(
+                                              text: description,
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                  fontSize: 15.0),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                            ),
+
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 5,
+                              ),
+                            ),
+
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                horizontal: 14,
+                              ),
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                readTimestamp(timestamp.seconds),
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             )

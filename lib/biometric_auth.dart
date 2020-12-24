@@ -1,15 +1,7 @@
 import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:techstagram/pages/intro_page.dart';
-import 'package:techstagram/ui/HomePage.dart';
-
-import 'main.dart';
-import 'resources/repository.dart';
-
 
 class  Biometricauth extends StatefulWidget {
   @override
@@ -22,8 +14,6 @@ class  BiometricauthState extends State< Biometricauth> {
   List<BiometricType> _availableBiometrics;
   String _authorized = 'Not Authorized';
   bool _isAuthenticating = false;
-
-  var _repository = Repository();
 
   Future<void> _checkBiometrics() async {
     bool canCheckBiometrics;
@@ -75,11 +65,6 @@ class  BiometricauthState extends State< Biometricauth> {
 
     final String message = authenticated ? 'Authorized' : 'Not Authorized';
     if(authenticated){
-//      Navigator.push(context, new MaterialPageRoute(
-//          builder: (context) =>
-//          CheckScreen())
-//      );
-
 
     }
     setState(() {

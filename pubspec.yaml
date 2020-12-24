@@ -1,12 +1,12 @@
 name: techstagram
-description: A new Flutter application.
+description: A Social Application.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
+# A version numbe1.2.0r is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.1
+version: 1.6.0
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -86,6 +86,7 @@ dependencies:
   local_auth:
   http:
   string_validator: ^0.1.4
+  image_editor_pro: ^1.0.6
 
 
 dev_dependencies:
@@ -120,12 +121,7 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-    - assets/blankimage.png
-    - assets/cod.png
     - assets/fb-logo.png
-    - assets/flash.png
-    - assets/flashapp.png
-    - assets/flashu.png
     - assets/fonts/Barlow-Bold.ttf
     - assets/fonts/Barlow-Regular.ttf
     - assets/fonts/Barlow-SemiBold.ttf
@@ -135,7 +131,6 @@ flutter:
     - assets/fonts/Quicksand-Medium.ttf
     - assets/fonts/Quicksand-Regular.ttf
     - assets/fonts/Quicksand-SemiBold.ttf
-    - assets/google-logo.png
     - assets/google_icon.jpg
     - assets/icons/chat.svg
     - assets/icons/facebook.svg
@@ -150,45 +145,18 @@ flutter:
     - assets/images/2.jpg
     - assets/images/3.jpg
     - assets/images/empty.png
-    - assets/images/follower2.jpg
-    - assets/images/follower3.jpeg
-    - assets/images/p.jpg
     - assets/images/login_bottom.png
-    - assets/images/logo.png
     - assets/images/main_bottom.png
     - assets/images/main_top.png
-    - assets/images/man1.jpg
-    - assets/images/man2.jpg
-    - assets/images/man3.jpg
-    - assets/images/man4.jpg
-    - assets/images/man5.jpg
-    - assets/images/social.jpg
     - assets/images/my_profile.jpg
     - assets/images/photo4.jpg
     - assets/images/photo5.jpg
     - assets/images/placeholder.jpg
     - assets/images/post2.jpg
-    - assets/images/home_page.png
-    - assets/images/profile3.png
-    - assets/images/profile4.png
-    - assets/images/profile6.jpg
     - assets/images/signup_top.png
-    - assets/images/their_profile.jpeg
-    - assets/images/woman1.jpg
-    - assets/images/woman2.jpg
-    - assets/images/woman3.jpg
-    - assets/images/woman4.jpg
-    - assets/images/woman5.jpg
-    - assets/insta_logo.png
     - assets/images/loading.gif
-    - assets/intu
     - assets/no_image.png
     - assets/phone-icon.png
-    - assets/pmmodi1.jpg
-    - assets/pmmodi2.jpg
-    - assets/pmmodi3.jpg
-    - assets/sd.png
-    - assets/sj.png
     - assets/twitter-logo.png
     - assets/twitter_logo.png
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -21,7 +21,7 @@ class _VideoPreviewState extends State<VideoPreview>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      vsync: this,
+      //vsync: this,
       duration: Duration(milliseconds: 300),
     );
     _controller = VideoPlayerController.file(File(widget.videoPath))

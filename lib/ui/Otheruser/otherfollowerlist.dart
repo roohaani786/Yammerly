@@ -106,7 +106,6 @@ class _OtherFollowersList extends State<OtherFollowersList> {
               searchKey = snapshot.data.documents[index]["followername"];
               String photoUrl = snapshot.data.documents[index]["photoUrl"];
               String uid = snapshot.data.documents[index]["uid"];
-              //bandekiuid = snapshot.data.documents[index]["uid"];
               String displayName = snapshot.data.documents[index]["followername"];
               return (searchKey!= null)?Card(
                 child: Row(

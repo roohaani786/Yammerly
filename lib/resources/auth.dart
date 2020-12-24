@@ -1,11 +1,10 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:techstagram/modell/global.dart';
 import 'package:techstagram/models/user.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthService {
   // Dependencies
@@ -19,7 +18,7 @@ class AuthService {
   Observable<Map<String, dynamic>> profile; // custom user data in Firestore
   PublishSubject loading = PublishSubject();
 
-  // constructor
+
   AuthService() {
     user = Observable(_auth.onAuthStateChanged);
 
@@ -34,6 +33,29 @@ class AuthService {
         return Observable.just({});
       }
     });
+  }
+
+  Future<String> emailVerify() async {
+
+
+    FirebaseUser user;
+
+    print("bahia bhia");
+    //print(user.email);
+    try {
+      print("try");
+      await user.sendEmailVerification();
+      print("Success");
+      Fluttertoast.showToast(
+          timeInSecForIosWeb: 100,
+          msg:
+          "email Verification link has been sent to your mail");
+      return user.uid;
+    } catch (e) {
+      print("An error occured while trying to send email verification");
+      print(e.message);
+    }
+    return null;
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;

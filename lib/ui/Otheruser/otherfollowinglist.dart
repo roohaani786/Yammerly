@@ -97,7 +97,7 @@ class _FollowingList extends State<FollowingList> {
               : ListView.builder(
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
-              DocumentSnapshot sd = snapshot.data.documents[index];
+//              DocumentSnapshot sd = snapshot.data.documents[index];
               searchKey = snapshot.data.documents[index]["followingname"];
               String photoUrl = snapshot.data.documents[index]["photoUrl"];
               String uid = snapshot.data.documents[index]["uid"];

@@ -1,15 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-//import 'package:path/path.dart';
-import 'package:techstagram/modell/global.dart';
-import 'package:techstagram/views/tabs/feeds.dart';
-//import 'package:timeago/timeago.dart' as tAgo;
-import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:uuid/uuid.dart';
-
 import 'package:flutter/material.dart';
 
 final CommentsRefrence = Firestore.instance.collection("posts");
@@ -43,6 +35,7 @@ class CommentsPageState extends State<CommentsPage> {
   final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
 
   String CommentId = Uuid().v4();
+  String NotificationId = Uuid().v4();
 
   TextEditingController commentTextEditingController = TextEditingController();
 
@@ -136,6 +129,31 @@ class CommentsPageState extends State<CommentsPage> {
     );
   }
 
+  Notification() async {
+    //print(currUid);
+
+    setState(() {
+      // file = null;
+      NotificationId = Uuid().v4();
+    });
+
+    return await Firestore.instance.collection("users")
+        .document(uid).collection("notification")
+        .document(NotificationId)
+        .setData({"commentId" : CommentId,
+      "notificationId" : NotificationId,
+      "username": displayNamecurrentUser,
+      "comment": commentTextEditingController.text,
+
+      "timestamp": DateTime.now(),
+      "url": photoUrl,
+      "uid": uid,
+      "status" : "Comment",
+      "postId" : postId,
+    });
+
+  }
+
   SaveCommentIP() async {
     return await Firestore.instance
         .collection("users")
@@ -216,7 +234,7 @@ class CommentsPageState extends State<CommentsPage> {
 
   @override
   void initState() {
-//    retrieveCommentscount();
+
     retrieveComments();
 
   }
@@ -264,6 +282,7 @@ class CommentsPageState extends State<CommentsPage> {
                     saveComment();
                     SaveCommentI();
                     SaveCommentIP();
+                    Notification();
                   }else{
                     showError();
                     print("error hai bhaiya");

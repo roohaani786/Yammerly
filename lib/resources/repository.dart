@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:techstagram/models/message.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 
@@ -12,9 +10,9 @@ class Repository {
   final _firebaseProvider = FirebaseProvider();
 
   Future<void> addDataToDb(FirebaseUser user) => _firebaseProvider.addDataToDb(user);
-  
+
   Future<FirebaseUser> signIn() => _firebaseProvider.signIn();
-  
+
   Future<bool> authenticateUser(FirebaseUser user) => _firebaseProvider.authenticateUser(user);
 
   Future<FirebaseUser> getCurrentUser() => _firebaseProvider.getCurrentUser();
@@ -23,8 +21,7 @@ class Repository {
 
   Future<String> uploadImageToStorage(File imageFile) => _firebaseProvider.uploadImageToStorage(imageFile);
 
-  Future<void> addPostToDb(User currentUser, String imgUrl, String caption, String location) => _firebaseProvider.addPostToDb(currentUser, imgUrl, caption, location);
-  
+
   Future<User> retrieveUserDetails(FirebaseUser user) => _firebaseProvider.retrieveUserDetails(user);
 
   Future<List<DocumentSnapshot>> retrieveUserPosts(String userId) => _firebaseProvider.retrieveUserPosts(userId);
@@ -58,10 +55,6 @@ class Repository {
   Future<List<String>> fetchUserNames(FirebaseUser user) => _firebaseProvider.fetchUserNames(user);
 
   Future<List<User>> fetchAllUsers(FirebaseUser user) => _firebaseProvider.fetchAllUsers(user);
-
-  void uploadImageMsgToDb(String url, String receiverUid, String senderuid) => _firebaseProvider.uploadImageMsgToDb(url, receiverUid, senderuid);
-
-  Future<void> addMessageToDb(Message message, String receiverUid) => _firebaseProvider.addMessageToDb(message, receiverUid);
 
   Future<List<DocumentSnapshot>> fetchFeed(FirebaseUser user) => _firebaseProvider.fetchFeed(user);
 

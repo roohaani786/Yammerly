@@ -20,17 +20,17 @@ class Body extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                "WELCOME TO AIO-Chat",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: size.height * 0.05),
+//              Text(
+//                "WELCOME TO AIO-Chat",
+//                style: TextStyle(fontWeight: FontWeight.bold),
+//              ),
+//              SizedBox(height: size.height * 0.05),
               SvgPicture.asset(
                 "assets/icons/chat.svg",
                 height: size.height * 0.45,
               ),
               SizedBox(height: size.height * 0.05),
-              RoundedButton(
+              RoundedButtonX(
                 text: "LOGIN",
                 press: () {
                   Navigator.push(
@@ -43,7 +43,7 @@ class Body extends StatelessWidget {
                   );
                 },
               ),
-              RoundedButton(
+              RoundedButtonX(
                 text: "SIGN UP",
                 color: kPrimaryLightColor,
                 textColor: Colors.black,
