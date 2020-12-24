@@ -11,6 +11,7 @@ import 'package:techstagram/ui/ProfileEdit.dart';
 import 'dart:math' as math;
 import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 import 'package:techstagram/ui/post.dart';
+import 'package:techstagram/utils/utils.dart';
 import '../HomePage.dart';
 import '../aboutuser.dart';
 
@@ -68,6 +69,17 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   int followingX;
   String photoUrlX;
+  final image = Image.asset(
+    AvailableImages.emptyState['assetPath'],
+  );
+
+  final notificationHeader = Container(
+    padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
+    child: Text(
+      "No Posts Yet !",
+      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
+    ),
+  );
 
   getUserPosts(String uidX) async {
     getPostsUser(uidX).then((val){
@@ -282,6 +294,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
               itemBuilder: (context, index) {
 //                DocumentSnapshot sd = snapshot.data.documents[index];
                 String photoUrl = snapshot.data.documents[index]["photoURL"];
+                String coverPhotoUrl = snapshot.data.documents[index]["coverPhotoUrl"];
                 String uid = snapshot.data.documents[index]["uid"];
                 String displayName = snapshot.data.documents[index]["displayName"];
                 String bio = snapshot.data.documents[index]["bio"];
@@ -306,8 +319,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                       alignment: Alignment.center,
                       child: Stack(
                         children: [
-                          Container(
-                            height : MediaQuery.of(context).size.height*0.30,
+                          (coverPhotoUrl == null)?Container(
+                            height : MediaQuery.of(context).size.height*0.20,
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -316,58 +329,112 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                               ),
                             ),
                             //color: Colors.lightBlueAccent,
+                          ):Container(
+                            height : MediaQuery.of(context).size.height*0.20,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(coverPhotoUrl),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            //color: Colors.lightBlueAccent,
                           ),
                           Align(
                             alignment: Alignment.center,
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 120.0),
+                              padding: const EdgeInsets.only(top: 85),
                               child: SingleChildScrollView(
                                 child: Column(
                                   children: [
                                     Container(
-                                      height: 300.0,
-                                      width: 340.0,
+                                      height: MediaQuery.of(context).size.height*0.50,
+                                      width:MediaQuery.of(context).size.width,
 
                                       // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
+                                          Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width*0.30,
+                                                  // child: (photoUrl!=null)?Padding(
+                                                  //   padding: const EdgeInsets.only(
+                                                  //       bottom: 10,),
+                                                  //   child:Align(
+                                                  //     alignment: Alignment.center,
+                                                  //     child: CircleAvatar(
+                                                  //       radius: 45,
+                                                  //       backgroundImage: NetworkImage(photoUrl),
+                                                  //
+                                                  //       backgroundColor: Colors.transparent,
+                                                  //     ),
+                                                  //   ),
+                                                  // ):Padding(
+                                                  //   padding: const EdgeInsets.only(
+                                                  //       top: 70, left: 110.0,right: 110.0),
+                                                  //   child: CircleAvatar(
+                                                  //     radius: 50,
+                                                  //     child: IconButton(icon:
+                                                  //     Icon(FontAwesomeIcons.userCircle,
+                                                  //       color: Colors.deepPurple,
+                                                  //       size: 100.0,), onPressed: null),
+                                                  //     backgroundColor: Colors.white60,
+                                                  //   ),
+                                                  // ),
+                                                ),
 
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 10.0),
-                                            child: Text(
-                                              displayName,
-                                              style: TextStyle(
-                                                fontSize: 26.0,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: 'Pacifico',
-                                              ),
+                                                Container(
+                                                  width:MediaQuery.of(context).size.width*0.70,
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 25.0),
+                                                        child: Text(
+                                                          displayName,
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 26.0,
+                                                            color: Colors.black,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontFamily: 'Pacifico',
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(top: 10.0),
+                                                        child: (bio!=null)?Text(
+                                                          bio,
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontFamily: 'Source Sans Pro',
+                                                            fontSize: 15.0,
+                                                            color: Colors.grey,
+                                                            letterSpacing: 2.5,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ):Text(""),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 10.0),
-                                            child: (bio!=null)?Text(
-                                              bio,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontFamily: 'Source Sans Pro',
-                                                fontSize: 15.0,
-                                                color: Colors.grey,
-                                                letterSpacing: 2.5,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ):Text(""),
-                                          ),
+
                                           SizedBox(
-                                            height: 20,
-                                            width: 200,
+                                            height: 30,
+                                            width: 300,
                                             child: Divider(
                                               color: Colors.teal.shade700,
                                             ),
                                           ),
                                           Container(
-                                            height: 60.0,
+                                            height: MediaQuery.of(context).size.height*0.05,
+                                            width: MediaQuery.of(context).size.width*0.75,
                                             margin: EdgeInsets.only(top: 8.0),
                                             decoration: BoxDecoration(
 
@@ -376,6 +443,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                               mainAxisAlignment: MainAxisAlignment
                                                   .spaceAround,
                                               children: <Widget>[
+                                                _buildStatItem("POSTS", posts.toString()),
                                                 GestureDetector(
                                                   onTap: () => Navigator.push(
                                                     context,
@@ -387,7 +455,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                   child: _buildStatItem("FOLLOWERS",
                                                       followers.toString()),
                                                 ),
-                                                _buildStatItem("POSTS", posts.toString()),
+
                                                 GestureDetector(
                                                   onTap: () => Navigator.push(
                                                     context,
@@ -405,6 +473,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                             ),
                                           ),
                                           Container(
+                                            width: MediaQuery.of(context).size.width*0.90,
                                             child: Column(
                                               children: [
                                                 Row(
@@ -576,7 +645,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                       child: StreamBuilder(
                                           stream: userPostsStream,
                                           builder: (context, snapshot) {
-                                            return snapshot.hasData
+                                            return (posts != 0)
                                                 ? Column(
                                               children: [
                                                 new Expanded(
@@ -673,8 +742,32 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                 ),
                                               ],
                                             ): Container(
-                                              height: MediaQuery.of(context).size.height,
-                                              color: Colors.white,
+                                              padding: EdgeInsets.only(
+                                                top: 5.0,
+                                                left: 30.0,
+                                                right: 30.0,
+                                                bottom: 5.0,
+                                              ),
+                                              //height: 200,
+                                              height: MediaQuery.of(context).size.height * 0.20,
+                                              width: MediaQuery.of(context).size.width * 0.20,
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  //pageTitle,
+                                                  // SizedBox(
+                                                  //   height: deviceHeight * 0.1,
+                                                  // ),
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      image,
+                                                      notificationHeader,
+                                                      //notificationText,
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             );
                                           }
                                       ),
@@ -689,31 +782,59 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                             ),
                           ),
 
-
-                          (photoUrl!=null)?Padding(
-                            padding: const EdgeInsets.only(
-                                top: 80, left: 140.0, right: 140.0),
-                            child:Align(
+                          Padding(
+                            padding: const EdgeInsets.only(top: 145,right: 250.0),
+                            child:(photoUrl!=null)?Align(
                               alignment: Alignment.center,
-                              child: CircleAvatar(
-                                radius: 35,
-                                backgroundImage: NetworkImage(photoUrl),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 5,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: NetworkImage(photoUrl),
 
-                                backgroundColor: Colors.transparent,
+                                  backgroundColor: Colors.transparent,
+                                ),
                               ),
-                            ),
-                          ):Padding(
-                            padding: const EdgeInsets.only(
-                                top: 70, left: 110.0,right: 110.0),
-                            child: CircleAvatar(
+                            ): CircleAvatar(
                               radius: 50,
                               child: IconButton(icon:
                               Icon(FontAwesomeIcons.userCircle,
-                                color: Colors.deepPurple,
-                                size: 100.0,), onPressed: null),
-                              backgroundColor: Colors.white60,
+                                color: Colors.deepPurple,), onPressed: (){print("hello");}),
+                              backgroundColor: Colors.transparent,
                             ),
                           ),
+
+
+                          // (photoUrl!=null)?Padding(
+                          //   padding: const EdgeInsets.only(
+                          //       top: 80, left: 140.0, right: 140.0),
+                          //   child:Align(
+                          //     alignment: Alignment.center,
+                          //     child: CircleAvatar(
+                          //       radius: 35,
+                          //       backgroundImage: NetworkImage(photoUrl),
+                          //
+                          //       backgroundColor: Colors.transparent,
+                          //     ),
+                          //   ),
+                          // ):Padding(
+                          //   padding: const EdgeInsets.only(
+                          //       top: 70, left: 110.0,right: 110.0),
+                          //   child: CircleAvatar(
+                          //     radius: 50,
+                          //     child: IconButton(icon:
+                          //     Icon(FontAwesomeIcons.userCircle,
+                          //       color: Colors.deepPurple,
+                          //       size: 100.0,), onPressed: null),
+                          //     backgroundColor: Colors.white60,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

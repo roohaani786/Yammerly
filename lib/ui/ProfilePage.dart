@@ -389,83 +389,111 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: NetworkImage(coverPhotoUrlController.text),
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     //color: Colors.lightBlueAccent,
                   ),
                   Align(
                     alignment: Alignment.topRight,
-                      child: Column(
-                        children: [
-                          IconButton(
-                              color: Colors.purple,
-                              //color: Colors.white,
-                              icon: new Icon(Icons.settings),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
-                                );
-                              },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 15.0,top: 5.0),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 40.0,
+                              width: 40.0,
+                              decoration: const ShapeDecoration(
+                                color: Colors.deepPurple,
+                                shape: CircleBorder(),
                               ),
-                          IconButton(
-                            color: Colors.purple,
-                            //color: Colors.white,
-                            icon: new Icon(Icons.edit),
-                              onPressed: (){
-                                showDialog<void>(
-                                    context: context,// THIS WAS MISSING// user must tap button!
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text('Select image from :-',style: TextStyle(
-                                          fontSize: 15.0,
-                                        ),),
-                                        content: SingleChildScrollView(
-                                          child: ListBody(
-                                            children: <Widget>[
-                                              GestureDetector(
-                                                onTap: (){
-                                                  pickImagefromCamera();
-                                                  Navigator.of(context, rootNavigator: true).pop(context);
-                                                },
-                                                child: Row(
-                                                  children: [
-                                                    Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 20.0),
-                                                      child: Text('Camera'),
+                              child: IconButton(
+                                  color: Colors.white,
+                                  //color: Colors.white,
+                                  icon: new Icon(
+                                      Icons.settings,
+                                    size: 20.0,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
+                                    );
+                                  },
+                                  ),
+                            ),
+                            SizedBox(
+                              height: deviceHeight*0.090,
+                            ),
+                            Container(
+                              height: 40.0,
+                              width: 40.0,
+                              decoration: const ShapeDecoration(
+                                color: Colors.deepPurple,
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                color: Colors.white,
+                                //color: Colors.white,
+                                icon: new Icon(
+                                    Icons.edit,
+                                  size: 20,
+                                ),
+                                  onPressed: (){
+                                    showDialog<void>(
+                                        context: context,// THIS WAS MISSING// user must tap button!
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text('Select image from :-',style: TextStyle(
+                                              fontSize: 15.0,
+                                            ),),
+                                            content: SingleChildScrollView(
+                                              child: ListBody(
+                                                children: <Widget>[
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      pickImagefromCamera();
+                                                      Navigator.of(context, rootNavigator: true).pop(context);
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(left: 20.0),
+                                                          child: Text('Camera'),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 20.0),
-                                                child: GestureDetector(
-                                                  onTap: (){
-                                                    pickImage();
-                                                    Navigator.of(context, rootNavigator: true).pop(context);
-                                                  },
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(left: 20.0),
-                                                        child: Text('Gallery'),
-                                                      ),
-                                                    ],
                                                   ),
-                                                ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(top: 20.0),
+                                                    child: GestureDetector(
+                                                      onTap: (){
+                                                        pickImage();
+                                                        Navigator.of(context, rootNavigator: true).pop(context);
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(left: 20.0),
+                                                            child: Text('Gallery'),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
+                                            ),
+                                          );
 
-                                    });
-                              },
-                          ),
-                        ],
+                                        });
+                                  },
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                   ),
 
@@ -491,7 +519,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 100),
+                      padding: const EdgeInsets.only(top: 100,),
                       child: Column(
                         children: [
                           Container(
@@ -591,7 +619,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                     ],
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 160.0),
+                                    padding: const EdgeInsets.only(top: 170.0,),
                                     child: Align(
                                       alignment: Alignment.topRight,
                                       child: SizedBox(
@@ -599,7 +627,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                         height: 40.0,
                                         child: Ink(
                                           decoration: const ShapeDecoration(
-                                            color: Colors.purple,
+                                            color: Colors.deepPurple,
                                             shape: CircleBorder(),
                                           ),
                                           child: IconButton(
@@ -778,18 +806,27 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                       alignment: Alignment.center,
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
+                          //borderRadius: BorderRadius.circular(100),
                           border: Border.all(
                             color: Colors.white,
                             width: 5,
                           ),
                         ),
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage(photoUrlController.text),
-
-                          backgroundColor: Colors.transparent,
-                        ),
+                        child: Container(
+                          height: 100,
+                          width: 100.0,
+                          child: Image(
+                            image: NetworkImage(photoUrlController.text),
+                            fit: BoxFit.cover,
+                          ),
+                          //backgroundImage: NetworkImage(photoUrlController.text)
+                        )
+                        // child: CircleAvatar(
+                        //   radius: 50,
+                        //   backgroundImage: NetworkImage(photoUrlController.text),
+                        //
+                        //   backgroundColor: Colors.transparent,
+                        // ),
                       ),
                     ): CircleAvatar(
                       radius: 50,
