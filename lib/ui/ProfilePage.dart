@@ -87,7 +87,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     lastNameController = TextEditingController();
     emailController = TextEditingController();
     phonenumberController = TextEditingController();
-    //emailVerificationController = TextEditingController();
+    // emailVerificationController = TextEditingController();
     pinCodeController = TextEditingController();
     bioController = TextEditingController();
     genderController = TextEditingController();
@@ -253,10 +253,13 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
         coverPhotoUrlController.text = fileURL;
         Purl = fileURL;
+        print("lets see see");
+        print(coverPhotoUrlController.text);
+        savePostInfoToFirestore(coverPhotoUrlController.text,uidController.text);
 
       });
     });
-    savePostInfoToFirestore(coverPhotoUrlController.text,uidController.text);
+
   }
 
   final postReference = Firestore.instance.collection("users");
@@ -276,10 +279,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
         .collection("users")
         .document(uid)
         .updateData({'coverPhotoUrl': url});
-    // postReference.document(uid).updateData({
-    //   "photoURL": url,
-    // });
-
 
     setState(() {
       isChanged = false;
