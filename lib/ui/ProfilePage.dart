@@ -158,7 +158,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   // }
 
 
-
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
@@ -192,6 +191,19 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   File _image;
 
+  Future deleteCoverPhoto() async {
+    await print(uidController.text);
+  print("bababa");
+  Firestore.instance
+      .collection("users")
+      .document(uidController.text)
+      .updateData({'coverPhotoUrl': FieldValue.delete()});
+  setState(() {
+  coverPhotoUrlController.text = null;
+  });
+  return AccountBottomIconScreen();
+}
+
   Future pickImagefromCamera() async {
     await ImagePicker.pickImage(source: ImageSource.camera).then((image) {
       setState(() {
@@ -210,7 +222,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       });
     });
     uploadFile();
-    return ProfilePage();
+    return AccountBottomIconScreen();
   }
 
   bool isChanged = false;
@@ -287,7 +299,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
     print("cover photo");
     print(coverPhotoUrlController.text);
-    return ProfilePage();
+    return AccountBottomIconScreen();
   }
 
   String Purl;
@@ -373,26 +385,96 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
             alignment: Alignment.center,
             child: Stack(
                 children: [
-                  (coverPhotoUrlController.text == null)?Container(
-                    height : MediaQuery.of(context).size.height*0.20,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage('https://media.istockphoto.com/photos/green-leaves-on-white-picture-id1225155638?b=1&k=6&m=1225155638&s=170667a&w=0&h=9pdm942Mjk1RfAHuhsYRnOoKPhPVvgFaYkBthuJlF_Q='),
-                        fit: BoxFit.fill,
+                  GestureDetector(
+                    onTap: () {
+                      print("check");
+                      print(coverPhotoUrlController.text);
+                      showDialog<void>(
+                          context: context,// THIS WAS MISSING// user must tap button!
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Select option :-',style: TextStyle(
+                                fontSize: 15.0,
+                              ),),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      onTap: (){
+                                        print("sent image");
+                                        pickImage();
+                                        Navigator.of(context, rootNavigator: true).pop(context);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 20.0),
+                                            child: Text('Set new cover photo'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 20.0),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          pickImagefromCamera();
+                                          Navigator.of(context, rootNavigator: true).pop(context);
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 20.0),
+                                              child: Text('click from camera'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 20.0),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          print("delete clicked");
+                                          deleteCoverPhoto();
+                                          Navigator.of(context, rootNavigator: true).pop(context);
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.delete,color: kPrimaryColor,),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 20.0),
+                                              child: Text('Delete cover photo'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+
+                          });
+                    },
+                    child: Container(
+                      height : MediaQuery.of(context).size.height*0.20,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: (coverPhotoUrlController.text != "")?
+                          NetworkImage(coverPhotoUrlController.text):
+                          AssetImage(
+                              'assets/images/coverPhoto.jpg'
+                          ),
+
+                          fit: BoxFit.cover,
+                        ),
                       ),
+                      //color: Colors.lightBlueAccent,
                     ),
-                    //color: Colors.lightBlueAccent,
-                  ):Container(
-                    height : MediaQuery.of(context).size.height*0.20,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(coverPhotoUrlController.text),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    //color: Colors.lightBlueAccent,
                   ),
                   Align(
                     alignment: Alignment.topRight,
@@ -496,25 +578,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         ),
                       ),
                   ),
-
-                  // Align(
-                  //   alignment: Alignment.topRight,
-                  //   child: IconButton(
-                  //     color: Colors.purple,
-                  //     //color: Colors.white,
-                  //     icon: new Icon(Icons.settings),
-                  //     onPressed: () {
-                  //       print("babbu bhai");
-                  //       print(emailVerify);
-                  //
-                  //       Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(builder: (context) => ProfileSettings(emailController.text,phonenumberController.text,emailVerify,uidController.text)),
-                  //       );
-                  //     },
-                  //   ),
-                  //
-                  // ),
 
                   Align(
                     alignment: Alignment.center,

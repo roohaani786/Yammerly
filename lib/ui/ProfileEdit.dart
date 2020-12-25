@@ -608,39 +608,40 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 16.0,
                         ),
 
-                        Row(
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width*0.45,
-                              child: TextFormField(
-                                controller: firstNameController,
-                                enabled: isEditable,
-                                validator: (value) {
-                                  if(value.length > 15.0){
-                                    return 'First Name should not be greater the 15 words';
-                                  }else if(value.length == 0){
-                                    return 'First Name should not be null';
-                                  }
-                                },
-                                decoration: InputDecoration(
-                                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                                    labelText: "First Name",labelStyle: TextStyle(
-                                    color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
+                        Container(
+                          child: Row(
+                            children: [
+                              Container(
+                                width:MediaQuery.of(context).size.width*0.45,
+                                height: 70.0,
+                                child: TextFormField(
+                                  controller: firstNameController,
+                                  enabled: isEditable,
+                                  validator: (value) {
+                                    if(value.length > 15.0){
+                                      return 'First Name should not be greater the 15 words';
+                                    }else if(value.length == 0){
+                                      return 'First Name should not be null';
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                                      labelText: "First Name",labelStyle: TextStyle(
+                                      color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
+                                  ),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide:
+                                          BorderSide(color: Colors.black, width: 1))),
                                 ),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide:
-                                        BorderSide(color: Colors.black, width: 1))),
                               ),
-                            ),
 
-                            SizedBox(
-                              height: 16,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 0.0),
-                              child: Container(
+                              SizedBox(
+                                height: 16,
+                              ),
+                              Container(
                                 width: MediaQuery.of(context).size.width*0.45,
+                                height: 70.0,
                                 child: TextFormField(
                                   controller: lastNameController,
                                   enabled: isEditable,
@@ -662,8 +663,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                           BorderSide(color: Colors.black, width: 1))),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
 
                         SizedBox(
