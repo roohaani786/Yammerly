@@ -200,6 +200,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       .updateData({'coverPhotoUrl': FieldValue.delete()});
   setState(() {
   coverPhotoUrlController.text = null;
+  cover = true;
   });
   return AccountBottomIconScreen();
 }
@@ -264,6 +265,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       setState(() {
 
         coverPhotoUrlController.text = fileURL;
+        cover = false;
         Purl = fileURL;
         print("lets see see");
         print(coverPhotoUrlController.text);
@@ -353,6 +355,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     });
 
   }
+
+  bool cover = false;
 
 
   @override
@@ -464,10 +468,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: (coverPhotoUrlController.text != "")?
-                          NetworkImage(coverPhotoUrlController.text):
-                          AssetImage(
-                              'assets/images/coverPhoto.jpg'
+                          image: (coverPhotoUrlController.text == "" || cover == true)?
+                          AssetImage('assets/images/coverPhoto.jpg'):
+                          NetworkImage(
+                              coverPhotoUrlController.text
                           ),
 
                           fit: BoxFit.cover,
@@ -486,7 +490,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               height: 40.0,
                               width: 40.0,
                               decoration: const ShapeDecoration(
-                                color: Colors.deepPurple,
+                                color: Colors.black,
                                 shape: CircleBorder(),
                               ),
                               child: IconButton(
@@ -511,7 +515,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               height: 40.0,
                               width: 40.0,
                               decoration: const ShapeDecoration(
-                                color: Colors.deepPurple,
+                                color: Colors.black,
                                 shape: CircleBorder(),
                               ),
                               child: IconButton(
@@ -690,7 +694,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                         height: 40.0,
                                         child: Ink(
                                           decoration: const ShapeDecoration(
-                                            color: Colors.deepPurple,
+                                            color: Colors.black,
                                             shape: CircleBorder(),
                                           ),
                                           child: IconButton(
@@ -863,10 +867,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     ),
                   ),
 
-                  Padding(
-                    padding: const EdgeInsets.only(top: 145,right: 250.0),
+                  Container(
+                    height: deviceHeight*0.31,
+                    padding: const EdgeInsets.only(right: 250.0),
                     child:(photoUrlController.text!=null)?Align(
-                      alignment: Alignment.center,
+                      alignment: Alignment.bottomCenter,
                       child: Container(
                         decoration: BoxDecoration(
                           //borderRadius: BorderRadius.circular(100),
@@ -891,12 +896,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         //   backgroundColor: Colors.transparent,
                         // ),
                       ),
-                    ): CircleAvatar(
-                      radius: 50,
+                    ): Container(
                       child: IconButton(icon:
                       Icon(FontAwesomeIcons.userCircle,
                         color: Colors.deepPurple,), onPressed: (){print("hello");}),
-                      backgroundColor: Colors.transparent,
                     ),
                   ),
 
