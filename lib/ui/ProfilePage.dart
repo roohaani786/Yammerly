@@ -167,6 +167,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
           .get();
 
       displayNameController.text = docSnap.data["displayName"];
+      firstNameController.text = docSnap.data["fname"];
+      lastNameController.text = docSnap.data["surname"];
       uidController.text = docSnap.data["uid"];
       emailController.text = docSnap.data["email"];
       photoUrlController.text = docSnap.data["photoURL"];
@@ -190,6 +192,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   }
 
   File _image;
+  int itemCount;
 
   Future deleteCoverPhoto() async {
     await print(uidController.text);
@@ -270,7 +273,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
         print("lets see see");
         print(coverPhotoUrlController.text);
         savePostInfoToFirestore(coverPhotoUrlController.text,uidController.text);
-
       });
     });
 
@@ -487,8 +489,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         child: Column(
                           children: [
                             Container(
-                              height: 40.0,
-                              width: 40.0,
+                              height: 30.0,
+                              width: 30.0,
                               decoration: const ShapeDecoration(
                                 color: Colors.black,
                                 shape: CircleBorder(),
@@ -498,7 +500,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                   //color: Colors.white,
                                   icon: new Icon(
                                       Icons.settings,
-                                    size: 20.0,
+                                    size: 15.0,
                                   ),
                                   onPressed: () {
                                     Navigator.push(
@@ -509,11 +511,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                   ),
                             ),
                             SizedBox(
-                              height: deviceHeight*0.090,
+                              height: deviceHeight*0.11,
                             ),
                             Container(
-                              height: 40.0,
-                              width: 40.0,
+                              height: 30.0,
+                              width: 30.0,
                               decoration: const ShapeDecoration(
                                 color: Colors.black,
                                 shape: CircleBorder(),
@@ -523,7 +525,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                 //color: Colors.white,
                                 icon: new Icon(
                                     Icons.edit,
-                                  size: 20,
+                                  size: 15,
                                 ),
                                   onPressed: (){
                                     showDialog<void>(
@@ -573,7 +575,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               ),
                                             ),
                                           );
-
                                         });
                                   },
                               ),
@@ -585,79 +586,30 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                   Align(
                     alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 100,),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 270.0,
-                            width: width,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: deviceHeight*0.14,
+                        ),
+                        Container(
+                          height: 270.0,
+                          width: width,
 
-                              // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
-                              child: Row(
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
+                            // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                            child: Row(
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
 
-                                      Container(
-                                        width: deviceWidth*0.85,
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 25.0,left: 120),
-                                              child: Text(
-
-                                                displayNameController.text,
-                                                style: TextStyle(
-                                                  fontSize: 26.0,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontFamily: 'Pacifico',
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 5.0, left: 110),
-                                              child: Text(
-
-                                                bioController.text,
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontFamily: 'Source Sans Pro',
-                                                  fontSize: 15.0,
-                                                  color: Colors.grey.shade700,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              // child: Text(
-                                              //
-                                              //   bioController.text,
-                                              //   textAlign: TextAlign.center,
-                                              //   style: TextStyle(
-                                              //     fontFamily: 'Source Sans Pro',
-                                              //     fontSize: 15.0,
-                                              //     color: Colors.grey.shade700,
-                                              //     letterSpacing: 2.5,
-                                              //     fontWeight: FontWeight.bold,
-                                              //   ),
-                                              // ),
-                                            ),
-                                          ],
-                                        )
+                                    Container(
+                                      height: 40.0,
+                                      width: width,
+                                      margin: EdgeInsets.only(top: 8.0),
+                                      decoration: BoxDecoration(
                                       ),
-
-                                      SizedBox(
-                                        height: 10,
-                                        width: 200,
-                                      ),
-
-                                      Container(
-                                        height: 40.0,
-                                        width: width*0.73,
-                                        margin: EdgeInsets.only(top: 8.0),
-                                        decoration: BoxDecoration(
-                                        ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 120.0),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                                           children: <Widget>[
@@ -682,188 +634,261 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                           ],
                                         ),
                                       ),
-
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 170.0,),
-                                    child: Align(
-                                      alignment: Alignment.topRight,
-                                      child: SizedBox(
-                                        width: 40,
-                                        height: 40.0,
-                                        child: Ink(
-                                          decoration: const ShapeDecoration(
-                                            color: Colors.black,
-                                            shape: CircleBorder(),
-                                          ),
-                                          child: IconButton(
-                                              color: Colors.white,
-                                              icon: Icon(
-                                                  FontAwesomeIcons.userEdit,
-                                                size: 20,
-                                              ),
-                                              //color: Colors.white,
-                                              // child: Padding(
-                                              //   padding: const EdgeInsets.only(right:50.0),
-                                              //   child: Icon(
-                                              //     FontAwesomeIcons.userEdit,
-                                              //     color: Colors.white,
-                                              //     size: 24.0,
-                                              //   ),
-                                              // ),
-                                              onPressed: () {
-
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                                                );
-                                              }
-                                              ),
-                                        ),
-                                      ),
                                     ),
-                                  )
-                                ],
-                              ),
-                          ),
+
+                                    SizedBox(
+                                      height: 10,
+                                      width: 200,
+                                    ),
+
+                                    Container(
+                                        width: deviceWidth,
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 25.0,left: 10),
+                                                  child: Container(
+                                                    width: deviceWidth*0.85,
+                                                    child: Text(
+
+                                                      firstNameController.text + " " + lastNameController.text,
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                        fontSize: 26.0,
+                                                        color: Colors.black,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontFamily: 'Pacifico',
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 5.0, left: 10),
+                                                  child: Container(
+                                                    width: deviceWidth*0.85,
+                                                    child: Text(
+                                                      displayNameController.text,
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                        fontFamily: 'Source Sans Pro',
+                                                        fontSize: 15.0,
+                                                        color: Colors.grey.shade700,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 5.0, left: 10),
+                                                  child: Container(
+                                                    width: deviceWidth*0.85,
+                                                    child: Text(
+
+                                                      bioController.text,
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                        fontFamily: 'Source Sans Pro',
+                                                        fontSize: 15.0,
+                                                        color: Colors.grey.shade700,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                            // SizedBox(
+                                            //   width: deviceWidth*0.05,
+                                            // ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 10.0,),
+                                              child: Align(
+                                                alignment: Alignment.topRight,
+                                                child: SizedBox(
+                                                  width: 30,
+                                                  height: 30.0,
+                                                  child: Ink(
+                                                    decoration: const ShapeDecoration(
+                                                      color: Colors.black,
+                                                      shape: CircleBorder(),
+                                                    ),
+                                                    child: IconButton(
+                                                        color: Colors.white,
+                                                        icon: Icon(
+                                                          FontAwesomeIcons.userEdit,
+                                                          size: 15,
+                                                        ),
+                                                        //color: Colors.white,
+                                                        // child: Padding(
+                                                        //   padding: const EdgeInsets.only(right:50.0),
+                                                        //   child: Icon(
+                                                        //     FontAwesomeIcons.userEdit,
+                                                        //     color: Colors.white,
+                                                        //     size: 24.0,
+                                                        //   ),
+                                                        // ),
+                                                        onPressed: () {
+
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                          );
+                                                        }
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                    )
+
+                                  ],
+                                ),
+
+                              ],
+                            ),
+                        ),
 
 
-                          Container(
-                            height: MediaQuery.of(context).size.height -300.0,
-                            //height: 200.0,
-                            width: 340.0,
+                        Container(
+                          height: MediaQuery.of(context).size.height -300.0,
+                          //height: 200.0,
+                          width: 340.0,
 
-                              child: StreamBuilder(
-                                  stream: userPostsStream,
-                                  builder: (context, snapshot) {
-                                    return (posts != 0)
-                                        ? Column(
-                                      children: [
-                                        new Expanded(
-                                            child: GridView.builder(
-                                                shrinkWrap: true,
-                                               controller: ScrollController(),
-                                                itemCount: snapshot.data.documents.length,
-                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 3,
-                                                    crossAxisSpacing: 10.0,
-                                                    mainAxisSpacing: 10.0),
-                                                itemBuilder: (context, index) {
+                            child: StreamBuilder(
+                                stream: userPostsStream,
+                                builder: (context, snapshot) {
+                                  itemCount = snapshot.data.documents.length;
+                                  return (posts != 0)
+                                      ? Column(
+                                    children: [
+                                      new Expanded(
+                                          child: GridView.builder(
+                                              shrinkWrap: true,
+                                             controller: ScrollController(),
+                                              itemCount: itemCount,
+                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 3,
+                                                  crossAxisSpacing: 10.0,
+                                                  mainAxisSpacing: 10.0),
+                                              itemBuilder: (context, index) {
 
-                                                  postIdX = snapshot.data.documents[index]['postId'];
+                                                postIdX = snapshot.data.documents[index]['postId'];
 
-                                                  String email = snapshot.data.documents[index]['email'];
+                                                String email = snapshot.data.documents[index]['email'];
 
-                                                  String description = snapshot.data.documents[index]['description'];
+                                                String description = snapshot.data.documents[index]['description'];
 
-                                                  String displayName = snapshot.data.documents[index]['displayName'];
+                                                String displayName = snapshot.data.documents[index]['displayName'];
 
-                                                  String photoUrl = snapshot.data.documents[index]['photoURL'];
+                                                String photoUrl = snapshot.data.documents[index]['photoURL'];
 
-                                                  String uid = snapshot.data.documents[index]["uid"];
+                                                String uid = snapshot.data.documents[index]["uid"];
 
-                                                  int cam = snapshot.data.documents[index]['cam'];
+                                                int cam = snapshot.data.documents[index]['cam'];
 
-                                                  Timestamp timestamp = snapshot.data.documents[index]['timestamp'];
+                                                Timestamp timestamp = snapshot.data.documents[index]['timestamp'];
 
-                                                  String url = snapshot.data.documents[index]['url'];
+                                                String url = snapshot.data.documents[index]['url'];
 
-                                                  String postId = snapshot.data.documents[index]['postId'];
+                                                String postId = snapshot.data.documents[index]['postId'];
 
-                                                  int likes = snapshot.data.documents[index]['likes'];
+                                                int likes = snapshot.data.documents[index]['likes'];
 
-                                                  readTimestamp(timestamp.seconds);
+                                                readTimestamp(timestamp.seconds);
 
-                                                  getlikes(displayNameController.text,postId);
+                                                getlikes(displayNameController.text,postId);
 
 
-                                                  if(likes< 0 || likes == 0){
-                                                    liked = false;
-                                                  }
+                                                if(likes< 0 || likes == 0){
+                                                  liked = false;
+                                                }
 
-                                                  return Container(
-                                                    color: Colors.grey.shade300,
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                      children: [
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),
-                                                            );
-                                                          },
-                                                          child: ClipRRect(
-                                                            borderRadius: BorderRadius.only(
-                                                              topLeft: Radius.circular(8.0),
-                                                              topRight: Radius.circular(8.0),
-                                                              bottomLeft: Radius.circular(8.0),
-                                                              bottomRight: Radius.circular(8.0),
-                                                            ),
+                                                return Container(
+                                                  color: Colors.grey.shade300,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                    children: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),
+                                                          );
+                                                        },
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.only(
+                                                            topLeft: Radius.circular(8.0),
+                                                            topRight: Radius.circular(8.0),
+                                                            bottomLeft: Radius.circular(8.0),
+                                                            bottomRight: Radius.circular(8.0),
+                                                          ),
 
-                                                            child: (cam == 1)?Transform(
-                                                              alignment: Alignment.center,
-                                                              transform: Matrix4.rotationY(math.pi),
-                                                              child: Image.network(
-                                                                url,
-                                                                // width: 300,
-                                                                height: 104,
-                                                                fit:BoxFit.cover,
-
-                                                              ),
-                                                            ):Image.network(
+                                                          child: (cam == 1)?Transform(
+                                                            alignment: Alignment.center,
+                                                            transform: Matrix4.rotationY(math.pi),
+                                                            child: Image.network(
                                                               url,
                                                               // width: 300,
                                                               height: 104,
                                                               fit:BoxFit.cover,
 
                                                             ),
+                                                          ):Image.network(
+                                                            url,
+                                                            // width: 300,
+                                                            height: 104,
+                                                            fit:BoxFit.cover,
+
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                }
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }
 
-                                            )
+                                          )
+                                      ),
+                                    ],
+                                  ): Container(
+                                    padding: EdgeInsets.only(
+                                      top: 5.0,
+                                      left: 30.0,
+                                      right: 30.0,
+                                      bottom: 5.0,
+                                    ),
+                                    //height: 200,
+                                    height: deviceHeight * 0.20,
+                                    width: deviceWidth,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        //pageTitle,
+                                        // SizedBox(
+                                        //   height: deviceHeight * 0.1,
+                                        // ),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            image,
+                                            notificationHeader,
+                                            //notificationText,
+                                          ],
                                         ),
                                       ],
-                                    ): Container(
-                                      padding: EdgeInsets.only(
-                                        top: 5.0,
-                                        left: 30.0,
-                                        right: 30.0,
-                                        bottom: 5.0,
-                                      ),
-                                      //height: 200,
-                                      height: deviceHeight * 0.20,
-                                      width: deviceWidth,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          //pageTitle,
-                                          // SizedBox(
-                                          //   height: deviceHeight * 0.1,
-                                          // ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              image,
-                                              notificationHeader,
-                                              //notificationText,
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }
-                              ),
-                              //child: Image.network(uidCurrUser),
-                          )
+                                    ),
+                                  );
+                                }
+                            ),
+                            //child: Image.network(uidCurrUser),
+                        )
 
-                        ],
-                      ),
+                      ],
                     ),
                   ),
 
