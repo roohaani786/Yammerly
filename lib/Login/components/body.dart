@@ -187,7 +187,7 @@ class _BodyState extends State<Body> {
         user = result.user;
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
               (Route<dynamic> route) => false,
         );
       }

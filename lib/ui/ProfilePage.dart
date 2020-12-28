@@ -589,7 +589,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: deviceHeight*0.14,
+                          height: deviceHeight*0.15,
                         ),
                         Container(
                           height: 270.0,
@@ -669,7 +669,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                   child: Container(
                                                     width: deviceWidth*0.85,
                                                     child: Text(
-                                                      displayNameController.text,
+                                                       displayNameController.text,
                                                       textAlign: TextAlign.left,
                                                       style: TextStyle(
                                                         fontFamily: 'Source Sans Pro',

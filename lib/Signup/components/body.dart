@@ -344,7 +344,7 @@ class _BodyState extends State<Body> {
 
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
                         (Route<dynamic> route) => false,
                   ),
                   firstNameInputController.clear(),

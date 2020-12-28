@@ -27,17 +27,16 @@ class HomePage extends StatefulWidget {
 
   final String title;
   final String uid;
-  int initialindexg = 2;
+  int initialindexg;
   FirebaseUser user;
 
   @override
-  _HomePageState createState() => _HomePageState(2);
+  _HomePageState createState() => _HomePageState(initialindexg);
 }
 
 final PageController _pageController = PageController(initialPage: 2,keepPage: true);
 
 class _HomePageState extends State<HomePage> {
-
 
   TextEditingController taskTitleInputController;
   TextEditingController taskDescripInputController;
@@ -113,7 +112,7 @@ class _HomePageState extends State<HomePage> {
       allowImplicitScrolling: true,
       children: <Widget>[
         CameraS(),
-        TabLayoutDemo(1,uidController.text,displayNameController.text),
+        TabLayoutDemo(initialindexg,uidController.text,displayNameController.text),
         // Container(color: Colors.yellow),
       ],
     );
@@ -179,7 +178,7 @@ class TabLayoutDemo extends StatefulWidget {
   final String currUid;
   final String displaynameCurruser;
   @override
-  _TabLayoutDemoState createState() => _TabLayoutDemoState(1,currUid,displaynameCurruser);
+  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg,currUid,displaynameCurruser);
 }
 
 bool hideappbar = false;
@@ -307,7 +306,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
       ),
       body: DefaultTabController(
         length: 4,
-        initialIndex: initialindexg,//(initialindexg == null) ? 2 : initialindexg,
+        initialIndex: (initialindexg == null) ? 2 : initialindexg,
 
         child: Scaffold(
           body: Column(
