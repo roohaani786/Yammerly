@@ -513,72 +513,72 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             SizedBox(
                               height: deviceHeight*0.11,
                             ),
-                            Container(
-                              height: 30.0,
-                              width: 30.0,
-                              decoration: const ShapeDecoration(
-                                color: Colors.black,
-                                shape: CircleBorder(),
-                              ),
-                              child: IconButton(
-                                color: Colors.white,
-                                //color: Colors.white,
-                                icon: new Icon(
-                                    Icons.edit,
-                                  size: 15,
-                                ),
-                                  onPressed: (){
-                                    showDialog<void>(
-                                        context: context,// THIS WAS MISSING// user must tap button!
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text('Select image from :-',style: TextStyle(
-                                              fontSize: 15.0,
-                                            ),),
-                                            content: SingleChildScrollView(
-                                              child: ListBody(
-                                                children: <Widget>[
-                                                  GestureDetector(
-                                                    onTap: (){
-                                                      pickImagefromCamera();
-                                                      Navigator.of(context, rootNavigator: true).pop(context);
-                                                    },
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(left: 20.0),
-                                                          child: Text('Camera'),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 20.0),
-                                                    child: GestureDetector(
-                                                      onTap: (){
-                                                        pickImage();
-                                                        Navigator.of(context, rootNavigator: true).pop(context);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(left: 20.0),
-                                                            child: Text('Gallery'),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        });
-                                  },
-                              ),
-                            ),
+                            // Container(
+                            //   height: 30.0,
+                            //   width: 30.0,
+                            //   decoration: const ShapeDecoration(
+                            //     color: Colors.black,
+                            //     shape: CircleBorder(),
+                            //   ),
+                            //   child: IconButton(
+                            //     color: Colors.white,
+                            //     //color: Colors.white,
+                            //     icon: new Icon(
+                            //         Icons.edit,
+                            //       size: 15,
+                            //     ),
+                            //       onPressed: (){
+                            //         showDialog<void>(
+                            //             context: context,// THIS WAS MISSING// user must tap button!
+                            //             builder: (BuildContext context) {
+                            //               return AlertDialog(
+                            //                 title: Text('Select image from :-',style: TextStyle(
+                            //                   fontSize: 15.0,
+                            //                 ),),
+                            //                 content: SingleChildScrollView(
+                            //                   child: ListBody(
+                            //                     children: <Widget>[
+                            //                       GestureDetector(
+                            //                         onTap: (){
+                            //                           pickImagefromCamera();
+                            //                           Navigator.of(context, rootNavigator: true).pop(context);
+                            //                         },
+                            //                         child: Row(
+                            //                           children: [
+                            //                             Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
+                            //                             Padding(
+                            //                               padding: const EdgeInsets.only(left: 20.0),
+                            //                               child: Text('Camera'),
+                            //                             ),
+                            //                           ],
+                            //                         ),
+                            //                       ),
+                            //                       Padding(
+                            //                         padding: const EdgeInsets.only(top: 20.0),
+                            //                         child: GestureDetector(
+                            //                           onTap: (){
+                            //                             pickImage();
+                            //                             Navigator.of(context, rootNavigator: true).pop(context);
+                            //                           },
+                            //                           child: Row(
+                            //                             children: [
+                            //                               Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
+                            //                               Padding(
+                            //                                 padding: const EdgeInsets.only(left: 20.0),
+                            //                                 child: Text('Gallery'),
+                            //                               ),
+                            //                             ],
+                            //                           ),
+                            //                         ),
+                            //                       ),
+                            //                     ],
+                            //                   ),
+                            //                 ),
+                            //               );
+                            //             });
+                            //       },
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

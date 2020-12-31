@@ -116,6 +116,8 @@ class _postPageState extends State<postPage> {
 
     if(displayName == displayNamecurrentUser){
 
+      print("delte click");
+
       DatabaseService().PostD(uidX,posts);
       print(postId);
       print(displayName);

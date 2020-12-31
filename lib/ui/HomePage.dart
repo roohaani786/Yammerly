@@ -76,6 +76,7 @@ class _HomePageState extends State<HomePage> {
       following  = docSnap.data["following"];
       posts  = docSnap.data["posts"];
       setState(() {
+        displayNamecurrUser = displayNameController.text;
 
       });
     } on PlatformException catch (e) {
@@ -85,6 +86,8 @@ class _HomePageState extends State<HomePage> {
     print("bajbaj");
   }
   PageView myPageView;
+
+  String displayNamecurrUser;
 
 
   @override
@@ -107,12 +110,13 @@ class _HomePageState extends State<HomePage> {
     fetchProfileData();
     this.getCurrentUser();
 
+
     myPageView = PageView(
       controller: _pageController,
       allowImplicitScrolling: true,
       children: <Widget>[
         CameraS(),
-        TabLayoutDemo(initialindexg,uidController.text,displayNameController.text),
+        TabLayoutDemo(initialindexg,uidController.text,displayNamecurrUser),
         // Container(color: Colors.yellow),
       ],
     );
@@ -195,6 +199,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
 
   @override
   void initState() {
+
     super.initState();
     this.tabController = TabController(length: 4, vsync: this,);
   }
@@ -247,7 +252,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Yammerly',
+          'Yammerly' + " lsjfls" + displaynameCurruser,
           style: TextStyle(
               color: Colors.deepPurple,
               fontSize: 20.0,
