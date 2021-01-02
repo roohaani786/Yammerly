@@ -651,7 +651,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                             Column(
                                               children: [
                                                 Padding(
-                                                  padding: const EdgeInsets.only(top: 25.0,left: 10),
+                                                  padding: const EdgeInsets
+                                                      .only(
+                                                      top: 25.0, left: 20),
                                                   child: Container(
                                                     width: deviceWidth*0.85,
                                                     child: Text(
@@ -668,7 +670,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets.only(top: 5.0, left: 10),
+                                                  padding: const EdgeInsets
+                                                      .only(top: 5.0, left: 20),
                                                   child: Container(
                                                     width: deviceWidth*0.85,
                                                     child: Text(
@@ -684,7 +687,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets.only(top: 5.0, left: 10),
+                                                  padding: const EdgeInsets
+                                                      .only(top: 5.0, left: 20),
                                                   child: Container(
                                                     width: deviceWidth*0.85,
                                                     child: Text(
@@ -758,7 +762,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                         SizedBox(
                           height: 30,
-                          width: deviceWidth * 0.7,
+                          width: deviceWidth * 0.87,
                           child: Divider(
                             thickness: 2.0,
                             color: Colors.teal.shade700,
