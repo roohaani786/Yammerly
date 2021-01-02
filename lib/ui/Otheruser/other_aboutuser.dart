@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/resources/auth.dart';
-import 'package:image/image.dart' as ImD;
 
 
 class AboutOtherUser extends StatefulWidget {
@@ -221,17 +222,32 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
           child: Column(
             children: [
               Text(
-                "About Me",
+                "About" + " " + displayNameController.text,
                 style: TextStyle(
                     fontFamily: "Cookie-Regular", fontSize: 25.0),
               ),
               SizedBox(
                 height: 16,
               ),
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
-                backgroundColor: Colors.transparent,
+              Container(
+                  decoration: BoxDecoration(
+                    //borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 5,
+                    ),
+                  ),
+                  child: Container(
+                    height: 100,
+                    width: 100.0,
+                    child: Image(
+                      image: (isChanged == false) ? NetworkImage(
+                          photoUrlController.text) : AssetImage(
+                          "assets/images/loading.gif"),
+                      fit: BoxFit.cover,
+                    ),
+                    //backgroundImage: NetworkImage(photoUrlController.text)
+                  )
               ),
               SizedBox(
                 height: 16,

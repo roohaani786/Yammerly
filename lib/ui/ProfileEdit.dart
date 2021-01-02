@@ -562,11 +562,25 @@ class _ProfilePageState extends State<ProfilePage> {
 
                       });
                       },
-                      child: CircleAvatar(
-                        radius: 50,
-                        //backgroundImage: NetworkImage(photoUrlController.text),
-                        backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
-                        backgroundColor: Colors.transparent,
+                      child: Container(
+                          decoration: BoxDecoration(
+                            //borderRadius: BorderRadius.circular(100),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 5,
+                            ),
+                          ),
+                          child: Container(
+                            height: 100,
+                            width: 100.0,
+                            child: Image(
+                              image: (isChanged == false) ? NetworkImage(
+                                  photoUrlController.text) : AssetImage(
+                                  "assets/images/loading.gif"),
+                              fit: BoxFit.cover,
+                            ),
+                            //backgroundImage: NetworkImage(photoUrlController.text)
+                          )
                       ),
 
                     ),

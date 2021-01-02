@@ -912,9 +912,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                   Container(
                     height: deviceHeight*0.31,
-                    padding: const EdgeInsets.only(right: 250.0),
+                    width: deviceWidth * 0.34,
+//                    padding: const EdgeInsets.only(right: 250.0),
                     child:(photoUrlController.text!=null)?Align(
-                      alignment: Alignment.bottomCenter,
+                      alignment: Alignment.bottomRight,
                       child: Container(
                         decoration: BoxDecoration(
                           //borderRadius: BorderRadius.circular(100),
@@ -932,12 +933,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                           ),
                           //backgroundImage: NetworkImage(photoUrlController.text)
                         )
-                        // child: CircleAvatar(
-                        //   radius: 50,
-                        //   backgroundImage: NetworkImage(photoUrlController.text),
-                        //
-                        //   backgroundColor: Colors.transparent,
-                        // ),
                       ),
                     ): Container(
                       child: IconButton(icon:
