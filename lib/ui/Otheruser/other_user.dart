@@ -745,6 +745,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                     child: StreamBuilder(
                                         stream: userPostsStream,
                                         builder: (context, snapshot) {
+                                          if(snapshot.data == null){return Container();}
+                                          int itemCount = snapshot.data.documents.length;
                                           return (posts != 0)
                                               ? Column(
                                             children: [
@@ -756,7 +758,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                           crossAxisSpacing: 10.0,
                                                           mainAxisSpacing: 10.0),
                                                       controller: ScrollController(),
-                                                      itemCount: snapshot.data.documents.length,
+                                                      itemCount: itemCount,
                                                       itemBuilder: (context, index) {
 
                                                         String postIdX = snapshot.data.documents[index]['email'];

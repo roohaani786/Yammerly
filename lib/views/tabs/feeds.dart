@@ -24,7 +24,7 @@ import 'package:uuid/uuid.dart';
 
 class FeedsPage extends StatefulWidget {
 
-  final displayNamecurrentUser;
+  final String displayNamecurrentUser;
 
   @override
 

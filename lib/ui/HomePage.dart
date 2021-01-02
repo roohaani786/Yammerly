@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
       allowImplicitScrolling: true,
       children: <Widget>[
         CameraS(),
-        TabLayoutDemo(initialindexg,uidController.text,displayNamecurrUser),
+        TabLayoutDemo(initialindexg),
         // Container(color: Colors.yellow),
       ],
     );
@@ -176,32 +176,87 @@ class _HomePageState extends State<HomePage> {
 List<CameraDescription> cameras = [];
 
 class TabLayoutDemo extends StatefulWidget {
-  TabLayoutDemo(this.initialindexg,this.currUid,this.displaynameCurruser);
+  TabLayoutDemo(this.initialindexg,);
 
   final int initialindexg;
-  final String currUid;
-  final String displaynameCurruser;
   @override
-  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg,currUid,displaynameCurruser);
+  _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg);
 }
 
 bool hideappbar = false;
 bool hidebottombar = false;
 
 class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProviderStateMixin{
-  _TabLayoutDemoState(this.initialindexg,this.currUid,this.displaynameCurruser);
+  _TabLayoutDemoState(this.initialindexg);
   TabController tabController;
+  Map<String, dynamic> _profile;
+  bool _loading = false;
+  FirebaseUser currentUser;
+  FirebaseProvider firebaseProvider;
 
 
   final int initialindexg;
-  final String currUid;
-  final String displaynameCurruser;
+  TextEditingController emailController,urlController,descriptionController,
+      displayNameController,uidController,photoUrlController,phonenumberController,
+      bioController;
+
+  DocumentSnapshot docSnap;
+  FirebaseUser currUser;
+
+  void getCurrentUser() async {
+    currentUser = await FirebaseAuth.instance.currentUser();
+    firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
+    setState(() {});
+    print(currentUser.displayName);
+    print(currentUser.email);
+    print(currentUser.uid);
+  }
+
+
+  fetchProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(currUser.uid)
+          .get();
+      displayNameController.text = docSnap.data["displayName"];
+      uidController.text = docSnap.data["uid"];
+      emailController.text = docSnap.data["email"];
+      photoUrlController.text = docSnap.data["photoURL"];
+      phonenumberController.text = docSnap.data["phonenumber"];
+      int followers = docSnap.data["followers"];
+      int following  = docSnap.data["following"];
+      int posts  = docSnap.data["posts"];
+      setState(() {
+        String displayNamecurrUser = displayNameController.text;
+
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+    print(uidController.text);
+    print("bajbaj");
+  }
+
 
   @override
   void initState() {
+    firebaseProvider = FirebaseProvider();
+    emailController = TextEditingController();
+    displayNameController = TextEditingController();
+    uidController = TextEditingController();
+    photoUrlController = TextEditingController();
+    phonenumberController = TextEditingController();
 
     super.initState();
     this.tabController = TabController(length: 4, vsync: this,);
+    authService.profile.listen((state) => setState(() => _profile = state));
+
+    authService.loading.listen((state) => setState(() => _loading = state));
+
+    fetchProfileData();
+    this.getCurrentUser();
   }
 
   //Future<bool> _onWillPop() {
@@ -252,7 +307,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Yammerly' + " lsjfls" + displaynameCurruser,
+          'Yammerly',
           style: TextStyle(
               color: Colors.deepPurple,
               fontSize: 20.0,
@@ -290,7 +345,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displaynameCurruser,uidX: currUid,)),
+                    builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
               );
             },
           ),
@@ -338,11 +393,11 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                         child: ChatsPage(),
                       ),
                       new Container(
-                        child: FeedsPage(displayNamecurrentUser: displaynameCurruser,),
+                        child: FeedsPage(displayNamecurrentUser: displayNameController.text,),
                       ),
                       new Container(
                         //child: FeedsPage(),
-                        child: NotificationsPage(currUid: currUid),
+                        child: NotificationsPage(currUid: uidController.text),
                       ),
                       new Container(child: AccountBottomIconScreen()),
                     ],

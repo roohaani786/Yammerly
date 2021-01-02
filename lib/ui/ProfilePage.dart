@@ -762,6 +762,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             child: StreamBuilder(
                                 stream: userPostsStream,
                                 builder: (context, snapshot) {
+                                  if(snapshot.data == null){return Container();}
                                   itemCount = snapshot.data.documents.length;
                                   return (posts != 0)
                                       ? Column(
