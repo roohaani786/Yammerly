@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:image/image.dart' as ImD;
+import 'dart:math' as math;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:math' as math;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/models/user.dart';
@@ -16,6 +17,7 @@ import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/utils/utils.dart';
+
 import '../constants.dart';
 import 'HomePage.dart';
 import 'ProfileEdit.dart';
@@ -471,7 +473,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: (coverPhotoUrlController.text == "" || cover == true)?
-                          AssetImage('assets/images/coverPhoto.jpg'):
+                          AssetImage('assets/images/gogo.png')
+                              :
                           NetworkImage(
                               coverPhotoUrlController.text
                           ),
@@ -752,6 +755,16 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               ],
                             ),
                         ),
+
+                        SizedBox(
+                          height: 30,
+                          width: deviceWidth * 0.7,
+                          child: Divider(
+                            thickness: 2.0,
+                            color: Colors.teal.shade700,
+                          ),
+                        ),
+
 
 
                         Container(

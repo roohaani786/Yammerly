@@ -151,6 +151,8 @@ flutter:
     - assets/images/my_profile.jpg
     - assets/images/photo4.jpg
     - assets/images/photo5.jpg
+    - assets/images/gogo.png
+    - assets/images/nocover.png
     - assets/images/placeholder.jpg
     - assets/images/post2.jpg
     - assets/images/signup_top.png

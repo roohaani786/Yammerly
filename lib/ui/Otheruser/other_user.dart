@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,12 +9,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/services/database.dart';
+import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 import 'package:techstagram/ui/Otheruser/otherfollowerlist.dart';
 import 'package:techstagram/ui/ProfileEdit.dart';
-import 'dart:math' as math;
-import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/utils/utils.dart';
+
 import '../HomePage.dart';
 import '../aboutuser.dart';
 
@@ -24,6 +26,7 @@ class OtherUserProfile extends StatefulWidget{
   final String displayName;
 
   OtherUserProfile({this.uid,this.displayNamecurrentUser,this.displayName,this.uidX});
+
   @override
   _OtherUserProfileState createState() => _OtherUserProfileState(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName,uidX: uidX);
 }
@@ -33,6 +36,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   final String uidX;
   final String displayNamecurrentUser;
   final String displayName;
+
   _OtherUserProfileState({this.uid,this.displayNamecurrentUser,this.displayName,this.uidX});
 
   bool followed = false;
@@ -50,7 +54,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   bool _loading = false;
 
   Stream<QuerySnapshot> userPostsStream;
-
 
 
   @override
@@ -152,7 +155,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
 
   getFollowers() {
-
     Firestore.instance.collection('users')
         .document(uid)
         .collection('followers')
@@ -174,7 +176,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
 
-
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
     //var format = DateFormat('HH:mm a');
@@ -194,7 +195,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       if (diff.inDays == 7) {
         time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
       } else {
-
         time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
       }
     }
@@ -205,8 +205,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   bool liked = false;
 
   getfollowers( String displayNamecurrentUser, String uid) {
-
-
     Firestore.instance.collection('users')
         .document(uid)
         .collection('followers')
@@ -216,11 +214,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       if (value.exists) {
         setState(() {
           followed = true;
-
         });
       }
     });
-
   }
 
   Future<bool> _onWillPop() {
@@ -235,7 +231,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
   getlikes( String displayName, String postId) {
-
     // print("postid");
     // print(postId);
     Firestore.instance.collection('posts')
@@ -251,7 +246,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
         });
       }
     });
-
   }
 
   List<DocumentSnapshot> list;
@@ -310,7 +304,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                 print(following);
                 int posts = snapshot.data.documents[index]["posts"];
                 if(followers == 0){
-
                   followed = false;
                 }
 
@@ -327,7 +320,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: NetworkImage('https://media.istockphoto.com/photos/green-leaves-on-white-picture-id1225155638?b=1&k=6&m=1225155638&s=170667a&w=0&h=9pdm942Mjk1RfAHuhsYRnOoKPhPVvgFaYkBthuJlF_Q='),
+                                image: AssetImage('assets/images/nocover.png'),
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -535,7 +528,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                 size: 15,
                                                               ),
                                                               onPressed: () {
-
                                                                 Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(builder: (context) => ProfilePage()),
@@ -548,7 +540,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                 size: 15,
                                                               ),
                                                               onPressed: () {
-
                                                                 Navigator.push(
                                                                     context,
                                                                     MaterialPageRoute(builder: (context) => AboutOtherUser(uid: uid))
@@ -636,8 +627,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                 .circular(30.0),
                                                           )),
                                                     ),
-
-
 
 
 //                                                     (displayName != displayNamecurrentUser)?Padding(
@@ -760,7 +749,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       controller: ScrollController(),
                                                       itemCount: itemCount,
                                                       itemBuilder: (context, index) {
-
                                                         String postIdX = snapshot.data.documents[index]['email'];
                                                         String email = snapshot.data.documents[index]['email'];
                                                         String description =
@@ -882,7 +870,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                               ),
                             ),
                           ),
-
 
 
                           Container(
