@@ -1,6 +1,6 @@
 # YAMMERLY
 
-AIOChat transforms the way people interact and share moments with each other. It gives users a way to celebrate life with power-packed features and in-built privacy controls.This way users get a new way to connect and get to know each other.
+Yammerly transforms the way people interact and share moments with each other. It gives users a way to celebrate life with power-packed features and in-built privacy controls.This way users get a new way to connect and get to know each other.
 
 ## Getting Started
 
