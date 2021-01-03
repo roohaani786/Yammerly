@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:image/image.dart' as ImD;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/resources/auth.dart';
-
 
 class AboutOtherUser extends StatefulWidget {
   static final String pageName = "/ProfilePage";
@@ -69,7 +67,6 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
     homeTownController = TextEditingController();
     relationshipController = TextEditingController();
     pincodeController = TextEditingController();
-
     uidController = TextEditingController();
 
     super.initState();
@@ -79,13 +76,9 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
-
-
-
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
-
 
       docSnap = await Firestore.instance
           .collection("users")
@@ -145,16 +138,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   FirebaseStorage.instance.ref().child("Display Pictures");
   final postReference = Firestore.instance.collection("users");
 
-
-
-
-
   bool isChanged = false;
   String relationstring = "Select Relationship";
   String genderstring = "Select Gender";
   bool tickvalue = false;
   int check;
-
 
   bool firstnameE = false;
   bool lastnameE = false;
@@ -166,10 +154,6 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   bool currentcityE = false;
   bool hometownE = false;
   String valueX = "Select Gender";
-
-
-
-
 
 
   @override
