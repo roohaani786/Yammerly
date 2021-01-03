@@ -872,39 +872,43 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                           ),
 
 
-                          Container(
-                            height: deviceHeight*0.31,
-                            padding: const EdgeInsets.only(right: 250.0),
-                            child:(photoUrl!=null)?Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    //borderRadius: BorderRadius.circular(100),
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 5,
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Container(
+                              height: deviceHeight*0.31,
+                              width: deviceWidth*0.96,
+                              padding: const EdgeInsets.only(right: 250.0),
+                              child:(photoUrl!=null)?Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      //borderRadius: BorderRadius.circular(100),
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 5,
+                                      ),
                                     ),
-                                  ),
-                                  child: Container(
-                                    height: 100,
-                                    width: 100.0,
-                                    child: Image(
-                                      image: NetworkImage(photoUrl),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    //backgroundImage: NetworkImage(photoUrlController.text)
-                                  )
-                                // child: CircleAvatar(
-                                //   radius: 50,
-                                //   backgroundImage: NetworkImage(photoUrlController.text),
-                                //
-                                //   backgroundColor: Colors.transparent,
-                                // ),
+                                    child: Container(
+                                      height: 100,
+                                      width: 100.0,
+                                      child: Image(
+                                        image: NetworkImage(photoUrl),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      //backgroundImage: NetworkImage(photoUrlController.text)
+                                    )
+                                  // child: CircleAvatar(
+                                  //   radius: 50,
+                                  //   backgroundImage: NetworkImage(photoUrlController.text),
+                                  //
+                                  //   backgroundColor: Colors.transparent,
+                                  // ),
+                                ),
+                              ): Container(
+                                child: IconButton(icon:
+                                Icon(FontAwesomeIcons.userCircle,
+                                  color: Colors.deepPurple,), onPressed: (){print("hello");}),
                               ),
-                            ): Container(
-                              child: IconButton(icon:
-                              Icon(FontAwesomeIcons.userCircle,
-                                color: Colors.deepPurple,), onPressed: (){print("hello");}),
                             ),
                           ),
 
