@@ -910,34 +910,37 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     ),
                   ),
 
-                  Container(
-                    height: deviceHeight*0.31,
-                    width: deviceWidth * 0.34,
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      height: deviceHeight*0.31,
+                      width: deviceWidth*0.96,
 //                    padding: const EdgeInsets.only(right: 250.0),
-                    child:(photoUrlController.text!=null)?Align(
-                      alignment: Alignment.bottomRight,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          //borderRadius: BorderRadius.circular(100),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 5,
-                          ),
-                        ),
+                      child:(photoUrlController.text!=null)?Align(
+                        alignment: Alignment.bottomLeft,
                         child: Container(
-                          height: 100,
-                          width: 100.0,
-                          child: Image(
-                            image: NetworkImage(photoUrlController.text),
-                            fit: BoxFit.cover,
+                          decoration: BoxDecoration(
+                            //borderRadius: BorderRadius.circular(100),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 5,
+                            ),
                           ),
-                          //backgroundImage: NetworkImage(photoUrlController.text)
-                        )
+                          child: Container(
+                            height: 100,
+                            width: 100.0,
+                            child: Image(
+                              image: NetworkImage(photoUrlController.text),
+                              fit: BoxFit.cover,
+                            ),
+                            //backgroundImage: NetworkImage(photoUrlController.text)
+                          )
+                        ),
+                      ): Container(
+                        child: IconButton(icon:
+                        Icon(FontAwesomeIcons.userCircle,
+                          color: Colors.deepPurple,), onPressed: (){print("hello");}),
                       ),
-                    ): Container(
-                      child: IconButton(icon:
-                      Icon(FontAwesomeIcons.userCircle,
-                        color: Colors.deepPurple,), onPressed: (){print("hello");}),
                     ),
                   ),
                 ],

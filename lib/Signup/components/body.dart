@@ -312,6 +312,26 @@ class _BodyState extends State<Body> {
                     ],
                   );
                 });
+          }else if(errordikhaoDN == true) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+
+                  return AlertDialog(
+                    title: Text("Error"),
+                    content: Text("Display should not be null or contain spaces", style: TextStyle(
+                        color: Colors.deepPurple
+                    )),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Close"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                });
           }
 //          this.setState(() {
 //            isLoading = true;

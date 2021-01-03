@@ -228,10 +228,25 @@ class _AboutUserState extends State<AboutUser> {
               SizedBox(
                 height: 16,
               ),
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
-                backgroundColor: Colors.transparent,
+              Container(
+                  decoration: BoxDecoration(
+                    //borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 5,
+                    ),
+                  ),
+                  child: Container(
+                    height: 100,
+                    width: 100.0,
+                    child: Image(
+                      image: (isChanged == false) ? NetworkImage(
+                          photoUrlController.text) : AssetImage(
+                          "assets/images/loading.gif"),
+                      fit: BoxFit.cover,
+                    ),
+                    //backgroundImage: NetworkImage(photoUrlController.text)
+                  )
               ),
               SizedBox(
                 height: 16,
@@ -248,7 +263,8 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.text,
                     maxLines: 1,
                     decoration: InputDecoration(
-                        labelText: "Display Name",labelStyle: TextStyle(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                        labelText: "Username",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
                         border: OutlineInputBorder(
@@ -266,6 +282,7 @@ class _AboutUserState extends State<AboutUser> {
                     enabled: false,
 
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "First Name",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -282,6 +299,7 @@ class _AboutUserState extends State<AboutUser> {
                     controller: lastNameController,
                     enabled: false,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Last Name",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -304,6 +322,7 @@ class _AboutUserState extends State<AboutUser> {
                     ],
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Phone Number",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -322,6 +341,7 @@ class _AboutUserState extends State<AboutUser> {
                     enabled: false,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Email Id",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -340,8 +360,9 @@ class _AboutUserState extends State<AboutUser> {
                     controller: bioController,
                     enabled: false,
                     keyboardType: TextInputType.text,
-                    maxLines: 3,
+                    maxLines: 2,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Bio",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -361,6 +382,7 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.text,
                     maxLines: 1,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Gender",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -382,6 +404,7 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.text,
                     maxLines: 1,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Relationship",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -401,6 +424,7 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.text,
                     maxLines: 1,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Website",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -420,6 +444,7 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.multiline,
                     maxLines: 1,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Work",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -439,6 +464,7 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.multiline,
                     maxLines: 1,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Education",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -458,6 +484,7 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.multiline,
                     maxLines: 1,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Current City",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -480,6 +507,7 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.number,
                     maxLines: 1,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Pin Code",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
@@ -499,6 +527,7 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.multiline,
                     maxLines: 1,
                     decoration: InputDecoration(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                         labelText: "Home Town",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),

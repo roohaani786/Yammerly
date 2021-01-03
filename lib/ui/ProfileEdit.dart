@@ -424,7 +424,7 @@ class _ProfilePageState extends State<ProfilePage> {
     snackbarContent = "Profile Updated";
     if(snackbarContent == "Profile Updated"){
 
-    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(initialindexg: 4)));
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
     }
     try {
     await currUser.updateEmail(data["email"]);
@@ -653,7 +653,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
 
                               SizedBox(
-                                height: 16,
+                                width: MediaQuery.of(context).size.width*0.01,
                               ),
                               Container(
                                 width: MediaQuery.of(context).size.width*0.45,
@@ -684,7 +684,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
 
                         SizedBox(
-                          height: 16,
+                          height: 0,
                         ),
 
                         TextFormField(
