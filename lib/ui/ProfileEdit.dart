@@ -598,18 +598,20 @@ class _ProfilePageState extends State<ProfilePage> {
                           enabled: isEditable,
                           validator: (value) {
                             if(value.length > 20.0){
-                              return 'Display Name should not be greater than 20 words';
+                              return 'Username should not be greater than 20 words';
                             }else if(value.length ==0){
-                              return 'Display Name should not be null';
+                              return 'Username should not be null';
                             }else if(!isLowercase(value)){
-                              return 'Display Name must be in lower case';
+                              return 'Username must be in lower case';
+                            }else if(value.contains(" ")){
+                              return 'Remove space';
                             }
                           },
                           keyboardType: TextInputType.text,
                           maxLines: 1,
                           decoration: InputDecoration(
                               contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                              labelText: "Display Name",labelStyle: TextStyle(
+                              labelText: "Username",labelStyle: TextStyle(
                               color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
                           ),
                               border: OutlineInputBorder(
@@ -633,9 +635,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   enabled: isEditable,
                                   validator: (value) {
                                     if(value.length > 15.0){
-                                      return 'First Name should not be greater the 15 words';
+                                      return 'Less then 15 words';
                                     }else if(value.length == 0){
-                                      return 'First Name should not be null';
+                                      return 'Null value';
                                     }
                                   },
                                   decoration: InputDecoration(
@@ -661,9 +663,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   enabled: isEditable,
                                   validator: (value) {
                                     if(value.length > 15.0){
-                                      return 'Last Name should not be greater then 15 words';
+                                      return 'Less then 15 words';
                                     }else if(value.length == 0){
-                                      return 'Last Name should not be null';
+                                      return 'Null value';
                                     }
                                   },
                                   decoration: InputDecoration(

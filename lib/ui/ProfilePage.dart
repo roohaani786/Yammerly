@@ -940,11 +940,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         color: Colors.deepPurple,), onPressed: (){print("hello");}),
                     ),
                   ),
-
-
-
-
-
                 ],
                   ),
           ),

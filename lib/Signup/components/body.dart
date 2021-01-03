@@ -219,6 +219,10 @@ class _BodyState extends State<Body> {
       setState(() {
         errordikhaoDN = true;
       });
+    }else if(value.contains(" ")){
+      setState((){
+        errordikhaoDN= true;
+      });
     }
 
 
@@ -636,7 +640,7 @@ class _BodyState extends State<Body> {
                     ),
                     fillColor: Colors.deepPurple.shade50,
                     filled: true,
-                    hintText: "Display name",
+                    hintText: "Username",
                   ),
                   controller: displayNameInputController,
                   validator: validateDisplayName,
