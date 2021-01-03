@@ -413,12 +413,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .height *
-                                                              0.15,
+                                                              0.13,
                                                       width:
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width *
-                                                              0.95,
+                                                              0.90,
                                                       margin: EdgeInsets.only(
                                                           top: 8.0),
 
@@ -436,18 +436,28 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                           0.80,
                                                                       child:
                                                                           Text(
-                                                                        firstName + " " + lastName,
-                                                      textAlign: TextAlign.left,
-                                                      style: TextStyle(
-                                                        fontSize: 26.0,
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Pacifico',
-                                                      ),
-                                                    ),
-                                                  ):Container(
-                                                    width: deviceWidth*0.80,
-                                                    child: Text(
+                                                                        firstName +
+                                                                            " " +
+                                                                            lastName,
+                                                                        textAlign:
+                                                                            TextAlign.left,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              26.0,
+                                                                          color:
+                                                                              Colors.black,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          fontFamily:
+                                                                              'Pacifico',
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  : Container(
+                                                                      width: deviceWidth *
+                                                                          0.80,
+                                                                      child: Text(
                                                       displayName,
                                                       textAlign: TextAlign.left,
                                                       style: TextStyle(
@@ -894,7 +904,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                               width: deviceWidth*0.96,
                               padding: const EdgeInsets.only(right: 250.0),
                               child:(photoUrl!=null)?Align(
-                                alignment:
+                                                  alignment:
                                                       Alignment.bottomLeft,
                                                   child: Container(
                                                       decoration: BoxDecoration(
@@ -907,17 +917,18 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       child: Container(
                                                         height: 100,
                                                         width: 100.0,
-                                      child: Image(
-                                        image: NetworkImage(photoUrl),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      //backgroundImage: NetworkImage(photoUrlController.text)
-                                    )
-                                  // child: CircleAvatar(
-                                  //   radius: 50,
-                                  //   backgroundImage: NetworkImage(photoUrlController.text),
-                                  //
-                                  //   backgroundColor: Colors.transparent,
+                                                        child: Image(
+                                                          image: NetworkImage(
+                                                              photoUrl),
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                        //backgroundImage: NetworkImage(photoUrlController.text)
+                                                      )
+                                                      // child: CircleAvatar(
+                                                      //   radius: 50,
+                                                      //   backgroundImage: NetworkImage(photoUrlController.text),
+                                                      //
+                                                      //   backgroundColor: Colors.transparent,
                                   // ),
                                 ),
                               ): Container(

@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/resources/auth.dart';
-import 'package:image/image.dart' as ImD;
 
 class AboutUser extends StatefulWidget {
   static final String pageName = "/ProfilePage";
@@ -333,8 +334,8 @@ class _AboutUserState extends State<AboutUser> {
                   ),
 
                   (phoneNumberController.text=="")?Container():SizedBox(
-                    height: 16,
-                  ),
+                    height: 0,
+                                ),
 
                   (emailController.text=="")?Container():TextFormField(
                     controller: emailController,
@@ -362,14 +363,17 @@ class _AboutUserState extends State<AboutUser> {
                     keyboardType: TextInputType.text,
                     maxLines: 2,
                     decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Bio",labelStyle: TextStyle(
-                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
+                        contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 10.0, horizontal: 10.0),
+                                      labelText: "Bio",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
                   ),
 
                   (bioController.text=="")?Container():SizedBox(

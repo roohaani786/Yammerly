@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -318,8 +319,8 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
               ),
 
                   (phoneNumberController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
+                height: 0,
+                                ),
 
                   (emailController.text=="")?Container():TextFormField(
                 controller: emailController,
@@ -347,14 +348,17 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 keyboardType: TextInputType.text,
                 maxLines: 2,
                 decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Bio",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
+                    contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 10.0, horizontal: 10.0),
+                                      labelText: "Bio",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
               ),
 
                   (bioController.text=="")?Container():SizedBox(
