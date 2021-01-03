@@ -409,19 +409,34 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                           // ),
                                         ),
                                         Container(
-                                          height: MediaQuery.of(context).size.height*0.13,
-                                          width: MediaQuery.of(context).size.width*0.88,
-                                          margin: EdgeInsets.only(top: 8.0),
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.15,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.95,
+                                                      margin: EdgeInsets.only(
+                                                          top: 8.0),
 
-                                          //display name thing
-                                          child: Row(
-                                            children: [
-                                              Column(
-                                                children: [
-                                                  (firstName != null && lastName != null)?Container(
-                                                    width: deviceWidth*0.80,
-                                                    child: Text(
-                                                      firstName + " " + lastName,
+                                                      //display name thing
+                                                      child: Row(
+                                                        children: [
+                                                          Column(
+                                                            children: [
+                                                              (firstName !=
+                                                                          null &&
+                                                                      lastName !=
+                                                                          null)
+                                                                  ? Container(
+                                                                      width: deviceWidth *
+                                                                          0.80,
+                                                                      child:
+                                                                          Text(
+                                                                        firstName + " " + lastName,
                                                       textAlign: TextAlign.left,
                                                       style: TextStyle(
                                                         fontSize: 26.0,
@@ -879,18 +894,19 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                               width: deviceWidth*0.96,
                               padding: const EdgeInsets.only(right: 250.0),
                               child:(photoUrl!=null)?Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      //borderRadius: BorderRadius.circular(100),
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 5,
-                                      ),
-                                    ),
-                                    child: Container(
-                                      height: 100,
-                                      width: 100.0,
+                                alignment:
+                                                      Alignment.bottomLeft,
+                                                  child: Container(
+                                                      decoration: BoxDecoration(
+                                                        //borderRadius: BorderRadius.circular(100),
+                                                        border: Border.all(
+                                                          color: Colors.white,
+                                                          width: 5,
+                                                        ),
+                                                      ),
+                                                      child: Container(
+                                                        height: 100,
+                                                        width: 100.0,
                                       child: Image(
                                         image: NetworkImage(photoUrl),
                                         fit: BoxFit.cover,
