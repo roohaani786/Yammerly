@@ -8,7 +8,6 @@ import 'package:techstagram/intro/intro_page.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
-
 import 'Signup/signup_screen.dart';
 
 bool seen;
@@ -71,17 +70,16 @@ class Check extends StatefulWidget {
 }
 
 class CheckState extends State<Check> with AfterLayoutMixin<Check> {
-//  final LocalAuthenticationService _localAuth = locator<LocalAuthenticationService>();
 
-//  here we are checking if user cames in application first time
+// Checking if user entered the application first time !
   Future checkFirstSeen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    //getting data using shared prefrence
+    // Getting data using shared preferences
     bool seen = (prefs.getBool('seen') ?? false);
 
     if (seen == false) {
       print("First Time");
-      //Checking data using shared preferences
+      // Setting data using shared preferences
       prefs.setBool('seen', true);
       Navigator.of(context).pushReplacement(
           new MaterialPageRoute(builder: (context) => new IntroPage()));
