@@ -130,7 +130,7 @@ class _postPageState extends State<postPage> {
 
       Navigator.push(
           context, MaterialPageRoute(
-          builder: (BuildContext context) => HomePage(initialindexg: 4)));
+          builder: (BuildContext context) => HomePage()));
 
     }else{
       return showDialog(
