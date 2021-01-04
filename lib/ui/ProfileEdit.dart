@@ -1,11 +1,14 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:string_validator/string_validator.dart';
@@ -13,8 +16,6 @@ import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:image/image.dart' as ImD;
-import 'dart:math';
 
 class ProfilePage extends StatefulWidget {
   static final String pageName = "/ProfilePage";
@@ -635,10 +636,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             enabled: isEditable,
                             validator: (value) {
                               if(value.length > 15.0){
-                                return 'Less then 15 words';
-                              }else if(value.length == 0){
-                                return 'Should Not blank';
-                              }
+                                return 'Less than 15 words';
+                                      }else if(value.length == 0){
+                                return 'Should not be blank';
+                                      }
                             },
                             decoration: InputDecoration(
                                 errorStyle: TextStyle(
@@ -667,8 +668,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             enabled: isEditable,
                             validator: (value) {
                               if(value.length > 15.0) {
-                                return 'Less then 15 words';
-                              }
+                                return 'Less than 15 words';
+                                      }
                               // }else if(value.length == 0){
                               //   return 'Null value';
                               // }
@@ -698,10 +699,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     enabled: isEditable,
                     validator: (value) {
                       if(value.length < 10.0 && value.length > 0){
-                        return 'Phone number should be of 10 digit';
-                      }else if(value.length > 10.0){
-                        return 'Phone number should be of 10 digit';
-                      }
+                        return 'Phone number should be of 10 digits';
+                              }else if(value.length > 10.0){
+                        return 'Phone number should be of 10 digits';
+                              }
                     },
                     //maxLength: 10,
                     inputFormatters: [
@@ -757,8 +758,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     enabled: isEditable,
                     validator: (value) {
                       if(value.length > 50.0){
-                        return 'bio should not be greater than 50';
-                      }
+                        return 'bio should not be greater than 50 words';
+                              }
                     },
                     keyboardType: TextInputType.text,
                     maxLines: 2,

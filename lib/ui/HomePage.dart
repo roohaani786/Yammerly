@@ -1,20 +1,21 @@
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:techstagram/ComeraV/cam.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
-import 'package:techstagram/views/tabs/feed.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
+
 import 'messagingsystem.dart';
 import 'searchlist.dart';
 
@@ -352,7 +353,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
 
           IconButton(
             icon: Icon(
-              FontAwesomeIcons.teamspeak,
+              Icons.textsms,
               color: Colors.deepPurple,
             ),
             onPressed: () {

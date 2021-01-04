@@ -87,6 +87,8 @@ dependencies:
   string_validator: ^0.1.4
   image_editor_pro: ^1.0.6
 
+  animated_icon_button:
+
 
 dev_dependencies:
   flutter_test:
