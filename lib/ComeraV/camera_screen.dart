@@ -156,7 +156,7 @@ class CameraScreenState extends State<CameraScreen>
       dispose();
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 0)),
       );
 
 
@@ -318,8 +318,6 @@ class CameraScreenState extends State<CameraScreen>
     return WillPopScope(
       onWillPop: _onWillPop,
       child: GestureDetector(
-        onHorizontalDragEnd: (DragEndDetails details) =>
-            _onHorizontalDrag(details,context),
         onDoubleTap: (){
           _onCameraSwitch();
         },
@@ -355,9 +353,11 @@ class CameraScreenState extends State<CameraScreen>
                     color: Colors.white,
                   ),
                   onPressed: () {
+                    // Navigator.pop(context,
+                    //   MaterialPageRoute(builder: (context) => HomePage()),);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+                      MaterialPageRoute(builder: (context) => HomePage()),
                     );
                   },
                 ),

@@ -5,8 +5,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'Otheruser/other_user.dart';
 
 class CloudFirestoreSearch extends StatefulWidget {
-  final displayNamecurrentUser;
-  final uidX;
+  final String displayNamecurrentUser;
+  final String uidX;
   CloudFirestoreSearch({this.displayNamecurrentUser,this.uidX});
   @override
   _CloudFirestoreSearchState createState() => _CloudFirestoreSearchState(displayNamecurrentUser: displayNamecurrentUser,uidX: uidX);

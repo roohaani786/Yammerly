@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+  import 'package:cloud_firestore/cloud_firestore.dart';
+  import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
@@ -16,6 +16,7 @@ import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/components/text_field_container.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
+import 'package:flutter/services.dart';
 
 import '../../constants.dart';
 
@@ -218,6 +219,10 @@ class _BodyState extends State<Body> {
       setState(() {
         errordikhaoDN = true;
       });
+    }else if(value.contains(" ")){
+      setState((){
+        errordikhaoDN= true;
+      });
     }
 
 
@@ -286,7 +291,7 @@ class _BodyState extends State<Body> {
         if (pwdInputController.text ==
             confirmPwdInputController.text) {
 
-          final valid = await usernameCheck(displayNameInputController.text);
+          bool valid = await usernameCheck(displayNameInputController.text);
           if (!valid) {
             showDialog(
                 context: context,
@@ -295,6 +300,26 @@ class _BodyState extends State<Body> {
                   return AlertDialog(
                     title: Text("Error"),
                     content: Text("Display name already exists!", style: TextStyle(
+                        color: Colors.deepPurple
+                    )),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Close"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                });
+          }else if(errordikhaoDN == true) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+
+                  return AlertDialog(
+                    title: Text("Error"),
+                    content: Text("Display should not be null or contain spaces", style: TextStyle(
                         color: Colors.deepPurple
                     )),
                     actions: <Widget>[
@@ -343,7 +368,7 @@ class _BodyState extends State<Body> {
 
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
                         (Route<dynamic> route) => false,
                   ),
                   firstNameInputController.clear(),
@@ -635,7 +660,7 @@ class _BodyState extends State<Body> {
                     ),
                     fillColor: Colors.deepPurple.shade50,
                     filled: true,
-                    hintText: "Display name",
+                    hintText: "Username",
                   ),
                   controller: displayNameInputController,
                   validator: validateDisplayName,
@@ -668,6 +693,7 @@ class _BodyState extends State<Body> {
                         ),
                       ),
                       child: TextFormField(
+                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
                         style: TextStyle(
                             fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
@@ -722,6 +748,7 @@ class _BodyState extends State<Body> {
                         ),
                       ),
                       child: TextFormField(
+                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@.]'))],
                         style: TextStyle(
                             fontSize: 12.0, height: 1.5, color: Colors.black),
                         textInputAction: TextInputAction.next,
@@ -991,40 +1018,32 @@ class _BodyState extends State<Body> {
                       press: () {
                         facebookLogin(context).then(
                               (user) {
-                            print('Logged in successfully.');
 
-                            facebooksuccess ? Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        HomePage(
-                                          title: "huhu",
-                                          uid: "h",
-                                        )),
-                                    (_) => false) : Navigator.pushNamed(
-                                context, "/nayasignup");
 
                             setState(() {
                               isFacebookLoginIn = true;
                               successMessage =
-                              'Logged in successfully.\nEmail : ${user
-                                  .email}\nYou can now navigate to Home Page.';
+                              'Logged in successfully.\nDisplay Name : ${user
+                                  .displayName}\nYou can now navigate to Home Page.';
                             });
+                            if(isFacebookLoginIn == true){
+                              facebooksuccess ? Navigator
+                                  .pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+
+                                          HomePage(
+                                            title: "huhu",
+                                            uid: "h",
+                                          )),
+                                      (_) => false) : Navigator.pushNamed(
+                                  context, "/Login");
+                            }
                           },
                         );
                       },
                     ),
-                    SocalIcon(
-                        iconSrc: "assets/icons/twitter.svg",
-                        press: () {
-//                        Navigator.pushReplacementNamed(context, "/Twit");
-//                          loginWithTwitter(context).then(
-//                                (user) {
-//                              print('Logged in successfully.');
-//                            },
-//                          );
-                        print("hello");
-                        })
                   ],
                 )
               ],

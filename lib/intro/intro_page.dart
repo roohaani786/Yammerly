@@ -99,7 +99,7 @@ class _IntroPageState extends State<IntroPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 25.0),
                 child: Text(
-              "Welcome to AIOChat",
+              "Welcome to Yammerly",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 35,

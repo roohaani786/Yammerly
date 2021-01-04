@@ -1,15 +1,22 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:techstagram/services/database.dart';
+//import 'package:techstagram/models/users.dart';
 
 class ProfileSettings extends StatefulWidget {
   final String email;
   final String phonenumber;
-  ProfileSettings(this.email,this.phonenumber);
+  final bool emailVerification;
+  final String uid;
+  ProfileSettings(this.email,this.phonenumber,this.emailVerification,this.uid);
   @override
-  _ProfileSettingsState createState() => _ProfileSettingsState(email,phonenumber);
+  _ProfileSettingsState createState() => _ProfileSettingsState(email,phonenumber,emailVerification,uid);
 }
 
 class _ProfileSettingsState extends State<ProfileSettings> {
@@ -18,8 +25,81 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   bool valuef = true;
   final String email;
   final String phonenumber;
+  bool emailVerification;
+  final String uid;
+  final auth = FirebaseAuth.instance;
+  Timer timer;
 
-  _ProfileSettingsState(this.email,this.phonenumber);
+  void sendVerificationEmail() async{
+    print("andar aaya");
+    FirebaseUser firebaseUser = await auth.currentUser();
+    print("hogaya bhai");
+
+    Fluttertoast.showToast(
+        timeInSecForIosWeb:100,
+        msg: "email verificatin link has sent to you mail");
+
+    await firebaseUser.sendEmailVerification();
+
+  }
+
+
+  // Future<String> emailVerify(String email) async {
+  //
+  //   FirebaseUser firebaseUser = await auth.currentUser();
+  //
+  //   print("bahia bhia");
+  //   print(email);
+  //   try {
+  //     print("try");
+  //     await firebaseUser.sendEmailVerification();
+  //     Fluttertoast.showToast(
+  //         timeInSecForIosWeb: 100,
+  //         msg:
+  //         "email Verification link has been sent to your mail");
+  //     return currUser.uid;
+  //   } catch (e) {
+  //     print("An error occured while trying to send email verification");
+  //     print(e.message);
+  //   }
+  //   return null;
+  // }
+
+
+
+  @override
+  void initState(){
+    // user = auth.currentUser as FirebaseUser;
+//    user.sendEmailVerification();
+
+    timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      checkEmailVerified();
+    });
+    super.initState();
+  }
+
+  Future<void> checkEmailVerified() async {
+
+    FirebaseUser firebaseUser = await auth.currentUser();
+
+    await firebaseUser.reload();
+    if (firebaseUser.isEmailVerified) {
+      timer.cancel();
+      print(firebaseUser.email);
+      DatabaseService().updateEmailVerification(uid);
+      setState(() {
+        emailVerification = true;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  _ProfileSettingsState(this.email,this.phonenumber,this.emailVerification,this.uid);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -27,9 +107,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text("Settings",style:
-          TextStyle(
+        TextStyle(
             color: Colors.deepPurple
-          )),
+        )),
         leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple,), onPressed: (){
           Navigator.pop(context);
         }),
@@ -40,20 +120,29 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
           SettingsSection(
             title: 'Account',titleTextStyle: TextStyle(color: Colors.deepPurple,
-          fontWeight: FontWeight.bold),
+              fontWeight: FontWeight.bold),
             tiles: [
               SettingsTile(title: 'Phone number', leading: GestureDetector(
-                onTap: (){
+                  onTap: (){
 
-                },
+                  },
                   child: Icon(Icons.phone,color: Colors.grey,)),
-              trailing: Text(phonenumber,style: TextStyle(
-                color: Colors.deepPurple,
-              ),),),
+                trailing: Text(phonenumber,style: TextStyle(
+                  color: Colors.deepPurple,
+                ),),),
               SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,),
-                  trailing: Text(email,style: TextStyle(
-                    color: Colors.deepPurple,
-                  ),),),
+                trailing: (email != null)?(emailVerification == true)?Text("Verified",style: TextStyle(
+                  color: Colors.deepPurple,
+                ),):FlatButton(
+                  onPressed: () {
+                    sendVerificationEmail();
+                  },
+                  child: Text("Verify your email",style: TextStyle(
+                    color: Colors.red,
+                  ),),
+                ):Text("No Email",style: TextStyle(
+                  color: Colors.red,
+                ),),),
               SettingsTile(
                 onTap: (){
                   FirebaseAuth.instance
@@ -65,7 +154,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           new LoginScreen())
                       ))
                       .catchError((err) => print(err));
-                print("loggedout");
+                  print("loggedout");
                 },
                 title: 'Log out', leading: GestureDetector(
                   child: new Icon(
@@ -98,28 +187,28 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           ),
           SettingsSection(
             title: 'Security',titleTextStyle: TextStyle(color: Colors.deepPurple,
-            fontWeight: FontWeight.bold),
+              fontWeight: FontWeight.bold),
             tiles: [
 
               SettingsTile.switchTile(
-                  title: 'Use fingerprint',
-                  leading: Icon(Icons.fingerprint,color: Colors.grey,),
+                title: 'Use fingerprint',
+                leading: Icon(Icons.fingerprint,color: Colors.grey,),
                 switchValue: false,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {
-                   if(valuef == true){
-                     valuef = false;
-                   }
-                   else{
-                     valuef = true;
-                   }
+                  if(valuef == true){
+                    valuef = false;
+                  }
+                  else{
+                    valuef = true;
+                  }
                 },
-                  ),
+              ),
               SettingsTile(
                 onTap: (){
                   Navigator.push(context, new MaterialPageRoute(
                       builder: (context) =>
-                      ChangePasswordScreen()),
+                          ChangePasswordScreen()),
                   );
                 },
                 title: 'Change password',
@@ -129,7 +218,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 title: 'Enable Notifications',
 //                enabled: notificationsEnabled,
                 leading: Icon(Icons.notifications_active,color: Colors.grey,),
-                switchValue: true,
+                switchValue: false,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {},
               ),
@@ -154,8 +243,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   child: Icon(Icons.build,color: Colors.grey.shade600,),
                 ),
                 Text(
-                  'AIO Chat-Version: 1.0.0',
-                  style: TextStyle(color: Colors.deepPurple),
+                  'Version: 1.4.0',
+                  style: TextStyle(color: Colors.purple),
                 ),
               ],
             ),

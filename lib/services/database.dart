@@ -16,6 +16,13 @@ class DatabaseService {
         .snapshots();
   }
 
+  Future updateEmailVerification(String uid,) async{
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'emailVerified': true});
+  }
+
   Future updatephotoURL(String uid, String photoURl) async {
 
     return await Firestore.instance
@@ -368,17 +375,29 @@ class DatabaseService {
   Future unlikepost(int initialvalue, String postId, String userEmail) {
 
 
-    Firestore.instance
-        .collection("posts")
-        .document(postId)
-        .updateData({'likes': initialvalue - 1});
+    if(initialvalue < 0){
 
-    Firestore.instance
-        .collection("posts")
-        .document(postId)
-        .collection('likes')
-        .document(userEmail)
-        .delete();
+      initialvalue = 0;
+
+      Firestore.instance
+          .collection("posts")
+          .document(postId)
+          .updateData({'likes': initialvalue});
+    }
+
+    else {
+      Firestore.instance
+          .collection("posts")
+          .document(postId)
+          .updateData({'likes': initialvalue - 1});
+
+      Firestore.instance
+          .collection("posts")
+          .document(postId)
+          .collection('likes')
+          .document(userEmail)
+          .delete();
+    }
   }
 
 //  Future followingUser(int following, String displayNameX, String displayName) async {

@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:techstagram/Widget/Fab.dart';
 import 'package:techstagram/models/posts.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
@@ -14,14 +16,17 @@ import 'package:intl/intl.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
+import 'package:techstagram/utils/utils.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'dart:math' as math;
+import 'package:image_cropper/image_cropper.dart';
+import 'package:uuid/uuid.dart';
 
 
 class FeedsPage extends StatefulWidget {
 
-  final displayNamecurrentUser;
+  final String displayNamecurrentUser;
 
   @override
 
@@ -46,6 +51,7 @@ class _FeedsPageState extends State<FeedsPage> {
   FirebaseUser currUser;
   ScrollController scrollController = new ScrollController();
   Posts currentpost;
+  List<bool> _likes = List.filled(10000,false);
 
   double _scale = 1.0;
   double _previousScale;
@@ -55,16 +61,22 @@ class _FeedsPageState extends State<FeedsPage> {
   var lastRotation = 0.0;
   var time = "s";
   User currentUser;
+  String NotificationId = Uuid().v4();
 
   File _image;
   bool upload;
   int likescount;
   bool loading = false;
+  int Plength;
+
+
 
   Stream<QuerySnapshot> postsStream;
   final timelineReference = Firestore.instance.collection('posts');
   String postIdX;
-  bool _liked = false;
+  //bool _liked = false;
+  //var like = new List();
+  //int likeint;
 
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -93,8 +105,89 @@ class _FeedsPageState extends State<FeedsPage> {
     fetchPosts();
     fetchProfileData();
     fetchLikes();
+    //getPostCount();
   }
 
+  File crop;
+
+  // getPostCount() async {
+  //   await DatabaseService().getPosts().then((val){
+  //     setState(() {
+  //       Plength = val;
+  //     });
+  //   });
+  //   print("yaha ai bhai length");
+  //   print(Plength);
+  // }
+
+  Future pickImage() async {
+    if(_image == null){
+      // ignore: deprecated_member_use
+      await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+        setState(() async {
+          if(image != null){
+            crop = await ImageCropper.cropImage(
+                sourcePath: image.path,
+                aspectRatio: CropAspectRatio(
+                    ratioX: 1, ratioY: 1),
+                compressQuality: 100,
+                maxWidth: 700,
+                maxHeight: 700,
+                compressFormat: ImageCompressFormat.jpg,
+                androidUiSettings: AndroidUiSettings(
+                  toolbarColor: Colors.white,
+                  toolbarTitle: "AIO Cropper",
+                  activeControlsWidgetColor: Colors.purple,
+                  toolbarWidgetColor: Colors.deepPurple,
+                  statusBarColor: Colors.purple,
+                  backgroundColor: Colors.white,
+                  showCropGrid: false,
+                  dimmedLayerColor: Colors.black54,
+                )
+            );
+            upload = true;
+            _image = crop;
+            if(_image != null){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+            }else{
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
+            }
+
+          }else{
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
+          }
+
+        });
+      });
+      if (_image != null){
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+      }else{
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
+      }
+    }else if(crop == null){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
+    }
+
+
+
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+//    );
+    print("Done..");
+  }
 
   fetchPosts() async {
 
@@ -105,7 +198,7 @@ class _FeedsPageState extends State<FeedsPage> {
     });
   }
 
-  getlikes( String displayNamecurrent, String postId) async {
+  getlikes( String displayNamecurrent, String postId, int index) async {
 
     await Firestore.instance.collection('posts')
         .document(postIdX)
@@ -115,7 +208,10 @@ class _FeedsPageState extends State<FeedsPage> {
         .then((value) {
       if (value.exists) {
         setState(() {
-          _liked = true;
+          //likeint = int.parse(postId);
+          //_liked = true;
+          _likes[index] = true;
+          //like[likeint] = "true";
         });
       }
     });
@@ -184,7 +280,6 @@ class _FeedsPageState extends State<FeedsPage> {
       if (diff.inDays == 7) {
         time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
       } else {
-
         time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
       }
     }
@@ -192,26 +287,26 @@ class _FeedsPageState extends State<FeedsPage> {
     return time;
   }
 
-  Future pickImage() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      setState(() {
-        _image = image;
-        upload = true;
-      });
-    });
-    (_image!=null)?
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
-    ):Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
-    );
-  }
+
 
 
   @override
   Widget build(BuildContext context) {
+
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
+
+    final image = Image.asset(
+      AvailableImages.emptyState['assetPath'],
+    );
+
+    final notificationHeader = Container(
+      padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
+      child: Text(
+        "No Posts",
+        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
+      ),
+    );
 
     return GestureDetector(
       child: Scaffold(
@@ -227,7 +322,10 @@ class _FeedsPageState extends State<FeedsPage> {
                   child: ListView.builder(
                       controller: scrollController,
                       itemCount: snapshot.data.documents.length,
+
                       itemBuilder: (context, index) {
+
+                        int len = snapshot.data.documents.length;
 
                         postIdX = snapshot.data.documents[index]['postId'];
 
@@ -263,12 +361,31 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         readTimestamp(timestamp.seconds);
 
-                        getlikes(displayNameController.text, postIdX);
+                        getlikes(displayNamecurrentUser, postIdX, index);
 
+                        Notification() async {
+                          //print(currUid);
 
-                        if(likes == 0){
+                          setState(() {
+                            // file = null;
+                            NotificationId = Uuid().v4();
+                          });
 
-                          _liked = false;
+                          return await Firestore.instance.collection("users")
+                              .document(uid).collection("notification")
+                              .document(NotificationId)
+                              .setData({"likes" : likes+1,
+                            "notificationId" : NotificationId,
+                            "username": displayNamecurrentUser,
+                            //"comment": commentTextEditingController.text,
+
+                            "timestamp": DateTime.now(),
+                            "url": photoUrl,
+                            "uid": uid,
+                            "status" : "like",
+                            "postId" : postId,
+                          });
+
                         }
 
                         return (shared==true)?Container(
@@ -367,9 +484,9 @@ class _FeedsPageState extends State<FeedsPage> {
                               GestureDetector(
                                 onDoubleTap: () {
 
-                                  if (_liked == false) {
+                                  if (_likes[index] == false) {
                                     setState(() {
-                                      _liked = true;
+                                      _likes[index] = true;
                                     });
 
                                     DatabaseService().likepost(
@@ -387,14 +504,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                       transform: Matrix4.rotationY(math.pi),
                                       child: FadeInImage(
                                         image: NetworkImage(url),
-                                        fit: BoxFit.fitHeight,
+                                        fit: BoxFit.cover,
                                         //image: NetworkImage("posts[i].postImage"),
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
                                       ),
                                     ):FadeInImage(
                                       image: NetworkImage(url),
-                                      fit: BoxFit.fitHeight,
+                                      fit: BoxFit.cover,
                                       //image: NetworkImage("posts[i].postImage"),
                                       placeholder: AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
@@ -412,10 +529,13 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       IconButton(
                                         padding: EdgeInsets.only(left: 10),
-                                        onPressed: (_liked == true)
+                                        onPressed: (_likes[index] == true)
                                             ? () {
+
+
                                           setState(() {
-                                            _liked = false;
+                                            _likes[index] = false;
+                                            //like[likeint] = "false";
                                             loading = true;
                                           });
 
@@ -428,12 +548,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                         }
                                             : () {
                                           setState(() {
-                                            _liked = true;
+                                            _likes[index] = true;
+                                            //like[likeint] = "true";
                                             loading = true;
                                           });
 
                                           DatabaseService().likepost(
                                               likes, postId,displayNameController.text);
+                                          Notification();
 
                                           setState(() {
                                             loading = false;
@@ -441,7 +563,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         },
                                         icon: Icon(Icons.thumb_up),
                                         iconSize: 25,
-                                        color: (_liked == true) ? Colors.deepPurple : Colors.grey,
+                                        color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
                                       ),
 
                                       Text(
@@ -601,10 +723,10 @@ class _FeedsPageState extends State<FeedsPage> {
                               GestureDetector(
                                 onDoubleTap: () async {
 
-                                  if (_liked == false) {
+                                  if (_likes[index] == false) {
                                     setState(() {
-                                      _liked = true;
-                                      print(_liked);
+                                      _likes[index] = true;
+                                      //print(_liked);
                                     });
 
                                     await DatabaseService().likepost(
@@ -646,35 +768,34 @@ class _FeedsPageState extends State<FeedsPage> {
                                   Row(
                                     children: <Widget>[
 
-                                      IgnorePointer(
-                                        ignoring: (loading == true)?true:false,
-                                        ignoringSemantics: true,
-                                        child: IconButton(
-                                          padding: EdgeInsets.only(left: 10),
-                                          onPressed: (_liked == true)
-                                              ? () {
-                                            setState(() {
-                                              _liked = false;
-                                              loading = true;
+                                      IconButton(
+                                        padding: EdgeInsets.only(left: 10),
+                                        onPressed: (_likes[index] == true)
+                                            ? () {
+                                          setState(() {
+                                            _likes[index] = false;
+                                            //like[likeint] = "false";
+                                            loading = true;
 //                                              likes--;
-                                              DatabaseService().unlikepost(
-                                                  likes, postId,displayNameController.text);
-                                              loading = false;
-                                            });
-                                          }
-                                              : () {
-                                            setState(() {
-                                              _liked = true;
-                                              loading = true;
-                                              DatabaseService().likepost(
-                                                  likes, postId,displayNameController.text);
-                                              loading = false;
-                                            });
-                                          },
-                                          icon: Icon(Icons.thumb_up),
-                                          iconSize: 25,
-                                          color: (_liked == true) ? Colors.deepPurple : Colors.grey,
-                                        ),
+                                            DatabaseService().unlikepost(
+                                                likes, postId,displayNameController.text);
+                                            loading = false;
+                                          });
+                                        }
+                                            : () {
+                                          setState(() {
+                                            _likes[index] = true;
+                                            //like[likeint] = "true";
+                                            loading = true;
+                                            DatabaseService().likepost(
+                                                likes, postId,displayNameController.text);
+                                            Notification();
+                                            loading = false;
+                                          });
+                                        },
+                                        icon: Icon(Icons.thumb_up),
+                                        iconSize: 25,
+                                        color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
                                       ),
 
                                       Text(
@@ -775,17 +896,49 @@ class _FeedsPageState extends State<FeedsPage> {
                 ),
               ],
             )
-                : Container();
-            },
+                : Container(
+              padding: EdgeInsets.only(
+                top: 40.0,
+                left: 30.0,
+                right: 30.0,
+                bottom: 30.0,
+              ),
+              height: deviceHeight,
+              width: deviceWidth,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  //pageTitle,
+                  SizedBox(
+                    height: deviceHeight * 0.1,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      image,
+                      notificationHeader,
+                      //notificationText,
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
         ),
 
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.white,
-          child: Icon(FontAwesomeIcons.plusSquare,color: Colors.purple,),
-          onPressed: (){
-
+          child: Icon(
+            CupertinoIcons.add,
+            color: Colors.purple,
+            size: 40.0,
+          ),
+          onPressed: () {
+            pickImage();
           },
         ),
+
+        // floatingActionButton: FancyFab(),
       ),
     );
   }

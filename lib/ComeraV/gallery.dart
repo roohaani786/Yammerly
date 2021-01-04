@@ -97,37 +97,54 @@ class _GalleryState extends State<Gallery> {
 
   //bool _inProcess=false;
 
-  getImage(File file) async {
-    this.setState(() {
-      _inProcess = true;
-    });
-    //File image = await ImagePicker.pickImage(source: source);
-    if (file != null) {
-      File cropped = await ImageCropper.cropImage(
-          sourcePath: file.path,
-          aspectRatio: CropAspectRatio(
-              ratioX: 1, ratioY: 1),
-          compressQuality: 100,
-          maxWidth: 700,
-          maxHeight: 700,
-          compressFormat: ImageCompressFormat.jpg,
-          androidUiSettings: AndroidUiSettings(
-            toolbarColor: Colors.deepOrange,
-            toolbarTitle: "AIO Cropper",
-            statusBarColor: Colors.deepOrange.shade900,
-            backgroundColor: Colors.white,
-          )
-      );
 
+
+  getImage(File file) async {
+    print("aa gayaaaa");
+    if(_selectedFile == null){
       this.setState(() {
-        _selectedFile = cropped;
-        _inProcess = false;
+        _inProcess = true;
       });
-    } else {
-      this.setState(() {
-        _inProcess = false;
-      });
+      //File image = await ImagePicker.pickImage(source: source);
+      if (file != null) {
+        File cropped = await ImageCropper.cropImage(
+            sourcePath: file.path,
+            aspectRatio: CropAspectRatio(
+                ratioX: 1, ratioY: 1),
+            compressQuality: 100,
+            maxWidth: 700,
+            maxHeight: 700,
+            compressFormat: ImageCompressFormat.jpg,
+            androidUiSettings: AndroidUiSettings(
+              toolbarColor: Colors.white,
+              toolbarTitle: "Yammerly Cropper",
+              activeControlsWidgetColor: Colors.purple,
+              toolbarWidgetColor: Colors.deepPurple,
+              statusBarColor: Colors.purple,
+              backgroundColor: Colors.white,
+              showCropGrid: false,
+              dimmedLayerColor: Colors.black54,
+            )
+        );
+
+        this.setState(() {
+          _selectedFile = cropped;
+          _inProcess = false;
+        });
+      } else {
+        this.setState(() {
+          _inProcess = false;
+        });
+      }
+    }else{
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =>
+            UploadImage(file: _selectedFile,
+              shared: false,)),
+      );
     }
+
   }
 
 
@@ -161,7 +178,7 @@ class _GalleryState extends State<Gallery> {
                       _selectedFile,
                       width: 250,
                       height: 250,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ) : Image.file(
                         File(currentFilePath),
                         fit: BoxFit.cover
@@ -170,7 +187,7 @@ class _GalleryState extends State<Gallery> {
                     _selectedFile,
                     width: 250,
                     height: 250,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                   ) : Image.file(
                     File(currentFilePath),
                     fit: BoxFit.cover,
@@ -179,6 +196,18 @@ class _GalleryState extends State<Gallery> {
                 ),
 
 
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 30.0, left: 6.0),
+                //   child: Align(
+                //     alignment: Alignment.topRight,
+                //     child: IconButton(icon: Icon(Icons.edit,
+                //       color: Colors.grey.shade400,
+                //       size: 30.0,), onPressed: () {
+                //       getimageditor(File(currentFilePath));
+                //     },
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.only(top: 30.0, left: 6.0),
                   child: Align(
@@ -249,6 +278,8 @@ class _GalleryState extends State<Gallery> {
                   ),
                 ),
 
+
+
 //            Padding(
 //              padding: const EdgeInsets.only(top: 30.0,right: 6.0),
 //              child: Align(
@@ -282,18 +313,18 @@ class _GalleryState extends State<Gallery> {
                           child: FlatButton(
                             color: Colors.transparent,
                             onPressed: () =>
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      UploadImage(file: File(currentFilePath),
-                                        shared: false,)),
-                                ),
-                            // (_selectedFile == null)?
-                            // getImage(File(currentFilePath)):
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,shared: false,)),
-                            // ),
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) =>
+                                //       UploadImage(file: File(currentFilePath),
+                                //         shared: false,)),
+                                // ),
+                            (_selectedFile == null)?
+                            getImage(File(currentFilePath)):
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,shared: false,)),
+                            ),
 
                             child: Row(),
 //                            child: Row(
@@ -332,12 +363,13 @@ class _GalleryState extends State<Gallery> {
                           child: RaisedButton(
                             color: Colors.grey.shade200,
                             onPressed: () =>
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      UploadImage(file: File(currentFilePath),
-                                        shared: false,)),
-                                ),
+                            getImage(File(currentFilePath)),
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) =>
+                                //       UploadImage(file: File(currentFilePath),
+                                //         shared: false,)),
+                                // ),
                             //image = File(currentFilePath);
                             // (_selectedFile == null)?
                             //

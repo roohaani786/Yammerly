@@ -1,14 +1,14 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/resources/auth.dart';
-import 'package:image/image.dart' as ImD;
-
 
 class AboutOtherUser extends StatefulWidget {
   static final String pageName = "/ProfilePage";
@@ -68,7 +68,6 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
     homeTownController = TextEditingController();
     relationshipController = TextEditingController();
     pincodeController = TextEditingController();
-
     uidController = TextEditingController();
 
     super.initState();
@@ -78,13 +77,9 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
-
-
-
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
-
 
       docSnap = await Firestore.instance
           .collection("users")
@@ -144,16 +139,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   FirebaseStorage.instance.ref().child("Display Pictures");
   final postReference = Firestore.instance.collection("users");
 
-
-
-
-
   bool isChanged = false;
   String relationstring = "Select Relationship";
   String genderstring = "Select Gender";
   bool tickvalue = false;
   int check;
-
 
   bool firstnameE = false;
   bool lastnameE = false;
@@ -165,10 +155,6 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   bool currentcityE = false;
   bool hometownE = false;
   String valueX = "Select Gender";
-
-
-
-
 
 
   @override
@@ -221,17 +207,32 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
           child: Column(
             children: [
               Text(
-                "About Me",
+                "About" + " " + displayNameController.text,
                 style: TextStyle(
                     fontFamily: "Cookie-Regular", fontSize: 25.0),
               ),
               SizedBox(
                 height: 16,
               ),
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: (isChanged == false)?NetworkImage(photoUrlController.text):AssetImage("assets/images/loading.gif"),
-                backgroundColor: Colors.transparent,
+              Container(
+                  decoration: BoxDecoration(
+                    //borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 5,
+                    ),
+                  ),
+                  child: Container(
+                    height: 100,
+                    width: 100.0,
+                    child: Image(
+                      image: (isChanged == false) ? NetworkImage(
+                          photoUrlController.text) : AssetImage(
+                          "assets/images/loading.gif"),
+                      fit: BoxFit.cover,
+                    ),
+                    //backgroundImage: NetworkImage(photoUrlController.text)
+                  )
               ),
               SizedBox(
                 height: 16,
@@ -248,7 +249,8 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                     keyboardType: TextInputType.text,
                     maxLines: 1,
                     decoration: InputDecoration(
-                        labelText: "Display Name",labelStyle: TextStyle(
+                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
+                        labelText: "Username",labelStyle: TextStyle(
                         color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                     ),
                     border: OutlineInputBorder(
@@ -266,6 +268,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 enabled: false,
 
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "First Name",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -282,6 +285,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 controller: lastNameController,
                 enabled: false,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Last Name",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -304,6 +308,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 ],
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Phone Number",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -314,14 +319,15 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
               ),
 
                   (phoneNumberController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
+                height: 0,
+                                ),
 
                   (emailController.text=="")?Container():TextFormField(
                 controller: emailController,
                 enabled: false,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Email Id",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -340,15 +346,19 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 controller: bioController,
                 enabled: false,
                 keyboardType: TextInputType.text,
-                maxLines: 3,
+                maxLines: 2,
                 decoration: InputDecoration(
-                    labelText: "Bio",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
+                    contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 10.0, horizontal: 10.0),
+                                      labelText: "Bio",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
               ),
 
                   (bioController.text=="")?Container():SizedBox(
@@ -361,6 +371,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 keyboardType: TextInputType.text,
                 maxLines: 1,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Gender",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -382,6 +393,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 keyboardType: TextInputType.text,
                 maxLines: 1,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Relationship",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -401,6 +413,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 keyboardType: TextInputType.text,
                 maxLines: 1,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Website",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -420,6 +433,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 keyboardType: TextInputType.multiline,
                 maxLines: 1,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Work",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -439,6 +453,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 keyboardType: TextInputType.multiline,
                 maxLines: 1,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Education",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -458,6 +473,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 keyboardType: TextInputType.multiline,
                 maxLines: 1,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Current City",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -480,6 +496,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 keyboardType: TextInputType.number,
                 maxLines: 1,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Pin Code",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),
@@ -499,6 +516,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 keyboardType: TextInputType.multiline,
                 maxLines: 1,
                 decoration: InputDecoration(
+                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     labelText: "Home Town",labelStyle: TextStyle(
                     color: Colors.deepPurple[300],fontWeight: FontWeight.bold
                 ),

@@ -71,22 +71,6 @@ class UserData {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class ProfileNotifier with ChangeNotifier {
   List<UserData> _profileList = [];
   UserData _currentProfile;
