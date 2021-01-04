@@ -16,6 +16,6 @@ For help getting started with Flutter, view our
 samples, guidance on mobile development, and a full API reference.
 
 * Clone the repo and open it on Android studio, VS Code or any other high end application development IDE
-* Run "flutter packages" get to get latest dependencies
-* Run "flutter run" to run the application
-* To get available git branches head over to VCS->Git->Branches
+* Run "flutter packages get" to get latest dependencies
+* Run "flutter run" to run the flutter application
+* To get available git branches head over to VCS -> Git -> Branches
