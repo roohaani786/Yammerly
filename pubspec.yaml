@@ -122,6 +122,7 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
+
     - assets/fb-logo.png
     - assets/fonts/Barlow-Bold.ttf
     - assets/fonts/Barlow-Regular.ttf
