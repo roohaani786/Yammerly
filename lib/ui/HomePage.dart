@@ -35,7 +35,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState(initialindexg);
 }
 
-final PageController _pageController = PageController(initialPage: 2,keepPage: true);
+final PageController _pageController = PageController(initialPage: 1,keepPage: true);
 
 class _HomePageState extends State<HomePage> {
 
@@ -367,7 +367,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
       ),
       body: DefaultTabController(
         length: 4,
-        initialIndex: (initialindexg == null) ? 2 : initialindexg,
+        initialIndex: (initialindexg == null) ? 1 : initialindexg,
 
         child: Scaffold(
           body: Column(
@@ -388,7 +388,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                     return true;
                   },
                   child: TabBarView(
-                    controller: tabController,
+                    //controller: tabController,
                     children: [
                       new Container(
                         child: ChatsPage(),
@@ -410,7 +410,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
           bottomNavigationBar: new Container(
             height: 60.0,
             child: new TabBar(
-              controller: tabController,
+              //controller: tabController,
               tabs: [
                 Tab(
                   icon: new Icon(Icons.blur_circular, size: 30),

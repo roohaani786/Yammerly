@@ -130,7 +130,7 @@ class _postPageState extends State<postPage> {
 
       Navigator.push(
           context, MaterialPageRoute(
-          builder: (BuildContext context) => HomePage()));
+          builder: (BuildContext context) => HomePage(initialindexg: 3,)));
 
     }else{
       return showDialog(
@@ -342,7 +342,7 @@ class _postPageState extends State<postPage> {
       MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
     ):Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
+      MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3,)),
     );
     print("Done..");
   }
@@ -531,7 +531,7 @@ class _postPageState extends State<postPage> {
                                                                 deletePost(displayNamecurrentUser, displayName, postId, uidX);
                                                                 Navigator.push(
                                                                     context, MaterialPageRoute(
-                                                                    builder: (BuildContext context) => HomePage(initialindexg: 4)));
+                                                                    builder: (BuildContext context) => HomePage(initialindexg: 3)));
                                                               },
                                                             ),
                                                             FlatButton(
@@ -855,7 +855,7 @@ class _postPageState extends State<postPage> {
                                                             deletePost(displayNamecurrentUser, displayName, postId, uidX);
                                                             Navigator.push(
                                                                 context, MaterialPageRoute(
-                                                                builder: (BuildContext context) => HomePage(initialindexg: 4)));
+                                                                builder: (BuildContext context) => HomePage(initialindexg: 3)));
                                                           },
                                                         ),
                                                         FlatButton(
