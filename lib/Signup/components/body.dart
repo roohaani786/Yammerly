@@ -99,8 +99,11 @@ class _BodyState extends State<Body> {
       print(user);
       var userSignedIn = await Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-            (Route<dynamic> route) => false,
+        MaterialPageRoute(
+            builder: (context) => HomePage(
+                  initialindexg: 1,
+                )),
+        (Route<dynamic> route) => false,
       );
 
       setState(() {
@@ -368,9 +371,12 @@ class _BodyState extends State<Body> {
 
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
-                        (Route<dynamic> route) => false,
-                  ),
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      initialindexg: 1,
+                                    )),
+                            (Route<dynamic> route) => false,
+                          ),
                   firstNameInputController.clear(),
                   lastNameInputController.clear(),
                   phoneNumberController.clear(),
@@ -1034,9 +1040,8 @@ class _BodyState extends State<Body> {
                                       builder: (context) =>
 
                                           HomePage(
-                                            title: "huhu",
-                                            uid: "h",
-                                          )),
+                                            initialindexg: 1,
+                                                    )),
                                       (_) => false) : Navigator.pushNamed(
                                   context, "/Login");
                             }

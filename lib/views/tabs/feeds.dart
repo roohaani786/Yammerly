@@ -1,28 +1,28 @@
 import 'dart:io';
+import 'dart:math' as math;
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+
 //import 'package:techstagram/Widget/Fab.dart';
 import 'package:techstagram/models/posts.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/services/database.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/utils/utils.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
-import 'package:vector_math/vector_math_64.dart' hide Colors;
-import 'dart:math' as math;
-import 'package:image_cropper/image_cropper.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 class FeedsPage extends StatefulWidget {
 
@@ -320,7 +320,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                 new Expanded(
                   child: ListView.builder(
-                      controller: scrollController,
+                          controller: scrollController,
                       itemCount: snapshot.data.documents.length,
 
                       itemBuilder: (context, index) {

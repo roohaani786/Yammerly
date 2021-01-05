@@ -1,15 +1,17 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
-import 'package:techstagram/models/user.dart';
+import 'dart:math' as math;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:path_provider/path_provider.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:uuid/uuid.dart';
-import 'package:image/image.dart' as ImD;
-import 'dart:math' as math;
+
 import 'auth.dart';
 
 class UploadImage extends StatefulWidget {
@@ -301,10 +303,9 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
                         fit: BoxFit.cover),
                   ):BoxDecoration(
                     image: DecorationImage(
-
-                        image: FileImage(file),
-                        fit: BoxFit.cover),
-                  ),
+                                          image: FileImage(file),
+                                          fit: BoxFit.contain),
+                                    ),
                 ),
               ),
             ),
