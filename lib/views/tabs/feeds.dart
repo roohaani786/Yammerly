@@ -248,7 +248,7 @@ class _FeedsPageState extends State<FeedsPage> {
     }
   }
 
-  var cpurl = new List(10000);
+  List<String> cpurl = new List(10000);
   var cdisplayName = new List(10000);
 
   Future<DocumentSnapshot> Fetchprofile(String uid,int index) async{
@@ -444,7 +444,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                               ClipRRect(
                                                 borderRadius: BorderRadius.circular(40),
                                                 child: Image(
-                                                  image: NetworkImage(cpurl[index]),
+                                                  image: (cpurl[index] != null)?
+                                                  NetworkImage(cpurl[index]):NetworkImage(
+                                                    "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                                  ),
                                                   width: 40,
                                                   height: 40,
                                                   fit: BoxFit.cover,
@@ -529,14 +532,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                     child : (cam == 1)? Transform(
                                       alignment: Alignment.center,
                                       transform: Matrix4.rotationY(math.pi),
-                                      child: FadeInImage(
+                                      child: (url==null)?Container():FadeInImage(
                                         image: NetworkImage(url),
                                         fit: BoxFit.cover,
                                         //image: NetworkImage("posts[i].postImage"),
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
                                       ),
-                                    ):FadeInImage(
+                                    ):(url==null)?Container():FadeInImage(
                                       image: NetworkImage(url),
                                       fit: BoxFit.cover,
                                       //image: NetworkImage("posts[i].postImage"),
@@ -722,7 +725,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(40),
                                             child: Image(
-                                              image: NetworkImage(cpurl[index]),
+                                              image: (cpurl != null)?
+                                              NetworkImage(cpurl[index]):NetworkImage(
+                                                "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                              ),
                                               width: 40,
                                               height: 40,
                                               fit: BoxFit.cover,
@@ -770,7 +776,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     child :(cam == 1)?Transform(
                                       alignment: Alignment.center,
                                       transform: Matrix4.rotationY(math.pi),
-                                      child: FadeInImage(
+                                      child: (url== null)?Container():FadeInImage(
                                         image: NetworkImage(url),
                                         fit: BoxFit.cover,
                                         //image: NetworkImage("posts[i].postImage"),
@@ -778,7 +784,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         width: MediaQuery.of(context).size.width,
                                       ),
 
-                                    ):FadeInImage(
+                                    ):(url==null)?Container():FadeInImage(
                                       image: NetworkImage(url,),
                                       fit: BoxFit.cover,
                                       placeholder: AssetImage("assets/images/loading.gif"),
