@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:techstagram/Changepassword/login_screen.dart';
 import 'package:techstagram/Login/login_screen.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:techstagram/services/database.dart';
 //import 'package:techstagram/models/users.dart';
 
@@ -243,7 +243,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   child: Icon(Icons.build,color: Colors.grey.shade600,),
                 ),
                 Text(
-                  'Version: 1.4.0',
+                  'Version: 1.6.7',
                   style: TextStyle(color: Colors.purple),
                 ),
               ],

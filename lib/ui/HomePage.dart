@@ -260,43 +260,6 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     this.getCurrentUser();
   }
 
-  //Future<bool> _onWillPop() {
-
-    // return Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) {
-    //       return HomePage(initialindexg: 2);
-    //     },
-    //   ),
-    // );
-  //}
-
-
-
-  // Future<bool> onWillPop() {
-  //
-  //   return showDialog(
-  //     context: context,
-  //     builder: (context) => new AlertDialog(
-  //       title: new Text('Are you sure?'),
-  //       content: new Text('Do you want to exit an App'),
-  //       actions: <Widget>[
-  //         new GestureDetector(
-  //           onTap: () => Navigator.of(context).pop(false),
-  //           child: Text("NO"),
-  //         ),
-  //         SizedBox(height: 16),
-  //         new GestureDetector(
-  //           onTap: () => Navigator.of(context).pop(true),
-  //           child: Text("YES"),
-  //         ),
-  //       ],
-  //     ),
-  //   ) ??
-  //       false;
-  // }
-
   @override
   Widget build(BuildContext context) {
     // Local dragStartDetail.
