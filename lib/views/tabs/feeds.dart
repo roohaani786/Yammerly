@@ -649,8 +649,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                   ),
                                   child: Row(
                                     children: [
-
                                       Container(
+                                        width: MediaQuery.of(context).size.width*0.9,
                                         child: RichText(
                                           textAlign: TextAlign.start,
                                           softWrap: true,
@@ -888,6 +888,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     children: [
 
                                       Container(
+                                        width: MediaQuery.of(context).size.width*0.9,
                                         child: RichText(
                                           textAlign: TextAlign.start,
                                           softWrap: true,
