@@ -1,23 +1,22 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:techstagram/ComeraV/cam.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image/image.dart' as ImD;
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
-import 'package:techstagram/ComeraV/cam.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:uuid/uuid.dart';
+import 'package:image/image.dart' as ImD;
 
 class CameraScreen extends StatefulWidget {
   final int cam;
@@ -108,6 +107,10 @@ class CameraScreenState extends State<CameraScreen>
 
       uidController.text = docSnap.data["uid"];
 
+      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+      });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
@@ -126,7 +129,7 @@ class CameraScreenState extends State<CameraScreen>
       if (!mounted) {
         return;
       }
-      // setState(() {});
+      setState(() {});
     });
   }
 
@@ -213,9 +216,9 @@ class CameraScreenState extends State<CameraScreen>
   String url;
 
   controlUploadAndSave() async {
-//     setState(() {
-// //      uploading = true;
-//     });
+    setState(() {
+//      uploading = true;
+    });
 
     await compressPhoto();
 
@@ -466,7 +469,7 @@ class CameraScreenState extends State<CameraScreen>
 
               FlatButton(
                 color: Colors.transparent,
-              onPressed: () async => null,
+                onPressed: () async => null,
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 28.0,
@@ -557,7 +560,7 @@ class CameraScreenState extends State<CameraScreen>
 //      String thumb = await Thumbnails.getThumbnail(
 //          videoFile: lastFile.path, imageType: ThumbFormat.PNG, quality: 100);
 //      return File(thumb);
-    print("dfdf");
+      print("dfdf");
     }
   }
 

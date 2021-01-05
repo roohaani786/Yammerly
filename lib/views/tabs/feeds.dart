@@ -83,7 +83,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,photoUrlController,
-      timestampController,likesController,uidController;
+      timestampController,likesController,uidController,cpurlController,cdisplayNameController;
 
   _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
 
@@ -96,6 +96,8 @@ class _FeedsPageState extends State<FeedsPage> {
     uidController = TextEditingController();
     displayNameController = TextEditingController();
     photoUrlController = TextEditingController();
+    cpurlController = TextEditingController();
+    cdisplayNameController = TextEditingController();
 
     super.initState();
     // Subscriptions are created here
@@ -246,6 +248,24 @@ class _FeedsPageState extends State<FeedsPage> {
     }
   }
 
+  var cpurl = new List(10000);
+  var cdisplayName = new List(10000);
+
+  Future<DocumentSnapshot> Fetchprofile(String uid,int index) async{
+    docSnap = await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .get();
+    cpurlController.text = docSnap.data['photoURL'];
+    cdisplayNameController.text = docSnap.data['displayName'];
+    //photoUrlController.text = docSnap.data["photoURL"];
+    setState(() {
+      cpurl[index] = cpurlController.text;
+      cdisplayName[index] = cdisplayNameController.text;
+    });
+
+  }
+
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
 //    var format = DateFormat('HH:mm a');
@@ -290,6 +310,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
 
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -307,6 +329,9 @@ class _FeedsPageState extends State<FeedsPage> {
         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
       ),
     );
+
+
+
 
     return GestureDetector(
       child: Scaffold(
@@ -363,6 +388,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         getlikes(displayNamecurrentUser, postIdX, index);
 
+                        Fetchprofile(uid,index);
+
                         Notification() async {
                           //print(currUid);
 
@@ -417,7 +444,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               ClipRRect(
                                                 borderRadius: BorderRadius.circular(40),
                                                 child: Image(
-                                                  image: NetworkImage(photoUrl),
+                                                  image: NetworkImage(cpurl[index]),
                                                   width: 40,
                                                   height: 40,
                                                   fit: BoxFit.cover,
@@ -426,7 +453,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               SizedBox(
                                                 width: 10,
                                               ),
-                                              Text(displayName,style: TextStyle(
+                                              Text(cdisplayName[index],style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18.0,
                                               ),),
@@ -695,7 +722,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(40),
                                             child: Image(
-                                              image: NetworkImage(photoUrl),
+                                              image: NetworkImage(cpurl[index]),
                                               width: 40,
                                               height: 40,
                                               fit: BoxFit.cover,
@@ -704,7 +731,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           SizedBox(
                                             width: 10,
                                           ),
-                                          Text(displayName,style: TextStyle(
+                                          Text(cdisplayName[index],style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18.0,
                                           ),),

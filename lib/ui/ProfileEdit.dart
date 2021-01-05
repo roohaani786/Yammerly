@@ -238,10 +238,12 @@ class _ProfilePageState extends State<ProfilePage> {
   bool hometownE = false;
   String valueX = "Select Gender";
 
-
-
-
-
+  // chagePhostPhoto(String purl,String uid){
+  //   Firestore.instance
+  //       .collection("posts")
+  //       .updateData({'PhotoURL': purl});
+  //   print("photo change huai");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -444,6 +446,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ". Login Email Not Changed (As Not Recently Logged In)";
                       }
                       fetchProfileData();
+                      //chagePhostPhoto(photoUrlController.text.trim(),uidController.text.trim());
                     } on PlatformException catch (e) {
                       print("PlatformException in fetching user profile. E  = " +
                           e.message);
