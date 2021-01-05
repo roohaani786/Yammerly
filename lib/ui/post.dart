@@ -505,7 +505,7 @@ class _postPageState extends State<postPage> {
                                         IconButton(
                                           icon: Icon(Icons.delete),
                                           onPressed: () {
-                                            showDialog(
+                                            (displayName == displayNamecurrentUser)?showDialog(
                                                 context: context,
                                                 builder: (BuildContext context) {
                                                   return AlertDialog(
@@ -547,6 +547,15 @@ class _postPageState extends State<postPage> {
                                                         ),
 
                                                       )
+                                                    ],
+                                                  );
+                                                }):showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    title: Text('You are not the owner of this post'),
+                                                    actions: <Widget>[
+
                                                     ],
                                                   );
                                                 });
@@ -829,7 +838,7 @@ class _postPageState extends State<postPage> {
                                     IconButton(
                                       icon: Icon(Icons.delete),
                                       onPressed: () {
-                                        showDialog(
+                                        (displayName == displayNamecurrentUser)?showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
@@ -871,6 +880,15 @@ class _postPageState extends State<postPage> {
                                                     ),
 
                                                   )
+                                                ],
+                                              );
+                                            }):showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text('You are not the owner of this post'),
+                                                actions: <Widget>[
+
                                                 ],
                                               );
                                             });
