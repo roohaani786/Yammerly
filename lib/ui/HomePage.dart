@@ -35,7 +35,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState(initialindexg);
 }
 
-final PageController _pageController = PageController(initialPage: 2,keepPage: true);
+final PageController _pageController = PageController(initialPage: 1,keepPage: true);
 
 class _HomePageState extends State<HomePage> {
 
@@ -260,43 +260,6 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     this.getCurrentUser();
   }
 
-  //Future<bool> _onWillPop() {
-
-    // return Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) {
-    //       return HomePage(initialindexg: 2);
-    //     },
-    //   ),
-    // );
-  //}
-
-
-
-  // Future<bool> onWillPop() {
-  //
-  //   return showDialog(
-  //     context: context,
-  //     builder: (context) => new AlertDialog(
-  //       title: new Text('Are you sure?'),
-  //       content: new Text('Do you want to exit an App'),
-  //       actions: <Widget>[
-  //         new GestureDetector(
-  //           onTap: () => Navigator.of(context).pop(false),
-  //           child: Text("NO"),
-  //         ),
-  //         SizedBox(height: 16),
-  //         new GestureDetector(
-  //           onTap: () => Navigator.of(context).pop(true),
-  //           child: Text("YES"),
-  //         ),
-  //       ],
-  //     ),
-  //   ) ??
-  //       false;
-  // }
-
   @override
   Widget build(BuildContext context) {
     // Local dragStartDetail.
@@ -367,7 +330,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
       ),
       body: DefaultTabController(
         length: 4,
-        initialIndex: (initialindexg == null) ? 2 : initialindexg,
+        initialIndex: (initialindexg == null) ? 1 : initialindexg,
 
         child: Scaffold(
           body: Column(
@@ -388,7 +351,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                     return true;
                   },
                   child: TabBarView(
-                    controller: tabController,
+                    //controller: tabController,
                     children: [
                       new Container(
                         child: ChatsPage(),
@@ -410,7 +373,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
           bottomNavigationBar: new Container(
             height: 60.0,
             child: new TabBar(
-              controller: tabController,
+              //controller: tabController,
               tabs: [
                 Tab(
                   icon: new Icon(Icons.blur_circular, size: 30),

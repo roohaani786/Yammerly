@@ -425,7 +425,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       snackbarContent = "Profile Updated";
                       if(snackbarContent == "Profile Updated"){
 
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(initialindexg: 3,)));
                       }
                       try {
                         await currUser.updateEmail(data["email"]);

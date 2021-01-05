@@ -224,7 +224,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       context,
       MaterialPageRoute(
         builder: (context) {
-          return HomePage(initialindexg: 2);
+          return HomePage(initialindexg: 1);
         },
       ),
     );
