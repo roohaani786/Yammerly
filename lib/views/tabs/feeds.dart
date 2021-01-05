@@ -250,8 +250,11 @@ class _FeedsPageState extends State<FeedsPage> {
 
   List<String> cpurl = new List(10000);
   var cdisplayName = new List(10000);
+  //bool cloading = false;
+  List<bool> cloading = List.filled(10000,false);
 
-  Future<DocumentSnapshot> Fetchprofile(String uid,int index) async{
+  Fetchprofile(String uid,int index) async{
+
     docSnap = await Firestore.instance
         .collection("users")
         .document(uid)
@@ -262,6 +265,7 @@ class _FeedsPageState extends State<FeedsPage> {
     setState(() {
       cpurl[index] = cpurlController.text;
       cdisplayName[index] = cdisplayNameController.text;
+      cloading[index] = true;
     });
 
   }
@@ -386,9 +390,12 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         readTimestamp(timestamp.seconds);
 
+                        Fetchprofile(uid, index);
+
                         getlikes(displayNamecurrentUser, postIdX, index);
 
-                        Fetchprofile(uid,index);
+
+
 
                         Notification() async {
                           //print(currUid);
@@ -445,7 +452,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                 borderRadius: BorderRadius.circular(40),
                                                 child: Image(
                                                   image: (cpurl[index] != null)?
-                                                  NetworkImage(cpurl[index]):NetworkImage(
+                                                  (cloading[index])?NetworkImage(cpurl[index]):NetworkImage("url"):NetworkImage(
                                                     "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
                                                   ),
                                                   width: 40,
@@ -456,10 +463,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                               SizedBox(
                                                 width: 10,
                                               ),
-                                              Text(cdisplayName[index],style: TextStyle(
+                                              (cloading[index])?Text(cdisplayName[index],style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18.0,
-                                              ),),
+                                              ),):Container(child: Text("Loading...")),
                                             ],
                                           ),
 
@@ -532,14 +539,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                     child : (cam == 1)? Transform(
                                       alignment: Alignment.center,
                                       transform: Matrix4.rotationY(math.pi),
-                                      child: (url==null)?Container():FadeInImage(
+                                      child: (url==null)?Container():(!cloading[index])?Container():FadeInImage(
                                         image: NetworkImage(url),
                                         fit: BoxFit.cover,
                                         //image: NetworkImage("posts[i].postImage"),
                                         placeholder: AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
                                       ),
-                                    ):(url==null)?Container():FadeInImage(
+                                    ):(url==null)?Container():(!cloading[index])?Container():FadeInImage(
                                       image: NetworkImage(url),
                                       fit: BoxFit.cover,
                                       //image: NetworkImage("posts[i].postImage"),
@@ -695,6 +702,9 @@ class _FeedsPageState extends State<FeedsPage> {
                             ],
                           ),
 
+
+
+                          // post container
                         ):Container(
                           color: Colors.white,
                           child: Column(
@@ -726,7 +736,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                             borderRadius: BorderRadius.circular(40),
                                             child: Image(
                                               image: (cpurl != null)?
-                                              NetworkImage(cpurl[index]):NetworkImage(
+                                              (cloading[index])?NetworkImage(cpurl[index]):NetworkImage(
+                                                  "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                              )
+                                                  :NetworkImage(
                                                 "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
                                               ),
                                               width: 40,
@@ -737,10 +750,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                           SizedBox(
                                             width: 10,
                                           ),
-                                          Text(cdisplayName[index],style: TextStyle(
+                                          (cloading[index])?Text(cdisplayName[index],style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18.0,
-                                          ),),
+                                          ),):Container(child: Text("Loading...")),
                                         ],
                                       ),
                                       IconButton(
@@ -776,7 +789,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     child :(cam == 1)?Transform(
                                       alignment: Alignment.center,
                                       transform: Matrix4.rotationY(math.pi),
-                                      child: (url== null)?Container():FadeInImage(
+                                      child: (url== null)?Container():(!cloading[index])?Container():FadeInImage(
                                         image: NetworkImage(url),
                                         fit: BoxFit.cover,
                                         //image: NetworkImage("posts[i].postImage"),
@@ -784,7 +797,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         width: MediaQuery.of(context).size.width,
                                       ),
 
-                                    ):(url==null)?Container():FadeInImage(
+                                    ):(url==null)?Container():(!cloading[index])?Container():FadeInImage(
                                       image: NetworkImage(url,),
                                       fit: BoxFit.cover,
                                       placeholder: AssetImage("assets/images/loading.gif"),
