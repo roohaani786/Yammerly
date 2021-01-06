@@ -1,22 +1,22 @@
 import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:techstagram/ComeraV/cam.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:image/image.dart' as ImD;
+import 'package:uuid/uuid.dart';
 
 class CameraScreen extends StatefulWidget {
   final int cam;
@@ -460,9 +460,13 @@ class CameraScreenState extends State<CameraScreen>
                       MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
                 }else{
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CameraS(),));
-                }
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CameraScreen(
+                              cam: 0,
+                            ),
+                          ));
+                    }
               }
 
               ),
@@ -483,17 +487,19 @@ class CameraScreenState extends State<CameraScreen>
                       color: (_isRecording) ? Colors.red : Colors.black,
                     ),
                     onPressed: () {
+                      print("$_isRecordingMode");
+
                       if (!_isRecordingMode) {
-                        print("alam");
-                        print(cam);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Gallery(filePath: currentCityController.text,cam:cam),
-                          ),
-                        );
+                        // print("alam");
+                        // print(cam);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => Gallery(filePath: currentCityController.text,cam:cam),
+                        //   ),
+                        // );
                         _captureImage();
-                        if(flashOn){
+                        if (flashOn) {
                           print("dhjfh");
                         }
                       } else {
@@ -602,6 +608,8 @@ class CameraScreenState extends State<CameraScreen>
 
   void _captureImage() async {
     print('_captureImage');
+    print('${_controller.value.isInitialized}');
+
     if (_controller.value.isInitialized) {
       SystemSound.play(SystemSoundType.click);
       final Directory extDir = await getApplicationDocumentsDirectory();
@@ -616,7 +624,6 @@ class CameraScreenState extends State<CameraScreen>
         MaterialPageRoute(
             builder: (context) => Gallery(filePath: filePath,cam: cam,)),
       );
-
     }
   }
 

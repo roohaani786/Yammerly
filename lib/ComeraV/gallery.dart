@@ -1,18 +1,20 @@
 import 'dart:io';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'dart:math' as math;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 
 class Gallery extends StatefulWidget {
-  Gallery({this.filePath,this.cam});
-  String filePath;
+  Gallery({this.filePath, this.cam});
 
-  int cam;
+  final String filePath;
+  final int cam;
+
   @override
-  _GalleryState createState() => _GalleryState(filePath,cam);
+  _GalleryState createState() => _GalleryState(filePath, cam);
 }
 
 class _GalleryState extends State<Gallery> {
@@ -26,32 +28,22 @@ class _GalleryState extends State<Gallery> {
 
   int indexd;
 
-
   @override
   void initState() {
+    debugPrint('gallery');
     super.initState();
   }
 
-
-  Future<bool> _onWillPop() {
-    // return Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) {
-    //       return CameraScreen(cam: cam,);
-    //     },
-    //   ),
-    // );
-    return showDialog(
+  Future<bool> _onWillPop() async {
+    print('pop-');
+    showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
             title: Text("Discard post ?"),
             content: Text("If you go back now, you will lose your post.",
-                style: TextStyle(
-                    color: Colors.deepPurple
-                )),
+                style: TextStyle(color: Colors.deepPurple)),
             actions: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(right: 120.0),
@@ -87,15 +79,11 @@ class _GalleryState extends State<Gallery> {
                     )
                   ],
                 ),
-
               )
             ],
           );
-        }) ??
-        false;
+        });
   }
-
-  //bool _inProcess=false;
 
 
 
