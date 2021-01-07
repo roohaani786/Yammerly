@@ -166,7 +166,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
       "timestamp": Timestamp.now(),
       "email": emailController.text,
       "photoURL" :photoUrlController.text,
-      "description": descriptionController.text,
+      "OwnerDescription": ownerdescription,
       "cam": cam,
       "likes": 0,
       "comments": 0,

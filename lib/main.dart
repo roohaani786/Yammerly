@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
         '/Welcome': (context) => WelcomeScreen(),
         '/nayasignup': (context) => SignUpScreen(),
         '/Profile': (context) => AccountBottomIconScreen(),
-        '/HomePage': (context) => HomePage(),
+        '/HomePage': (context) => HomePage(initialindexg: 1,),
       },
 
       theme: new ThemeData(
@@ -81,7 +81,7 @@ class CheckState extends State<Check> with AfterLayoutMixin<Check> {
 
     if (seen == false) {
       print("First Time");
-      //Checking data using shared preferences
+      //Checking data using shared pref erences
       prefs.setBool('seen', true);
       Navigator.of(context).pushReplacement(
           new MaterialPageRoute(builder: (context) => new IntroPage()));

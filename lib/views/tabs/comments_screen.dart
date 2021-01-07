@@ -69,6 +69,7 @@ class CommentsPageState extends State<CommentsPage> {
         });
         return ListView(
           children: comments,
+
         );
       },
     );
@@ -340,9 +341,11 @@ class Comment extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
     return Padding(
-      padding: EdgeInsets.only(bottom: 6.0),
+      padding: EdgeInsets.only(bottom: 0.0),
       child: Container(
 
         color: Colors.white,
@@ -352,27 +355,31 @@ class Comment extends StatelessWidget {
                 ListTile(
                   title: (userName != null || comment != null)?Row(
                     children: [
-                      Expanded(
-                        child: RichText(
-                          textAlign: TextAlign.start,
-                          softWrap: true,
-                          overflow: TextOverflow.visible,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: userName + " :  ",
-                                style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                              ),
-                              TextSpan(
-                                text: comment,
-                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                    fontSize: 15.0),
-                              ),
-                            ],
-                          ),
+                      Container(
+                        width: deviceWidth*0.65,
+                        child: Expanded(
+                          child: RichText(
+                            textAlign: TextAlign.start,
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: userName + " :  ",
+                                  style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                                ),
+                                TextSpan(
+                                  text: comment,
+                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                      fontSize: 15.0),
+                                ),
+                              ],
+                            ),
 
+                          ),
                         ),
-                      )
+                      ),
+
 //                      Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
 //                        fontWeight: FontWeight.bold,),),
 //                      Padding(
@@ -386,6 +393,14 @@ class Comment extends StatelessWidget {
 //                          ),
 //                        ),
 //                      ),
+                    Container(
+                      child: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+
+                        },
+                      ),
+                    )
                     ],
                   ):Text(""),
                   leading: (userName != null || comment != null)?CircleAvatar(
