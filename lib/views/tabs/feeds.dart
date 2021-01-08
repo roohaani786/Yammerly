@@ -10,6 +10,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //import 'package:techstagram/Widget/Fab.dart';
 import 'package:techstagram/models/posts.dart';
@@ -334,6 +335,14 @@ class _FeedsPageState extends State<FeedsPage> {
       ),
     );
 
+    addStringToSF(String displayName, String displayNameCurrUser,String postId,int comments) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('displayName', displayName);
+      prefs.setString('displayNameCurrUser', displayNameCurrUser);
+      prefs.setString('postId',postId);
+      prefs.setInt('comments',comments);
+    }
+
 
 
 
@@ -602,7 +611,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             children: [
 
                                               TextSpan(
-                                                text: "  "+OwnerDisplayName + " : ",
+                                                text: "  "+OwnerDisplayName + " ",
                                                 style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
                                                     fontSize: 18.0),
                                               ),
@@ -685,6 +694,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
 
+                                            addStringToSF(displayName,displayNameController.text,postId,comments);
                                           },
 
 
@@ -698,7 +708,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
@@ -924,6 +934,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                             Navigator.push(context, MaterialPageRoute(builder: (context){
                                               return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
+                                            addStringToSF(displayName,displayNameController.text,postId,comments);
+
                                           },
                                           icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                         ),

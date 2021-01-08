@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:techstagram/services/database.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
@@ -309,8 +311,9 @@ class Comment extends StatelessWidget {
   final String url;
   final String comment;
   final Timestamp timestamp;
+  final String commentId;
 
-  Comment({this.userName,this.userId,this.url,this.comment,this.timestamp});
+  Comment({this.userName,this.userId,this.url,this.comment,this.timestamp,this.commentId});
 
   factory Comment.fromDocument(DocumentSnapshot documentSnapshot){
     return Comment(
@@ -319,8 +322,71 @@ class Comment extends StatelessWidget {
       url: documentSnapshot["url"],
       comment: documentSnapshot["comment"],
       timestamp: documentSnapshot["timestamp"],
+      commentId : documentSnapshot["commentId"],
 
     );
+  }
+
+  get context => null;
+
+  @override
+  void initState() {
+
+    String displayName = getStringValuesSFdisplayName();
+    String displyaNameCurrUser = getStringValuesSFdisplayNameCurrUser();
+
+  }
+
+  getStringValuesSFdisplayName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String displayName = prefs.getString('displayName');
+    return displayName;
+  }
+
+  getStringValuesSFdisplayNameCurrUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String displayNameCurrUser = prefs.getString('displayNameCurrUser');
+    return displayNameCurrUser;
+  }
+
+  deleteComments() async {
+
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String displayNameCurrUser = prefs.getString('displayNameCurrUser');
+    String displayName = prefs.getString("displayName");
+    String postId = prefs.getString('psotId');
+    int comments = prefs.getInt("comments");
+    print(displayNameCurrUser);
+    print("delete comment");
+
+
+    if(displayName == displayNameCurrUser){
+
+      print("delte click");
+
+      DatabaseService().CommentD(postId,comments);
+      print(postId);
+      print(displayName);
+      print("halelula");
+      print(displayNameCurrUser);
+      await Firestore.instance.collection('posts').document(postId)
+          .collection("comments").document(commentId).delete();
+
+    }else{
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('You are not the owner of this post'),
+              actions: <Widget>[
+
+              ],
+            );
+          });
+    }
   }
 
   String tAgo(DateTime d) {
@@ -397,7 +463,8 @@ class Comment extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {
-
+                          deleteComments();
+                          print("delete me");
                         },
                       ),
                     )
@@ -410,9 +477,7 @@ class Comment extends StatelessWidget {
                 ),
               ],
             ),
-
       ),
-
     );
   }
 }
