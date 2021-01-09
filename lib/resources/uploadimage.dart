@@ -25,10 +25,11 @@ class UploadImage extends StatefulWidget {
   bool shared;
   int shares;
   String ownerPostId;
-  UploadImage({this.ownerPostId,this.shares,this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
+  Timestamp ownerTimeStamp;
+  UploadImage({this.ownerPostId,this.shares,this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl,this.ownerTimeStamp});
 
   @override
-  _UploadImageState createState() => _UploadImageState(ownerPostId: ownerPostId,shares:shares,cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl);
+  _UploadImageState createState() => _UploadImageState(ownerPostId: ownerPostId,shares:shares,cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl,ownerTimeStamp: ownerTimeStamp);
 }
 
 class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClientMixin<UploadImage> {
@@ -43,7 +44,8 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
   String sharedurl;
   int shares;
   String ownerPostId;
-  _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
+  Timestamp ownerTimeStamp;
+  _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl,this.ownerTimeStamp});
   TextEditingController
   emailController,
       uidController,
@@ -157,6 +159,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
 
     Firestore.instance.collection("posts").document(postId).setData({
       "OwnerPhotourl" : ownerphotourl,
+      "OwnerTimeStamp" : ownerTimeStamp,
       "description" : description,
       "OwnerDisplayName" : ownerdisplayname,
       "shared" : shared,
@@ -184,6 +187,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
         .document(postId)
         .setData({
       "OwnerPhotourl" : ownerphotourl,
+      "OwnerTimeStamp" : ownerTimeStamp,
       "description" : description,
       "Ownerdescription" : ownerdescription,
       "OwnerDisplayName" : ownerdisplayname,

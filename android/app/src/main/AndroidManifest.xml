@@ -7,6 +7,7 @@
          FlutterApplication and put your custom class here. -->
 
     <application
+        android:requestLegacyExternalStorage="true"
         android:name="io.flutter.app.FlutterApplication"
         android:label="Yammerly"
         android:icon="@mipmap/ic_launcher">
@@ -78,5 +79,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.R EAD_EXTERNAL_STORAGE"/>
 
 </manifest>

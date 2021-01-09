@@ -400,6 +400,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         int comments = snapshot.data.documents[index]['comments'];
 
+                        Timestamp OwnerTimeStamp = snapshot.data.documents[index]['OwnerTimeStamp'];
+
                         bool button = true;
 
                         // setState(() async {
@@ -498,7 +500,6 @@ class _FeedsPageState extends State<FeedsPage> {
                                   ),
                                 ),
                               ),
-
 
 
                               GestureDetector(
@@ -651,6 +652,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                 ],
                                               ),
                                             ),
+
                                 ),
                               ),
 
@@ -731,7 +733,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerTimeStamp: OwnerTimeStamp,)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
@@ -970,7 +972,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
@@ -1082,11 +1084,11 @@ class _FeedsPageState extends State<FeedsPage> {
             size: 40.0,
           ),
           onPressed: () {
-            //pickImage();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => gallery()),
-            );
+            pickImage();
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => gallery()),
+            // );
           },
         ),
       ),
