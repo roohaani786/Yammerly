@@ -340,6 +340,7 @@ class _FeedsPageState extends State<FeedsPage> {
       prefs.setString('displayName', displayName);
       prefs.setString('displayNameCurrUser', displayNameCurrUser);
       prefs.setString('postId',postId);
+      prefs.setInt('commCount', 0);
       prefs.setInt('comments',comments);
     }
 
@@ -694,7 +695,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
 
-                                            addStringToSF(displayName,displayNameController.text,postId,comments);
+                                            addStringToSF(cdisplayName[index],displayNameController.text,postId,comments);
                                           },
 
 

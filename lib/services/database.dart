@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/models/wiggle.dart';
 import 'dart:io';
@@ -473,16 +474,22 @@ class DatabaseService {
         .updateData({'posts': posts - 1});
   }
 
-  CommentD(String postId,int comments) async {
-    //print(postsController);
-    print("helloww");
-    //String increment = postsController.text;
-    //int incr = int.parse(posts);
-    //print(incr);
+  CommentD(String postId,int comments,int commCount) async {
+    int UcommCount=0;
+    int Ucomments=0;
+    if(commCount > 0){
+      UcommCount = commCount-1;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setInt('commCount', UcommCount);
+    }else if(comments > 0){
+      Ucomments = comments -1;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setInt('comments', Ucomments);
+    }
     Firestore.instance
         .collection("posts")
         .document(postId)
-        .updateData({'comments': comments - 1});
+        .updateData({'comments': (comments+commCount) - 1});
   }
 
   Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX,String photoUrlX) async {

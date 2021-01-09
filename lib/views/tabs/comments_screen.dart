@@ -112,10 +112,14 @@ class CommentsPageState extends State<CommentsPage> {
   // }
 
   SaveCommentI() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('commCount', commentCount);
     return await Firestore.instance
         .collection("posts")
         .document(postId)
         .updateData({'comments': comments + commentCount});
+
   }
 
   showError(){
@@ -163,7 +167,7 @@ class CommentsPageState extends State<CommentsPage> {
         .document(uid)
         .collection("posts")
         .document(postId)
-        .updateData({'comments': comments + 1});
+        .updateData({'comments': comments + commentCount});
   }
 
   saveComment() async {
@@ -329,53 +333,40 @@ class Comment extends StatelessWidget {
 
   get context => null;
 
-  @override
-  void initState() {
-
-    String displayName = getStringValuesSFdisplayName();
-    String displyaNameCurrUser = getStringValuesSFdisplayNameCurrUser();
-
-  }
-
-  getStringValuesSFdisplayName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String displayName = prefs.getString('displayName');
-    return displayName;
-  }
-
-  getStringValuesSFdisplayNameCurrUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String displayNameCurrUser = prefs.getString('displayNameCurrUser');
-    return displayNameCurrUser;
-  }
-
-  deleteComments() async {
-
+  deleteComments(String displayNameComment) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String displayNameCurrUser = prefs.getString('displayNameCurrUser');
     String displayName = prefs.getString("displayName");
-    String postId = prefs.getString('psotId');
+    String displayNameCurrUser = prefs.getString('displayNameCurrUser');
+    String postId = prefs.getString('postId');
     int comments = prefs.getInt("comments");
-    print(displayNameCurrUser);
+    int commCount = prefs.getInt("commCount");
+    print(displayNameCurrUser+"del");
+    print(commCount);
     print("delete comment");
+    //int deleteC= comments+commCount;
 
 
-    if(displayName == displayNameCurrUser){
+    if(displayNameComment == displayNameCurrUser){
 
-      print("delte click");
 
-      DatabaseService().CommentD(postId,comments);
+      DatabaseService().CommentD(postId,comments,commCount);
+      print(displayNameCurrUser);
+      await Firestore.instance.collection('posts').document(postId)
+          .collection("comments").document(commentId).delete();
+
+    }else if(displayName == displayNameCurrUser){
+      print("delte clickd");
+
+      DatabaseService().CommentD(postId,comments,commCount);
       print(postId);
       print(displayName);
       print("halelula");
       print(displayNameCurrUser);
       await Firestore.instance.collection('posts').document(postId)
           .collection("comments").document(commentId).delete();
-
-    }else{
+    }
+    else{
       return showDialog(
           context: context,
           builder: (context) {
@@ -387,6 +378,7 @@ class Comment extends StatelessWidget {
             );
           });
     }
+    print("delete me aaya");
   }
 
   String tAgo(DateTime d) {
@@ -463,7 +455,7 @@ class Comment extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {
-                          deleteComments();
+                          deleteComments(userName);
                           print("delete me");
                         },
                       ),
