@@ -1089,8 +1089,6 @@ class _FeedsPageState extends State<FeedsPage> {
             );
           },
         ),
-
-        // floatingActionButton: FancyFab(),
       ),
     );
   }
