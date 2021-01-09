@@ -400,6 +400,13 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         int comments = snapshot.data.documents[index]['comments'];
 
+                        bool button = true;
+
+                        // setState(() async {
+                        //   SharedPreferences prefs = await SharedPreferences.getInstance();
+                        //   button = prefs.getBool("button" ?? true);
+                        // });
+
                         readTimestamp(timestamp.seconds);
 
                         Fetchprofile(uid, index);
@@ -640,30 +647,31 @@ class _FeedsPageState extends State<FeedsPage> {
                                   Row(
                                     children: <Widget>[
 
-                                      IconButton(
+                                      (button == true)?IconButton(
                                         padding: EdgeInsets.only(left: 10),
                                         onPressed: (_likes[index] == true)
                                             ? () {
-
-
                                           setState(() {
+                                            // SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            // prefs.setBool('button', false);
                                             _likes[index] = false;
+                                            button = false;
                                             //like[likeint] = "false";
                                             loading = true;
                                           });
-
-                                          DatabaseService().unlikepost(
-                                              likes, postId,displayNameController.text);
-
+                                          DatabaseService().unlikepost(likes, postId,displayNameController.text);
                                           setState(() {
                                             loading = false;
                                           });
                                         }
                                             : () {
                                           setState(() {
+                                            // SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            // prefs.setBool('button', false);
                                             _likes[index] = true;
                                             //like[likeint] = "true";
                                             loading = true;
+                                            button = false;
                                           });
 
                                           DatabaseService().likepost(
@@ -677,7 +685,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         icon: Icon(Icons.thumb_up),
                                         iconSize: 25,
                                         color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
-                                      ),
+                                      ):Container(color: Colors.red,),
 
                                       Text(
                                         likes.toString(),style: TextStyle(
@@ -891,7 +899,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                   Row(
                                     children: <Widget>[
 
-                                      IconButton(
+                                      (button == true)?IconButton(
                                         padding: EdgeInsets.only(left: 10),
                                         onPressed: (_likes[index] == true)
                                             ? () {
@@ -899,10 +907,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                             _likes[index] = false;
                                             //like[likeint] = "false";
                                             loading = true;
+                                            button = false;
 //                                              likes--;
                                             DatabaseService().unlikepost(
                                                 likes, postId,displayNameController.text);
                                             loading = false;
+                                            button = true;
                                           });
                                         }
                                             : () {
@@ -910,16 +920,18 @@ class _FeedsPageState extends State<FeedsPage> {
                                             _likes[index] = true;
                                             //like[likeint] = "true";
                                             loading = true;
+                                            button = false;
                                             DatabaseService().likepost(
                                                 likes, postId,displayNameController.text);
                                             Notification();
                                             loading = false;
+                                            button = true;
                                           });
                                         },
                                         icon: Icon(Icons.thumb_up),
                                         iconSize: 25,
                                         color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
-                                      ),
+                                      ):Container(color: Colors.red),
 
                                       Text(
                                         likes.toString(),style: TextStyle(

@@ -739,6 +739,7 @@ class _postPageState extends State<postPage> {
                                   children: [
 
                                     Container(
+                                      width : MediaQuery. of(context). size. width * 0.90,
                                       child: RichText(
                                         textAlign: TextAlign.start,
                                         softWrap: true,
@@ -1022,6 +1023,7 @@ class _postPageState extends State<postPage> {
                                   children: [
 
                                     Container(
+                                      width : MediaQuery. of(context). size. width * 0.90,
                                       child: RichText(
                                         textAlign: TextAlign.start,
                                         softWrap: true,
