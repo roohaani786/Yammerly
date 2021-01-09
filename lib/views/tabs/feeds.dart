@@ -1093,11 +1093,11 @@ class _FeedsPageState extends State<FeedsPage> {
             size: 40.0,
           ),
           onPressed: () {
-            //pickImage();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => gallery()),
-            );
+            pickImage();
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => gallery()),
+            // );
           },
         ),
 
