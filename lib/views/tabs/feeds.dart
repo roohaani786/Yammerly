@@ -401,6 +401,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         int comments = snapshot.data.documents[index]['comments'];
 
+                        Timestamp OwnerTimeStamp = snapshot.data.documents[index]['OwnerTimeStamp'];
+
                         bool button = true;
 
                         // setState(() async {
@@ -525,7 +527,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(40),
                                               child: Image(
-                                                image: NetworkImage(OwnerPhotourl),
+                                                image : NetworkImage(OwnerPhotourl),
                                                 width: 30,
                                                 height: 30,
                                                 fit: BoxFit.cover,
@@ -608,28 +610,46 @@ class _FeedsPageState extends State<FeedsPage> {
                                   // margin: EdgeInsets.symmetric(
                                   //   horizontal: 14,
                                   // ),
-                                  child: Row(
+                                  child: Column(
                                     children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.8,
-                                        child: RichText(
-                                          textAlign: TextAlign.start,
-                                          softWrap: true,
-                                          overflow: TextOverflow.visible,
-                                          text: TextSpan(
-                                            children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context).size.width*0.8,
+                                            child: RichText(
+                                              textAlign: TextAlign.start,
+                                              softWrap: true,
+                                              overflow: TextOverflow.visible,
+                                              text: TextSpan(
+                                                children: [
 
-                                              TextSpan(
-                                                text: "  "+OwnerDisplayName + " ",
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                    fontSize: 18.0),
+                                                  TextSpan(
+                                                    text: "  "+OwnerDisplayName + " ",
+                                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                        fontSize: 18.0),
+                                                  ),
+                                                  TextSpan(
+                                                    text: OwnerDescription,
+                                                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                        fontSize: 15.0),
+                                                  ),
+                                                ],
                                               ),
-                                              TextSpan(
-                                                text: OwnerDescription,
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                    fontSize: 15.0),
-                                              ),
-                                            ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                          top: 8.0,left: 8.0,bottom:2.0,
+                                        ),
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                          readTimestamp(OwnerTimeStamp.seconds),
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 10.0,
                                           ),
                                         ),
                                       ),
@@ -718,7 +738,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerTimeStamp: OwnerTimeStamp,)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
@@ -961,7 +981,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),

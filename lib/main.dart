@@ -47,6 +47,7 @@ class _MyAppState extends State<MyApp> {
       },
 
       theme: new ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
         primarySwatch: Colors.blue,
         primaryColor: Colors.black,
         primaryIconTheme: IconThemeData(color: Colors.black),
