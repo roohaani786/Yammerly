@@ -833,31 +833,35 @@ class _postPageState extends State<postPage> {
                                 margin: EdgeInsets.symmetric(
                                   horizontal: 14,
                                 ),
-                                child: Row(
+                                child: Column(
                                   children: [
+                                    Row(
+                                      children: [
 
-                                    Container(
-                                      width : MediaQuery. of(context). size. width * 0.90,
-                                      child: RichText(
-                                        textAlign: TextAlign.start,
-                                        softWrap: true,
-                                        overflow: TextOverflow.visible,
-                                        text: TextSpan(
-                                          children: [
+                                        Container(
+                                          width : MediaQuery. of(context). size. width * 0.90,
+                                          child: RichText(
+                                            textAlign: TextAlign.start,
+                                            softWrap: true,
+                                            overflow: TextOverflow.visible,
+                                            text: TextSpan(
+                                              children: [
 
-                                            TextSpan(
-                                              text: displayName + "  ",
-                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                  fontSize: 18.0),
+                                                TextSpan(
+                                                  text: displayName + "  ",
+                                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                      fontSize: 18.0),
+                                                ),
+                                                TextSpan(
+                                                  text: description,
+                                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                      fontSize: 15.0),
+                                                ),
+                                              ],
                                             ),
-                                            TextSpan(
-                                              text: description,
-                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                  fontSize: 15.0),
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ],
                                 )
