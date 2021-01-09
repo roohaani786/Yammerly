@@ -24,6 +24,7 @@ import 'package:techstagram/utils/utils.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
+import 'package:techstagram/yammerly_gallery/gallery.dart';
 
 class FeedsPage extends StatefulWidget {
 
@@ -1072,7 +1073,11 @@ class _FeedsPageState extends State<FeedsPage> {
             size: 40.0,
           ),
           onPressed: () {
-            pickImage();
+            //pickImage();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => gallery()),
+            );
           },
         ),
 

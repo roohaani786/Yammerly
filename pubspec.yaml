@@ -88,6 +88,7 @@ dependencies:
   image_editor_pro: ^1.0.6
 
   animated_icon_button:
+  storage_path: ^0.2.0
 
 
 dev_dependencies:
