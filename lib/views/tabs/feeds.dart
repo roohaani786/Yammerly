@@ -11,7 +11,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 //import 'package:techstagram/Widget/Fab.dart';
 import 'package:techstagram/models/posts.dart';
 import 'package:techstagram/models/user.dart';
@@ -22,9 +21,9 @@ import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/utils/utils.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
+import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
-import 'package:techstagram/yammerly_gallery/gallery.dart';
 
 class FeedsPage extends StatefulWidget {
 
@@ -487,64 +486,19 @@ class _FeedsPageState extends State<FeedsPage> {
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18.0,
                                               ),):Container(child: Text("Loading...")),
-                                            ],
-                                          ),
-
+                                                      ],
+                                                    ),
                                           IconButton(
                                             icon: Icon(SimpleLineIcons.options),
                                             onPressed: () {},
                                           ),
-                                        ],
+                                                  ],
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
 
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 0.0),
-                                child: Container(
-                                  width: deviceWidth*0.95,
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      top: BorderSide(width: 2.0, color: Colors.grey),
-                                      left: BorderSide(width: 2.0, color: Colors.grey),
-                                      right: BorderSide(width: 2.0, color: Colors.grey)
-                                      //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                    ),
-                                    color: Colors.grey.shade200,
-                                  ),
-                                  height: 50.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 15.0,right: 15.0,),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(40),
-                                              child: Image(
-                                                image: NetworkImage(OwnerPhotourl),
-                                                width: 30,
-                                                height: 30,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(OwnerDisplayName,style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12.0,
-                                            ),),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
 
 
                               GestureDetector(
@@ -552,92 +506,151 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                   if (_likes[index] == false) {
                                     setState(() {
-                                      _likes[index] = true;
-                                    });
+                                                _likes[index] = true;
+                                              });
 
-                                    DatabaseService().likepost(
-                                        likes, postId,
-                                        displayNameController.text);
-                                  }
-                                },
-                                onTap: null,
+                                              DatabaseService().likepost(
+                                                  likes,
+                                                  postId,
+                                                  displayNameController.text);
+                                            }
+                                          },
+                                          onTap: null,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              //height: 450.0,
+                                              width: deviceWidth * 0.95,
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                      width: 2.0,
+                                                      color: Colors.white),
 
-                                child: Container(
-                                  //height: 450.0,
-                                  width: deviceWidth*0.95,
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(width: 2.0, color: Colors.grey),
-                                        left: BorderSide(width: 2.0, color: Colors.grey),
-                                        right: BorderSide(width: 2.0, color: Colors.grey)
-                                      //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      GestureDetector(
-                                        child : (cam == 1)? Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.rotationY(math.pi),
-                                          child: (url==null)?Container():(!cloading[index])?Container():FadeInImage(
-                                            image: NetworkImage(url),
-                                            fit: BoxFit.cover,
-                                            //image: NetworkImage("posts[i].postImage"),
-                                            placeholder: AssetImage("assets/images/loading.gif"),
-                                            width: MediaQuery.of(context).size.width,
-                                          ),
-                                        ):(url==null)?Container():(!cloading[index])?Container():FadeInImage(
-                                          image: NetworkImage(url),
-                                          fit: BoxFit.cover,
-                                          //image: NetworkImage("posts[i].postImage"),
-                                          placeholder: AssetImage("assets/images/loading.gif"),
-                                          width: MediaQuery.of(context).size.width,
-                                        ),
-                                      ),
-
-                                  Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                            top: BorderSide(width: 2.0, color: Colors.grey),
-                                            //left: BorderSide(width: 2.0, color: Colors.grey),
-                                            //right: BorderSide(width: 2.0, color: Colors.grey)
-                                          //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                        ),
-                                      ),
-                                  // margin: EdgeInsets.symmetric(
-                                  //   horizontal: 14,
-                                  // ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.8,
-                                        child: RichText(
-                                          textAlign: TextAlign.start,
-                                          softWrap: true,
-                                          overflow: TextOverflow.visible,
-                                          text: TextSpan(
-                                            children: [
-
-                                              TextSpan(
-                                                text: "  "+OwnerDisplayName + " ",
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                    fontSize: 18.0),
+                                                  //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                                ),
                                               ),
-                                              TextSpan(
-                                                text: OwnerDescription,
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                    fontSize: 15.0),
+                                              child: Column(
+                                                children: [
+                                                  GestureDetector(
+                                                    child: (cam == 1)
+                                                        ? Transform(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            transform: Matrix4
+                                                                .rotationY(
+                                                                    math.pi),
+                                                            child: (url == null)
+                                                                ? Container()
+                                                                : (!cloading[
+                                                                        index])
+                                                                    ? Container()
+                                                                    : FadeInImage(
+                                                                        image: NetworkImage(
+                                                                            url),
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                        //image: NetworkImage("posts[i].postImage"),
+                                                                        placeholder:
+                                                                            AssetImage("assets/images/loading.gif"),
+                                                                        width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width,
+                                                                      ),
+                                                          )
+                                                        : (url == null)
+                                                            ? Container()
+                                                            : (!cloading[index])
+                                                                ? Container()
+                                                                : FadeInImage(
+                                                                    image:
+                                                                        NetworkImage(
+                                                                            url),
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    //image: NetworkImage("posts[i].postImage"),
+                                                                    placeholder:
+                                                                        AssetImage(
+                                                                            "assets/images/loading.gif"),
+                                                                    width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width,
+                                                                  ),
+                                                  ),
+                                                  Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      decoration: BoxDecoration(
+                                                        border: Border(
+                                                            // top: BorderSide(width: 2.0, color: Colors.grey),
+                                                            //left: BorderSide(width: 2.0, color: Colors.grey),
+                                                            //right: BorderSide(width: 2.0, color: Colors.grey)
+                                                            // bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                                            ),
+                                                      ),
+                                                      // margin: EdgeInsets.symmetric(
+                                                      //   horizontal: 14,
+                                                      // ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 5.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Container(
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.8,
+                                                              child: RichText(
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .start,
+                                                                softWrap: true,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .visible,
+                                                                text: TextSpan(
+                                                                  children: [
+                                                                    TextSpan(
+                                                                      text: "  " +
+                                                                          OwnerDisplayName +
+                                                                          " ",
+                                                                      style: TextStyle(
+                                                                          color: Colors
+                                                                              .grey
+                                                                              .shade800,
+                                                                          fontWeight: FontWeight
+                                                                              .bold,
+                                                                          fontSize:
+                                                                              15.0),
+                                                                    ),
+                                                                    TextSpan(
+                                                                      text:
+                                                                          OwnerDescription,
+                                                                      style: TextStyle(
+                                                                          color: Colors
+                                                                              .grey
+                                                                              .shade800,
+                                                                          fontWeight: FontWeight
+                                                                              .normal,
+                                                                          fontSize:
+                                                                              12.0),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ))
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                              )
-                                    ],
-                                  ),
+                                            ),
                                 ),
                               ),
 
@@ -842,11 +855,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           ),):Container(child: Text("Loading...")),
                                         ],
                                       ),
-                                      IconButton(
-                                        icon: Icon(SimpleLineIcons.options),
-                                        onPressed: () {},
-                                      ),
-                                    ],
+                                              ],
                                   ),
                                 ),
                               ),
