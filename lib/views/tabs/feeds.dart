@@ -645,7 +645,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         ),
                                         alignment: Alignment.topLeft,
                                         child: Text(
-                                          readTimestamp(OwnerTimeStamp.seconds),
+                                            (OwnerTimeStamp == null)?"":readTimestamp(OwnerTimeStamp.seconds),
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                             color: Colors.grey,
