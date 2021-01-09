@@ -599,50 +599,68 @@ class _FeedsPageState extends State<FeedsPage> {
                                                         padding:
                                                             const EdgeInsets
                                                                 .only(top: 5.0),
-                                                        child: Row(
+                                                        child: Column(
                                                           children: [
+                                                            Row(
+                                                              children: [
+                                                                Container(
+                                                                  width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      0.8,
+                                                                  child: RichText(
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .start,
+                                                                    softWrap: true,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .visible,
+                                                                    text: TextSpan(
+                                                                      children: [
+                                                                        TextSpan(
+                                                                          text: "  " +
+                                                                              OwnerDisplayName +
+                                                                              " ",
+                                                                          style: TextStyle(
+                                                                              color: Colors
+                                                                                  .grey
+                                                                                  .shade800,
+                                                                              fontWeight: FontWeight
+                                                                                  .bold,
+                                                                              fontSize:
+                                                                                  15.0),
+                                                                        ),
+                                                                        TextSpan(
+                                                                          text:
+                                                                              OwnerDescription,
+                                                                          style: TextStyle(
+                                                                              color: Colors
+                                                                                  .grey
+                                                                                  .shade800,
+                                                                              fontWeight: FontWeight
+                                                                                  .normal,
+                                                                              fontSize:
+                                                                                  12.0),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                             Container(
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  0.8,
-                                                              child: RichText(
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .start,
-                                                                softWrap: true,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .visible,
-                                                                text: TextSpan(
-                                                                  children: [
-                                                                    TextSpan(
-                                                                      text: "  " +
-                                                                          OwnerDisplayName +
-                                                                          " ",
-                                                                      style: TextStyle(
-                                                                          color: Colors
-                                                                              .grey
-                                                                              .shade800,
-                                                                          fontWeight: FontWeight
-                                                                              .bold,
-                                                                          fontSize:
-                                                                              15.0),
-                                                                    ),
-                                                                    TextSpan(
-                                                                      text:
-                                                                          OwnerDescription,
-                                                                      style: TextStyle(
-                                                                          color: Colors
-                                                                              .grey
-                                                                              .shade800,
-                                                                          fontWeight: FontWeight
-                                                                              .normal,
-                                                                          fontSize:
-                                                                              12.0),
-                                                                    ),
-                                                                  ],
+                                                              margin: EdgeInsets.only(
+                                                                top: 8,left: 8
+                                                              ),
+                                                              alignment: Alignment.topLeft,
+                                                              child: Text(
+                                                                  (OwnerTimeStamp == null)?"":readTimestamp(OwnerTimeStamp.seconds),
+                                                                textAlign: TextAlign.start,
+                                                                style: TextStyle(
+                                                                  color: Colors.grey,
+                                                                  fontSize: 10.0,
                                                                 ),
                                                               ),
                                                             ),
