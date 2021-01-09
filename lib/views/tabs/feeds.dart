@@ -650,7 +650,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                 ),
                                                               ],
                                                             ),
-                                                            Container(
+                                                            (OwnerTimeStamp==null)?Container():Container(
                                                               margin: EdgeInsets.only(
                                                                 top: 8,left: 8
                                                               ),
