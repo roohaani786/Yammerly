@@ -347,44 +347,23 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
           length: 4,
           initialIndex: (initialindexg == null) ? 1 : initialindexg,
           child: Scaffold(
-            body: Column(
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              //controller: tabController,
               children: [
-                Expanded(
-                  child: NotificationListener(
-                    onNotification: (notification) {
-                      if (notification is ScrollStartNotification) {
-                        dragStartDetails = notification.dragDetails;
-                      }
-                      if (notification is OverscrollNotification) {
-                        drag = _pageController.position
-                            .drag(dragStartDetails, () {});
-                        drag.update(notification.dragDetails);
-                      }
-                      if (notification is ScrollEndNotification) {
-                        drag?.cancel();
-                      }
-                      return true;
-                    },
-                    child: TabBarView(
-                      //controller: tabController,
-                      children: [
-                        new Container(
-                          child: ChatsPage(),
-                        ),
-                        new Container(
-                          child: FeedsPage(
-                            displayNamecurrentUser: displayNameController.text,
-                          ),
-                        ),
-                        new Container(
-                          //child: FeedsPage(),
-                          child: NotificationsPage(currUid: uidController.text),
-                        ),
-                        new Container(child: AccountBottomIconScreen()),
-                      ],
-                    ),
+                new Container(
+                  child: ChatsPage(),
+                ),
+                new Container(
+                  child: FeedsPage(
+                    displayNamecurrentUser: displayNameController.text,
                   ),
                 ),
+                new Container(
+                  //child: FeedsPage(),
+                  child: NotificationsPage(currUid: uidController.text),
+                ),
+                new Container(child: AccountBottomIconScreen()),
               ],
             ),
             bottomNavigationBar: new Container(
