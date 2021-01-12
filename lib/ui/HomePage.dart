@@ -304,6 +304,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                     MaterialPageRoute(
                       builder: (context) => CameraScreen(
                         cam: 0,
+                        check: true,
                       ),
                     ),
                   );

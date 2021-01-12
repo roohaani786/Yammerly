@@ -13,6 +13,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
+import 'package:techstagram/main.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
@@ -20,17 +21,18 @@ import 'package:uuid/uuid.dart';
 
 class CameraScreen extends StatefulWidget {
   final int cam;
+  final bool check;
 
-  const CameraScreen({Key key,this.cam}) : super(key: key);
+  const CameraScreen({Key key,this.cam,this.check}) : super(key: key);
 
   @override
-  CameraScreenState createState() => CameraScreenState(cam: cam);
+  CameraScreenState createState() => CameraScreenState(cam: cam,check: check);
 }
 
 class CameraScreenState extends State<CameraScreen>
     with AutomaticKeepAliveClientMixin {
 
-  CameraScreenState({this.cam});
+  CameraScreenState({this.cam,this.check});
   CameraController _controller;
   List<CameraDescription> _cameras;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -40,6 +42,7 @@ class CameraScreenState extends State<CameraScreen>
   Map<String, dynamic> _profile;
   bool _loading = false;
   int cam;
+  bool check = false;
 
 
 
@@ -302,14 +305,15 @@ class CameraScreenState extends State<CameraScreen>
       );
     }
     Future<bool> _onWillPop() {
-      return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return HomePage(initialindexg: 1);
-          },
-        ),
-      );
+      Navigator.pop(context);
+      // return Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return HomePage(initialindexg: 1);
+      //     },
+      //   ),
+      // );
     }
 
     if (!_controller.value.isInitialized) {
@@ -357,8 +361,28 @@ class CameraScreenState extends State<CameraScreen>
                     //   MaterialPageRoute(builder: (context) => HomePage()),);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => MyApp()),
                     );
+                    //Navigator.pushNamed(context, '/HomePage');
+                     //Navigator.of(context, rootNavigator: true).pop(context);
+                    //Navigator.of(context).maybePop();
+                    // if(check == true){
+                    //   Navigator.pop(context);
+                    // }else{
+                    //   showDialog(
+                    //       context: context,
+                    //       builder: (BuildContext context) {
+                    //         return AlertDialog(
+                    //           backgroundColor: Colors.white,
+                    //           title: Text("Note"),
+                    //           content: Text(
+                    //               "Please left swipe for back",
+                    //               style: TextStyle(
+                    //                   color: Colors.deepPurple
+                    //               )),
+                    //         );
+                    //       });
+                    // }
                   },
                 ),
               ),

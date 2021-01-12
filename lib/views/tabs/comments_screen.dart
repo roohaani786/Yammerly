@@ -42,14 +42,6 @@ class CommentsPageState extends State<CommentsPage> {
   TextEditingController commentTextEditingController = TextEditingController();
 
   CommentsPageState({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
-  // return Firestore.instance
-  //     .collection("posts")
-  //     .orderBy("timestamp", descending: true)
-  //     .snapshots();
-
-
-
-
 
   retrieveComments(){
     print("user");
@@ -79,37 +71,7 @@ class CommentsPageState extends State<CommentsPage> {
 
   bool errordikhaoC = false;
 
-//   String commentValidator(String value) {
-//     if (value.length == null) {
-// //      return 'Password must be longer than 8 characters';
-//       setState(() {
-//         errordikhaoC = true;
-//       });
-//     } else {
-//       setState(() {
-//         errordikhaoC = false;
-//       });
-//     }
-//   }
-
-
-
-
-  //setData({'liked': userEmail});
-
   var commentCount = 0;
-
-  // CommentCount() async {
-  //   return StreamBuilder(
-  //     stream: CommentsRefrence.document(postId)
-  //         .snapshots(),
-  //     builder: (context, dataSnapshot) {
-  //        commentCount = 'comments';
-  //       }
-
-
-  //   );
-  // }
 
   SaveCommentI() async {
 
@@ -180,9 +142,6 @@ class CommentsPageState extends State<CommentsPage> {
     setState(() {
       errordikhaoC = false;
     });
-    // print(postId);
-    // print("ehllo");
-
 
     await CommentsRefrence.document(postId).collection("comments").document(CommentId)
         .setData({"commentId" : CommentId,
@@ -193,11 +152,6 @@ class CommentsPageState extends State<CommentsPage> {
       "url": photoUrl,
       "uid": uid,
     });
-
-
-
-
-
 
     bool isNotPostOwner = uid != uid;
     if(isNotPostOwner){
@@ -402,74 +356,58 @@ class Comment extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: EdgeInsets.only(bottom: 0.0),
-      child: Container(
-
-        color: Colors.white,
-
-            child: Stack(
-              children: [
-                ListTile(
-                  title: (userName != null || comment != null)?Row(
-                    children: [
-                      Container(
-                        width: deviceWidth*0.65,
-                        child: Expanded(
-                          child: RichText(
-                            textAlign: TextAlign.start,
-                            softWrap: true,
-                            overflow: TextOverflow.visible,
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: userName + " :  ",
-                                  style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                                ),
-                                TextSpan(
-                                  text: comment,
-                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                      fontSize: 15.0),
-                                ),
-                              ],
-                            ),
-
+    return Container(
+      color: Colors.white,
+          height: deviceHeight*0.085,
+          child: Stack(
+            children: [
+              ListTile(
+                title: (userName != null || comment != null)?Row(
+                  children: [
+                    Container(
+                      width: deviceWidth*0.65,
+                      height: deviceHeight*0.01,
+                      child: Expanded(
+                        child: RichText(
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: userName + " : ",
+                                style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                              ),
+                              TextSpan(
+                                text: comment,
+                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                    fontSize: 15.0),
+                              ),
+                            ],
                           ),
+
                         ),
                       ),
-
-//                      Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
-//                        fontWeight: FontWeight.bold,),),
-//                      Padding(
-//                        padding: const EdgeInsets.only(left: 2.0),
-//                        child: Expanded(
-//                          //width: 170.0,
-//                          child: SizedBox(
-//                            width: 108.0,
-//                            child: Text(comment,style: TextStyle(fontSize: 15.0,color: Colors.black,
-//                            ),),
-//                          ),
-//                        ),
-//                      ),
-                    Container(
-                      child: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          deleteComments(userName);
-                          print("delete me");
-                        },
-                      ),
-                    )
-                    ],
-                  ):Text(""),
-                  leading: (userName != null || comment != null)?CircleAvatar(
+                    ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      deleteComments(userName);
+                      print("delete me");
+                    },
+                  )
+                  ],
+                ):Text(""),
+                leading: (userName != null || comment != null)?Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: CircleAvatar(
                     backgroundImage: CachedNetworkImageProvider(url),
-                  ):null,
-                  subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
-                ),
-              ],
-            ),
-      ),
+                  ),
+                ):null,
+                subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+              ),
+            ],
+          ),
     );
   }
 }

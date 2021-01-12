@@ -1090,7 +1090,6 @@ class _postPageState extends State<postPage> {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 3.0),
                                       child: IconButton(
-
                                         onPressed: () {
                                           Navigator.push(context, MaterialPageRoute(builder: (context){
                                             return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);

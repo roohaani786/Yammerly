@@ -220,14 +220,15 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
   Future<bool> _onWillPop() {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return HomePage(initialindexg: 1);
-        },
-      ),
-    );
+    Navigator.pop(context);
+    // return Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) {
+    //       return HomePage(initialindexg: 1);
+    //     },
+    //   ),
+    // );
   }
 
   getlikes( String displayName, String postId) {
@@ -334,7 +335,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            //color: Colors.lightBlueAccent,
                           ),
 
                           // opar neeche start
