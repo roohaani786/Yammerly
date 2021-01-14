@@ -254,6 +254,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     this.tabController = TabController(
       length: 4,
       vsync: this,
+      initialIndex: (initialindexg == null) ? 1 : initialindexg,
     );
     authService.profile.listen((state) => setState(() => _profile = state));
 
@@ -265,9 +266,24 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
 
   DateTime currentBackPressTime;
 
-  Future<bool> onWillPop() {
-    SystemNavigator.pop();
-    print("hello");
+  // Future<bool> onWillPop() {
+  //   SystemNavigator.pop();
+  //   print("hello");
+  // }
+
+  Future<bool> onWillPop() async {
+    print("on will pop");
+    if (tabController.index == 1) {
+      await SystemNavigator.pop();
+    }
+
+    Future.delayed(Duration(milliseconds: 200), () {
+      print("set index");
+      tabController.index = 1;
+    });
+
+    print("return");
+    return tabController.index == 1;
   }
 
   @override
@@ -345,11 +361,11 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
         ),
         body: DefaultTabController(
           length: 4,
-          initialIndex: (initialindexg == null) ? 1 : initialindexg,
+          //initialIndex: (initialindexg == null) ? 1 : initialindexg,
           child: Scaffold(
             body: TabBarView(
               physics: NeverScrollableScrollPhysics(),
-              //controller: tabController,
+              controller: tabController,
               children: [
                 new Container(
                   child: ChatsPage(),
@@ -369,7 +385,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
             bottomNavigationBar: new Container(
               height: 60.0,
               child: new TabBar(
-                //controller: tabController,
+                controller: tabController,
                 tabs: [
                   Tab(
                     icon: new Icon(Icons.blur_circular, size: 30),

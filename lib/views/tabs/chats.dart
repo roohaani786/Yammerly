@@ -65,12 +65,12 @@ class _ChatsPageState extends State<ChatsPage> {
     );
 
     final notificationText = Text(
-        "Status feature is coming soon on our app.",
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 15.0,
-          color: Colors.grey.withOpacity(0.6),
-        ),
+      "Status feature is coming soon on our app.",
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 15.0,
+        color: Colors.grey.withOpacity(0.6),
+      ),
     );
     final deviceHeight = MediaQuery.of(context).size.height;
 
