@@ -89,6 +89,7 @@ dependencies:
 
   animated_icon_button:
   storage_path: ^0.2.0
+  transparent_image: ^1.0.0
 
 
 dev_dependencies:

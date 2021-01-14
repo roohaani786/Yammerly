@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:math' as math;
-
+import 'package:transparent_image/transparent_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -444,7 +444,12 @@ class _FeedsPageState extends State<FeedsPage> {
                         }
 
                         return (shared==true)?Container(
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
+                            ),
+                            color: Colors.white,
+                          ),
                           child: Column(
                             children: <Widget>[
                               Container(height: 0.0,width: 0.0,),
@@ -458,6 +463,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     top: 10,
                                     left: 10,
                                     right: 10.0,
+                                    bottom: 5.0
                                   ),
 
                                   child: Column(
@@ -474,7 +480,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                 child: Image(
                                                   image: (cpurl[index] != null)?
                                                   (cloading[index])?NetworkImage(cpurl[index]):NetworkImage("url"):NetworkImage(
-                                                    "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                                      "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
                                                   ),
                                                   width: 40,
                                                   height: 40,
@@ -488,15 +494,116 @@ class _FeedsPageState extends State<FeedsPage> {
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18.0,
                                               ),):Container(child: Text("Loading...")),
-                                                      ],
-                                                    ),
+                                            ],
+                                          ),
+
                                           IconButton(
                                             icon: Icon(SimpleLineIcons.options),
                                             onPressed: () {},
                                           ),
-                                                  ],
+                                        ],
                                       ),
                                     ],
+                                  ),
+                                ),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 0.0),
+                                child: Container(
+                                  width: deviceWidth*0.95,
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                        top: BorderSide(width: 1.0, color: Colors.grey),
+                                        //left: BorderSide(width: 1.0, color: Colors.grey),
+                                        //right: BorderSide(width: 1.0, color: Colors.grey)
+                                      //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                    ),
+                                    color: Colors.white,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15.0,right: 15.0,top: 10.0,bottom: 5.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Row(
+                                              children: <Widget>[
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(40),
+                                                  child: Image(
+                                                    image: NetworkImage(OwnerPhotourl),
+                                                    width: 30,
+                                                    height: 30,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+
+                                                Text(OwnerDisplayName,style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12.0,
+                                                ),),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 8.0),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.8,
+                                                child: RichText(
+                                                  textAlign: TextAlign.start,
+                                                  softWrap: true,
+                                                  overflow: TextOverflow.visible,
+                                                  text: TextSpan(
+                                                    children: [
+
+                                                      // TextSpan(
+                                                      //   text: "  "+OwnerDisplayName + " ",
+                                                      //   style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                      //       fontSize: 18.0),
+                                                      // ),
+                                                      TextSpan(
+                                                        text: OwnerDescription,
+                                                        style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                            fontSize: 15.0),
+                                                      ),
+                                                    ],
+
+                                                  ),
+                                                ),
+                                              ),
+
+                                              Container(
+                                                padding: const EdgeInsets.only(top: 3),
+                                                width: MediaQuery.of(context).size.width*0.8,
+                                                child: RichText(
+                                                  textAlign: TextAlign.start,
+                                                  softWrap: true,
+                                                  overflow: TextOverflow.visible,
+                                                  text: TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: readTimestamp(OwnerTimeStamp.seconds),
+                                                        style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,
+                                                            fontSize: 8.0),
+                                                      ),
+                                                    ],
+
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -507,170 +614,69 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                   if (_likes[index] == false) {
                                     setState(() {
-                                                _likes[index] = true;
-                                              });
+                                      _likes[index] = true;
+                                    });
 
-                                              DatabaseService().likepost(
-                                                  likes,
-                                                  postId,
-                                                  displayNameController.text);
-                                            }
-                                          },
-                                          onTap: null,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                              //height: 450.0,
-                                              width: deviceWidth * 0.95,
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                      width: 2.0,
-                                                      color: Colors.white),
+                                    DatabaseService().likepost(
+                                        likes, postId,
+                                        displayNameController.text);
+                                  }
+                                },
+                                onTap: null,
 
-                                                  //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                                ),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  GestureDetector(
-                                                    child: (cam == 1)
-                                                        ? Transform(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            transform: Matrix4
-                                                                .rotationY(
-                                                                    math.pi),
-                                                            child: (url == null)
-                                                                ? Container()
-                                                                : (!cloading[
-                                                                        index])
-                                                                    ? Container()
-                                                                    : FadeInImage(
-                                                                        image: NetworkImage(
-                                                                            url),
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                        //image: NetworkImage("posts[i].postImage"),
-                                                                        placeholder:
-                                                                            AssetImage("assets/images/loading.gif"),
-                                                                        width: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width,
-                                                                      ),
-                                                          )
-                                                        : (url == null)
-                                                            ? Container()
-                                                            : (!cloading[index])
-                                                                ? Container()
-                                                                : FadeInImage(
-                                                                    image:
-                                                                        NetworkImage(
-                                                                            url),
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                    //image: NetworkImage("posts[i].postImage"),
-                                                                    placeholder:
-                                                                        AssetImage(
-                                                                            "assets/images/loading.gif"),
-                                                                    width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width,
-                                                                  ),
-                                                  ),
-                                                  Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      decoration: BoxDecoration(
-                                                        border: Border(
-                                                            // top: BorderSide(width: 2.0, color: Colors.grey),
-                                                            //left: BorderSide(width: 2.0, color: Colors.grey),
-                                                            //right: BorderSide(width: 2.0, color: Colors.grey)
-                                                            // bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                                            ),
-                                                      ),
-                                                      // margin: EdgeInsets.symmetric(
-                                                      //   horizontal: 14,
-                                                      // ),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(top: 5.0),
-                                                        child: Column(
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Container(
-                                                                  width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width *
-                                                                      0.8,
-                                                                  child: RichText(
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    softWrap: true,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .visible,
-                                                                    text: TextSpan(
-                                                                      children: [
-                                                                        TextSpan(
-                                                                          text: "  " +
-                                                                              OwnerDisplayName +
-                                                                              " ",
-                                                                          style: TextStyle(
-                                                                              color: Colors
-                                                                                  .grey
-                                                                                  .shade800,
-                                                                              fontWeight: FontWeight
-                                                                                  .bold,
-                                                                              fontSize:
-                                                                                  15.0),
-                                                                        ),
-                                                                        TextSpan(
-                                                                          text:
-                                                                              OwnerDescription,
-                                                                          style: TextStyle(
-                                                                              color: Colors
-                                                                                  .grey
-                                                                                  .shade800,
-                                                                              fontWeight: FontWeight
-                                                                                  .normal,
-                                                                              fontSize:
-                                                                                  12.0),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            (OwnerTimeStamp==null)?Container():Container(
-                                                              margin: EdgeInsets.only(
-                                                                top: 8,left: 8
-                                                              ),
-                                                              alignment: Alignment.topLeft,
-                                                              child: Text(
-                                                                  (OwnerTimeStamp == null)?"":readTimestamp(OwnerTimeStamp.seconds),
-                                                                textAlign: TextAlign.start,
-                                                                style: TextStyle(
-                                                                  color: Colors.grey,
-                                                                  fontSize: 10.0,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ))
-                                                ],
-                                              ),
+                                child: Container(
+                                  //height: 450.0,
+                                  width: deviceWidth,
+                                  decoration: BoxDecoration(
+                                    // border: Border(
+                                    //     bottom: BorderSide(width: 2.0, color: Colors.grey),
+                                    //     left: BorderSide(width: 2.0, color: Colors.grey),
+                                    //     right: BorderSide(width: 2.0, color: Colors.grey)
+                                    //   //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                    // ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      GestureDetector(
+                                        child : (cam == 1)? Transform(
+                                          alignment: Alignment.center,
+                                          transform: Matrix4.rotationY(math.pi),
+                                          child: (url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                            image: url,
+                                            fit: BoxFit.cover,
+                                            //image: NetworkImage("posts[i].postImage"),
+                                            placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                            width: MediaQuery.of(context).size.width,
+                                          ),
+                                        ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                          image: url,//NetworkImage(url),
+                                          fit: BoxFit.cover,
+                                          //image: NetworkImage("posts[i].postImage"),
+                                          placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                          width: MediaQuery.of(context).size.width,
+                                        ),
+                                      ),
+
+                                      Container(
+                                          width: MediaQuery.of(context).size.width*0.95,
+                                          height: 10,
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(width: 1.0, color: Colors.grey),
+                                                //left: BorderSide(width: 1.0, color: Colors.grey),
+                                                //right: BorderSide(width: 1.0, color: Colors.grey)
+                                              //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
                                             ),
+                                          ),
+                                          // margin: EdgeInsets.symmetric(
+                                          //   horizontal: 14,
+                                          // ),
 
+
+
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
 
@@ -681,31 +687,30 @@ class _FeedsPageState extends State<FeedsPage> {
                                   Row(
                                     children: <Widget>[
 
-                                      (button == true)?IconButton(
+                                      IconButton(
                                         padding: EdgeInsets.only(left: 10),
                                         onPressed: (_likes[index] == true)
                                             ? () {
+
+
                                           setState(() {
-                                            // SharedPreferences prefs = await SharedPreferences.getInstance();
-                                            // prefs.setBool('button', false);
                                             _likes[index] = false;
-                                            button = false;
                                             //like[likeint] = "false";
                                             loading = true;
                                           });
-                                          DatabaseService().unlikepost(likes, postId,displayNameController.text);
+
+                                          DatabaseService().unlikepost(
+                                              likes, postId,displayNameController.text);
+
                                           setState(() {
                                             loading = false;
                                           });
                                         }
                                             : () {
                                           setState(() {
-                                            // SharedPreferences prefs = await SharedPreferences.getInstance();
-                                            // prefs.setBool('button', false);
                                             _likes[index] = true;
                                             //like[likeint] = "true";
                                             loading = true;
-                                            button = false;
                                           });
 
                                           DatabaseService().likepost(
@@ -719,7 +724,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         icon: Icon(Icons.thumb_up),
                                         iconSize: 25,
                                         color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
-                                      ):Container(color: Colors.red,),
+                                      ),
 
                                       Text(
                                         likes.toString(),style: TextStyle(
@@ -751,7 +756,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerTimeStamp: OwnerTimeStamp,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
@@ -761,14 +766,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ],
                               ),
 
-                              Container(
+                              (description == null)?null:Container(
                                   width: MediaQuery.of(context).size.width,
                                   margin: EdgeInsets.symmetric(
                                     horizontal: 14,
                                   ),
                                   child: Row(
                                     children: [
-                                      Container(
+                                      (description != null)?Container(
                                         width: MediaQuery.of(context).size.width*0.9,
                                         child: RichText(
                                           textAlign: TextAlign.start,
@@ -790,22 +795,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                             ],
                                           ),
                                         ),
-                                      ),
+                                      ):Container(),
                                     ],
                                   )
                               ),
 
                               Container(
-                                width: MediaQuery.of(context).size.width,
                                 margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 5,
-                                ),
-                              ),
-
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
+                                  horizontal: 14,vertical: 5
                                 ),
                                 alignment: Alignment.topLeft,
                                 child: Text(
@@ -825,7 +822,12 @@ class _FeedsPageState extends State<FeedsPage> {
 
                           // post container
                         ):Container(
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
+                            ),
+                            color: Colors.white,
+                          ),
                           child: Column(
                             children: <Widget>[
 
@@ -904,18 +906,18 @@ class _FeedsPageState extends State<FeedsPage> {
                                     child :(cam == 1)?Transform(
                                       alignment: Alignment.center,
                                       transform: Matrix4.rotationY(math.pi),
-                                      child: (url== null)?Container():(!cloading[index])?Container():FadeInImage(
-                                        image: NetworkImage(url),
+                                      child: (url== null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                        image: url,//NetworkImage(url),
                                         fit: BoxFit.cover,
                                         //image: NetworkImage("posts[i].postImage"),
-                                        placeholder: AssetImage("assets/images/loading.gif"),
+                                        placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
                                       ),
 
-                                    ):(url==null)?Container():(!cloading[index])?Container():FadeInImage(
-                                      image: NetworkImage(url,),
+                                    ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                      image: url,//NetworkImage(url,),
                                       fit: BoxFit.cover,
-                                      placeholder: AssetImage("assets/images/loading.gif"),
+                                      placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
                                     ),
                                   ),
@@ -1000,7 +1002,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ],
                               ),
 
-                              Container(
+                              (description == null)?Container(
                                   width: MediaQuery.of(context).size.width,
                                   margin: EdgeInsets.symmetric(
                                     horizontal: 14,
@@ -1029,22 +1031,17 @@ class _FeedsPageState extends State<FeedsPage> {
                                             ],
                                           ),
                                         ),
-                                      ),
+                                      )
                                     ],
                                   )
+                              ):Container(
+                                height: 1.0,
                               ),
 
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 5,
-                                ),
-                              ),
 
                               Container(
                                 margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
+                                  horizontal: 14,vertical: 5.0
                                 ),
                                 alignment: Alignment.topLeft,
                                 child: Text(
