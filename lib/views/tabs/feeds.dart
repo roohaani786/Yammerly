@@ -105,7 +105,7 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-    fetchPosts();
+    //fetchPosts();
     fetchProfileData();
     fetchLikes();
     //getPostCount();
@@ -1099,11 +1099,11 @@ class _FeedsPageState extends State<FeedsPage> {
             size: 40.0,
           ),
           onPressed: () {
-            pickImage();
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => gallery()),
-            // );
+           // pickImage();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => gallery()),
+            );
           },
         ),
       ),
