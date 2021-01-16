@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/yammerly_gallery/file.dart';
 import 'package:storage_path/storage_path.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -19,6 +21,8 @@ class _galleryState extends State<gallery> {
   List<FileModel> files;
   FileModel selectedModel;
   String image;
+  bool _inProcess = false;
+
   @override
   void initState() {
     super.initState();
@@ -29,11 +33,70 @@ class _galleryState extends State<gallery> {
     var imagePath = await StoragePath.imagesPath;
     var images = jsonDecode(imagePath) as List;
     files = images.map<FileModel>((e) => FileModel.fromJson(e)).toList();
-    if (files != null && files.length > 0)
+    if (files != null && files.length > 0 || imagePath != null) {
       setState(() {
         selectedModel = files[0];
         image = files[0].files[0];
       });
+    } else {
+      return CircularProgressIndicator();
+    }
+  }
+
+  File selectedfile;
+
+  getImage(File file) async {
+    print("aa gayaaaa");
+    if (selectedfile == null) {
+      print("null h");
+      this.setState(() {
+        _inProcess = true;
+      });
+      //File image = await ImagePicker.pickImage(source: source);
+      if (file != null) {
+        File cropped = await ImageCropper.cropImage(
+            sourcePath: file.path,
+            aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+            compressQuality: 100,
+            maxWidth: 700,
+            maxHeight: 700,
+            compressFormat: ImageCompressFormat.jpg,
+            androidUiSettings: AndroidUiSettings(
+              toolbarColor: Colors.white,
+              toolbarTitle: "Yammerly Cropper",
+              activeControlsWidgetColor: Colors.purple,
+              toolbarWidgetColor: Colors.deepPurple,
+              statusBarColor: Colors.purple,
+              backgroundColor: Colors.white,
+              showCropGrid: false,
+              dimmedLayerColor: Colors.black54,
+            ));
+        this.setState(() {
+          selectedfile = cropped;
+          _inProcess = false;
+        });
+        if (selectedfile != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => UploadImage(
+                      file: selectedfile,
+                      shared: false,
+                    )),
+          );
+        }
+      }
+    } else {
+      print("hu");
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => UploadImage(
+                  file: File(image),
+                  shared: false,
+                )),
+      );
+    }
   }
 
   @override
@@ -55,21 +118,28 @@ class _galleryState extends State<gallery> {
                         child: DropdownButton<FileModel>(
                           items: getItems(),
                           onChanged: (FileModel d) {
-                            assert(d.files.length > 0);
-                            image = d.files[0];
-                            setState(() {
-                              selectedModel = d;
-                            });
-                          },
-                          value: selectedModel,
-                        ))
+                        assert(d.files.length > 0);
+                        image = d.files[0];
+                        setState(() {
+                          selectedModel = d;
+                        });
+                      },
+                      value: selectedModel,
+                    ))
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Next',
-                    style: TextStyle(color: Colors.blue),
+                GestureDetector(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        getImage(File(image));
+                      },
+                      child: Text(
+                        'Next',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
                   ),
                 )
               ],

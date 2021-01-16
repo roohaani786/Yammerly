@@ -105,23 +105,13 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-    fetchPosts();
+    // fetchPosts();
     fetchProfileData();
     fetchLikes();
     //getPostCount();
   }
 
   File crop;
-
-  // getPostCount() async {
-  //   await DatabaseService().getPosts().then((val){
-  //     setState(() {
-  //       Plength = val;
-  //     });
-  //   });
-  //   print("yaha ai bhai length");
-  //   print(Plength);
-  // }
 
   Future pickImage() async {
     if(_image == null){
@@ -1099,11 +1089,11 @@ class _FeedsPageState extends State<FeedsPage> {
             size: 40.0,
           ),
           onPressed: () {
-            pickImage();
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => gallery()),
-            // );
+            // pickImage();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => gallery()),
+            );
           },
         ),
       ),
