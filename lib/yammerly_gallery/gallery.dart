@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:storage_path/storage_path.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/yammerly_gallery/file.dart';
-import 'package:storage_path/storage_path.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class gallery extends StatefulWidget {
   gallery({Key key, this.title}) : super(key: key);
@@ -28,14 +27,20 @@ class _galleryState extends State<gallery> {
   }
 
   getImagesPath() async {
+    if (StoragePath.imagesPath == null) {
+      return CircularProgressIndicator();
+    }
     var imagePath = await StoragePath.imagesPath;
     var images = jsonDecode(imagePath) as List;
     files = images.map<FileModel>((e) => FileModel.fromJson(e)).toList();
-    if (files != null && files.length > 0)
+    if (files != null && files.length > 0) {
       setState(() {
         selectedModel = files[0];
         image = files[0].files[0];
       });
+    } else {
+      return CircularProgressIndicator();
+    }
   }
 
   File selectedfile;
@@ -153,22 +158,25 @@ class _galleryState extends State<gallery> {
                 height: MediaQuery.of(context).size.height * 0.45,
                 child: image != null
                     ? Image.file(File(image),
-                    height: MediaQuery.of(context).size.height * 0.45,
-                    width: MediaQuery.of(context).size.width)
+                        height: MediaQuery.of(context).size.height * 0.45,
+                        width: MediaQuery.of(context).size.width)
                     : Container()),
             Divider(),
-            selectedModel == null && selectedModel.files.length < 1
-                ? Container()
-                : Container(
-              height: MediaQuery.of(context).size.height * 0.38,
-              child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      crossAxisSpacing: 4,
-                      mainAxisSpacing: 4),
-                  itemBuilder: (_, i) {
-                    var file = selectedModel.files[i];
-                    return GestureDetector(
+            (files == null)
+                ? CircularProgressIndicator()
+                : selectedModel == null
+                    ? Container()
+                    : Container(
+                        height: MediaQuery.of(context).size.height * 0.38,
+                        child: GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    crossAxisSpacing: 4,
+                                    mainAxisSpacing: 4),
+                            itemBuilder: (_, i) {
+                              var file = selectedModel.files[i];
+                              return GestureDetector(
                       child: Image.file(
                         File(file),
                         fit: BoxFit.cover,
@@ -189,15 +197,17 @@ class _galleryState extends State<gallery> {
   }
 
   List<DropdownMenuItem> getItems() {
-    return files
-        .map((e) => DropdownMenuItem(
-      child: Text(
-        e.folder,
-        style: TextStyle(color: Colors.black),
-      ),
-      value: e,
-    ))
-        .toList() ??
-        [];
+    return (files == null)
+        ? null
+        : files
+                .map((e) => DropdownMenuItem(
+                      child: Text(
+                        e.folder,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      value: e,
+                    ))
+                .toList() ??
+            [];
   }
 }

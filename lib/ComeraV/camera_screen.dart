@@ -32,20 +32,18 @@ class CameraScreen extends StatefulWidget {
 class CameraScreenState extends State<CameraScreen>
     with AutomaticKeepAliveClientMixin {
 
-  CameraScreenState({this.cam,this.check});
+  CameraScreenState({this.cam, this.check});
+
   CameraController _controller;
   List<CameraDescription> _cameras;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _isRecordingMode = false;
+  bool _isRecordingMode = true;
   bool _isRecording = false;
   final _timerKey = GlobalKey<VideoTimerState>();
   Map<String, dynamic> _profile;
   bool _loading = false;
   int cam;
   bool check = false;
-
-
-
 
   @override
   void initState() {
@@ -425,7 +423,7 @@ class CameraScreenState extends State<CameraScreen>
                 Positioned(
                   left: 0,
                   right: 0,
-                  top: 32.0,
+                  top: 62.0,
                   child: VideoTimer(
                     key: _timerKey,
                   ),
@@ -504,54 +502,44 @@ class CameraScreenState extends State<CameraScreen>
                   child: IconButton(
                     highlightColor: Colors.transparent,
                     icon: Icon(
-                      (_isRecordingMode)
-                          ? (_isRecording) ? Icons.stop : Icons.videocam
-                          : Icons.camera_alt,
+                      Icons.camera_alt,
                       size: 28.0,
-                      color: (_isRecording) ? Colors.red : Colors.black,
+                      color: Colors.black,
                     ),
                     onPressed: () {
                       print("$_isRecordingMode");
 
-                      if (!_isRecordingMode) {
-                        // print("alam");
-                        // print(cam);
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => Gallery(filePath: currentCityController.text,cam:cam),
-                        //   ),
-                        // );
-                        _captureImage();
-                        if (flashOn) {
-                          print("dhjfh");
-                        }
-                      } else {
-                        if (_isRecording) {
-                          stopVideoRecording();
-                        } else {
-                          startVideoRecording();
-                        }
+                      _captureImage();
+                      if (flashOn) {
+                        print("dhjfh");
                       }
                     },
                   ),
-
                 ),
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.camera_alt,color: Colors.transparent,
+              FlatButton(
+                color: Colors.transparent,
+                onPressed: () async => null,
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 22.0,
+                  child: IconButton(
+                    highlightColor: Colors.transparent,
+                    icon: Icon(
+                      (_isRecording) ? Icons.stop : Icons.videocam,
+                      size: 22.0,
+                      color: (_isRecording) ? Colors.red : Colors.blue.shade900,
+                    ),
+                    onPressed: () {
+                      if (_isRecording) {
+                        print("hui");
+                        stopVideoRecording();
+                      } else {
+                        startVideoRecording();
+                      }
+                    },
+                  ),
                 ),
-                onPressed: (){},
-                // icon: Icon(
-                //   (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-                //   color: Colors.white,
-                // ),
-                // onPressed: () {
-                //   setState(() {
-                //     _isRecordingMode = !_isRecordingMode;
-                //   });
-                // },
               ),
             ],
           ),
