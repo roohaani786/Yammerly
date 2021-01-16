@@ -17,6 +17,7 @@ import 'package:techstagram/main.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:uuid/uuid.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -477,20 +478,10 @@ class CameraScreenState extends State<CameraScreen>
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute(builder: (context) => pickImage(),));
-                pickImage();
-                if (upload == true){
-                  Navigator.push(
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
-                }else{
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CameraScreen(
-                              cam: 0,
-                            ),
-                          ));
-                    }
+                      MaterialPageRoute(builder: (context) => gallery()),
+                    );
               }
 
               ),
@@ -559,19 +550,6 @@ class CameraScreenState extends State<CameraScreen>
       ),
     );
   }
-
-//  Future _turnFlash() async {
-//    bool hasTorch = await Torch.hasTorch;
-//    if(hasTorch){
-//      (flashOn || cam!=null) ? Torch.turnOn() : Torch.turnOff();
-//      var f = await Torch.hasTorch;
-//      Torch.flash(Duration(milliseconds: 300));
-//      setState((){
-//        _hasFlash = f;
-//        //flashOn = !flashOn;
-//      });
-//    }
-//  }
 
   Future<FileSystemEntity> getLastImage() async {
     final Directory extDir = await getApplicationDocumentsDirectory();

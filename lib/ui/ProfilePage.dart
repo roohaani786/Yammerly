@@ -835,7 +835,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                         onTap: () {
                                                           Navigator.push(
                                                             context,
-                                                            MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),
+                                                            MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid,delete: true,)),
                                                           );
                                                         },
                                                         child: ClipRRect(

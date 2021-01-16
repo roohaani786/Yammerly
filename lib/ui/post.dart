@@ -26,15 +26,17 @@ class postPage extends StatefulWidget {
   final String PostUrl;
   final String displayNamecurrentUser;
   final String uidX;
+  final bool delete;
 
   postPage(
       {this.PostUrl,
         this.displayNamecurrentUser,
-        this.uidX
+        this.uidX,
+        this.delete,
       });
 
   @override
-  _postPageState createState() => _postPageState(displayNamecurrentUser: displayNamecurrentUser,PostUrl: PostUrl,uidX: uidX);
+  _postPageState createState() => _postPageState(displayNamecurrentUser: displayNamecurrentUser,PostUrl: PostUrl,uidX: uidX,delete: delete);
 }
 
 class _postPageState extends State<postPage> {
@@ -46,8 +48,9 @@ class _postPageState extends State<postPage> {
   final String displayNamecurrentUser;
   final String PostUrl;
   final String uidX;
+  final bool delete;
 
-  _postPageState({this.displayNamecurrentUser,this.PostUrl,this.uidX});
+  _postPageState({this.displayNamecurrentUser,this.PostUrl,this.uidX,this.delete});
   String loadingMessage = "Loading Profile Data";
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,photoUrlController,
@@ -157,27 +160,6 @@ class _postPageState extends State<postPage> {
         .snapshots();
   }
 
-
-
-//  void _onHorizontalDrag(DragEndDetails details) {
-//    if (details.primaryVelocity == 0)
-//      // user have just tapped on screen (no dragging)
-//      return ;
-//
-//    if (details.primaryVelocity.compareTo(0) == -1) {
-////      dispose();
-//      Navigator.push(
-//        context,
-//        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
-//      );
-//    }
-//    else {
-//      Navigator.push(
-//        context,
-//        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
-//      );
-//    }
-//  }
 
 
   getlikes( String displayNamecurrent, String postId, int index) async {
@@ -507,7 +489,7 @@ class _postPageState extends State<postPage> {
                                           ],
                                         ),
 
-                                        IconButton(
+                                        (delete != true)?Container():IconButton(
                                           icon: Icon(Icons.delete),
                                           onPressed: () {
                                             (displayName == displayNamecurrentUser)?showDialog(
@@ -938,7 +920,7 @@ class _postPageState extends State<postPage> {
                                         ),),
                                       ],
                                     ),
-                                    IconButton(
+                                    (delete != true)?Container():IconButton(
                                       icon: Icon(Icons.delete),
                                       onPressed: () {
                                         (displayName == displayNamecurrentUser)?showDialog(

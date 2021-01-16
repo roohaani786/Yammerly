@@ -813,7 +813,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                       onTap: () {
                                                                         Navigator.push(
                                                                           context,
-                                                                          MaterialPageRoute(builder: (context) => postPage(PostUrl: url)),
+                                                                          MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid,delete: false,)),
                                                                         );
                                                                       },
                                                                       child: ClipRRect(

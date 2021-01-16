@@ -516,7 +516,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                 child: GestureDetector(
                                   onTap: () => Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid)),
+                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete: false)),
+                                   // MaterialPageRoute(builder: (context) => postPage(PostUrl: url,)),
                                   ),
                                   child: Container(
                                     width: deviceWidth*0.95,
@@ -636,7 +637,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                 child: GestureDetector(
                                   onTap: () => Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid)),
+                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete:false)),
                                   ),
                                   child: Container(
                                     //height: 450.0,
