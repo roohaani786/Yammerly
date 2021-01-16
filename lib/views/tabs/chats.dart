@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:techstagram/ComeraV/cam.dart';
+import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/utils/utils.dart';
 
@@ -33,7 +32,7 @@ class _ChatsPageState extends State<ChatsPage> {
     else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => CameraS()),
+        MaterialPageRoute(builder: (context) => CameraScreen(cam: 0)),
       );
     }
   }
@@ -66,12 +65,12 @@ class _ChatsPageState extends State<ChatsPage> {
     );
 
     final notificationText = Text(
-        "Status feature is coming soon on our app.",
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 15.0,
-          color: Colors.grey.withOpacity(0.6),
-        ),
+      "Status feature is coming soon on our app.",
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 15.0,
+        color: Colors.grey.withOpacity(0.6),
+      ),
     );
     final deviceHeight = MediaQuery.of(context).size.height;
 

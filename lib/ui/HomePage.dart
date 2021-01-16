@@ -7,7 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:techstagram/ComeraV/cam.dart';
+import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/repository.dart';
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
       controller: _pageController,
       allowImplicitScrolling: true,
       children: <Widget>[
-        CameraS(),
+        CameraScreen(cam: 0),
         TabLayoutDemo(initialindexg),
         // Container(color: Colors.yellow),
       ],
@@ -251,13 +251,39 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     phonenumberController = TextEditingController();
 
     super.initState();
-    this.tabController = TabController(length: 4, vsync: this,);
+    this.tabController = TabController(
+      length: 4,
+      vsync: this,
+      initialIndex: (initialindexg == null) ? 1 : initialindexg,
+    );
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
 
     fetchProfileData();
     this.getCurrentUser();
+  }
+
+  DateTime currentBackPressTime;
+
+  // Future<bool> onWillPop() {
+  //   SystemNavigator.pop();
+  //   print("hello");
+  // }
+
+  Future<bool> onWillPop() async {
+    print("on will pop");
+    if (tabController.index == 1) {
+      await SystemNavigator.pop();
+    }
+
+    Future.delayed(Duration(milliseconds: 200), () {
+      print("set index");
+      tabController.index = 1;
+    });
+
+    print("return");
+    return tabController.index == 1;
   }
 
   @override
@@ -268,136 +294,123 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     Drag drag;
     // TODO: implement build
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Yammerly',
-          style: TextStyle(
-              color: Colors.deepPurple,
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold),
-        ),
-
-        backgroundColor: Colors.white,
-
-        leading: Row(
-          children: [
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Yammerly',
+            style: TextStyle(
+                color: Colors.deepPurple,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.white,
+          leading: Row(
+            children: [
+              IconButton(
+                icon: Icon(
+                  FontAwesomeIcons.camera,
+                  color: Colors.deepPurple,
+                  //size: 10.0,
+                ),
+                onPressed: () {
+                  print("camera open");
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => CameraScreen(
+                        cam: 0,
+                        check: true,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          actions: <Widget>[
             IconButton(
               icon: Icon(
-                FontAwesomeIcons.camera,
+                FontAwesomeIcons.searchengin,
                 color: Colors.deepPurple,
-                //size: 10.0,
               ),
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).push(
+                Navigator.push(
+                  context,
                   MaterialPageRoute(
-                    builder: (context) => CameraS(),
-                  ),
+                      builder: (context) => CloudFirestoreSearch(
+                            displayNamecurrentUser: displayNameController.text,
+                            uidX: uidController.text,
+                          )),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.textsms,
+                color: Colors.deepPurple,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ConversationPage()),
                 );
               },
             ),
           ],
         ),
-
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              FontAwesomeIcons.searchengin,
-              color: Colors.deepPurple,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CloudFirestoreSearch(displayNamecurrentUser:displayNameController.text,uidX: uidController.text,)),
-              );
-            },
-          ),
-
-          IconButton(
-            icon: Icon(
-              Icons.textsms,
-              color: Colors.deepPurple,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ConversationPage()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: DefaultTabController(
-        length: 4,
-        initialIndex: (initialindexg == null) ? 1 : initialindexg,
-
-        child: Scaffold(
-          body: Column(
-            children: [
-              Expanded(
-                child: NotificationListener(
-                  onNotification: (notification) {
-                    if (notification is ScrollStartNotification) {
-                      dragStartDetails = notification.dragDetails;
-                    }
-                    if (notification is OverscrollNotification) {
-                      drag = _pageController.position.drag(dragStartDetails, () {});
-                      drag.update(notification.dragDetails);
-                    }
-                    if (notification is ScrollEndNotification) {
-                      drag?.cancel();
-                    }
-                    return true;
-                  },
-                  child: TabBarView(
-                    //controller: tabController,
-                    children: [
-                      new Container(
-                        child: ChatsPage(),
-                      ),
-                      new Container(
-                        child: FeedsPage(displayNamecurrentUser: displayNameController.text,),
-                      ),
-                      new Container(
-                        //child: FeedsPage(),
-                        child: NotificationsPage(currUid: uidController.text),
-                      ),
-                      new Container(child: AccountBottomIconScreen()),
-                    ],
+        body: DefaultTabController(
+          length: 4,
+          //initialIndex: (initialindexg == null) ? 1 : initialindexg,
+          child: Scaffold(
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: tabController,
+              children: [
+                new Container(
+                  child: ChatsPage(),
+                ),
+                new Container(
+                  child: FeedsPage(
+                    displayNamecurrentUser: displayNameController.text,
                   ),
                 ),
-              ),
-            ],
-          ),
-          bottomNavigationBar: new Container(
-            height: 60.0,
-            child: new TabBar(
-              //controller: tabController,
-              tabs: [
-                Tab(
-                  icon: new Icon(Icons.blur_circular, size: 30),
+                new Container(
+                  //child: FeedsPage(),
+                  child: NotificationsPage(currUid: uidController.text),
                 ),
-                Tab(
-                  icon: new Icon(Icons.home, size: 30),
-                ),
-                Tab(
-                  icon: new Icon(Icons.notifications, size: 30),
-                  //text: new Text(curARRrUid),
-                ),
-                Tab(
-                  icon: new Icon(Icons.account_circle, size: 30),
-                )
+                new Container(child: AccountBottomIconScreen()),
               ],
-              labelColor: Colors.purple,
-              unselectedLabelColor: Colors.deepPurple,
-              indicatorSize: TabBarIndicatorSize.label,
-              indicatorPadding: EdgeInsets.all(5.0),
-              indicatorWeight: 3.0,
-              indicatorColor: Colors.deepPurple,
             ),
+            bottomNavigationBar: new Container(
+              height: 60.0,
+              child: new TabBar(
+                controller: tabController,
+                tabs: [
+                  Tab(
+                    icon: new Icon(Icons.blur_circular, size: 30),
+                  ),
+                  Tab(
+                    icon: new Icon(Icons.home, size: 30),
+                  ),
+                  Tab(
+                    icon: new Icon(Icons.notifications, size: 30),
+                    //text: new Text(curARRrUid),
+                  ),
+                  Tab(
+                    icon: new Icon(Icons.account_circle, size: 30),
+                  )
+                ],
+                labelColor: Colors.purple,
+                unselectedLabelColor: Colors.deepPurple,
+                indicatorSize: TabBarIndicatorSize.label,
+                indicatorPadding: EdgeInsets.all(5.0),
+                indicatorWeight: 3.0,
+                indicatorColor: Colors.deepPurple,
+              ),
+            ),
+            backgroundColor: Colors.white,
           ),
-          backgroundColor: Colors.white,
         ),
       ),
     );

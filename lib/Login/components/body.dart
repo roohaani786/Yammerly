@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
 import 'package:flutter_svg/svg.dart';
@@ -15,9 +16,9 @@ import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
+
 import '../../constants.dart';
 import '../../forgotpassword.dart';
-import 'package:flutter/services.dart';
 
 class Body extends StatefulWidget {
   final IconData icon;
@@ -103,8 +104,11 @@ class _BodyState extends State<Body> {
     print(user);
     var userSignedIn = await Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => HomePage()),
-          (Route<dynamic> route) => false,
+      MaterialPageRoute(
+          builder: (context) => HomePage(
+                initialindexg: 1,
+              )),
+      (Route<dynamic> route) => false,
     );
 
     setState(() {
@@ -187,8 +191,11 @@ class _BodyState extends State<Body> {
         user = result.user;
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => HomePage(initialindexg: 2,)),
-              (Route<dynamic> route) => false,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    initialindexg: 1,
+                  )),
+          (Route<dynamic> route) => false,
         );
       }
     } catch (error) {
@@ -592,11 +599,9 @@ class _BodyState extends State<Body> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-
                                                   HomePage(
-                                                    title: "huhu",
-                                                    uid: "h",
-                                                  )),
+                                                    initialindexg: 1,
+                                                        )),
                                               (_) => false) : Navigator.pushNamed(
                                           context, "/Login");
                                     }

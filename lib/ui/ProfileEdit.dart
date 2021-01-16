@@ -238,10 +238,12 @@ class _ProfilePageState extends State<ProfilePage> {
   bool hometownE = false;
   String valueX = "Select Gender";
 
-
-
-
-
+  // chagePhostPhoto(String purl,String uid){
+  //   Firestore.instance
+  //       .collection("posts")
+  //       .updateData({'PhotoURL': purl});
+  //   print("photo change huai");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -424,8 +426,8 @@ class _ProfilePageState extends State<ProfilePage> {
 //    DatabaseService().updatephotoURL(displayNameController.text,photoUrlController.text);
                       snackbarContent = "Profile Updated";
                       if(snackbarContent == "Profile Updated"){
-
-                        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(initialindexg: 3,)));
+                        Navigator.pop(context);
+                        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(initialindexg: 3,)));
                       }
                       try {
                         await currUser.updateEmail(data["email"]);
@@ -444,6 +446,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ". Login Email Not Changed (As Not Recently Logged In)";
                       }
                       fetchProfileData();
+                      //chagePhostPhoto(photoUrlController.text.trim(),uidController.text.trim());
                     } on PlatformException catch (e) {
                       print("PlatformException in fetching user profile. E  = " +
                           e.message);
@@ -637,9 +640,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             validator: (value) {
                               if(value.length > 15.0){
                                 return 'Less than 15 words';
-                                      }else if(value.length == 0){
+                              }else if(value.length == 0){
                                 return 'Should not be blank';
-                                      }
+                              }
                             },
                             decoration: InputDecoration(
                                 errorStyle: TextStyle(
@@ -669,7 +672,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             validator: (value) {
                               if(value.length > 15.0) {
                                 return 'Less than 15 words';
-                                      }
+                              }
                               // }else if(value.length == 0){
                               //   return 'Null value';
                               // }
@@ -700,9 +703,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     validator: (value) {
                       if(value.length < 10.0 && value.length > 0){
                         return 'Phone number should be of 10 digits';
-                              }else if(value.length > 10.0){
+                      }else if(value.length > 10.0){
                         return 'Phone number should be of 10 digits';
-                              }
+                      }
                     },
                     //maxLength: 10,
                     inputFormatters: [
@@ -759,7 +762,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     validator: (value) {
                       if(value.length > 50.0){
                         return 'bio should not be greater than 50 words';
-                              }
+                      }
                     },
                     keyboardType: TextInputType.text,
                     maxLines: 2,
@@ -1035,7 +1038,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-
-
-

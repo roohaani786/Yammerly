@@ -772,7 +772,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
 
                         Container(
-                          height: MediaQuery.of(context).size.height -300.0,
+                          height: MediaQuery.of(context).size.height * 0.75,
                           //height: 200.0,
                           width: 340.0,
 
@@ -787,7 +787,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       new Expanded(
                                           child: GridView.builder(
                                               shrinkWrap: true,
-                                             controller: ScrollController(),
+                                             //controller: ScrollController(),
                                               itemCount: itemCount,
                                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                                   crossAxisCount: 3,
@@ -835,7 +835,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                         onTap: () {
                                                           Navigator.push(
                                                             context,
-                                                            MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid)),
+                                                            MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid,delete: true,)),
                                                           );
                                                         },
                                                         child: ClipRRect(

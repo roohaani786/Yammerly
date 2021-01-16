@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:techstagram/services/database.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
@@ -40,14 +42,6 @@ class CommentsPageState extends State<CommentsPage> {
   TextEditingController commentTextEditingController = TextEditingController();
 
   CommentsPageState({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
-  // return Firestore.instance
-  //     .collection("posts")
-  //     .orderBy("timestamp", descending: true)
-  //     .snapshots();
-
-
-
-
 
   retrieveComments(){
     print("user");
@@ -69,6 +63,7 @@ class CommentsPageState extends State<CommentsPage> {
         });
         return ListView(
           children: comments,
+
         );
       },
     );
@@ -76,43 +71,17 @@ class CommentsPageState extends State<CommentsPage> {
 
   bool errordikhaoC = false;
 
-//   String commentValidator(String value) {
-//     if (value.length == null) {
-// //      return 'Password must be longer than 8 characters';
-//       setState(() {
-//         errordikhaoC = true;
-//       });
-//     } else {
-//       setState(() {
-//         errordikhaoC = false;
-//       });
-//     }
-//   }
-
-
-
-
-  //setData({'liked': userEmail});
-
   var commentCount = 0;
 
-  // CommentCount() async {
-  //   return StreamBuilder(
-  //     stream: CommentsRefrence.document(postId)
-  //         .snapshots(),
-  //     builder: (context, dataSnapshot) {
-  //        commentCount = 'comments';
-  //       }
-
-
-  //   );
-  // }
-
   SaveCommentI() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('commCount', commentCount);
     return await Firestore.instance
         .collection("posts")
         .document(postId)
         .updateData({'comments': comments + commentCount});
+
   }
 
   showError(){
@@ -160,7 +129,7 @@ class CommentsPageState extends State<CommentsPage> {
         .document(uid)
         .collection("posts")
         .document(postId)
-        .updateData({'comments': comments + 1});
+        .updateData({'comments': comments + commentCount});
   }
 
   saveComment() async {
@@ -173,9 +142,6 @@ class CommentsPageState extends State<CommentsPage> {
     setState(() {
       errordikhaoC = false;
     });
-    // print(postId);
-    // print("ehllo");
-
 
     await CommentsRefrence.document(postId).collection("comments").document(CommentId)
         .setData({"commentId" : CommentId,
@@ -186,11 +152,6 @@ class CommentsPageState extends State<CommentsPage> {
       "url": photoUrl,
       "uid": uid,
     });
-
-
-
-
-
 
     bool isNotPostOwner = uid != uid;
     if(isNotPostOwner){
@@ -308,8 +269,9 @@ class Comment extends StatelessWidget {
   final String url;
   final String comment;
   final Timestamp timestamp;
+  final String commentId;
 
-  Comment({this.userName,this.userId,this.url,this.comment,this.timestamp});
+  Comment({this.userName,this.userId,this.url,this.comment,this.timestamp,this.commentId});
 
   factory Comment.fromDocument(DocumentSnapshot documentSnapshot){
     return Comment(
@@ -318,8 +280,59 @@ class Comment extends StatelessWidget {
       url: documentSnapshot["url"],
       comment: documentSnapshot["comment"],
       timestamp: documentSnapshot["timestamp"],
+      commentId : documentSnapshot["commentId"],
 
     );
+  }
+
+  get context => null;
+
+  deleteComments(String displayNameComment) async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String displayName = prefs.getString("displayName");
+    String displayNameCurrUser = prefs.getString('displayNameCurrUser');
+    String postId = prefs.getString('postId');
+    int comments = prefs.getInt("comments");
+    int commCount = prefs.getInt("commCount");
+    print(displayNameCurrUser+"del");
+    print(commCount);
+    print("delete comment");
+    //int deleteC= comments+commCount;
+
+
+    if(displayNameComment == displayNameCurrUser){
+
+
+      DatabaseService().CommentD(postId,comments,commCount);
+      print(displayNameCurrUser);
+      await Firestore.instance.collection('posts').document(postId)
+          .collection("comments").document(commentId).delete();
+
+    }else if(displayName == displayNameCurrUser){
+      print("delte clickd");
+
+      DatabaseService().CommentD(postId,comments,commCount);
+      print(postId);
+      print(displayName);
+      print("halelula");
+      print(displayNameCurrUser);
+      await Firestore.instance.collection('posts').document(postId)
+          .collection("comments").document(commentId).delete();
+    }
+    else{
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('You are not the owner of this post'),
+              actions: <Widget>[
+
+              ],
+            );
+          });
+    }
+    print("delete me aaya");
   }
 
   String tAgo(DateTime d) {
@@ -340,19 +353,21 @@ class Comment extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 6.0),
-      child: Container(
-
-        color: Colors.white,
-
-            child: Stack(
-              children: [
-                ListTile(
-                  title: (userName != null || comment != null)?Row(
-                    children: [
-                      Expanded(
+  Widget build(BuildContext context) {
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
+    return Container(
+      color: Colors.white,
+          height: deviceHeight*0.085,
+          child: Stack(
+            children: [
+              ListTile(
+                title: (userName != null || comment != null)?Row(
+                  children: [
+                    Container(
+                      width: deviceWidth*0.65,
+                      height: deviceHeight*0.01,
+                      child: Expanded(
                         child: RichText(
                           textAlign: TextAlign.start,
                           softWrap: true,
@@ -360,7 +375,7 @@ class Comment extends StatelessWidget {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: userName + " :  ",
+                                text: userName + " : ",
                                 style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                               ),
                               TextSpan(
@@ -372,32 +387,27 @@ class Comment extends StatelessWidget {
                           ),
 
                         ),
-                      )
-//                      Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
-//                        fontWeight: FontWeight.bold,),),
-//                      Padding(
-//                        padding: const EdgeInsets.only(left: 2.0),
-//                        child: Expanded(
-//                          //width: 170.0,
-//                          child: SizedBox(
-//                            width: 108.0,
-//                            child: Text(comment,style: TextStyle(fontSize: 15.0,color: Colors.black,
-//                            ),),
-//                          ),
-//                        ),
-//                      ),
-                    ],
-                  ):Text(""),
-                  leading: (userName != null || comment != null)?CircleAvatar(
+                      ),
+                    ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      deleteComments(userName);
+                      print("delete me");
+                    },
+                  )
+                  ],
+                ):Text(""),
+                leading: (userName != null || comment != null)?Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: CircleAvatar(
                     backgroundImage: CachedNetworkImageProvider(url),
-                  ):null,
-                  subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
-                ),
-              ],
-            ),
-
-      ),
-
+                  ),
+                ):null,
+                subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+              ),
+            ],
+          ),
     );
   }
 }

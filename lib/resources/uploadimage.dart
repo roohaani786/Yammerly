@@ -1,15 +1,17 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
-import 'package:techstagram/models/user.dart';
+import 'dart:math' as math;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:path_provider/path_provider.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:uuid/uuid.dart';
-import 'package:image/image.dart' as ImD;
-import 'dart:math' as math;
+
 import 'auth.dart';
 
 class UploadImage extends StatefulWidget {
@@ -23,10 +25,12 @@ class UploadImage extends StatefulWidget {
   bool shared;
   int shares;
   String ownerPostId;
-  UploadImage({this.ownerPostId,this.shares,this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
+  Timestamp ownerTimeStamp;
+  String ownerUid;
+  UploadImage({this.ownerUid,this.ownerPostId,this.shares,this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl,this.ownerTimeStamp});
 
   @override
-  _UploadImageState createState() => _UploadImageState(ownerPostId: ownerPostId,shares:shares,cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl);
+  _UploadImageState createState() => _UploadImageState(ownerUid: ownerUid,ownerPostId: ownerPostId,shares:shares,cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl,ownerTimeStamp: ownerTimeStamp);
 }
 
 class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClientMixin<UploadImage> {
@@ -41,7 +45,9 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
   String sharedurl;
   int shares;
   String ownerPostId;
-  _UploadImageState({this.ownerPostId,this.shares,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl});
+  Timestamp ownerTimeStamp;
+  String ownerUid;
+  _UploadImageState({this.ownerUid,this.ownerPostId,this.shares,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl,this.ownerTimeStamp});
   TextEditingController
   emailController,
       uidController,
@@ -86,8 +92,8 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
   uploading = true;
   });
 
-  savePostInfoToFirestoreShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
-  savePostinfoToUserShared(sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
+  savePostInfoToFirestoreShared(ownerUid,sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
+  savePostinfoToUserShared(ownerUid,sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
 
   descriptionController.clear();
 
@@ -151,11 +157,13 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
         .updateData({'posts': posts + 1});
   }
 
-  savePostInfoToFirestoreShared(String url, String description, String ownerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
+  savePostInfoToFirestoreShared(String ownerUid,String url, String description, String ownerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
 
     Firestore.instance.collection("posts").document(postId).setData({
       "OwnerPhotourl" : ownerphotourl,
+      "OwnerTimeStamp" : ownerTimeStamp,
       "description" : description,
+      "OwnerUid" : ownerUid,
       "OwnerDisplayName" : ownerdisplayname,
       "shared" : shared,
       "postId": postId,
@@ -164,7 +172,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
       "timestamp": Timestamp.now(),
       "email": emailController.text,
       "photoURL" :photoUrlController.text,
-      "description": descriptionController.text,
+      "OwnerDescription": ownerdescription,
       "cam": cam,
       "likes": 0,
       "comments": 0,
@@ -173,7 +181,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
     });
   }
 
-  savePostinfoToUserShared(String url, String description, String ownerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
+  savePostinfoToUserShared(String ownerUid,String url, String description, String ownerdescription, String ownerphotourl, String ownerdisplayname, bool shared) {
 
     Firestore.instance
         .collection("users")
@@ -182,6 +190,8 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
         .document(postId)
         .setData({
       "OwnerPhotourl" : ownerphotourl,
+      "OwnerTimeStamp" : ownerTimeStamp,
+      "OwnerUid" : ownerUid,
       "description" : description,
       "Ownerdescription" : ownerdescription,
       "OwnerDisplayName" : ownerdisplayname,
@@ -301,10 +311,9 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
                         fit: BoxFit.cover),
                   ):BoxDecoration(
                     image: DecorationImage(
-
-                        image: FileImage(file),
-                        fit: BoxFit.cover),
-                  ),
+                                          image: FileImage(file),
+                                          fit: BoxFit.contain),
+                                    ),
                 ),
               ),
             ),

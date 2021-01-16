@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/models/wiggle.dart';
 import 'dart:io';
@@ -355,7 +356,7 @@ class DatabaseService {
 
 
 
-  Future likepost(int initialvalue, String postId, String userEmail)  {
+  Future likepost(int initialvalue, String postId, String userEmail)  async {
 
      Firestore.instance
         .collection("posts")
@@ -369,23 +370,24 @@ class DatabaseService {
         .document(userEmail)
         .setData({'liked': userEmail});
 
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+     prefs.setBool('button', true);
+
   }
 
 
-  Future unlikepost(int initialvalue, String postId, String userEmail) {
+  Future unlikepost(int initialvalue, String postId, String userEmail) async {
 
 
     if(initialvalue < 0){
 
-      initialvalue = 0;
-
       Firestore.instance
           .collection("posts")
           .document(postId)
-          .updateData({'likes': initialvalue});
+          .updateData({'likes': 0});
     }
 
-    else {
+    else{
       Firestore.instance
           .collection("posts")
           .document(postId)
@@ -398,6 +400,9 @@ class DatabaseService {
           .document(userEmail)
           .delete();
     }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('button', true);
   }
 
 //  Future followingUser(int following, String displayNameX, String displayName) async {
@@ -471,6 +476,24 @@ class DatabaseService {
         .collection("users")
         .document(uid)
         .updateData({'posts': posts - 1});
+  }
+
+  CommentD(String postId,int comments,int commCount) async {
+    int UcommCount=0;
+    int Ucomments=0;
+    if(commCount > 0){
+      UcommCount = commCount-1;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setInt('commCount', UcommCount);
+    }else if(comments > 0){
+      Ucomments = comments -1;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setInt('comments', Ucomments);
+    }
+    Firestore.instance
+        .collection("posts")
+        .document(postId)
+        .updateData({'comments': (comments+commCount) - 1});
   }
 
   Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX,String photoUrlX) async {

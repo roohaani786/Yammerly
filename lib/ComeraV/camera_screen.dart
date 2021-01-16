@@ -1,36 +1,39 @@
 import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:techstagram/ComeraV/cam.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:image_picker/image_picker.dart';
-import 'package:techstagram/ComeraV/gallery.dart';
-import 'package:techstagram/ComeraV/video_timer.dart';
-import 'package:techstagram/resources/auth.dart';
-import 'package:techstagram/resources/uploadimage.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:techstagram/ComeraV/gallery.dart';
+import 'package:techstagram/ComeraV/video_timer.dart';
+import 'package:techstagram/main.dart';
+import 'package:techstagram/resources/auth.dart';
+import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:image/image.dart' as ImD;
+import 'package:techstagram/yammerly_gallery/gallery.dart';
+import 'package:uuid/uuid.dart';
 
 class CameraScreen extends StatefulWidget {
   final int cam;
+  final bool check;
 
-  const CameraScreen({Key key,this.cam}) : super(key: key);
+  const CameraScreen({Key key,this.cam,this.check}) : super(key: key);
 
   @override
-  CameraScreenState createState() => CameraScreenState(cam: cam);
+  CameraScreenState createState() => CameraScreenState(cam: cam,check: check);
 }
 
 class CameraScreenState extends State<CameraScreen>
     with AutomaticKeepAliveClientMixin {
 
-  CameraScreenState({this.cam});
+  CameraScreenState({this.cam,this.check});
   CameraController _controller;
   List<CameraDescription> _cameras;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -40,6 +43,7 @@ class CameraScreenState extends State<CameraScreen>
   Map<String, dynamic> _profile;
   bool _loading = false;
   int cam;
+  bool check = false;
 
 
 
@@ -302,14 +306,15 @@ class CameraScreenState extends State<CameraScreen>
       );
     }
     Future<bool> _onWillPop() {
-      return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return HomePage(initialindexg: 1);
-          },
-        ),
-      );
+      Navigator.pop(context);
+      // return Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) {
+      //       return HomePage(initialindexg: 1);
+      //     },
+      //   ),
+      // );
     }
 
     if (!_controller.value.isInitialized) {
@@ -357,8 +362,28 @@ class CameraScreenState extends State<CameraScreen>
                     //   MaterialPageRoute(builder: (context) => HomePage()),);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => MyApp()),
                     );
+                    //Navigator.pushNamed(context, '/HomePage');
+                     //Navigator.of(context, rootNavigator: true).pop(context);
+                    //Navigator.of(context).maybePop();
+                    // if(check == true){
+                    //   Navigator.pop(context);
+                    // }else{
+                    //   showDialog(
+                    //       context: context,
+                    //       builder: (BuildContext context) {
+                    //         return AlertDialog(
+                    //           backgroundColor: Colors.white,
+                    //           title: Text("Note"),
+                    //           content: Text(
+                    //               "Please left swipe for back",
+                    //               style: TextStyle(
+                    //                   color: Colors.deepPurple
+                    //               )),
+                    //         );
+                    //       });
+                    // }
                   },
                 ),
               ),
@@ -453,23 +478,17 @@ class CameraScreenState extends State<CameraScreen>
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute(builder: (context) => pickImage(),));
-                pickImage();
-                if (upload == true){
-                  Navigator.push(
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
-                }else{
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CameraS(),));
-                }
+                      MaterialPageRoute(builder: (context) => gallery()),
+                    );
               }
 
               ),
 
               FlatButton(
                 color: Colors.transparent,
-              onPressed: () async => null,
+                onPressed: () async => null,
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 28.0,
@@ -483,17 +502,19 @@ class CameraScreenState extends State<CameraScreen>
                       color: (_isRecording) ? Colors.red : Colors.black,
                     ),
                     onPressed: () {
+                      print("$_isRecordingMode");
+
                       if (!_isRecordingMode) {
-                        print("alam");
-                        print(cam);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Gallery(filePath: currentCityController.text,cam:cam),
-                          ),
-                        );
+                        // print("alam");
+                        // print(cam);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => Gallery(filePath: currentCityController.text,cam:cam),
+                        //   ),
+                        // );
                         _captureImage();
-                        if(flashOn){
+                        if (flashOn) {
                           print("dhjfh");
                         }
                       } else {
@@ -530,19 +551,6 @@ class CameraScreenState extends State<CameraScreen>
     );
   }
 
-//  Future _turnFlash() async {
-//    bool hasTorch = await Torch.hasTorch;
-//    if(hasTorch){
-//      (flashOn || cam!=null) ? Torch.turnOn() : Torch.turnOff();
-//      var f = await Torch.hasTorch;
-//      Torch.flash(Duration(milliseconds: 300));
-//      setState((){
-//        _hasFlash = f;
-//        //flashOn = !flashOn;
-//      });
-//    }
-//  }
-
   Future<FileSystemEntity> getLastImage() async {
     final Directory extDir = await getApplicationDocumentsDirectory();
     final String dirPath = '${extDir.path}/media';
@@ -560,7 +568,7 @@ class CameraScreenState extends State<CameraScreen>
 //      String thumb = await Thumbnails.getThumbnail(
 //          videoFile: lastFile.path, imageType: ThumbFormat.PNG, quality: 100);
 //      return File(thumb);
-    print("dfdf");
+      print("dfdf");
     }
   }
 
@@ -602,6 +610,8 @@ class CameraScreenState extends State<CameraScreen>
 
   void _captureImage() async {
     print('_captureImage');
+    print('${_controller.value.isInitialized}');
+
     if (_controller.value.isInitialized) {
       SystemSound.play(SystemSoundType.click);
       final Directory extDir = await getApplicationDocumentsDirectory();
@@ -616,7 +626,6 @@ class CameraScreenState extends State<CameraScreen>
         MaterialPageRoute(
             builder: (context) => Gallery(filePath: filePath,cam: cam,)),
       );
-
     }
   }
 

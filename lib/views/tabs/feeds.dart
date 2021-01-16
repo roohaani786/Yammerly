@@ -1,28 +1,30 @@
 import 'dart:io';
+import 'dart:math' as math;
+import 'package:techstagram/ui/post.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:techstagram/Widget/Fab.dart';
 import 'package:techstagram/models/posts.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/services/database.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/utils/utils.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
-import 'package:vector_math/vector_math_64.dart' hide Colors;
-import 'dart:math' as math;
-import 'package:image_cropper/image_cropper.dart';
+import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:vector_math/vector_math_64.dart' hide Colors;
 
 class FeedsPage extends StatefulWidget {
 
@@ -83,7 +85,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,photoUrlController,
-      timestampController,likesController,uidController;
+      timestampController,likesController,uidController,cpurlController,cdisplayNameController;
 
   _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
 
@@ -96,6 +98,8 @@ class _FeedsPageState extends State<FeedsPage> {
     uidController = TextEditingController();
     displayNameController = TextEditingController();
     photoUrlController = TextEditingController();
+    cpurlController = TextEditingController();
+    cdisplayNameController = TextEditingController();
 
     super.initState();
     // Subscriptions are created here
@@ -246,6 +250,28 @@ class _FeedsPageState extends State<FeedsPage> {
     }
   }
 
+  List<String> cpurl = new List(10000);
+  var cdisplayName = new List(10000);
+  //bool cloading = false;
+  List<bool> cloading = List.filled(10000,false);
+
+  Fetchprofile(String uid,int index) async{
+
+    docSnap = await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .get();
+    cpurlController.text = docSnap.data['photoURL'];
+    cdisplayNameController.text = docSnap.data['displayName'];
+    //photoUrlController.text = docSnap.data["photoURL"];
+    setState(() {
+      cpurl[index] = cpurlController.text;
+      cdisplayName[index] = cdisplayNameController.text;
+      cloading[index] = true;
+    });
+
+  }
+
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
 //    var format = DateFormat('HH:mm a');
@@ -290,6 +316,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
 
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -308,6 +336,18 @@ class _FeedsPageState extends State<FeedsPage> {
       ),
     );
 
+    addStringToSF(String displayName, String displayNameCurrUser,String postId,int comments) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('displayName', displayName);
+      prefs.setString('displayNameCurrUser', displayNameCurrUser);
+      prefs.setString('postId',postId);
+      prefs.setInt('commCount', 0);
+      prefs.setInt('comments',comments);
+    }
+
+
+
+
     return GestureDetector(
       child: Scaffold(
         key: _scaffoldKey,
@@ -320,7 +360,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                 new Expanded(
                   child: ListView.builder(
-                      controller: scrollController,
+                          controller: scrollController,
                       itemCount: snapshot.data.documents.length,
 
                       itemBuilder: (context, index) {
@@ -341,6 +381,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         String OwnerPhotourl = snapshot.data.documents[index]['OwnerPhotourl'];
 
+                        String OwnerDescription = snapshot.data.documents[index]['OwnerDescription'];
+
                         bool shared = snapshot.data.documents[index]['shared'];
 
                         String uid = snapshot.data.documents[index]["uid"];
@@ -359,9 +401,25 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         int comments = snapshot.data.documents[index]['comments'];
 
+                        Timestamp OwnerTimeStamp = snapshot.data.documents[index]['OwnerTimeStamp'];
+
+                        String OwnerUid = snapshot.data.documents[index]['OwnerUid'];
+
+                        bool button = true;
+
+                        // setState(() async {
+                        //   SharedPreferences prefs = await SharedPreferences.getInstance();
+                        //   button = prefs.getBool("button" ?? true);
+                        // });
+
                         readTimestamp(timestamp.seconds);
 
+                        Fetchprofile(uid, index);
+
                         getlikes(displayNamecurrentUser, postIdX, index);
+
+
+
 
                         Notification() async {
                           //print(currUid);
@@ -389,7 +447,12 @@ class _FeedsPageState extends State<FeedsPage> {
                         }
 
                         return (shared==true)?Container(
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
+                            ),
+                            color: Colors.white,
+                          ),
                           child: Column(
                             children: <Widget>[
                               Container(height: 0.0,width: 0.0,),
@@ -403,6 +466,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     top: 10,
                                     left: 10,
                                     right: 10.0,
+                                    bottom: 5.0
                                   ),
 
                                   child: Column(
@@ -417,7 +481,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                               ClipRRect(
                                                 borderRadius: BorderRadius.circular(40),
                                                 child: Image(
-                                                  image: NetworkImage(photoUrl),
+                                                  image: (cpurl[index] != null)?
+                                                  (cloading[index])?NetworkImage(cpurl[index]):NetworkImage("url"):NetworkImage(
+                                                      "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                                  ),
                                                   width: 40,
                                                   height: 40,
                                                   fit: BoxFit.cover,
@@ -426,10 +493,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                               SizedBox(
                                                 width: 10,
                                               ),
-                                              Text(displayName,style: TextStyle(
+                                              (cloading[index])?Text(cdisplayName[index],style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18.0,
-                                              ),),
+                                              ),):Container(child: Text("Loading...")),
                                             ],
                                           ),
 
@@ -445,36 +512,107 @@ class _FeedsPageState extends State<FeedsPage> {
                               ),
 
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 1.0),
-                                child: Container(
-                                  height: 50.0,
-                                  color: Colors.grey.shade50,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 15.0,right: 15.0,),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(40),
-                                              child: Image(
-                                                image: NetworkImage(OwnerPhotourl),
-                                                width: 30,
-                                                height: 30,
-                                                fit: BoxFit.cover,
+                                padding: const EdgeInsets.only(bottom: 0.0),
+                                child: GestureDetector(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete: false)),
+                                   // MaterialPageRoute(builder: (context) => postPage(PostUrl: url,)),
+                                  ),
+                                  child: Container(
+                                    width: deviceWidth*0.95,
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                          top: BorderSide(width: 1.0, color: Colors.grey),
+                                          //left: BorderSide(width: 1.0, color: Colors.grey),
+                                          //right: BorderSide(width: 1.0, color: Colors.grey)
+                                        //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                      ),
+                                      color: Colors.white,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 15.0,right: 15.0,top: 10.0,bottom: 5.0),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Row(
+                                                children: <Widget>[
+                                                  ClipRRect(
+                                                    borderRadius: BorderRadius.circular(40),
+                                                    child: Image(
+                                                      image: NetworkImage(OwnerPhotourl),
+                                                      width: 30,
+                                                      height: 30,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+
+                                                  Text(OwnerDisplayName,style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12.0,
+                                                  ),),
+                                                ],
                                               ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 8.0),
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width*0.8,
+                                                  child: RichText(
+                                                    textAlign: TextAlign.start,
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                    text: TextSpan(
+                                                      children: [
+
+                                                        // TextSpan(
+                                                        //   text: "  "+OwnerDisplayName + " ",
+                                                        //   style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                        //       fontSize: 18.0),
+                                                        // ),
+                                                        TextSpan(
+                                                          text: OwnerDescription,
+                                                          style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                              fontSize: 15.0),
+                                                        ),
+                                                      ],
+
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                Container(
+                                                  padding: const EdgeInsets.only(top: 3),
+                                                  width: MediaQuery.of(context).size.width*0.8,
+                                                  child: RichText(
+                                                    textAlign: TextAlign.start,
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                    text: TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: readTimestamp(OwnerTimeStamp.seconds),
+                                                          style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,
+                                                              fontSize: 8.0),
+                                                        ),
+                                                      ],
+
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
                                             ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(OwnerDisplayName,style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12.0,
-                                            ),),
-                                          ],
-                                        ),
-                                      ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -496,25 +634,63 @@ class _FeedsPageState extends State<FeedsPage> {
                                 },
                                 onTap: null,
 
-                                child: Container(
-                                  height: 350.0,
-                                  child: GestureDetector(
-                                    child : (cam == 1)? Transform(
-                                      alignment: Alignment.center,
-                                      transform: Matrix4.rotationY(math.pi),
-                                      child: FadeInImage(
-                                        image: NetworkImage(url),
-                                        fit: BoxFit.cover,
-                                        //image: NetworkImage("posts[i].postImage"),
-                                        placeholder: AssetImage("assets/images/loading.gif"),
-                                        width: MediaQuery.of(context).size.width,
-                                      ),
-                                    ):FadeInImage(
-                                      image: NetworkImage(url),
-                                      fit: BoxFit.cover,
-                                      //image: NetworkImage("posts[i].postImage"),
-                                      placeholder: AssetImage("assets/images/loading.gif"),
-                                      width: MediaQuery.of(context).size.width,
+                                child: GestureDetector(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete:false)),
+                                  ),
+                                  child: Container(
+                                    //height: 450.0,
+                                    width: deviceWidth,
+                                    decoration: BoxDecoration(
+                                      // border: Border(
+                                      //     bottom: BorderSide(width: 2.0, color: Colors.grey),
+                                      //     left: BorderSide(width: 2.0, color: Colors.grey),
+                                      //     right: BorderSide(width: 2.0, color: Colors.grey)
+                                      //   //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                      // ),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        GestureDetector(
+                                          child : (cam == 1)? Transform(
+                                            alignment: Alignment.center,
+                                            transform: Matrix4.rotationY(math.pi),
+                                            child: (url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                              image: url,
+                                              fit: BoxFit.cover,
+                                              //image: NetworkImage("posts[i].postImage"),
+                                              placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                              width: MediaQuery.of(context).size.width,
+                                            ),
+                                          ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                            image: url,//NetworkImage(url),
+                                            fit: BoxFit.cover,
+                                            //image: NetworkImage("posts[i].postImage"),
+                                            placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                            width: MediaQuery.of(context).size.width,
+                                          ),
+                                        ),
+
+                                        Container(
+                                            width: MediaQuery.of(context).size.width*0.95,
+                                            height: 10,
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom: BorderSide(width: 1.0, color: Colors.grey),
+                                                  //left: BorderSide(width: 1.0, color: Colors.grey),
+                                                  //right: BorderSide(width: 1.0, color: Colors.grey)
+                                                //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                              ),
+                                            ),
+                                            // margin: EdgeInsets.symmetric(
+                                            //   horizontal: 14,
+                                            // ),
+
+
+
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -582,6 +758,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
 
+                                            addStringToSF(cdisplayName[index],displayNameController.text,postId,comments);
                                           },
 
 
@@ -595,7 +772,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerUid:OwnerUid)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
@@ -605,15 +782,15 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ],
                               ),
 
-                              Container(
+                              (description == null)?null:Container(
                                   width: MediaQuery.of(context).size.width,
                                   margin: EdgeInsets.symmetric(
                                     horizontal: 14,
                                   ),
                                   child: Row(
                                     children: [
-
-                                      Container(
+                                      (description != null)?Container(
+                                        width: MediaQuery.of(context).size.width*0.9,
                                         child: RichText(
                                           textAlign: TextAlign.start,
                                           softWrap: true,
@@ -634,22 +811,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                             ],
                                           ),
                                         ),
-                                      ),
+                                      ):Container(),
                                     ],
                                   )
                               ),
 
                               Container(
-                                width: MediaQuery.of(context).size.width,
                                 margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 5,
-                                ),
-                              ),
-
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
+                                  horizontal: 14,vertical: 5
                                 ),
                                 alignment: Alignment.topLeft,
                                 child: Text(
@@ -665,8 +834,16 @@ class _FeedsPageState extends State<FeedsPage> {
                             ],
                           ),
 
+
+
+                          // post container
                         ):Container(
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
+                            ),
+                            color: Colors.white,
+                          ),
                           child: Column(
                             children: <Widget>[
 
@@ -695,7 +872,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(40),
                                             child: Image(
-                                              image: NetworkImage(photoUrl),
+                                              image: (cpurl != null)?
+                                              (cloading[index])?NetworkImage(cpurl[index]):NetworkImage(
+                                                  "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                              )
+                                                  :NetworkImage(
+                                                "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                              ),
                                               width: 40,
                                               height: 40,
                                               fit: BoxFit.cover,
@@ -704,17 +887,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                           SizedBox(
                                             width: 10,
                                           ),
-                                          Text(displayName,style: TextStyle(
+                                          (cloading[index])?Text(cdisplayName[index],style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18.0,
-                                          ),),
+                                          ),):Container(child: Text("Loading...")),
                                         ],
                                       ),
-                                      IconButton(
-                                        icon: Icon(SimpleLineIcons.options),
-                                        onPressed: () {},
-                                      ),
-                                    ],
+                                              ],
                                   ),
                                 ),
                               ),
@@ -743,18 +922,18 @@ class _FeedsPageState extends State<FeedsPage> {
                                     child :(cam == 1)?Transform(
                                       alignment: Alignment.center,
                                       transform: Matrix4.rotationY(math.pi),
-                                      child: FadeInImage(
-                                        image: NetworkImage(url),
+                                      child: (url== null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                        image: url,//NetworkImage(url),
                                         fit: BoxFit.cover,
                                         //image: NetworkImage("posts[i].postImage"),
-                                        placeholder: AssetImage("assets/images/loading.gif"),
+                                        placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
                                         width: MediaQuery.of(context).size.width,
                                       ),
 
-                                    ):FadeInImage(
-                                      image: NetworkImage(url,),
+                                    ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                      image: url,//NetworkImage(url,),
                                       fit: BoxFit.cover,
-                                      placeholder: AssetImage("assets/images/loading.gif"),
+                                      placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
                                     ),
                                   ),
@@ -768,7 +947,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                   Row(
                                     children: <Widget>[
 
-                                      IconButton(
+                                      (button == true)?IconButton(
                                         padding: EdgeInsets.only(left: 10),
                                         onPressed: (_likes[index] == true)
                                             ? () {
@@ -776,10 +955,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                             _likes[index] = false;
                                             //like[likeint] = "false";
                                             loading = true;
+                                            button = false;
 //                                              likes--;
                                             DatabaseService().unlikepost(
                                                 likes, postId,displayNameController.text);
                                             loading = false;
+                                            button = true;
                                           });
                                         }
                                             : () {
@@ -787,16 +968,18 @@ class _FeedsPageState extends State<FeedsPage> {
                                             _likes[index] = true;
                                             //like[likeint] = "true";
                                             loading = true;
+                                            button = false;
                                             DatabaseService().likepost(
                                                 likes, postId,displayNameController.text);
                                             Notification();
                                             loading = false;
+                                            button = true;
                                           });
                                         },
                                         icon: Icon(Icons.thumb_up),
                                         iconSize: 25,
                                         color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
-                                      ),
+                                      ):Container(color: Colors.red),
 
                                       Text(
                                         likes.toString(),style: TextStyle(
@@ -812,6 +995,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                             Navigator.push(context, MaterialPageRoute(builder: (context){
                                               return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                             }));
+                                            addStringToSF(displayName,displayNameController.text,postId,comments);
+
                                           },
                                           icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                         ),
@@ -823,7 +1008,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerUid: uid,ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
@@ -833,7 +1018,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ],
                               ),
 
-                              Container(
+                              (description == null)?Container(
                                   width: MediaQuery.of(context).size.width,
                                   margin: EdgeInsets.symmetric(
                                     horizontal: 14,
@@ -842,6 +1027,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     children: [
 
                                       Container(
+                                        width: MediaQuery.of(context).size.width*0.9,
                                         child: RichText(
                                           textAlign: TextAlign.start,
                                           softWrap: true,
@@ -861,22 +1047,17 @@ class _FeedsPageState extends State<FeedsPage> {
                                             ],
                                           ),
                                         ),
-                                      ),
+                                      )
                                     ],
                                   )
+                              ):Container(
+                                height: 1.0,
                               ),
 
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 5,
-                                ),
-                              ),
 
                               Container(
                                 margin: EdgeInsets.symmetric(
-                                  horizontal: 14,
+                                  horizontal: 14,vertical: 5.0
                                 ),
                                 alignment: Alignment.topLeft,
                                 child: Text(
@@ -934,11 +1115,13 @@ class _FeedsPageState extends State<FeedsPage> {
             size: 40.0,
           ),
           onPressed: () {
-            pickImage();
+           // pickImage();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => gallery()),
+            );
           },
         ),
-
-        // floatingActionButton: FancyFab(),
       ),
     );
   }
