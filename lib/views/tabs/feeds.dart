@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math' as math;
+import 'package:techstagram/ui/post.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -105,7 +106,7 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-    //fetchPosts();
+    fetchPosts();
     fetchProfileData();
     fetchLikes();
     //getPostCount();
@@ -402,6 +403,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         Timestamp OwnerTimeStamp = snapshot.data.documents[index]['OwnerTimeStamp'];
 
+                        String OwnerUid = snapshot.data.documents[index]['OwnerUid'];
+
                         bool button = true;
 
                         // setState(() async {
@@ -510,99 +513,105 @@ class _FeedsPageState extends State<FeedsPage> {
 
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 0.0),
-                                child: Container(
-                                  width: deviceWidth*0.95,
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                        top: BorderSide(width: 1.0, color: Colors.grey),
-                                        //left: BorderSide(width: 1.0, color: Colors.grey),
-                                        //right: BorderSide(width: 1.0, color: Colors.grey)
-                                      //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                    ),
-                                    color: Colors.white,
+                                child: GestureDetector(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid)),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 15.0,right: 15.0,top: 10.0,bottom: 5.0),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.circular(40),
-                                                  child: Image(
-                                                    image: NetworkImage(OwnerPhotourl),
-                                                    width: 30,
-                                                    height: 30,
-                                                    fit: BoxFit.cover,
+                                  child: Container(
+                                    width: deviceWidth*0.95,
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                          top: BorderSide(width: 1.0, color: Colors.grey),
+                                          //left: BorderSide(width: 1.0, color: Colors.grey),
+                                          //right: BorderSide(width: 1.0, color: Colors.grey)
+                                        //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                      ),
+                                      color: Colors.white,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 15.0,right: 15.0,top: 10.0,bottom: 5.0),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Row(
+                                                children: <Widget>[
+                                                  ClipRRect(
+                                                    borderRadius: BorderRadius.circular(40),
+                                                    child: Image(
+                                                      image: NetworkImage(OwnerPhotourl),
+                                                      width: 30,
+                                                      height: 30,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-
-                                                Text(OwnerDisplayName,style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12.0,
-                                                ),),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 8.0),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.8,
-                                                child: RichText(
-                                                  textAlign: TextAlign.start,
-                                                  softWrap: true,
-                                                  overflow: TextOverflow.visible,
-                                                  text: TextSpan(
-                                                    children: [
-
-                                                      // TextSpan(
-                                                      //   text: "  "+OwnerDisplayName + " ",
-                                                      //   style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                      //       fontSize: 18.0),
-                                                      // ),
-                                                      TextSpan(
-                                                        text: OwnerDescription,
-                                                        style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                            fontSize: 15.0),
-                                                      ),
-                                                    ],
-
+                                                  SizedBox(
+                                                    width: 10,
                                                   ),
-                                                ),
+
+                                                  Text(OwnerDisplayName,style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12.0,
+                                                  ),),
+                                                ],
                                               ),
-
-                                              Container(
-                                                padding: const EdgeInsets.only(top: 3),
-                                                width: MediaQuery.of(context).size.width*0.8,
-                                                child: RichText(
-                                                  textAlign: TextAlign.start,
-                                                  softWrap: true,
-                                                  overflow: TextOverflow.visible,
-                                                  text: TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                        text: readTimestamp(OwnerTimeStamp.seconds),
-                                                        style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,
-                                                            fontSize: 8.0),
-                                                      ),
-                                                    ],
-
-                                                  ),
-                                                ),
-                                              )
                                             ],
                                           ),
-                                        )
-                                      ],
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 8.0),
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width*0.8,
+                                                  child: RichText(
+                                                    textAlign: TextAlign.start,
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                    text: TextSpan(
+                                                      children: [
+
+                                                        // TextSpan(
+                                                        //   text: "  "+OwnerDisplayName + " ",
+                                                        //   style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                        //       fontSize: 18.0),
+                                                        // ),
+                                                        TextSpan(
+                                                          text: OwnerDescription,
+                                                          style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                              fontSize: 15.0),
+                                                        ),
+                                                      ],
+
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                Container(
+                                                  padding: const EdgeInsets.only(top: 3),
+                                                  width: MediaQuery.of(context).size.width*0.8,
+                                                  child: RichText(
+                                                    textAlign: TextAlign.start,
+                                                    softWrap: true,
+                                                    overflow: TextOverflow.visible,
+                                                    text: TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: readTimestamp(OwnerTimeStamp.seconds),
+                                                          style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,
+                                                              fontSize: 8.0),
+                                                        ),
+                                                      ],
+
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -624,58 +633,64 @@ class _FeedsPageState extends State<FeedsPage> {
                                 },
                                 onTap: null,
 
-                                child: Container(
-                                  //height: 450.0,
-                                  width: deviceWidth,
-                                  decoration: BoxDecoration(
-                                    // border: Border(
-                                    //     bottom: BorderSide(width: 2.0, color: Colors.grey),
-                                    //     left: BorderSide(width: 2.0, color: Colors.grey),
-                                    //     right: BorderSide(width: 2.0, color: Colors.grey)
-                                    //   //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                    // ),
+                                child: GestureDetector(
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid)),
                                   ),
-                                  child: Column(
-                                    children: [
-                                      GestureDetector(
-                                        child : (cam == 1)? Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.rotationY(math.pi),
-                                          child: (url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
-                                            image: url,
+                                  child: Container(
+                                    //height: 450.0,
+                                    width: deviceWidth,
+                                    decoration: BoxDecoration(
+                                      // border: Border(
+                                      //     bottom: BorderSide(width: 2.0, color: Colors.grey),
+                                      //     left: BorderSide(width: 2.0, color: Colors.grey),
+                                      //     right: BorderSide(width: 2.0, color: Colors.grey)
+                                      //   //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                      // ),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        GestureDetector(
+                                          child : (cam == 1)? Transform(
+                                            alignment: Alignment.center,
+                                            transform: Matrix4.rotationY(math.pi),
+                                            child: (url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                              image: url,
+                                              fit: BoxFit.cover,
+                                              //image: NetworkImage("posts[i].postImage"),
+                                              placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                              width: MediaQuery.of(context).size.width,
+                                            ),
+                                          ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                            image: url,//NetworkImage(url),
                                             fit: BoxFit.cover,
                                             //image: NetworkImage("posts[i].postImage"),
                                             placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
                                             width: MediaQuery.of(context).size.width,
                                           ),
-                                        ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
-                                          image: url,//NetworkImage(url),
-                                          fit: BoxFit.cover,
-                                          //image: NetworkImage("posts[i].postImage"),
-                                          placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
-                                          width: MediaQuery.of(context).size.width,
                                         ),
-                                      ),
 
-                                      Container(
-                                          width: MediaQuery.of(context).size.width*0.95,
-                                          height: 10,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                                bottom: BorderSide(width: 1.0, color: Colors.grey),
-                                                //left: BorderSide(width: 1.0, color: Colors.grey),
-                                                //right: BorderSide(width: 1.0, color: Colors.grey)
-                                              //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                        Container(
+                                            width: MediaQuery.of(context).size.width*0.95,
+                                            height: 10,
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                  bottom: BorderSide(width: 1.0, color: Colors.grey),
+                                                  //left: BorderSide(width: 1.0, color: Colors.grey),
+                                                  //right: BorderSide(width: 1.0, color: Colors.grey)
+                                                //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                              ),
                                             ),
-                                          ),
-                                          // margin: EdgeInsets.symmetric(
-                                          //   horizontal: 14,
-                                          // ),
+                                            // margin: EdgeInsets.symmetric(
+                                            //   horizontal: 14,
+                                            // ),
 
 
 
-                                      )
-                                    ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -756,7 +771,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerUid:OwnerUid)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
@@ -992,7 +1007,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                         onPressed: () {
                                           Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
+                                            MaterialPageRoute(builder: (context) => UploadImage(ownerUid: uid,ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
                                           );
                                         },
                                         icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
