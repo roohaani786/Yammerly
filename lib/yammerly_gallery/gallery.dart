@@ -28,14 +28,21 @@ class _galleryState extends State<gallery> {
   }
 
   getImagesPath() async {
+    if(StoragePath.imagesPath == null){
+      return CircularProgressIndicator();
+    }
     var imagePath = await StoragePath.imagesPath;
     var images = jsonDecode(imagePath) as List;
     files = images.map<FileModel>((e) => FileModel.fromJson(e)).toList();
-    if (files != null && files.length > 0)
+    if (files != null && files.length > 0) {
       setState(() {
         selectedModel = files[0];
         image = files[0].files[0];
       });
+    }
+    else{
+      return CircularProgressIndicator();
+    }
   }
 
   File selectedfile;
@@ -44,49 +51,49 @@ class _galleryState extends State<gallery> {
   getImage(File file) async {
     print("aa gayaaaa");
     //if(selectedfile ==  null){
-      print("null h");
+    print("null h");
+    this.setState(() {
+      _inProcess = true;
+    });
+    //File image = await ImagePicker.pickImage(source: source);
+    if (file != null) {
+      File cropped = await ImageCropper.cropImage(
+          sourcePath: file.path,
+          aspectRatio: CropAspectRatio(
+              ratioX: 1, ratioY: 1),
+          compressQuality: 100,
+          maxWidth: 700,
+          maxHeight: 700,
+          compressFormat: ImageCompressFormat.jpg,
+          androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.white,
+            toolbarTitle: "Yammerly Cropper",
+            activeControlsWidgetColor: Colors.purple,
+            toolbarWidgetColor: Colors.deepPurple,
+            statusBarColor: Colors.purple,
+            backgroundColor: Colors.white,
+            showCropGrid: false,
+            dimmedLayerColor: Colors.black54,
+          )
+      );
       this.setState(() {
-        _inProcess = true;
+        selectedfile = cropped;
+        _inProcess = false;
       });
-      //File image = await ImagePicker.pickImage(source: source);
-      if (file != null) {
-        File cropped = await ImageCropper.cropImage(
-            sourcePath: file.path,
-            aspectRatio: CropAspectRatio(
-                ratioX: 1, ratioY: 1),
-            compressQuality: 100,
-            maxWidth: 700,
-            maxHeight: 700,
-            compressFormat: ImageCompressFormat.jpg,
-            androidUiSettings: AndroidUiSettings(
-              toolbarColor: Colors.white,
-              toolbarTitle: "Yammerly Cropper",
-              activeControlsWidgetColor: Colors.purple,
-              toolbarWidgetColor: Colors.deepPurple,
-              statusBarColor: Colors.purple,
-              backgroundColor: Colors.white,
-              showCropGrid: false,
-              dimmedLayerColor: Colors.black54,
-            )
+      if(selectedfile!= null){
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+              UploadImage(file: selectedfile,
+                shared: false,)),
         );
-        this.setState(() {
-          selectedfile = cropped;
-          _inProcess = false;
+        setState(() {
+          selectedfile == null;
         });
-        if(selectedfile!= null){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) =>
-                UploadImage(file: selectedfile,
-                  shared: false,)),
-          );
-          setState(() {
-            selectedfile == null;
-          });
-        }
       }
-     //}
-      // else{
+    }
+    //}
+    // else{
     //   print("hu");
     //   Navigator.push(
     //     context,
@@ -115,7 +122,7 @@ class _galleryState extends State<gallery> {
                 Row(
                   children: <Widget>[
                     GestureDetector(
-                      onTap : () => Navigator.pop(context),
+                        onTap : () => Navigator.pop(context),
                         child: Icon(Icons.clear)),
                     SizedBox(width: 10),
                     DropdownButtonHideUnderline(
@@ -157,7 +164,8 @@ class _galleryState extends State<gallery> {
                     width: MediaQuery.of(context).size.width)
                     : Container()),
             Divider(),
-            selectedModel == null && selectedModel.files.length < 1
+            (files == null)?CircularProgressIndicator()
+                :selectedModel == null
                 ? Container()
                 : Container(
               height: MediaQuery.of(context).size.height * 0.38,
@@ -189,7 +197,7 @@ class _galleryState extends State<gallery> {
   }
 
   List<DropdownMenuItem> getItems() {
-    return files
+    return (files == null)?null:files
         .map((e) => DropdownMenuItem(
       child: Text(
         e.folder,
