@@ -165,6 +165,7 @@ flutter:
     - assets/twitter-logo.png
     - assets/twitter_logo.png
     - assets/images/coverPhoto.jpg
+    - assets/25.gif
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

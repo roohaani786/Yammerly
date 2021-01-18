@@ -210,6 +210,10 @@ class _FeedsPageState extends State<FeedsPage> {
         setState(() {
           _likes[index] = true;
         });
+      }else{
+        setState((){
+          _likes[index] = false;
+        });
       }
     });
   }
@@ -612,6 +616,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                   DatabaseService().likepost(
                                       likes, postId,
+                                      uidController.text,
                                       displayNameController.text);
                                 }
                               },
@@ -707,6 +712,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                   .unlikepost(
                                                                       likes,
                                                                       postId,
+                                                                      uidController.text,
                                                                       displayNameController
                                                                           .text));
                                                         }
@@ -729,6 +735,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                   .likepost(
                                                                       likes,
                                                                       postId,
+                                                                      uidController.text,
                                                                       displayNameController
                                                                           .text));
                                                         },
@@ -902,6 +909,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                   await DatabaseService().likepost(
                                       likes, postId,
+                                      uidController.text,
                                       displayNameController.text);
                                 }
                               },
@@ -963,6 +971,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                         () => DatabaseService().unlikepost(
                                                                             likes,
                                                                             postId,
+                                                                            uidController.text,
                                                                             displayNameController.text));
                                                                   }
                                           : () {
@@ -985,6 +994,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                         () => DatabaseService().likepost(
                                                                             likes,
                                                                             postId,
+                                                                            uidController.text,
                                                                             displayNameController.text));
                                                                   },
                                       icon: Icon(Icons.thumb_up),
