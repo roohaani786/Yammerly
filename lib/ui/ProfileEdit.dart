@@ -574,17 +574,23 @@ class _ProfilePageState extends State<ProfilePage> {
                         width: 5,
                       ),
                     ),
-                    child: Container(
+                    child: (isChanged == false) ? Container(
                       height: 100,
                       width: 100.0,
                       child: Image(
-                        image: (isChanged == false) ? NetworkImage(
-                            photoUrlController.text) : AssetImage(
-                            "assets/images/loading.gif"),
+                        image: NetworkImage(
+                            photoUrlController.text),
                         fit: BoxFit.cover,
-                      ),
+                      )
                       //backgroundImage: NetworkImage(photoUrlController.text)
-                    )
+                    ):Container(
+                  width: 25.0,
+                  height: 25.0,
+                  child: Image(
+                    image:  AssetImage("assets/25.gif"),
+                    fit: BoxFit.contain,
+                  ),
+                ),
                 ),
 
               ),
