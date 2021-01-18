@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -276,6 +277,7 @@ class _postPageState extends State<postPage> {
 
   File _image;
   bool upload;
+  Timer timer;
 
   createAlertDialog(context,url) {
     return showDialog(
@@ -744,34 +746,56 @@ class _postPageState extends State<postPage> {
                                       padding: EdgeInsets.only(left: 10),
                                       onPressed: (likess[index] == true)
                                           ? () {
-
-
-                                        setState(() {
-                                          likess[index] = false;
-                                          //like[likeint] = "false";
-                                          loading = true;
-                                        });
-
-                                        DatabaseService().unlikepost(
-                                            likes, postId,uidX,displayNameController.text);
-
-                                        setState(() {
-                                          loading = false;
-                                        });
+                                        if (timer?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer = Timer(
+                                          const Duration(
+                                              milliseconds:
+                                              340),
+                                              () {
+                                            setState(() {
+                                              likess[index] =
+                                              false;
+                                              loading = true;
+                                            });
+                                            DatabaseService()
+                                                .unlikepost(
+                                                likes,
+                                                postId,
+                                                uidController
+                                                    .text,
+                                                displayNameController
+                                                    .text);
+                                          },
+                                        );
                                       }
                                           : () {
-                                        setState(() {
-                                          likess[index] = true;
-                                          //like[likeint] = "true";
-                                          loading = true;
-                                        });
-
-                                        DatabaseService().likepost(
-                                            likes, postId,uidX,displayNameController.text);
-
-                                        setState(() {
-                                          loading = false;
-                                        });
+                                        if (timer?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer = Timer(
+                                          const Duration(
+                                              milliseconds:
+                                              340),
+                                              () {
+                                            setState(() {
+                                              likess[index] =
+                                              true;
+                                              loading = true;
+                                            });
+                                            DatabaseService()
+                                                .likepost(
+                                                likes,
+                                                postId,
+                                                uidController
+                                                    .text,
+                                                displayNameController
+                                                    .text);
+                                          },
+                                        );
                                       },
                                       icon: Icon(Icons.thumb_up),
                                       iconSize: 25,
@@ -1046,25 +1070,56 @@ class _postPageState extends State<postPage> {
                                       padding: EdgeInsets.only(left: 10),
                                       onPressed: (likess[index] == true)
                                           ? () {
-                                        setState(() {
-                                          likess[index] = false;
-                                          //like[likeint] = "false";
-                                          loading = true;
-//                                              likes--;
-                                          DatabaseService().unlikepost(
-                                              likes, postId,uidX,displayNameController.text);
-                                          loading = false;
-                                        });
+                                        if (timer?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer = Timer(
+                                          const Duration(
+                                              milliseconds:
+                                              340),
+                                              () {
+                                            setState(() {
+                                              likess[index] =
+                                              false;
+                                              loading = true;
+                                            });
+                                            DatabaseService()
+                                                .unlikepost(
+                                                likes,
+                                                postId,
+                                                uidController
+                                                    .text,
+                                                displayNameController
+                                                    .text);
+                                          },
+                                        );
                                       }
                                           : () {
-                                        setState(() {
-                                          likess[index] = true;
-                                          //like[likeint] = "true";
-                                          loading = true;
-                                          DatabaseService().likepost(
-                                              likes, postId,uidX,displayNameController.text);
-                                          loading = false;
-                                        });
+                                        if (timer?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer = Timer(
+                                          const Duration(
+                                              milliseconds:
+                                              340),
+                                              () {
+                                            setState(() {
+                                              likess[index] =
+                                              true;
+                                              loading = true;
+                                            });
+                                            DatabaseService()
+                                                .likepost(
+                                                likes,
+                                                postId,
+                                                uidController
+                                                    .text,
+                                                displayNameController
+                                                    .text);
+                                          },
+                                        );
                                       },
                                       icon: Icon(Icons.thumb_up),
                                       iconSize: 25,

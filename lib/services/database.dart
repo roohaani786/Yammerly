@@ -364,7 +364,7 @@ class DatabaseService {
         .updateData({'likes': initialvalue + 1});
 
      print("bhai bhaibbb");
-     print(userDisplayName);
+     print(uid);
 
      Firestore.instance
         .collection("posts")
