@@ -694,50 +694,56 @@ class _FeedsPageState extends State<FeedsPage> {
                                       padding: EdgeInsets.only(left: 10),
                                       onPressed: (likess[index] == true)
                                           ? () {
-                                        setState(() {
-                                                            likess[index] =
-                                                                false;
-                                                            loading = true;
-                                                          });
-
                                                           if (timer?.isActive ??
                                                               false)
                                                             timer
                                                                 .cancel(); //cancel if [timer] is null or running
                                                           timer = Timer(
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      340),
-                                                              () => DatabaseService()
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    340),
+                                                            () {
+                                                              setState(() {
+                                                                likess[index] =
+                                                                    false;
+                                                                loading = true;
+                                                              });
+                                                              DatabaseService()
                                                                   .unlikepost(
                                                                       likes,
                                                                       postId,
-                                                                      uidController.text,
+                                                                      uidController
+                                                                          .text,
                                                                       displayNameController
-                                                                          .text));
+                                                                          .text);
+                                                            },
+                                                          );
                                                         }
-                                          : () {
-                                                          setState(() {
-                                                            likess[index] =
-                                                                true;
-                                                            loading = true;
-                                                          });
-
+                                                      : () {
                                                           if (timer?.isActive ??
                                                               false)
                                                             timer
                                                                 .cancel(); //cancel if [timer] is null or running
                                                           timer = Timer(
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      340),
-                                                              () => DatabaseService()
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    340),
+                                                            () {
+                                                              setState(() {
+                                                                likess[index] =
+                                                                    true;
+                                                                loading = true;
+                                                              });
+                                                              DatabaseService()
                                                                   .likepost(
                                                                       likes,
                                                                       postId,
-                                                                      uidController.text,
+                                                                      uidController
+                                                                          .text,
                                                                       displayNameController
-                                                                          .text));
+                                                                          .text);
+                                                            },
+                                                          );
                                                         },
                                       icon: Icon(Icons.thumb_up),
                                       iconSize: 25,
@@ -951,56 +957,67 @@ class _FeedsPageState extends State<FeedsPage> {
                                       padding: EdgeInsets.only(left: 10),
                                       onPressed: (likess[index] == true)
                                           ? () {
-                                        setState(
-                                                                        () {
-                                                                      likess[index] =
-                                                                          false;
-                                                                      loading =
-                                                                          true;
-                                                                    });
-
                                                                     if (timer
                                                                             ?.isActive ??
                                                                         false)
                                                                       timer
                                                                           .cancel(); //cancel if [timer] is null or running
-                                                                    timer = Timer(
-                                                                        const Duration(
-                                                                            milliseconds:
-                                                                                340),
-                                                                        () => DatabaseService().unlikepost(
+                                                                    timer =
+                                                                        Timer(
+                                                                      const Duration(
+                                                                          milliseconds:
+                                                                              340),
+                                                                      () {
+                                                                        setState(
+                                                                            () {
+                                                                          likess[index] =
+                                                                              false;
+                                                                          loading =
+                                                                              true;
+                                                                        });
+                                                                        DatabaseService().unlikepost(
                                                                             likes,
                                                                             postId,
                                                                             uidController.text,
-                                                                            displayNameController.text));
+                                                                            displayNameController.text);
+                                                                      },
+                                                                    );
                                                                   }
-                                          : () {
-                                        setState(
-                                                                        () {
-                                                                      likess[index] =
-                                                                          true;
-                                                                      loading =
-                                                                          true;
-                                                                    });
+                                                                : () {
                                                                     if (timer
                                                                             ?.isActive ??
                                                                         false)
                                                                       timer
                                                                           .cancel(); //cancel if [timer] is null or running
-                                                                    timer = Timer(
-                                                                        const Duration(
-                                                                            milliseconds:
-                                                                                340),
-                                                                        () => DatabaseService().likepost(
+                                                                    timer =
+                                                                        Timer(
+                                                                      const Duration(
+                                                                          milliseconds:
+                                                                              340),
+                                                                      () {
+                                                                        setState(
+                                                                            () {
+                                                                          likess[index] =
+                                                                              true;
+                                                                          loading =
+                                                                              true;
+                                                                        });
+                                                                        DatabaseService().likepost(
                                                                             likes,
                                                                             postId,
                                                                             uidController.text,
-                                                                            displayNameController.text));
+                                                                            displayNameController.text);
+                                                                      },
+                                                                    );
                                                                   },
-                                      icon: Icon(Icons.thumb_up),
-                                      iconSize: 25,
-                                      color: (likess[index] == true) ? Colors.deepPurple : Colors.grey,
-                                    ):Container(color: Colors.red),
+                                                        icon: Icon(
+                                                            Icons.thumb_up),
+                                                        iconSize: 25,
+                                                        color: (likess[index] ==
+                                                                true)
+                                                            ? Colors.deepPurple
+                                                            : Colors.grey,
+                                                      ):Container(color: Colors.red),
 
                                     Text(
                                       likes.toString(),style: TextStyle(
