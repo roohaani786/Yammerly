@@ -54,7 +54,7 @@ class _FeedsPageState extends State<FeedsPage> {
   FirebaseUser currUser;
   ScrollController scrollController = new ScrollController();
   Posts currentpost;
-  List<bool> _likes = List.filled(10000, null);
+  List<bool> likess = List.filled(10000, false);
 
   double _scale = 1.0;
   double _previousScale;
@@ -201,18 +201,18 @@ class _FeedsPageState extends State<FeedsPage> {
 
   getlikes( String displayNamecurrent, String postId, int index) async {
     await Firestore.instance.collection('posts')
-        .document(postIdX)
+        .document(postId)
         .collection('likes')
-        .document(displayNamecurrent)
+        .document(uidController.text)
         .get()
         .then((value) {
       if (value.exists) {
         setState(() {
-          _likes[index] = true;
+          likess[index] = true;
         });
       }else{
         setState((){
-          _likes[index] = false;
+          likess[index] = false;
         });
       }
     });
@@ -404,11 +404,11 @@ class _FeedsPageState extends State<FeedsPage> {
                             Fetchprofile(uid, index);
 
                             if (likes == 0 || likes < 0) {
-                              _likes[index] == false;
+                              likess[index] == false;
                               likes = 0;
                             }
 
-                            getlikes(displayNamecurrentUser, postIdX, index);
+                            getlikes(displayNamecurrentUser, postId, index);
 
                             Notification() async {
                               //print(currUid);
@@ -609,9 +609,9 @@ class _FeedsPageState extends State<FeedsPage> {
 
                             GestureDetector(
                               onDoubleTap: () {
-                                if (_likes[index] == false) {
+                                if (likess[index] == false) {
                                   setState(() {
-                                    _likes[index] = true;
+                                    likess[index] = true;
                                   });
 
                                   DatabaseService().likepost(
@@ -692,10 +692,10 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                     IconButton(
                                       padding: EdgeInsets.only(left: 10),
-                                      onPressed: (_likes[index] == true)
+                                      onPressed: (likess[index] == true)
                                           ? () {
                                         setState(() {
-                                                            _likes[index] =
+                                                            likess[index] =
                                                                 false;
                                                             loading = true;
                                                           });
@@ -718,7 +718,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                         }
                                           : () {
                                                           setState(() {
-                                                            _likes[index] =
+                                                            likess[index] =
                                                                 true;
                                                             loading = true;
                                                           });
@@ -741,7 +741,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                         },
                                       icon: Icon(Icons.thumb_up),
                                       iconSize: 25,
-                                      color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
+                                      color: (likess[index] == true) ? Colors.deepPurple : Colors.grey,
                                     ),
 
                                     Text(
@@ -901,9 +901,9 @@ class _FeedsPageState extends State<FeedsPage> {
 
                             GestureDetector(
                               onDoubleTap: () async {
-                                if (_likes[index] == false) {
+                                if (likess[index] == false) {
                                   setState(() {
-                                    _likes[index] = true;
+                                    likess[index] = true;
                                     //print(_liked);
                                   });
 
@@ -949,11 +949,11 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                     (button == true)?IconButton(
                                       padding: EdgeInsets.only(left: 10),
-                                      onPressed: (_likes[index] == true)
+                                      onPressed: (likess[index] == true)
                                           ? () {
                                         setState(
                                                                         () {
-                                                                      _likes[index] =
+                                                                      likess[index] =
                                                                           false;
                                                                       loading =
                                                                           true;
@@ -977,7 +977,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           : () {
                                         setState(
                                                                         () {
-                                                                      _likes[index] =
+                                                                      likess[index] =
                                                                           true;
                                                                       loading =
                                                                           true;
@@ -999,7 +999,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                   },
                                       icon: Icon(Icons.thumb_up),
                                       iconSize: 25,
-                                      color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
+                                      color: (likess[index] == true) ? Colors.deepPurple : Colors.grey,
                                     ):Container(color: Colors.red),
 
                                     Text(
