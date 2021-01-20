@@ -388,7 +388,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                       int comments = snapshot.data.documents[index]['comments'];
 
-                      Timestamp OwnerTimeStamp = snapshot.data.documents[index]['OwnerTimeStamp'];
+                      Timestamp OwnertimeStamp = snapshot.data.documents[index]['OwnerTimeStamp'];
 
                       String OwnerUid = snapshot.data.documents[index]['OwnerUid'];
 
@@ -577,7 +577,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                 ),
                                               ),
 
-                                              Container(
+                                              (OwnertimeStamp==null)?Container():Container(
                                                 padding: const EdgeInsets.only(top: 3),
                                                 width: MediaQuery.of(context).size.width*0.8,
                                                 child: RichText(
@@ -587,7 +587,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                                   text: TextSpan(
                                                     children: [
                                                       TextSpan(
-                                                        text: readTimestamp(OwnerTimeStamp.seconds),
+                                                        //text: readTimestamp(OwnerTimeStamp.seconds),
+                                                        text: readTimestamp(OwnertimeStamp.seconds),
                                                         style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,
                                                             fontSize: 8.0),
                                                       ),

@@ -619,7 +619,7 @@ class CameraScreenState extends State<CameraScreen>
       await Directory(dirPath).create(recursive: true);
       final String filePath = '$dirPath/${_timestamp()}.jpeg';
       print('path: $filePath');
-      await _controller.takePicture(filePath);
+      //await _controller.takePicture(filePath);
       setState(() {});
       Navigator.push(
         context,
@@ -651,7 +651,7 @@ class CameraScreenState extends State<CameraScreen>
 
     try {
 //      videoPath = filePath;
-      await _controller.startVideoRecording(filePath);
+      //await _controller.startVideoRecording(filePath);
     } on CameraException catch (e) {
       _showCameraException(e);
       return null;

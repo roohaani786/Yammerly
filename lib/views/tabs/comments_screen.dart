@@ -358,7 +358,7 @@ class Comment extends StatelessWidget {
     final deviceWidth = MediaQuery.of(context).size.width;
     return Container(
       color: Colors.white,
-          height: deviceHeight*0.085,
+          //height: deviceHeight*0.075,
           child: Stack(
             children: [
               ListTile(
@@ -367,26 +367,24 @@ class Comment extends StatelessWidget {
                     Container(
                       width: deviceWidth*0.65,
                       height: deviceHeight*0.01,
-                      child: Expanded(
-                        child: RichText(
-                          textAlign: TextAlign.start,
-                          softWrap: true,
-                          overflow: TextOverflow.visible,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: userName + " : ",
-                                style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                              ),
-                              TextSpan(
-                                text: comment,
-                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                    fontSize: 15.0),
-                              ),
-                            ],
-                          ),
-
+                      child: RichText(
+                        textAlign: TextAlign.start,
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: userName + " : ",
+                              style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                            ),
+                            TextSpan(
+                              text: comment,
+                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                  fontSize: 15.0),
+                            ),
+                          ],
                         ),
+
                       ),
                     ),
                   IconButton(
