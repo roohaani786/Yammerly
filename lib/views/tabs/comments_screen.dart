@@ -366,7 +366,7 @@ class Comment extends StatelessWidget {
                   children: [
                     Container(
                       width: deviceWidth*0.65,
-                      height: deviceHeight*0.01,
+                      //height: deviceHeight*0.01,
                       child: RichText(
                         textAlign: TextAlign.start,
                         softWrap: true,
