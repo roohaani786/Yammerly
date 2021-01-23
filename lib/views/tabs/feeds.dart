@@ -1056,7 +1056,7 @@ class _FeedsPageState extends State<FeedsPage> {
                               ],
                             ),
 
-                            (description == null)?Container(
+                            (description != null)?Container(
                                 width: MediaQuery.of(context).size.width,
                                 margin: EdgeInsets.symmetric(
                                   horizontal: 14,
