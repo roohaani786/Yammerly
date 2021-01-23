@@ -900,6 +900,11 @@ class _FeedsPageState extends State<FeedsPage> {
                                         ),):Container(child: Text("Loading...")),
                                       ],
                                     ),
+
+                                    IconButton(
+                                      icon: Icon(SimpleLineIcons.options),
+                                      onPressed: () {},
+                                    ),
                                   ],
                                 ),
                               ),
