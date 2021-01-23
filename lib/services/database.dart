@@ -356,39 +356,40 @@ class DatabaseService {
 
 
 
-  Future likepost(int initialvalue, String postId, String userEmail)  async {
+  Future likepost(int initialvalue, String postId,String uid, String userDisplayName)  async {
 
-     Firestore.instance
+     await Firestore.instance
         .collection("posts")
         .document(postId)
         .updateData({'likes': initialvalue + 1});
+
+     print("bhai bhaibbb");
+     print(uid);
 
      Firestore.instance
         .collection("posts")
         .document(postId)
         .collection('likes')
-        .document(userEmail)
-        .setData({'liked': userEmail});
+        .document(uid)
+        .setData({'liked': userDisplayName});
 
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-     prefs.setBool('button', true);
 
   }
 
 
-  Future unlikepost(int initialvalue, String postId, String userEmail) async {
+  Future unlikepost(int initialvalue, String postId, String uid,String userEmail) async {
 
 
     if(initialvalue < 0){
 
-      Firestore.instance
+      await Firestore.instance
           .collection("posts")
           .document(postId)
           .updateData({'likes': 0});
     }
 
     else{
-      Firestore.instance
+      await Firestore.instance
           .collection("posts")
           .document(postId)
           .updateData({'likes': initialvalue - 1});
@@ -397,7 +398,7 @@ class DatabaseService {
           .collection("posts")
           .document(postId)
           .collection('likes')
-          .document(userEmail)
+          .document(uid)
           .delete();
     }
 

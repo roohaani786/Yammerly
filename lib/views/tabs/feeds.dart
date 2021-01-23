@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-import 'package:techstagram/ui/post.dart';
-import 'package:transparent_image/transparent_image.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,9 +20,11 @@ import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
+import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/utils/utils.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'package:techstagram/yammerly_gallery/gallery.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 
@@ -31,7 +33,6 @@ class FeedsPage extends StatefulWidget {
   final String displayNamecurrentUser;
 
   @override
-
   FeedsPage({
     this.displayNamecurrentUser,
   });
@@ -53,7 +54,7 @@ class _FeedsPageState extends State<FeedsPage> {
   FirebaseUser currUser;
   ScrollController scrollController = new ScrollController();
   Posts currentpost;
-  List<bool> _likes = List.filled(10000,false);
+  List<bool> likess = List.filled(10000, false);
 
   double _scale = 1.0;
   double _previousScale;
@@ -72,10 +73,10 @@ class _FeedsPageState extends State<FeedsPage> {
   int Plength;
 
 
-
   Stream<QuerySnapshot> postsStream;
   final timelineReference = Firestore.instance.collection('posts');
   String postIdX;
+
   //bool _liked = false;
   //var like = new List();
   //int likeint;
@@ -92,7 +93,6 @@ class _FeedsPageState extends State<FeedsPage> {
 
   @override
   void initState() {
-
     emailController = TextEditingController();
     likesController = TextEditingController();
     uidController = TextEditingController();
@@ -113,6 +113,7 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   File crop;
+  Timer timer; //declare timer variable
 
   // getPostCount() async {
   //   await DatabaseService().getPosts().then((val){
@@ -160,13 +161,11 @@ class _FeedsPageState extends State<FeedsPage> {
                   context,
                   MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
             }
-
           }else{
             Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1),));
           }
-
         });
       });
       if (_image != null){
@@ -185,7 +184,6 @@ class _FeedsPageState extends State<FeedsPage> {
     }
 
 
-
 //    Navigator.push(
 //      context,
 //      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
@@ -194,7 +192,6 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   fetchPosts() async {
-
     await DatabaseService().getPosts().then((val){
       setState(() {
         postsStream = val;
@@ -203,19 +200,19 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   getlikes( String displayNamecurrent, String postId, int index) async {
-
     await Firestore.instance.collection('posts')
-        .document(postIdX)
+        .document(postId)
         .collection('likes')
-        .document(displayNamecurrent)
+        .document(uidController.text)
         .get()
         .then((value) {
       if (value.exists) {
         setState(() {
-          //likeint = int.parse(postId);
-          //_liked = true;
-          _likes[index] = true;
-          //like[likeint] = "true";
+          likess[index] = true;
+        });
+      }else{
+        setState((){
+          likess[index] = false;
         });
       }
     });
@@ -252,11 +249,11 @@ class _FeedsPageState extends State<FeedsPage> {
 
   List<String> cpurl = new List(10000);
   var cdisplayName = new List(10000);
+
   //bool cloading = false;
   List<bool> cloading = List.filled(10000,false);
 
   Fetchprofile(String uid,int index) async{
-
     docSnap = await Firestore.instance
         .collection("users")
         .document(uid)
@@ -269,7 +266,6 @@ class _FeedsPageState extends State<FeedsPage> {
       cdisplayName[index] = cdisplayNameController.text;
       cloading[index] = true;
     });
-
   }
 
   String readTimestamp(int timestamp) {
@@ -301,7 +297,6 @@ class _FeedsPageState extends State<FeedsPage> {
     }
 
 
-
     else {
       if (diff.inDays == 7) {
         time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
@@ -314,13 +309,8 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
-
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
 
@@ -346,8 +336,6 @@ class _FeedsPageState extends State<FeedsPage> {
     }
 
 
-
-
     return GestureDetector(
       child: Scaffold(
         key: _scaffoldKey,
@@ -360,719 +348,769 @@ class _FeedsPageState extends State<FeedsPage> {
 
                 new Expanded(
                   child: ListView.builder(
-                          controller: scrollController,
-                      itemCount: snapshot.data.documents.length,
+                    controller: scrollController,
+                    itemCount: snapshot.data.documents.length,
 
-                      itemBuilder: (context, index) {
+                    itemBuilder: (context, index) {
+                      int len = snapshot.data.documents.length;
 
-                        int len = snapshot.data.documents.length;
+                      postIdX = snapshot.data.documents[index]['postId'];
 
-                        postIdX = snapshot.data.documents[index]['postId'];
+                      String email = snapshot.data.documents[index]['email'];
 
-                        String email = snapshot.data.documents[index]['email'];
+                      String description = snapshot.data.documents[index]['description'];
 
-                        String description = snapshot.data.documents[index]['description'];
+                      String displayName = snapshot.data.documents[index]['displayName'];
 
-                        String displayName = snapshot.data.documents[index]['displayName'];
+                      String photoUrl = snapshot.data.documents[index]['photoURL'];
 
-                        String photoUrl = snapshot.data.documents[index]['photoURL'];
+                      String OwnerDisplayName = snapshot.data.documents[index]['OwnerDisplayName'];
 
-                        String OwnerDisplayName = snapshot.data.documents[index]['OwnerDisplayName'];
+                      String OwnerPhotourl = snapshot.data.documents[index]['OwnerPhotourl'];
 
-                        String OwnerPhotourl = snapshot.data.documents[index]['OwnerPhotourl'];
+                      String OwnerDescription = snapshot.data.documents[index]['OwnerDescription'];
 
-                        String OwnerDescription = snapshot.data.documents[index]['OwnerDescription'];
+                      bool shared = snapshot.data.documents[index]['shared'];
 
-                        bool shared = snapshot.data.documents[index]['shared'];
+                      String uid = snapshot.data.documents[index]["uid"];
 
-                        String uid = snapshot.data.documents[index]["uid"];
+                      int shares = snapshot.data.documents[index]["shares"];
 
-                        int shares = snapshot.data.documents[index]["shares"];
+                      Timestamp timestamp = snapshot.data.documents[index]['timestamp'];
 
-                        Timestamp timestamp = snapshot.data.documents[index]['timestamp'];
+                      String url = snapshot.data.documents[index]['url'];
 
-                        String url = snapshot.data.documents[index]['url'];
+                      int cam = snapshot.data.documents[index]['cam'];
 
-                        int cam = snapshot.data.documents[index]['cam'];
+                      String postId = snapshot.data.documents[index]['postId'];
 
-                        String postId = snapshot.data.documents[index]['postId'];
+                      int likes = snapshot.data.documents[index]['likes'];
 
-                        int likes = snapshot.data.documents[index]['likes'];
+                      int comments = snapshot.data.documents[index]['comments'];
 
-                        int comments = snapshot.data.documents[index]['comments'];
+                      Timestamp OwnertimeStamp = snapshot.data.documents[index]['OwnerTimeStamp'];
 
-                        Timestamp OwnerTimeStamp = snapshot.data.documents[index]['OwnerTimeStamp'];
+                      String OwnerUid = snapshot.data.documents[index]['OwnerUid'];
 
-                        String OwnerUid = snapshot.data.documents[index]['OwnerUid'];
+                            bool button = true;
 
-                        bool button = true;
+                            // setState(() async {
+                            //   SharedPreferences prefs = await SharedPreferences.getInstance();
+                            //   button = prefs.getBool("button" ?? true);
+                            // });
 
-                        // setState(() async {
-                        //   SharedPreferences prefs = await SharedPreferences.getInstance();
-                        //   button = prefs.getBool("button" ?? true);
-                        // });
+                            readTimestamp(timestamp.seconds);
 
-                        readTimestamp(timestamp.seconds);
+                            Fetchprofile(uid, index);
 
-                        Fetchprofile(uid, index);
+                            if (likes == 0 || likes < 0) {
+                              likess[index] == false;
+                              likes = 0;
+                            }
 
-                        getlikes(displayNamecurrentUser, postIdX, index);
+                            getlikes(displayNamecurrentUser, postId, index);
 
+                            Notification() async {
+                              //print(currUid);
 
+                              setState(() {
+                                // file = null;
+                          NotificationId = Uuid().v4();
+                        });
 
+                        return await Firestore.instance.collection("users")
+                            .document(uid).collection("notification")
+                            .document(NotificationId)
+                            .setData({"likes" : likes+1,
+                          "notificationId" : NotificationId,
+                          "username": displayNamecurrentUser,
+                          //"comment": commentTextEditingController.text,
 
-                        Notification() async {
-                          //print(currUid);
+                          "timestamp": DateTime.now(),
+                          "url": photoUrl,
+                          "uid": uid,
+                          "status" : "like",
+                          "postId" : postId,
+                        });
+                      }
 
-                          setState(() {
-                            // file = null;
-                            NotificationId = Uuid().v4();
-                          });
-
-                          return await Firestore.instance.collection("users")
-                              .document(uid).collection("notification")
-                              .document(NotificationId)
-                              .setData({"likes" : likes+1,
-                            "notificationId" : NotificationId,
-                            "username": displayNamecurrentUser,
-                            //"comment": commentTextEditingController.text,
-
-                            "timestamp": DateTime.now(),
-                            "url": photoUrl,
-                            "uid": uid,
-                            "status" : "like",
-                            "postId" : postId,
-                          });
-
-                        }
-
-                        return (shared==true)?Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
-                            ),
-                            color: Colors.white,
+                      return (shared==true)?Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
                           ),
-                          child: Column(
-                            children: <Widget>[
-                              Container(height: 0.0,width: 0.0,),
-                              GestureDetector(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
-                                ),
-                                child: Container(
-                                  padding: EdgeInsets.only(
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Container(height: 0.0,width: 0.0,),
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.only(
                                     top: 10,
                                     left: 10,
                                     right: 10.0,
                                     bottom: 5.0
-                                  ),
-
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-
-                                          Row(
-                                            children: <Widget>[
-
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.circular(40),
-                                                child: Image(
-                                                  image: (cpurl[index] != null)?
-                                                  (cloading[index])?NetworkImage(cpurl[index]):NetworkImage("url"):NetworkImage(
-                                                      "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
-                                                  ),
-                                                  width: 40,
-                                                  height: 40,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              (cloading[index])?Text(cdisplayName[index],style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18.0,
-                                              ),):Container(child: Text("Loading...")),
-                                            ],
-                                          ),
-
-                                          IconButton(
-                                            icon: Icon(SimpleLineIcons.options),
-                                            onPressed: () {},
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
                                 ),
-                              ),
 
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 0.0),
-                                child: GestureDetector(
-                                  onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete: false)),
-                                   // MaterialPageRoute(builder: (context) => postPage(PostUrl: url,)),
-                                  ),
-                                  child: Container(
-                                    width: deviceWidth*0.95,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                          top: BorderSide(width: 1.0, color: Colors.grey),
-                                          //left: BorderSide(width: 1.0, color: Colors.grey),
-                                          //right: BorderSide(width: 1.0, color: Colors.grey)
-                                        //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                      ),
-                                      color: Colors.white,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 15.0,right: 15.0,top: 10.0,bottom: 5.0),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  ClipRRect(
-                                                    borderRadius: BorderRadius.circular(40),
-                                                    child: Image(
-                                                      image: NetworkImage(OwnerPhotourl),
-                                                      width: 30,
-                                                      height: 30,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
 
-                                                  Text(OwnerDisplayName,style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 12.0,
-                                                  ),),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 8.0),
-                                            child: Column(
-                                              children: [
-                                                Container(
-                                                  width: MediaQuery.of(context).size.width*0.8,
-                                                  child: RichText(
-                                                    textAlign: TextAlign.start,
-                                                    softWrap: true,
-                                                    overflow: TextOverflow.visible,
-                                                    text: TextSpan(
-                                                      children: [
+                                        Row(
+                                          children: <Widget>[
 
-                                                        // TextSpan(
-                                                        //   text: "  "+OwnerDisplayName + " ",
-                                                        //   style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                        //       fontSize: 18.0),
-                                                        // ),
-                                                        TextSpan(
-                                                          text: OwnerDescription,
-                                                          style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                              fontSize: 15.0),
-                                                        ),
-                                                      ],
-
-                                                    ),
-                                                  ),
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(40),
+                                              child: Image(
+                                                image: (cpurl[index] != null)?
+                                                (cloading[index])?NetworkImage(cpurl[index]):NetworkImage("url"):NetworkImage(
+                                                    "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
                                                 ),
-
-                                                Container(
-                                                  padding: const EdgeInsets.only(top: 3),
-                                                  width: MediaQuery.of(context).size.width*0.8,
-                                                  child: RichText(
-                                                    textAlign: TextAlign.start,
-                                                    softWrap: true,
-                                                    overflow: TextOverflow.visible,
-                                                    text: TextSpan(
-                                                      children: [
-                                                        TextSpan(
-                                                          text: readTimestamp(OwnerTimeStamp.seconds),
-                                                          style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,
-                                                              fontSize: 8.0),
-                                                        ),
-                                                      ],
-
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
+                                                width: 40,
+                                                height: 40,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-
-                              GestureDetector(
-                                onDoubleTap: () {
-
-                                  if (_likes[index] == false) {
-                                    setState(() {
-                                      _likes[index] = true;
-                                    });
-
-                                    DatabaseService().likepost(
-                                        likes, postId,
-                                        displayNameController.text);
-                                  }
-                                },
-                                onTap: null,
-
-                                child: GestureDetector(
-                                  onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete:false)),
-                                  ),
-                                  child: Container(
-                                    //height: 450.0,
-                                    width: deviceWidth,
-                                    decoration: BoxDecoration(
-                                      // border: Border(
-                                      //     bottom: BorderSide(width: 2.0, color: Colors.grey),
-                                      //     left: BorderSide(width: 2.0, color: Colors.grey),
-                                      //     right: BorderSide(width: 2.0, color: Colors.grey)
-                                      //   //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                      // ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        GestureDetector(
-                                          child : (cam == 1)? Transform(
-                                            alignment: Alignment.center,
-                                            transform: Matrix4.rotationY(math.pi),
-                                            child: (url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
-                                              image: url,
-                                              fit: BoxFit.cover,
-                                              //image: NetworkImage("posts[i].postImage"),
-                                              placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
-                                              width: MediaQuery.of(context).size.width,
+                                            SizedBox(
+                                              width: 10,
                                             ),
-                                          ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
-                                            image: url,//NetworkImage(url),
-                                            fit: BoxFit.cover,
-                                            //image: NetworkImage("posts[i].postImage"),
-                                            placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
-                                            width: MediaQuery.of(context).size.width,
-                                          ),
+                                            (cloading[index])?Text(cdisplayName[index],style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18.0,
+                                            ),):Container(child: Text("Loading...")),
+                                          ],
                                         ),
 
-                                        Container(
-                                            width: MediaQuery.of(context).size.width*0.95,
-                                            height: 10,
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                  bottom: BorderSide(width: 1.0, color: Colors.grey),
-                                                  //left: BorderSide(width: 1.0, color: Colors.grey),
-                                                  //right: BorderSide(width: 1.0, color: Colors.grey)
-                                                //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
-                                              ),
+                                        IconButton(
+                                          icon: Icon(SimpleLineIcons.options),
+                                          onPressed: () {},
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 0.0),
+                              child: GestureDetector(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete: false)),
+                                  // MaterialPageRoute(builder: (context) => postPage(PostUrl: url,)),
+                                ),
+                                child: Container(
+                                  width: deviceWidth*0.95,
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(width: 1.0, color: Colors.grey),
+                                      //left: BorderSide(width: 1.0, color: Colors.grey),
+                                      //right: BorderSide(width: 1.0, color: Colors.grey)
+                                      //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                    ),
+                                    color: Colors.white,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15.0,right: 15.0,top: 10.0,bottom: 5.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Row(
+                                              children: <Widget>[
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(40),
+                                                  child: Image(
+                                                    image: NetworkImage(OwnerPhotourl),
+                                                    width: 30,
+                                                    height: 30,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+
+                                                Text(OwnerDisplayName,style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12.0,
+                                                ),),
+                                              ],
                                             ),
-                                            // margin: EdgeInsets.symmetric(
-                                            //   horizontal: 14,
-                                            // ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 8.0),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.8,
+                                                child: RichText(
+                                                  textAlign: TextAlign.start,
+                                                  softWrap: true,
+                                                  overflow: TextOverflow.visible,
+                                                  text: TextSpan(
+                                                    children: [
 
+                                                      // TextSpan(
+                                                      //   text: "  "+OwnerDisplayName + " ",
+                                                      //   style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                      //       fontSize: 18.0),
+                                                      // ),
+                                                      TextSpan(
+                                                        text: OwnerDescription,
+                                                        style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                            fontSize: 15.0),
+                                                      ),
+                                                    ],
 
+                                                  ),
+                                                ),
+                                              ),
 
+                                              (OwnertimeStamp==null)?Container():Container(
+                                                padding: const EdgeInsets.only(top: 3),
+                                                width: MediaQuery.of(context).size.width*0.8,
+                                                child: RichText(
+                                                  textAlign: TextAlign.start,
+                                                  softWrap: true,
+                                                  overflow: TextOverflow.visible,
+                                                  text: TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        //text: readTimestamp(OwnerTimeStamp.seconds),
+                                                        text: readTimestamp(OwnertimeStamp.seconds),
+                                                        style: TextStyle(color: Colors.grey,fontWeight: FontWeight.normal,
+                                                            fontSize: 8.0),
+                                                      ),
+                                                    ],
+
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         )
                                       ],
                                     ),
                                   ),
                                 ),
                               ),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-
-                                  Row(
-                                    children: <Widget>[
-
-                                      IconButton(
-                                        padding: EdgeInsets.only(left: 10),
-                                        onPressed: (_likes[index] == true)
-                                            ? () {
-
-
-                                          setState(() {
-                                            _likes[index] = false;
-                                            //like[likeint] = "false";
-                                            loading = true;
-                                          });
-
-                                          DatabaseService().unlikepost(
-                                              likes, postId,displayNameController.text);
-
-                                          setState(() {
-                                            loading = false;
-                                          });
-                                        }
-                                            : () {
-                                          setState(() {
-                                            _likes[index] = true;
-                                            //like[likeint] = "true";
-                                            loading = true;
-                                          });
-
-                                          DatabaseService().likepost(
-                                              likes, postId,displayNameController.text);
-                                          Notification();
-
-                                          setState(() {
-                                            loading = false;
-                                          });
-                                        },
-                                        icon: Icon(Icons.thumb_up),
-                                        iconSize: 25,
-                                        color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
-                                      ),
-
-                                      Text(
-                                        likes.toString(),style: TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                      ),
-
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 3.0),
-                                        child: IconButton(
-
-                                          onPressed: () {
-
-                                            Navigator.push(context, MaterialPageRoute(builder: (context){
-                                              return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
-                                            }));
-
-                                            addStringToSF(cdisplayName[index],displayNameController.text,postId,comments);
-                                          },
-
-
-                                          icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
-                                        ),
-                                      ),
-
-                                      Text(comments.toString()),
-
-                                      IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerUid:OwnerUid)),
-                                          );
-                                        },
-                                        icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-
-                              (description == null)?null:Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      (description != null)?Container(
-                                        width: MediaQuery.of(context).size.width*0.9,
-                                        child: RichText(
-                                          textAlign: TextAlign.start,
-                                          softWrap: true,
-                                          overflow: TextOverflow.visible,
-                                          text: TextSpan(
-                                            children: [
-
-                                              TextSpan(
-                                                text: displayName + "  ",
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                    fontSize: 18.0),
-                                              ),
-                                              TextSpan(
-                                                text: description,
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                    fontSize: 15.0),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ):Container(),
-                                    ],
-                                  )
-                              ),
-
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 14,vertical: 5
-                                ),
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  readTimestamp(timestamp.seconds),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10.0,
-                                  ),
-                                ),
-                              ),
-
-                            ],
-                          ),
-
-
-
-                          // post container
-                        ):Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
                             ),
-                            color: Colors.white,
-                          ),
-                          child: Column(
-                            children: <Widget>[
 
-                              Container(
-                                height: 0.0,width: 0.0,
-                                ),
 
-                              GestureDetector(
+                            GestureDetector(
+                              onDoubleTap: () {
+                                if (likess[index] == false) {
+                                  setState(() {
+                                    likess[index] = true;
+                                  });
+
+                                  DatabaseService().likepost(
+                                      likes, postId,
+                                      uidController.text,
+                                      displayNameController.text);
+                                }
+                              },
+                              onTap: null,
+
+                              child: GestureDetector(
                                 onTap: () => Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
+                                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete:false)),
                                 ),
-
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 10,
+                                  //height: 450.0,
+                                  width: deviceWidth,
+                                  decoration: BoxDecoration(
+                                    // border: Border(
+                                    //     bottom: BorderSide(width: 2.0, color: Colors.grey),
+                                    //     left: BorderSide(width: 2.0, color: Colors.grey),
+                                    //     right: BorderSide(width: 2.0, color: Colors.grey)
+                                    //   //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                    // ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-
-                                      Row(
-                                        children: <Widget>[
-
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(40),
-                                            child: Image(
-                                              image: (cpurl != null)?
-                                              (cloading[index])?NetworkImage(cpurl[index]):NetworkImage(
-                                                  "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
-                                              )
-                                                  :NetworkImage(
-                                                "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
-                                              ),
-                                              width: 40,
-                                              height: 40,
-                                              fit: BoxFit.cover,
-                                            ),
+                                  child: Column(
+                                    children: [
+                                      GestureDetector(
+                                        child : (cam == 1)? Transform(
+                                          alignment: Alignment.center,
+                                          transform: Matrix4.rotationY(math.pi),
+                                          child: (url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                            image: url,
+                                            fit: BoxFit.cover,
+                                            //image: NetworkImage("posts[i].postImage"),
+                                            placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                            width: MediaQuery.of(context).size.width,
                                           ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          (cloading[index])?Text(cdisplayName[index],style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18.0,
-                                          ),):Container(child: Text("Loading...")),
-                                        ],
+                                        ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                          image: url,//NetworkImage(url),
+                                          fit: BoxFit.cover,
+                                          //image: NetworkImage("posts[i].postImage"),
+                                          placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                          width: MediaQuery.of(context).size.width,
+                                        ),
                                       ),
-                                              ],
+
+                                      Container(
+                                        width: MediaQuery.of(context).size.width*0.95,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            bottom: BorderSide(width: 1.0, color: Colors.grey),
+                                            //left: BorderSide(width: 1.0, color: Colors.grey),
+                                            //right: BorderSide(width: 1.0, color: Colors.grey)
+                                            //bottom: BorderSide(width: 16.0, color: Colors.lightBlue.shade900),
+                                          ),
+                                        ),
+                                        // margin: EdgeInsets.symmetric(
+                                        //   horizontal: 14,
+                                        // ),
+
+
+                                      )
+                                    ],
                                   ),
                                 ),
                               ),
+                            ),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+
+                                Row(
+                                  children: <Widget>[
+
+                                    IconButton(
+                                      padding: EdgeInsets.only(left: 10),
+                                      onPressed: (likess[index] == true)
+                                          ? () {
+                                                          if (timer?.isActive ??
+                                                              false)
+                                                            timer
+                                                                .cancel(); //cancel if [timer] is null or running
+                                                          timer = Timer(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    340),
+                                                            () {
+                                                              setState(() {
+                                                                likess[index] =
+                                                                    false;
+                                                                loading = true;
+                                                              });
+                                                              DatabaseService()
+                                                                  .unlikepost(
+                                                                      likes,
+                                                                      postId,
+                                                                      uidController
+                                                                          .text,
+                                                                      displayNameController
+                                                                          .text);
+                                                            },
+                                                          );
+                                                        }
+                                                      : () {
+                                                          if (timer?.isActive ??
+                                                              false)
+                                                            timer
+                                                                .cancel(); //cancel if [timer] is null or running
+                                                          timer = Timer(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    340),
+                                                            () {
+                                                              setState(() {
+                                                                likess[index] =
+                                                                    true;
+                                                                loading = true;
+                                                              });
+                                                              DatabaseService()
+                                                                  .likepost(
+                                                                      likes,
+                                                                      postId,
+                                                                      uidController
+                                                                          .text,
+                                                                      displayNameController
+                                                                          .text);
+                                                            },
+                                                          );
+                                                        },
+                                      icon: Icon(Icons.thumb_up),
+                                      iconSize: 25,
+                                      color: (likess[index] == true) ? Colors.deepPurple : Colors.grey,
+                                    ),
+
+                                    Text(
+                                      likes.toString(),style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 3.0),
+                                      child: IconButton(
+
+                                        onPressed: () {
+                                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                                            return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          }));
+
+                                          addStringToSF(cdisplayName[index],displayNameController.text,postId,comments);
+                                        },
 
 
-                              GestureDetector(
-                                onDoubleTap: () async {
-
-                                  if (_likes[index] == false) {
-                                    setState(() {
-                                      _likes[index] = true;
-                                      //print(_liked);
-                                    });
-
-                                    await DatabaseService().likepost(
-                                        likes, postId,
-                                        displayNameController.text);
-                                    }
-                                },
-                                onTap: null,
-
-                                child: Container(
-                                  height: 350.0,
-                                  child: GestureDetector(
-
-                                    child :(cam == 1)?Transform(
-                                      alignment: Alignment.center,
-                                      transform: Matrix4.rotationY(math.pi),
-                                      child: (url== null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
-                                        image: url,//NetworkImage(url),
-                                        fit: BoxFit.cover,
-                                        //image: NetworkImage("posts[i].postImage"),
-                                        placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
-                                        width: MediaQuery.of(context).size.width,
+                                        icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                       ),
+                                    ),
 
-                                    ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
-                                      image: url,//NetworkImage(url,),
+                                    Text(comments.toString()),
+
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerUid:OwnerUid)),
+                                        );
+                                      },
+                                      icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            (description == null)?null:Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
+                                child: Row(
+                                  children: [
+                                    (description != null)?Container(
+                                      width: MediaQuery.of(context).size.width*0.9,
+                                      child: RichText(
+                                        textAlign: TextAlign.start,
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible,
+                                        text: TextSpan(
+                                          children: [
+
+                                            TextSpan(
+                                              text: displayName + "  ",
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                  fontSize: 18.0),
+                                            ),
+                                            TextSpan(
+                                              text: description,
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                  fontSize: 15.0),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ):Container(),
+                                  ],
+                                )
+                            ),
+
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 14,vertical: 5
+                              ),
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                readTimestamp(timestamp.seconds),
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10.0,
+                                ),
+                              ),
+                            ),
+
+                          ],
+                        ),
+
+
+                        // post container
+                      ):Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
+                          ),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          children: <Widget>[
+
+                            Container(
+                              height: 0.0,width: 0.0,
+                            ),
+
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
+                              ),
+
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 10,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+
+                                    Row(
+                                      children: <Widget>[
+
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(40),
+                                          child: Image(
+                                            image: (cpurl != null)?
+                                            (cloading[index])?NetworkImage(cpurl[index]):NetworkImage(
+                                                "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                            )
+                                                :NetworkImage(
+                                                "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                            ),
+                                            width: 40,
+                                            height: 40,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        (cloading[index])?Text(cdisplayName[index],style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.0,
+                                        ),):Container(child: Text("Loading...")),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+
+                            GestureDetector(
+                              onDoubleTap: () async {
+                                if (likess[index] == false) {
+                                  setState(() {
+                                    likess[index] = true;
+                                    //print(_liked);
+                                  });
+
+                                  await DatabaseService().likepost(
+                                      likes, postId,
+                                      uidController.text,
+                                      displayNameController.text);
+                                }
+                              },
+                              onTap: null,
+
+                              child: Container(
+                                height: 350.0,
+                                child: GestureDetector(
+
+                                  child :(cam == 1)?Transform(
+                                    alignment: Alignment.center,
+                                    transform: Matrix4.rotationY(math.pi),
+                                    child: (url== null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                      image: url,//NetworkImage(url),
                                       fit: BoxFit.cover,
+                                      //image: NetworkImage("posts[i].postImage"),
                                       placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
                                       width: MediaQuery.of(context).size.width,
                                     ),
+
+                                  ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                    image: url,//NetworkImage(url,),
+                                    fit: BoxFit.cover,
+                                    placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                    width: MediaQuery.of(context).size.width,
                                   ),
                                 ),
                               ),
+                            ),
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
 
-                                  Row(
-                                    children: <Widget>[
+                                Row(
+                                  children: <Widget>[
 
-                                      (button == true)?IconButton(
-                                        padding: EdgeInsets.only(left: 10),
-                                        onPressed: (_likes[index] == true)
-                                            ? () {
-                                          setState(() {
-                                            _likes[index] = false;
-                                            //like[likeint] = "false";
-                                            loading = true;
-                                            button = false;
-//                                              likes--;
-                                            DatabaseService().unlikepost(
-                                                likes, postId,displayNameController.text);
-                                            loading = false;
-                                            button = true;
-                                          });
-                                        }
-                                            : () {
-                                          setState(() {
-                                            _likes[index] = true;
-                                            //like[likeint] = "true";
-                                            loading = true;
-                                            button = false;
-                                            DatabaseService().likepost(
-                                                likes, postId,displayNameController.text);
-                                            Notification();
-                                            loading = false;
-                                            button = true;
-                                          });
-                                        },
-                                        icon: Icon(Icons.thumb_up),
-                                        iconSize: 25,
-                                        color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
-                                      ):Container(color: Colors.red),
+                                    (button == true)?IconButton(
+                                      padding: EdgeInsets.only(left: 10),
+                                      onPressed: (likess[index] == true)
+                                          ? () {
+                                                                    if (timer
+                                                                            ?.isActive ??
+                                                                        false)
+                                                                      timer
+                                                                          .cancel(); //cancel if [timer] is null or running
+                                                                    timer =
+                                                                        Timer(
+                                                                      const Duration(
+                                                                          milliseconds:
+                                                                              340),
+                                                                      () {
+                                                                        setState(
+                                                                            () {
+                                                                          likess[index] =
+                                                                              false;
+                                                                          loading =
+                                                                              true;
+                                                                        });
+                                                                        DatabaseService().unlikepost(
+                                                                            likes,
+                                                                            postId,
+                                                                            uidController.text,
+                                                                            displayNameController.text);
+                                                                      },
+                                                                    );
+                                                                  }
+                                                                : () {
+                                                                    if (timer
+                                                                            ?.isActive ??
+                                                                        false)
+                                                                      timer
+                                                                          .cancel(); //cancel if [timer] is null or running
+                                                                    timer =
+                                                                        Timer(
+                                                                      const Duration(
+                                                                          milliseconds:
+                                                                              340),
+                                                                      () {
+                                                                        setState(
+                                                                            () {
+                                                                          likess[index] =
+                                                                              true;
+                                                                          loading =
+                                                                              true;
+                                                                        });
+                                                                        DatabaseService().likepost(
+                                                                            likes,
+                                                                            postId,
+                                                                            uidController.text,
+                                                                            displayNameController.text);
+                                                                      },
+                                                                    );
+                                                                  },
+                                                        icon: Icon(
+                                                            Icons.thumb_up),
+                                                        iconSize: 25,
+                                                        color: (likess[index] ==
+                                                                true)
+                                                            ? Colors.deepPurple
+                                                            : Colors.grey,
+                                                      ):Container(color: Colors.red),
 
-                                      Text(
-                                        likes.toString(),style: TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                      ),
+                                    Text(
+                                      likes.toString(),style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    ),
 
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 3.0),
-                                        child: IconButton(
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 3.0),
+                                      child: IconButton(
 
-                                          onPressed: () {
-                                            Navigator.push(context, MaterialPageRoute(builder: (context){
-                                              return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
-                                            }));
-                                            addStringToSF(displayName,displayNameController.text,postId,comments);
-
-                                          },
-                                          icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
-                                        ),
-                                      ),
-
-                                      Text(comments.toString()),
-
-                                      IconButton(
                                         onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => UploadImage(ownerUid: uid,ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
-                                          );
+                                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                                            return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          }));
+                                          addStringToSF(displayName,displayNameController.text,postId,comments);
                                         },
-                                        icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                        icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                    ),
 
-                              (description == null)?Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                  ),
-                                  child: Row(
-                                    children: [
+                                    Text(comments.toString()),
 
-                                      Container(
-                                        width: MediaQuery.of(context).size.width*0.9,
-                                        child: RichText(
-                                          textAlign: TextAlign.start,
-                                          softWrap: true,
-                                          overflow: TextOverflow.visible,
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: displayName + "  ",
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
-                                                    fontSize: 18.0),
-                                              ),
-                                              TextSpan(
-                                                text: description,
-                                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                                    fontSize: 15.0),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  )
-                              ):Container(
-                                height: 1.0,
-                              ),
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => UploadImage(ownerUid: uid,ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
+                                        );
+                                      },
+                                      icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
 
-
-                              Container(
+                            (description != null)?Container(
+                                width: MediaQuery.of(context).size.width,
                                 margin: EdgeInsets.symmetric(
-                                  horizontal: 14,vertical: 5.0
+                                  horizontal: 14,
                                 ),
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  readTimestamp(timestamp.seconds),
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10.0,
-                                  ),
+                                child: Row(
+                                  children: [
+
+                                    Container(
+                                      width: MediaQuery.of(context).size.width*0.9,
+                                      child: RichText(
+                                        textAlign: TextAlign.start,
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: displayName + "  ",
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                  fontSize: 18.0),
+                                            ),
+                                            TextSpan(
+                                              text: description,
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                  fontSize: 15.0),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
+                            ):Container(
+                              height: 1.0,
+                            ),
+
+
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 14,vertical: 5.0
+                              ),
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                readTimestamp(timestamp.seconds),
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10.0,
                                 ),
                               ),
-                            ],
-                          ),
-                        );
-                      },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
@@ -1115,7 +1153,7 @@ class _FeedsPageState extends State<FeedsPage> {
             size: 40.0,
           ),
           onPressed: () {
-           // pickImage();
+            // pickImage();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => gallery()),

@@ -119,25 +119,28 @@ class _galleryState extends State<gallery> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    GestureDetector(
-                        onTap : () => Navigator.pop(context),
-                        child: Icon(Icons.clear)),
-                    SizedBox(width: 10),
-                    DropdownButtonHideUnderline(
-                        child: DropdownButton<FileModel>(
-                          items: getItems(),
-                          onChanged: (FileModel d) {
-                            assert(d.files.length > 0);
-                            image = d.files[0];
-                            setState(() {
-                              selectedModel = d;
-                            });
-                          },
-                          value: selectedModel,
-                        ))
-                  ],
+                Container(
+                  width: MediaQuery.of(context).size.width*0.75,
+                  child: Row(
+                    children: <Widget>[
+                      GestureDetector(
+                          onTap : () => Navigator.pop(context),
+                          child: Icon(Icons.clear)),
+                      SizedBox(width: 10),
+                      DropdownButtonHideUnderline(
+                          child: DropdownButton<FileModel>(
+                            items: getItems(),
+                            onChanged: (FileModel d) {
+                              assert(d.files.length > 0);
+                              image = d.files[0];
+                              setState(() {
+                                selectedModel = d;
+                              });
+                            },
+                            value: selectedModel,
+                          ))
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

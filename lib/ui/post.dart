@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -58,7 +59,7 @@ class _postPageState extends State<postPage> {
   int posts;
   List<DocumentSnapshot> list;
 
-  List<bool> _likes = List.filled(10000,false);
+  List<bool> likess = List.filled(10000,false);
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -165,17 +166,22 @@ class _postPageState extends State<postPage> {
   getlikes( String displayNamecurrent, String postId, int index) async {
 
     await Firestore.instance.collection('posts')
-        .document(postIdX)
+        .document(postId)
         .collection('likes')
-        .document(displayNamecurrent)
+        .document(uidController.text)
         .get()
         .then((value) {
       if (value.exists) {
         setState(() {
           //likeint = int.parse(postId);
           //_liked = true;
-          _likes[index] = true;
+          likess[index] = true;
+          print("baabu baabi");
           //like[likeint] = "true";
+        });
+      }else{
+        setState(() {
+          likess[index] = false;
         });
       }
     });
@@ -271,6 +277,7 @@ class _postPageState extends State<postPage> {
 
   File _image;
   bool upload;
+  Timer timer;
 
   createAlertDialog(context,url) {
     return showDialog(
@@ -336,6 +343,7 @@ class _postPageState extends State<postPage> {
       });
       await DatabaseService().likepost(
           likes, postId,
+          uidX,
           displayNameController.text);
 
     }
@@ -409,6 +417,8 @@ class _postPageState extends State<postPage> {
 
                       String OwnerPhotourl = snapshot.data.documents[index]['OwnerPhotourl'];
 
+                      String OwnerUid = snapshot.data.documents[index]['OwnerUid'];
+
                       bool shared = snapshot.data.documents[index]['shared'];
 
                       String uid = snapshot.data.documents[index]["uid"];
@@ -434,7 +444,7 @@ class _postPageState extends State<postPage> {
 
                       readTimestamp(timestamp.seconds);
 
-                      getlikes(displayNamecurrentUser, postIdX, index);
+                      getlikes(displayNamecurrentUser, postId, index);
 
 //                        if(likes == 0){
 //
@@ -597,17 +607,24 @@ class _postPageState extends State<postPage> {
                             GestureDetector(
                               onDoubleTap: () {
 
-                                if (_likes[index] == false) {
+                                if (likess[index] == false) {
                                   setState(() {
-                                    _likes[index] = true;
+                                    likess[index] = true;
                                   });
 
                                   DatabaseService().likepost(
                                       likes, postId,
+                                      uidX,
                                       displayNameController.text);
                                 }
                               },
-                              onTap: null,
+                               onTap: (){
+                                        Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete: false)),
+                                  // MaterialPageRoute(builder: (context) => postPage(PostUrl: url,)),
+                                );
+                                      },
 
                               child: Container(
                                 //height: 350.0,
@@ -615,6 +632,7 @@ class _postPageState extends State<postPage> {
                                 child: Column(
                                   children: [
                                     GestureDetector(
+                                     
                                       child : (cam == 1)? Transform(
                                         alignment: Alignment.center,
                                         transform: Matrix4.rotationY(math.pi),
@@ -735,40 +753,62 @@ class _postPageState extends State<postPage> {
 
                                     IconButton(
                                       padding: EdgeInsets.only(left: 10),
-                                      onPressed: (_likes[index] == true)
+                                      onPressed: (likess[index] == true)
                                           ? () {
-
-
-                                        setState(() {
-                                          _likes[index] = false;
-                                          //like[likeint] = "false";
-                                          loading = true;
-                                        });
-
-                                        DatabaseService().unlikepost(
-                                            likes, postId,displayNameController.text);
-
-                                        setState(() {
-                                          loading = false;
-                                        });
+                                        if (timer?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer = Timer(
+                                          const Duration(
+                                              milliseconds:
+                                              340),
+                                              () {
+                                            setState(() {
+                                              likess[index] =
+                                              false;
+                                              loading = true;
+                                            });
+                                            DatabaseService()
+                                                .unlikepost(
+                                                likes,
+                                                postId,
+                                                uidController
+                                                    .text,
+                                                displayNameController
+                                                    .text);
+                                          },
+                                        );
                                       }
                                           : () {
-                                        setState(() {
-                                          _likes[index] = true;
-                                          //like[likeint] = "true";
-                                          loading = true;
-                                        });
-
-                                        DatabaseService().likepost(
-                                            likes, postId,displayNameController.text);
-
-                                        setState(() {
-                                          loading = false;
-                                        });
+                                        if (timer?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer = Timer(
+                                          const Duration(
+                                              milliseconds:
+                                              340),
+                                              () {
+                                            setState(() {
+                                              likess[index] =
+                                              true;
+                                              loading = true;
+                                            });
+                                            DatabaseService()
+                                                .likepost(
+                                                likes,
+                                                postId,
+                                                uidController
+                                                    .text,
+                                                displayNameController
+                                                    .text);
+                                          },
+                                        );
                                       },
                                       icon: Icon(Icons.thumb_up),
                                       iconSize: 25,
-                                      color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
+                                      color: (likess[index] == true) ? Colors.deepPurple : Colors.grey,
                                     ),
 
                                     Text(
@@ -989,14 +1029,15 @@ class _postPageState extends State<postPage> {
                             GestureDetector(
                               onDoubleTap: () async {
 
-                                if (_likes[index] == false) {
+                                if (likess[index] == false) {
                                   setState(() {
-                                    _likes[index] = true;
+                                    likess[index] = true;
                                     //print(_liked);
                                   });
 
                                   await DatabaseService().likepost(
                                       likes, postId,
+                                      uidX,
                                       displayNameController.text);
                                 }
                               },
@@ -1036,31 +1077,62 @@ class _postPageState extends State<postPage> {
 
                                     IconButton(
                                       padding: EdgeInsets.only(left: 10),
-                                      onPressed: (_likes[index] == true)
+                                      onPressed: (likess[index] == true)
                                           ? () {
-                                        setState(() {
-                                          _likes[index] = false;
-                                          //like[likeint] = "false";
-                                          loading = true;
-//                                              likes--;
-                                          DatabaseService().unlikepost(
-                                              likes, postId,displayNameController.text);
-                                          loading = false;
-                                        });
+                                        if (timer?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer = Timer(
+                                          const Duration(
+                                              milliseconds:
+                                              340),
+                                              () {
+                                            setState(() {
+                                              likess[index] =
+                                              false;
+                                              loading = true;
+                                            });
+                                            DatabaseService()
+                                                .unlikepost(
+                                                likes,
+                                                postId,
+                                                uidController
+                                                    .text,
+                                                displayNameController
+                                                    .text);
+                                          },
+                                        );
                                       }
                                           : () {
-                                        setState(() {
-                                          _likes[index] = true;
-                                          //like[likeint] = "true";
-                                          loading = true;
-                                          DatabaseService().likepost(
-                                              likes, postId,displayNameController.text);
-                                          loading = false;
-                                        });
+                                        if (timer?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer = Timer(
+                                          const Duration(
+                                              milliseconds:
+                                              340),
+                                              () {
+                                            setState(() {
+                                              likess[index] =
+                                              true;
+                                              loading = true;
+                                            });
+                                            DatabaseService()
+                                                .likepost(
+                                                likes,
+                                                postId,
+                                                uidController
+                                                    .text,
+                                                displayNameController
+                                                    .text);
+                                          },
+                                        );
                                       },
                                       icon: Icon(Icons.thumb_up),
                                       iconSize: 25,
-                                      color: (_likes[index] == true) ? Colors.deepPurple : Colors.grey,
+                                      color: (likess[index] == true) ? Colors.deepPurple : Colors.grey,
                                     ),
 
                                     Text(

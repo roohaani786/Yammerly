@@ -15,7 +15,7 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        android:name="androidx.support.multidex.MultiDexApplication">
+            android:name="androidx.support.multidex.MultiDexApplication">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -80,7 +80,7 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.R EAD_EXTERNAL_STORAGE"/>
-    <uses-feature android:name="android.permission.GALLERY" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GALLERY" />
 
 </manifest>

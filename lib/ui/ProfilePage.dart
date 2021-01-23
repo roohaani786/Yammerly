@@ -17,6 +17,7 @@ import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/utils/utils.dart';
+import 'package:techstagram/yammerly_gallery/gallery.dart';
 
 import '../constants.dart';
 import 'HomePage.dart';
@@ -411,6 +412,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       onTap: (){
                                         print("sent image");
                                         pickImage();
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(builder: (context) => gallery()),
+                                        // );
                                         Navigator.of(context, rootNavigator: true).pop(context);
                                       },
                                       child: Row(
