@@ -582,6 +582,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                         ),
                                         Container(
                                           width: MediaQuery.of(context).size.width*0.85,
+                                          height: MediaQuery.of(context).size.height*0.1,
                                           child: Column(
                                             children: [
                                               Row(
