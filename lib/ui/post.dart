@@ -417,6 +417,8 @@ class _postPageState extends State<postPage> {
 
                       String OwnerPhotourl = snapshot.data.documents[index]['OwnerPhotourl'];
 
+                      String OwnerUid = snapshot.data.documents[index]['OwnerUid'];
+
                       bool shared = snapshot.data.documents[index]['shared'];
 
                       String uid = snapshot.data.documents[index]["uid"];
@@ -616,7 +618,13 @@ class _postPageState extends State<postPage> {
                                       displayNameController.text);
                                 }
                               },
-                              onTap: null,
+                               onTap: (){
+                                        Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: OwnerDisplayName,PostUrl: url,uidX: OwnerUid,delete: false)),
+                                  // MaterialPageRoute(builder: (context) => postPage(PostUrl: url,)),
+                                );
+                                      },
 
                               child: Container(
                                 //height: 350.0,
@@ -624,6 +632,7 @@ class _postPageState extends State<postPage> {
                                 child: Column(
                                   children: [
                                     GestureDetector(
+                                     
                                       child : (cam == 1)? Transform(
                                         alignment: Alignment.center,
                                         transform: Matrix4.rotationY(math.pi),
