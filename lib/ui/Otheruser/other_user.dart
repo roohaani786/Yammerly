@@ -737,7 +737,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                               //
                                               // ):Container(),
                                               SizedBox(
-                                                height: 30,
+                                                height: 10,
                                                 width: deviceWidth,
                                                 child: Divider(
                                                   thickness: 2.0,
