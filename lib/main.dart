@@ -8,7 +8,6 @@ import 'package:techstagram/intro/intro_page.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
-
 import 'Signup/signup_screen.dart';
 
 bool seen;
