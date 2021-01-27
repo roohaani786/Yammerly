@@ -305,15 +305,15 @@ class CameraScreenState extends State<CameraScreen>
       );
     }
     Future<bool> _onWillPop() {
-      Navigator.pop(context);
-      // return Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) {
-      //       return HomePage(initialindexg: 1);
-      //     },
-      //   ),
-      // );
+      //Navigator.pop(context);
+      return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return HomePage(initialindexg: 1);
+          },
+        ),
+      );
     }
 
     if (!_controller.value.isInitialized) {

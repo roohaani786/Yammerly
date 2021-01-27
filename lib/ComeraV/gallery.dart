@@ -210,7 +210,7 @@ class _GalleryState extends State<Gallery> {
                               backgroundColor: Colors.white,
                               title: Text("Discard post ?"),
                               content: Text(
-                                  "If you go back now, you will lose your post.",
+                                  "If you go back now, you will loose your post.",
                                   style: TextStyle(
                                       color: Colors.deepPurple
                                   )),
