@@ -17,7 +17,6 @@ import 'package:techstagram/main.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:uuid/uuid.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -365,7 +364,7 @@ class CameraScreenState extends State<CameraScreen>
                       MaterialPageRoute(builder: (context) => MyApp()),
                     );
                     //Navigator.pushNamed(context, '/HomePage');
-                     //Navigator.of(context, rootNavigator: true).pop(context);
+                    //Navigator.of(context, rootNavigator: true).pop(context);
                     //Navigator.of(context).maybePop();
                     // if(check == true){
                     //   Navigator.pop(context);
@@ -478,10 +477,20 @@ class CameraScreenState extends State<CameraScreen>
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute(builder: (context) => pickImage(),));
-                    Navigator.push(
+                pickImage();
+                if (upload == true){
+                  Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => gallery()),
-                    );
+                      MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                }else{
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CameraScreen(
+                          cam: 0,
+                        ),
+                      ));
+                }
               }
 
               ),
@@ -551,6 +560,19 @@ class CameraScreenState extends State<CameraScreen>
     );
   }
 
+//  Future _turnFlash() async {
+//    bool hasTorch = await Torch.hasTorch;
+//    if(hasTorch){
+//      (flashOn || cam!=null) ? Torch.turnOn() : Torch.turnOff();
+//      var f = await Torch.hasTorch;
+//      Torch.flash(Duration(milliseconds: 300));
+//      setState((){
+//        _hasFlash = f;
+//        //flashOn = !flashOn;
+//      });
+//    }
+//  }
+
   Future<FileSystemEntity> getLastImage() async {
     final Directory extDir = await getApplicationDocumentsDirectory();
     final String dirPath = '${extDir.path}/media';
@@ -609,7 +631,6 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   void _captureImage() async {
-    print("isme aae bhaiya");
     print('_captureImage');
     print('${_controller.value.isInitialized}');
 
@@ -620,7 +641,7 @@ class CameraScreenState extends State<CameraScreen>
       await Directory(dirPath).create(recursive: true);
       final String filePath = '$dirPath/${_timestamp()}.jpeg';
       print('path: $filePath');
-      //await _controller.takePicture(filePath);
+      await _controller.takePicture(filePath);
       setState(() {});
       Navigator.push(
         context,
@@ -652,7 +673,7 @@ class CameraScreenState extends State<CameraScreen>
 
     try {
 //      videoPath = filePath;
-      //await _controller.startVideoRecording(filePath);
+      await _controller.startVideoRecording(filePath);
     } on CameraException catch (e) {
       _showCameraException(e);
       return null;

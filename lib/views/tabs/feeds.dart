@@ -280,7 +280,7 @@ class _FeedsPageState extends State<FeedsPage> {
         time = "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
       }
 
-      else if (diff.inSeconds <= 0) {
+      else if (diff.inSeconds == 0 || diff.inSeconds < 60) {
         time = "just now";
       }
 
