@@ -609,6 +609,7 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   void _captureImage() async {
+    print("isme aae bhaiya");
     print('_captureImage');
     print('${_controller.value.isInitialized}');
 

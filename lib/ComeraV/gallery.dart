@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/uploadimage.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Gallery extends StatefulWidget {
   Gallery({this.filePath, this.cam});
@@ -31,6 +32,7 @@ class _GalleryState extends State<Gallery> {
   @override
   void initState() {
     debugPrint('gallery');
+    print(currentFilePath);
     super.initState();
   }
 
@@ -150,14 +152,8 @@ class _GalleryState extends State<Gallery> {
               children: [
 
                 Container(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height,
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .height,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.height,
                   child: (cam == 1) ? Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.rotationY(math.pi),
