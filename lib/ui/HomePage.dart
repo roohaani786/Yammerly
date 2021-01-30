@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:techstagram/ComeraV/Camera.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
@@ -116,7 +117,9 @@ class _HomePageState extends State<HomePage> {
       controller: _pageController,
       allowImplicitScrolling: true,
       children: <Widget>[
-        CameraScreen(cam: 0),
+        CameraApp(cam: 0,check: true),
+        //CameraExampleHome(),
+        //CameraScreen(cam: 0, check: true),
         TabLayoutDemo(initialindexg),
         // Container(color: Colors.yellow),
       ],
@@ -318,10 +321,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                   print("camera open");
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => CameraScreen(
-                        cam: 0,
-                        check: true,
-                      ),
+                      builder: (context) => CameraScreen(cam: 0, check: true,),
                     ),
                   );
                 },

@@ -52,7 +52,7 @@ dependencies:
   flutter_facebook_login:
   flutter_svg: 0.18.0
   twitter_login:
-  camera: ^0.5.8+5
+  camera: ^0.7.0
   path_provider:
   path:
   image_cropper:

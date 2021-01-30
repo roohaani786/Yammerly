@@ -1,16 +1,18 @@
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:techstagram/ComeraV/Camera.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 
 class Gallery extends StatefulWidget {
   Gallery({this.filePath, this.cam});
 
-  final String filePath;
+  final XFile filePath;
   final int cam;
 
   @override
@@ -18,7 +20,8 @@ class Gallery extends StatefulWidget {
 }
 
 class _GalleryState extends State<Gallery> {
-  String currentFilePath;
+  XFile currentFilePath;
+  // XFile filePath;
   File _selectedFile;
   int cam;
   File image;
@@ -168,7 +171,7 @@ class _GalleryState extends State<Gallery> {
                       height: 250,
                       fit: BoxFit.contain,
                     ) : Image.file(
-                        File(currentFilePath),
+                        File(currentFilePath.path),
                         fit: BoxFit.cover
                     ),
                   ) : (_selectedFile != null) ? Image.file(
@@ -177,7 +180,7 @@ class _GalleryState extends State<Gallery> {
                     height: 250,
                     fit: BoxFit.contain,
                   ) : Image.file(
-                    File(currentFilePath),
+                    File(currentFilePath.path),
                     fit: BoxFit.cover,
                   ),
 
@@ -239,7 +242,7 @@ class _GalleryState extends State<Gallery> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) {
-                                                return CameraScreen(cam: cam,);
+                                                return CameraApp(cam: cam,check: true);
                                               },
                                             ),
                                           );
@@ -301,14 +304,14 @@ class _GalleryState extends State<Gallery> {
                           child: FlatButton(
                             color: Colors.transparent,
                             onPressed: () =>
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(builder: (context) =>
-                                //       UploadImage(file: File(currentFilePath),
-                                //         shared: false,)),
-                                // ),
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) =>
+                            //       UploadImage(file: File(currentFilePath),
+                            //         shared: false,)),
+                            // ),
                             (_selectedFile == null)?
-                            getImage(File(currentFilePath)):
+                            getImage(File(currentFilePath.path)):
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,shared: false,)),
@@ -351,13 +354,13 @@ class _GalleryState extends State<Gallery> {
                           child: RaisedButton(
                             color: Colors.grey.shade200,
                             onPressed: () =>
-                            getImage(File(currentFilePath)),
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(builder: (context) =>
-                                //       UploadImage(file: File(currentFilePath),
-                                //         shared: false,)),
-                                // ),
+                                getImage(File(currentFilePath.path)),
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) =>
+                            //       UploadImage(file: File(currentFilePath),
+                            //         shared: false,)),
+                            // ),
                             //image = File(currentFilePath);
                             // (_selectedFile == null)?
                             //
@@ -411,7 +414,7 @@ class _GalleryState extends State<Gallery> {
 //  }
 
   _deleteFile() {
-    final dir = Directory(currentFilePath);
+    final dir = Directory(currentFilePath.path);
 //    dir.deleteSync(recursive: true);
     print('deleted');
     setState(() {});
