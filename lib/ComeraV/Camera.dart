@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
+import 'package:techstagram/ui/HomePage.dart';
 import 'package:video_player/video_player.dart';
 
 class CameraExampleHome extends StatefulWidget {
@@ -171,53 +172,145 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     }
   }
 
+  Future<bool> _onWillPop() {
+    //Navigator.pop(context);
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return HomePage(initialindexg: 1);
+        },
+      ),
+    );
+  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      // appBar: AppBar(
-      //   title: const Text('Camera example'),
-      // ),
-      body: GestureDetector(
-        onDoubleTap: (){
-          _onCameraSwitch();
-        },
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: Center(
-                    child: _cameraPreviewWidget(),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: SafeArea(
+        child: Scaffold(
+          key: _scaffoldKey,
+          // appBar: AppBar(
+          //   title: const Text('Camera example'),
+          // ),
+          body: GestureDetector(
+            onDoubleTap: (){
+              _onCameraSwitch();
+            },
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: Stack(
+                        children: [
+
+                          _cameraPreviewWidget(),
+
+                          Positioned(
+                            top: 24.0,
+                            left: 12.0,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.switch_camera,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                _onCameraSwitch();
+                              },
+                            ),
+                          ),
+
+                          Positioned(
+                            top: 24.0,
+                            right: 12.0,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                // Navigator.pop(context,
+                                //   MaterialPageRoute(builder: (context) => HomePage()),);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => HomePage(initialindexg: 1)),
+                                );
+                              },
+                            ),
+                          ),
+
+                          Padding(
+                            padding: EdgeInsets.only(top: 24.0),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: IconButton(
+                                icon: Icon(
+                                  // (flashOn) ? Icons.flash_on : Icons.flash_off,
+                                  Icons.flash_on,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  // setState(() {
+                                  //   flashOn = !flashOn;
+                                  // });
+                                  onFlashModeButtonPressed();
+
+                                  // setState(() {
+                                  //   flashOn = !flashOn;
+                                  // });
+                                  // if (!flashOn) {
+                                  //   //Lamp.turnOff();
+                                  //   TorchCompat.turnOff();
+                                  // } else {
+                                  //   TorchCompat.turnOn();
+                                  //   //Lamp.turnOn();
+                                  // }
+                                },
+                                //onPressed: () => TorchCompat.turnOff(),
+                              ),
+                            ),
+                          ),
+
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                              child: _captureControlRowWidget()
+                          ),
+
+                        ],
+
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(
+                        color: controller != null && controller.value.isRecordingVideo
+                            ? Colors.redAccent
+                            : Colors.grey,
+                        width: 3.0,
+                      ),
+                    ),
                   ),
                 ),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  border: Border.all(
-                    color: controller != null && controller.value.isRecordingVideo
-                        ? Colors.redAccent
-                        : Colors.grey,
-                    width: 3.0,
-                  ),
-                ),
-              ),
+                //_captureControlRowWidget(),
+                _modeControlRowWidget(),
+                // Padding(
+                //   padding: const EdgeInsets.all(5.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.start,
+                //     children: <Widget>[
+                //       _cameraTogglesRowWidget(),
+                //       _thumbnailWidget(),
+                //     ],
+                //   ),
+                // ),
+              ],
             ),
-            _captureControlRowWidget(),
-            _modeControlRowWidget(),
-            // Padding(
-            //   padding: const EdgeInsets.all(5.0),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.start,
-            //     children: <Widget>[
-            //       _cameraTogglesRowWidget(),
-            //       _thumbnailWidget(),
-            //     ],
-            //   ),
-            // ),
-          ],
+          ),
         ),
       ),
     );
@@ -225,6 +318,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
+    final size = MediaQuery.of(context).size;
+    final deviceRatio = size.width / size.height;
+    final aspectRatio=3/4;
     if (controller == null || !controller.value.isInitialized) {
       return const Text(
         'Tap a camera',
@@ -238,17 +334,27 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       return Listener(
         onPointerDown: (_) => _pointers++,
         onPointerUp: (_) => _pointers--,
-        child: CameraPreview(
-          controller,
-          child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onScaleStart: _handleScaleStart,
-                  onScaleUpdate: _handleScaleUpdate,
-                  onTapDown: (details) => onViewFinderTap(details, constraints),
-                );
-              }),
+        child: Container(
+          child: Transform.scale(
+            scale: controller.value.aspectRatio,
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: deviceRatio,
+                child: CameraPreview(
+                  controller,
+                  child: LayoutBuilder(
+                      builder: (BuildContext context, BoxConstraints constraints) {
+                        return GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onScaleStart: _handleScaleStart,
+                          onScaleUpdate: _handleScaleUpdate,
+                          onTapDown: (details) => onViewFinderTap(details, constraints),
+                        );
+                      }),
+                ),
+              ),
+            ),
+          ),
         ),
       );
     }
@@ -308,42 +414,42 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   Widget _modeControlRowWidget() {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.flash_on),
-              color: Colors.blue,
-              onPressed: controller != null ? onFlashModeButtonPressed : null,
-            ),
-            IconButton(
-              icon: Icon(Icons.exposure),
-              color: Colors.blue,
-              onPressed:
-              controller != null ? onExposureModeButtonPressed : null,
-            ),
-            IconButton(
-              icon: Icon(Icons.filter_center_focus),
-              color: Colors.blue,
-              onPressed: controller != null ? onFocusModeButtonPressed : null,
-            ),
-            IconButton(
-              icon: Icon(enableAudio ? Icons.volume_up : Icons.volume_mute),
-              color: Colors.blue,
-              onPressed: controller != null ? onAudioModeButtonPressed : null,
-            ),
-            IconButton(
-              icon: Icon(controller?.value?.isCaptureOrientationLocked ?? false
-                  ? Icons.screen_lock_rotation
-                  : Icons.screen_rotation),
-              color: Colors.blue,
-              onPressed: controller != null
-                  ? onCaptureOrientationLockButtonPressed
-                  : null,
-            ),
-          ],
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //   mainAxisSize: MainAxisSize.max,
+        //   children: <Widget>[
+        //     IconButton(
+        //       icon: Icon(Icons.flash_on),
+        //       color: Colors.blue,
+        //       onPressed: controller != null ? onFlashModeButtonPressed : null,
+        //     ),
+        //     IconButton(
+        //       icon: Icon(Icons.exposure),
+        //       color: Colors.blue,
+        //       onPressed:
+        //       controller != null ? onExposureModeButtonPressed : null,
+        //     ),
+        //     IconButton(
+        //       icon: Icon(Icons.filter_center_focus),
+        //       color: Colors.blue,
+        //       onPressed: controller != null ? onFocusModeButtonPressed : null,
+        //     ),
+        //     IconButton(
+        //       icon: Icon(enableAudio ? Icons.volume_up : Icons.volume_mute),
+        //       color: Colors.blue,
+        //       onPressed: controller != null ? onAudioModeButtonPressed : null,
+        //     ),
+        //     IconButton(
+        //       icon: Icon(controller?.value?.isCaptureOrientationLocked ?? false
+        //           ? Icons.screen_lock_rotation
+        //           : Icons.screen_rotation),
+        //       color: Colors.blue,
+        //       onPressed: controller != null
+        //           ? onCaptureOrientationLockButtonPressed
+        //           : null,
+        //     ),
+        //   ],
+        // ),
         _flashModeControlRowWidget(),
         _exposureModeControlRowWidget(),
         _focusModeControlRowWidget(),
@@ -363,7 +469,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               icon: Icon(Icons.flash_off),
               color: controller?.value?.flashMode == FlashMode.off
                   ? Colors.orange
-                  : Colors.blue,
+                  : Colors.deepPurple,
               onPressed: controller != null
                   ? () => onSetFlashModeButtonPressed(FlashMode.off)
                   : null,
@@ -372,7 +478,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               icon: Icon(Icons.flash_auto),
               color: controller?.value?.flashMode == FlashMode.auto
                   ? Colors.orange
-                  : Colors.blue,
+                  : Colors.deepPurple,
               onPressed: controller != null
                   ? () => onSetFlashModeButtonPressed(FlashMode.auto)
                   : null,
@@ -381,7 +487,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               icon: Icon(Icons.flash_on),
               color: controller?.value?.flashMode == FlashMode.always
                   ? Colors.orange
-                  : Colors.blue,
+                  : Colors.deepPurple,
               onPressed: controller != null
                   ? () => onSetFlashModeButtonPressed(FlashMode.always)
                   : null,
@@ -390,7 +496,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               icon: Icon(Icons.highlight),
               color: controller?.value?.flashMode == FlashMode.torch
                   ? Colors.orange
-                  : Colors.blue,
+                  : Colors.deepPurple,
               onPressed: controller != null
                   ? () => onSetFlashModeButtonPressed(FlashMode.torch)
                   : null,
@@ -538,7 +644,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       children: <Widget>[
         IconButton(
           icon: const Icon(Icons.camera_alt),
-          color: Colors.blue,
+          color: Colors.white,
           onPressed: controller != null &&
               controller.value.isInitialized &&
               !controller.value.isRecordingVideo
@@ -547,7 +653,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         ),
         IconButton(
           icon: const Icon(Icons.videocam),
-          color: Colors.blue,
+          color: Colors.white,
           onPressed: controller != null &&
               controller.value.isInitialized &&
               !controller.value.isRecordingVideo
@@ -558,7 +664,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           icon: controller != null && controller.value.isRecordingPaused
               ? Icon(Icons.play_arrow)
               : Icon(Icons.pause),
-          color: Colors.blue,
+          color: Colors.white,
           onPressed: controller != null &&
               controller.value.isInitialized &&
               controller.value.isRecordingVideo
@@ -735,7 +841,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   void onSetFlashModeButtonPressed(FlashMode mode) {
     setFlashMode(mode).then((_) {
       if (mounted) setState(() {});
-      showInSnackBar('Flash mode set to ${mode.toString().split('.').last}');
+      //showInSnackBar('Flash mode set to ${mode.toString().split('.').last}');
     });
   }
 

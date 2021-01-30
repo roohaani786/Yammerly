@@ -24,16 +24,17 @@ import 'searchlist.dart';
 class HomePage extends StatefulWidget {
 
   HomePage({ Key key, this.title = "Yammerly",
-    this.uid,this.initialindexg,
+    this.uid,this.initialindexg,this.cam
   }) : super(key: key); //update this to include the uid in the constructor
 
   final String title;
   final String uid;
+  final int cam;
   int initialindexg;
   FirebaseUser user;
 
   @override
-  _HomePageState createState() => _HomePageState(initialindexg);
+  _HomePageState createState() => _HomePageState(initialindexg,cam);
 }
 
 final PageController _pageController = PageController(initialPage: 1,keepPage: true);
@@ -46,9 +47,10 @@ class _HomePageState extends State<HomePage> {
   FirebaseProvider firebaseProvider;
   // Create the page controller in your widget
 
-  _HomePageState(this.initialindexg);
+  _HomePageState(this.initialindexg,this.cam);
 
   int initialindexg;
+  int cam;
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,uidController,photoUrlController,phonenumberController,
       bioController;
@@ -117,7 +119,7 @@ class _HomePageState extends State<HomePage> {
       controller: _pageController,
       allowImplicitScrolling: true,
       children: <Widget>[
-        CameraApp(cam: 0,check: true),
+        CameraExampleHome(cam: 0,check: true),
         //CameraExampleHome(),
         //CameraScreen(cam: 0, check: true),
         TabLayoutDemo(initialindexg),

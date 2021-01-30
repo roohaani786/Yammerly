@@ -8,6 +8,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:techstagram/ComeraV/Camera.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/uploadimage.dart';
+import 'package:techstagram/ui/HomePage.dart';
 
 class Gallery extends StatefulWidget {
   Gallery({this.filePath, this.cam});
@@ -65,7 +66,7 @@ class _GalleryState extends State<Gallery> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return CameraScreen(cam: cam,);
+                              return CameraExampleHome(cam: cam,);
                             },
                           ),
                         );
@@ -242,7 +243,7 @@ class _GalleryState extends State<Gallery> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) {
-                                                return CameraApp(cam: cam,check: true);
+                                                return CameraExampleHome(cam: cam,);
                                               },
                                             ),
                                           );

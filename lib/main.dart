@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
         '/Welcome': (context) => WelcomeScreen(),
         '/nayasignup': (context) => SignUpScreen(),
         '/Profile': (context) => AccountBottomIconScreen(),
-        '/HomePage': (context) => HomePage(initialindexg: 1,),
+        '/HomePage': (context) => HomePage(initialindexg: 1,cam: 0,),
       },
 
       theme: new ThemeData(
