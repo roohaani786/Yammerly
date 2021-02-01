@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
+import 'package:techstagram/ComeraV/video_preview.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:video_player/video_player.dart';
 
@@ -638,51 +639,54 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.camera_alt),
-          color: Colors.white,
-          onPressed: controller != null &&
-              controller.value.isInitialized &&
-              !controller.value.isRecordingVideo
-              ? onTakePictureButtonPressed
-              : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.videocam),
-          color: Colors.white,
-          onPressed: controller != null &&
-              controller.value.isInitialized &&
-              !controller.value.isRecordingVideo
-              ? onVideoRecordButtonPressed
-              : null,
-        ),
-        IconButton(
-          icon: controller != null && controller.value.isRecordingPaused
-              ? Icon(Icons.play_arrow)
-              : Icon(Icons.pause),
-          color: Colors.white,
-          onPressed: controller != null &&
-              controller.value.isInitialized &&
-              controller.value.isRecordingVideo
-              ? (controller != null && controller.value.isRecordingPaused
-              ? onResumeButtonPressed
-              : onPauseButtonPressed)
-              : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.stop),
-          color: Colors.red,
-          onPressed: controller != null &&
-              controller.value.isInitialized &&
-              controller.value.isRecordingVideo
-              ? onStopButtonPressed
-              : null,
-        )
-      ],
+    return Container(
+      height: 100,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.camera_alt),
+            color: Colors.white,
+            onPressed: controller != null &&
+                controller.value.isInitialized &&
+                !controller.value.isRecordingVideo
+                ? onTakePictureButtonPressed
+                : null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.videocam),
+            color: Colors.white,
+            onPressed: controller != null &&
+                controller.value.isInitialized &&
+                !controller.value.isRecordingVideo
+                ? onVideoRecordButtonPressed
+                : null,
+          ),
+          IconButton(
+            icon: controller != null && controller.value.isRecordingPaused
+                ? Icon(Icons.play_arrow)
+                : Icon(Icons.pause),
+            color: Colors.white,
+            onPressed: controller != null &&
+                controller.value.isInitialized &&
+                controller.value.isRecordingVideo
+                ? (controller != null && controller.value.isRecordingPaused
+                ? onResumeButtonPressed
+                : onPauseButtonPressed)
+                : null,
+          ),
+          IconButton(
+            icon: const Icon(Icons.stop),
+            color: Colors.red,
+            onPressed: controller != null &&
+                controller.value.isInitialized &&
+                controller.value.isRecordingVideo
+                ? onStopButtonPressed
+                : null,
+          )
+        ],
+      ),
     );
   }
 
@@ -869,9 +873,14 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     stopVideoRecording().then((file) {
       if (mounted) setState(() {});
       if (file != null) {
-        showInSnackBar('Video recorded to ${file.path}');
+        //showInSnackBar('Video recorded to ${file.path}');
         videoFile = file;
-        _startVideoPlayer();
+        String vf = file.path;
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => VideoPreview(videoPath: vf)),
+        );
+       // _startVideoPlayer();
       }
     });
   }
