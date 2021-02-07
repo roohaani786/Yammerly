@@ -55,7 +55,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
   emailController,
       uidController,
       displayNameController,photoUrlController,
-  descriptionController,postsController;
+      descriptionController,postsController;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -91,40 +91,80 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
     return downloadUrl;
   }
 
-  controlUploadAndSaveShared(bool shared) async{
-  setState(() {
-  uploading = true;
-  });
 
-  savePostInfoToFirestoreShared(ownerUid,sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
-  savePostinfoToUserShared(ownerUid,sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
+//Uploads Video to Firebase Storage
+  Future uploadVideoToStorage(file) async {
+    try {
+      final DateTime now = DateTime.now();
+      final int millSeconds = now.millisecondsSinceEpoch;
+      final String month = now.month.toString();
+      final String date = now.day.toString();
+      final String storageId = (millSeconds.toString() + uidController.text);
+      final String today = ('$month-$date');
 
-  descriptionController.clear();
+      StorageReference ref = FirebaseStorage.instance.ref().child("video").child(today).child(storageId);
+      StorageUploadTask uploadTask = ref.putFile(file, StorageMetadata(contentType: 'video/mp4'));
 
-  setState(() {
-  uploading = false;
-  postId = Uuid().v4();
-  });
+      StorageTaskSnapshot storageTaskSnapshot =
+      await uploadTask.onComplete;
+      String videodownloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
+      return videodownloadUrl;
 
-  Navigator.push(
-  context,
-  MaterialPageRoute(builder: (context) => HomePage()),
-  );
-}
+    } catch (error) {
+      print(error);
+    }
 
-  controlUploadAndSave(bool shared) async {
+  }
+
+  controlUploadAndSaveShared(bool shared,bool isVideo) async{
+    setState(() {
+      uploading = true;
+    });
+
+    savePostInfoToFirestoreShared(ownerUid,sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
+    savePostinfoToUserShared(ownerUid,sharedurl,descriptionController.text,ownerdiscription,ownerphotourl,ownerdisplayname,shared);
+
+    descriptionController.clear();
+
+    setState(() {
+      uploading = false;
+      postId = Uuid().v4();
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
+  }
+
+  controlUploadAndSave(bool shared,bool isVideo) async {
     setState(() {
       uploading = true;
     });
     print(shared);
+    print(isVideo);
     print("shadah");
 
-    await compressPhoto();
+    //Compress Photo
+    if(isVideo){
 
-    String downloadUrl = await uploadPhoto(file);
+      print("iime aa ya");
+      //Store videourl in an initializer
+      String videodownloadUrl = await uploadVideoToStorage(file);
 
-      savePostInfoToFirestore(downloadUrl, descriptionController.text);
-      savePostinfoToUser(downloadUrl, descriptionController.text);
+      //Save Post Video and Info to Firestore
+      savePostInfoToFirestore(videodownloadUrl, descriptionController.text,isVideo);
+      savePostinfoToUser(videodownloadUrl, descriptionController.text,isVideo);
+    }else{
+      await compressPhoto();
+
+      String downloadUrl = await uploadPhoto(file);
+
+      //Save Post Photo and Info to Firestore
+      savePostInfoToFirestore(downloadUrl, descriptionController.text,isVideo);
+      savePostinfoToUser(downloadUrl, descriptionController.text,isVideo);
+    }
+
 
     descriptionController.clear();
     setState(() {
@@ -215,13 +255,14 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
     });
   }
 
-  savePostinfoToUser(String url, String description){
+  savePostinfoToUser(String url, String description,bool isVideo){
     Firestore.instance
         .collection("users")
         .document(uidController.text)
         .collection('posts')
         .document(postId)
         .setData({
+      "isVideo": isVideo,
       "postId": postId,
       "uid" : uidController.text,
       "displayName": displayNameController.text,
@@ -237,9 +278,10 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
     });
   }
 
-  savePostInfoToFirestore(String url, String description) {
+  savePostInfoToFirestore(String url, String description,bool isVideo) {
 
     postReference.document(postId).setData({
+      "isVideo": isVideo,
       "postId": postId,
       "uid" : uidController.text,
       "displayName": displayNameController.text,
@@ -264,8 +306,8 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
         leading: IconButton(
             icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple,),
             onPressed: (){
-          Navigator.pop(context);
-        }),
+              Navigator.pop(context);
+            }),
         title: (shared==null || shared == false)?Text(
           "New Post",
           style: TextStyle(
@@ -326,14 +368,14 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
                   decoration: (shared == true)?
                   BoxDecoration(
                     image: DecorationImage(
-                      
+
                         image: NetworkImage(sharedurl),
                         fit: BoxFit.cover),
                   ):BoxDecoration(
                     image: DecorationImage(
-                                          image: FileImage(file),
-                                          fit: BoxFit.contain),
-                                    ),
+                        image: FileImage(file),
+                        fit: BoxFit.contain),
+                  ),
                 ),
               ),
             ),
@@ -359,30 +401,30 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Form(
-                      autovalidate: true,
-                      key: _formKey,
-                      child: TextFormField(
-                        controller: descriptionController,
-                        enabled: true,
-                        validator: (value) {
-                          if(value.length > 200.0){
-                            return 'Caption should not be greater then 200 words';
-                          }
-                        },
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 3,
-                        decoration: InputDecoration(
-                            labelText: "Write your caption here...",labelStyle: TextStyle(
-                          color: Colors.grey,
+                      padding: const EdgeInsets.all(8.0),
+                      child: Form(
+                        autovalidate: true,
+                        key: _formKey,
+                        child: TextFormField(
+                          controller: descriptionController,
+                          enabled: true,
+                          validator: (value) {
+                            if(value.length > 200.0){
+                              return 'Caption should not be greater then 200 words';
+                            }
+                          },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                              labelText: "Write your caption here...",labelStyle: TextStyle(
+                            color: Colors.grey,
+                          ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                  BorderSide(color: Colors.black, width: 1))),
                         ),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide:
-                                BorderSide(color: Colors.black, width: 1))),
-                      ),
-                    )
+                      )
 
                   ),
 
@@ -426,12 +468,12 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
                       onTap: () {
                         if(shared == true){
                           print("hai hai");
-                          controlUploadAndSaveShared(shared);
+                          controlUploadAndSaveShared(shared,isVideo);
                           PostI();
                           ShareI();
                         }else{
                           if(_formKey.currentState.validate()) {
-                            controlUploadAndSave(shared);
+                            controlUploadAndSave(shared,isVideo);
                             PostI();
                           }
                         }

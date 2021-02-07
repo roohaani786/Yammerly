@@ -133,7 +133,7 @@ class _GalleryState extends State<Gallery> {
         context,
         MaterialPageRoute(builder: (context) =>
             UploadImage(file: _selectedFile,
-              shared: false,)),
+              shared: false,isVideo:false)),
       );
     }
 
