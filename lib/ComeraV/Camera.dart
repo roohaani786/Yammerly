@@ -288,12 +288,12 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                     ),
                     decoration: BoxDecoration(
                       color: Colors.black,
-                      border: Border.all(
-                        color: controller != null && controller.value.isRecordingVideo
-                            ? Colors.redAccent
-                            : Colors.grey,
-                        width: 3.0,
-                      ),
+                      // border: Border.all(
+                      //   color: controller != null && controller.value.isRecordingVideo
+                      //       ? Colors.redAccent
+                      //       : Colors.grey,
+                      //   width: 3.0,
+                      // ),
                     ),
                   ),
                 ),
@@ -323,8 +323,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     final deviceRatio = size.width / size.height;
     final aspectRatio=3/4;
     if (controller == null || !controller.value.isInitialized) {
-      return const Text(
-        'Tap a camera',
+      return const
+      Text(
+        '',
         style: TextStyle(
           color: Colors.white,
           fontSize: 24.0,
@@ -337,22 +338,19 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         onPointerUp: (_) => _pointers--,
         child: Container(
           child: Transform.scale(
-            scale: controller.value.aspectRatio,
+            scale: deviceRatio,
             child: Center(
-              child: AspectRatio(
-                aspectRatio: deviceRatio,
-                child: CameraPreview(
-                  controller,
-                  child: LayoutBuilder(
-                      builder: (BuildContext context, BoxConstraints constraints) {
-                        return GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onScaleStart: _handleScaleStart,
-                          onScaleUpdate: _handleScaleUpdate,
-                          onTapDown: (details) => onViewFinderTap(details, constraints),
-                        );
-                      }),
-                ),
+              child: CameraPreview(
+                controller,
+                child: LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints constraints) {
+                      return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onScaleStart: _handleScaleStart,
+                        onScaleUpdate: _handleScaleUpdate,
+                        onTapDown: (details) => onViewFinderTap(details, constraints),
+                      );
+                    }),
               ),
             ),
           ),

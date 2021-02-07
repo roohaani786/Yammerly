@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:techstagram/ComeraV/video_controls.dart';
 import 'package:video_player/video_player.dart';
@@ -48,7 +47,7 @@ class _VideoPreviewState extends State<VideoPreview>
           ClipRect(
             child: Container(
               child: Transform.scale(
-                scale: _controller.value.aspectRatio / size.aspectRatio,
+                scale: _controller.value.aspectRatio/ size.aspectRatio,
                 child: Center(
                   child: AspectRatio(
                     aspectRatio: _controller.value.aspectRatio,

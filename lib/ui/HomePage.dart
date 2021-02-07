@@ -323,7 +323,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                   print("camera open");
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => CameraScreen(cam: 0, check: true,),
+                      builder: (context) => CameraExampleHome(cam: 0,check: true),
                     ),
                   );
                 },
