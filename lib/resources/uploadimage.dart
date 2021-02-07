@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:uuid/uuid.dart';
+import 'package:video_player/video_player.dart';
 
 import 'auth.dart';
 
@@ -27,10 +28,11 @@ class UploadImage extends StatefulWidget {
   String ownerPostId;
   Timestamp ownerTimeStamp;
   String ownerUid;
-  UploadImage({this.ownerUid,this.ownerPostId,this.shares,this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl,this.ownerTimeStamp});
+  bool isVideo = false;
+  UploadImage({this.isVideo,this.ownerUid,this.ownerPostId,this.shares,this.file, this.userData,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl,this.ownerTimeStamp});
 
   @override
-  _UploadImageState createState() => _UploadImageState(ownerUid: ownerUid,ownerPostId: ownerPostId,shares:shares,cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl,ownerTimeStamp: ownerTimeStamp);
+  _UploadImageState createState() => _UploadImageState(isVideo: isVideo,ownerUid: ownerUid,ownerPostId: ownerPostId,shares:shares,cam: cam,ownerdiscription: ownerdiscription,ownerphotourl: ownerphotourl,ownerdisplayname: ownerdisplayname,shared: shared,sharedurl: sharedurl,ownerTimeStamp: ownerTimeStamp);
 }
 
 class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClientMixin<UploadImage> {
@@ -47,7 +49,8 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
   String ownerPostId;
   Timestamp ownerTimeStamp;
   String ownerUid;
-  _UploadImageState({this.ownerUid,this.ownerPostId,this.shares,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl,this.ownerTimeStamp});
+  bool isVideo=false;
+  _UploadImageState({this.isVideo,this.ownerUid,this.ownerPostId,this.shares,this.cam,this.ownerdiscription,this.ownerphotourl,this.ownerdisplayname,this.shared,this.sharedurl,this.ownerTimeStamp});
   TextEditingController
   emailController,
       uidController,
@@ -64,6 +67,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
   FirebaseStorage.instance.ref().child("Post Pictures");
   final postReference = Firestore.instance.collection("posts");
   String postId = Uuid().v4();
+  VideoPlayerController _controller;
 
   compressPhoto() async {
     final directory = await getTemporaryDirectory();
@@ -252,6 +256,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
   }
 
   displayUploadFormScreen() {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -279,7 +284,22 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
       )
           : ListView(
         children: <Widget>[
-          Container(
+          (isVideo)?Container(
+            height: 200.0,
+            child: ClipRect(
+              child: Container(
+                child: Transform.scale(
+                  scale: _controller.value.aspectRatio/ size.aspectRatio,
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ):Container(
             height: 330,
             width: MediaQuery.of(context).size.width * 0.8,
             child: Center(
@@ -466,6 +486,12 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
     authService.loading.listen((state) => setState(() => _loading = state));
 
     super.initState();
+    _controller = VideoPlayerController.file(file)
+      ..initialize().then(
+            (_) {
+          setState(() {});
+        },
+      );
     fetchProfileData();
   }
 

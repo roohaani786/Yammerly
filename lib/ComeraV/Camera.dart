@@ -337,21 +337,18 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         onPointerDown: (_) => _pointers++,
         onPointerUp: (_) => _pointers--,
         child: Container(
-          child: Transform.scale(
-            scale: deviceRatio,
-            child: Center(
-              child: CameraPreview(
-                controller,
-                child: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onScaleStart: _handleScaleStart,
-                        onScaleUpdate: _handleScaleUpdate,
-                        onTapDown: (details) => onViewFinderTap(details, constraints),
-                      );
-                    }),
-              ),
+          child: Center(
+            child: CameraPreview(
+              controller,
+              child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onScaleStart: _handleScaleStart,
+                      onScaleUpdate: _handleScaleUpdate,
+                      onTapDown: (details) => onViewFinderTap(details, constraints),
+                    );
+                  }),
             ),
           ),
         ),
@@ -876,7 +873,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         String vf = file.path;
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => VideoPreview(videoPath: vf)),
+          MaterialPageRoute(builder: (context) => VideoPreview(videoPath: vf,cam: cam)),
         );
        // _startVideoPlayer();
       }

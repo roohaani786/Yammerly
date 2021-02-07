@@ -315,7 +315,7 @@ class _GalleryState extends State<Gallery> {
                             getImage(File(currentFilePath.path)):
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,shared: false,)),
+                              MaterialPageRoute(builder: (context) => UploadImage(isVideo:false,file: _selectedFile,shared: false,)),
                             ),
 
                             child: Row(),

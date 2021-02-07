@@ -155,7 +155,7 @@ class _FeedsPageState extends State<FeedsPage> {
             if(_image != null){
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                  MaterialPageRoute(builder: (context) => UploadImage(isVideo:false,file: _image),));
             }else{
               Navigator.push(
                   context,
@@ -171,7 +171,7 @@ class _FeedsPageState extends State<FeedsPage> {
       if (_image != null){
         Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+            MaterialPageRoute(builder: (context) => UploadImage(isVideo:false,file: _image),));
       }else{
         Navigator.push(
             context,
@@ -780,7 +780,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                       onPressed: () {
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => UploadImage(ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerUid:OwnerUid)),
+                                          MaterialPageRoute(builder: (context) => UploadImage(isVideo: false,ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerUid:OwnerUid)),
                                         );
                                       },
                                       icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
@@ -1051,7 +1051,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                       onPressed: () {
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => UploadImage(ownerUid: uid,ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
+                                          MaterialPageRoute(builder: (context) => UploadImage(isVideo:false,ownerUid: uid,ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
                                         );
                                       },
                                       icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
