@@ -44,6 +44,11 @@ class _VideoPreviewState extends State<VideoPreview>
     super.dispose();
   }
 
+  void _pauseVideo() {
+    _animationController.reverse();
+    _controller.pause();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -142,6 +147,7 @@ class _VideoPreviewState extends State<VideoPreview>
                     color: Colors.white,
                   ),
                   onPressed: () {
+                    _pauseVideo();
                     // Navigator.pop(context,
                     //   MaterialPageRoute(builder: (context) => HomePage()),);
                     Navigator.push(

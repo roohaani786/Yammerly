@@ -57,6 +57,7 @@ dependencies:
   path:
   image_cropper:
   velocity_x:
+  better_player:
   oauth1:
   adv_camera: ^1.1.3+1
   firebase_core_web:

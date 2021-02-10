@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-
+import 'package:better_player/better_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -391,6 +391,12 @@ class _FeedsPageState extends State<FeedsPage> {
                       Timestamp OwnertimeStamp = snapshot.data.documents[index]['OwnerTimeStamp'];
 
                       String OwnerUid = snapshot.data.documents[index]['OwnerUid'];
+
+                      bool isVideo = snapshot.data.documents[index]['isVideo'];
+
+                      if(isVideo == null){
+                        isVideo = false;
+                      }
 
                             bool button = true;
 
@@ -844,6 +850,389 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
                         // post container
+                      ):(isVideo)?Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
+                          ),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          children: <Widget>[
+
+                            Container(
+                              height: 0.0,width: 0.0,
+                            ),
+
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNameController.text,displayName: displayName,uidX: uidController.text,)),
+                              ),
+
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 10,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+
+                                    Row(
+                                      children: <Widget>[
+
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(40),
+                                          child: Image(
+                                            image: (cpurl != null)?
+                                            (cloading[index])?NetworkImage(cpurl[index]):NetworkImage(
+                                                "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                            )
+                                                :NetworkImage(
+                                                "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
+                                            ),
+                                            width: 40,
+                                            height: 40,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        (cloading[index])?Text(cdisplayName[index],style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18.0,
+                                        ),):Container(child: Text("Loading...")),
+                                      ],
+                                    ),
+
+                                    IconButton(
+                                      icon: Icon(SimpleLineIcons.options),
+                                      onPressed: () {},
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+
+                            GestureDetector(
+                              onDoubleTap: () async {
+                                if (likess[index] == false) {
+                                  setState(() {
+                                    likess[index] = true;
+                                    //print(_liked);
+                                  });
+
+                                  await DatabaseService().likepost(
+                                      likes, postId,
+                                      uidController.text,
+                                      displayNameController.text);
+                                }
+                              },
+                              onTap: null,
+
+                              child: Container(
+                                height: 350.0,
+                                child: GestureDetector(
+
+                                  child :(cam == 1)?Transform(
+                                    alignment: Alignment.center,
+                                    transform: Matrix4.rotationY(math.pi),
+                                    child: (url== null)?Container():(!cloading[index])?Container():Container(
+                                      height: 500,
+                                      margin: EdgeInsets.symmetric(vertical: 2.5),
+                                      child: AspectRatio(
+                                        aspectRatio: 1,
+                                        child: BetterPlayerListVideoPlayer(
+                                          BetterPlayerDataSource(
+                                            BetterPlayerDataSourceType.NETWORK,
+                                            url,
+                                          ),
+                                          key: Key(url.hashCode.toString()),
+                                          playFraction: 1,
+                                          autoPause: true,
+                                          autoPlay: true,
+                                          configuration: BetterPlayerConfiguration(
+                                            fit: BoxFit.cover,
+                                            aspectRatio: 0.5,
+                                            looping: true,
+                                            autoPlay: true,
+                                            showPlaceholderUntilPlay: true,
+                                            // placeholder: Container(
+                                            //   height: 500,
+                                            //   width: double.infinity,
+                                            //   decoration: BoxDecoration(
+                                            //     // gradient: LinearGradient(
+                                            //     //   colors: [
+                                            //     //     Colors.blue,
+                                            //     //     Colors.red,
+                                            //     //   ],
+                                            //     //   begin: Alignment.topLeft,
+                                            //     //   end: Alignment.bottomRight,
+                                            //     // ),
+                                            //     color: Colors.purple,
+                                            //   ),
+                                            // ),
+                                            controlsConfiguration: BetterPlayerControlsConfiguration(
+                                              enableProgressBar: false,
+                                              controlBarColor: Colors.white54,
+                                              enableFullscreen: false,
+                                              enableOverflowMenu: false,
+                                              enablePlayPause: true,
+                                            ),
+                                            errorBuilder: (context, errorMessage) {
+                                              return Center(
+                                                child: Column(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.error,
+                                                      color: Colors.white,
+                                                      size: 60,
+                                                    ),
+                                                    Text(
+                                                      errorMessage,
+                                                      style: TextStyle(color: Colors.white54),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                  ):(url==null)?Container():(!cloading[index])?Container():Container(
+                                    height: 500,
+                                    margin: EdgeInsets.symmetric(vertical: 2.5),
+                                    child: AspectRatio(
+                                      aspectRatio: 1,
+                                      child: BetterPlayerListVideoPlayer(
+                                        BetterPlayerDataSource(
+                                          BetterPlayerDataSourceType.NETWORK,
+                                          url,
+                                        ),
+                                        key: Key(url.hashCode.toString()),
+                                        playFraction: 1,
+                                        autoPause: true,
+                                        autoPlay: true,
+                                        configuration: BetterPlayerConfiguration(
+                                          fit: BoxFit.cover,
+                                          aspectRatio: 0.5,
+                                          looping: true,
+                                          autoPlay: true,
+                                          showPlaceholderUntilPlay: true,
+                                          // placeholder: Container(
+                                          //   height: 500,
+                                          //   width: double.infinity,
+                                          //   decoration: BoxDecoration(
+                                          //     // gradient: LinearGradient(
+                                          //     //   colors: [
+                                          //     //     Colors.blue,
+                                          //     //     Colors.red,
+                                          //     //   ],
+                                          //     //   begin: Alignment.topLeft,
+                                          //     //   end: Alignment.bottomRight,
+                                          //     // ),
+                                          //     color : Colors.purple,
+                                          //   ),
+                                          // ),
+                                          controlsConfiguration: BetterPlayerControlsConfiguration(
+                                            enableProgressBar: false,
+                                            controlBarColor: Colors.white54,
+                                            enableFullscreen: false,
+                                            enableOverflowMenu: false,
+                                            enablePlayPause: true,
+                                          ),
+                                          errorBuilder: (context, errorMessage) {
+                                            return Center(
+                                              child: Column(
+                                                children: [
+                                                  Icon(
+                                                    Icons.error,
+                                                    color: Colors.white,
+                                                    size: 60,
+                                                  ),
+                                                  Text(
+                                                    errorMessage,
+                                                    style: TextStyle(color: Colors.white54),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+
+                                Row(
+                                  children: <Widget>[
+
+                                    (button == true)?IconButton(
+                                      padding: EdgeInsets.only(left: 10),
+                                      onPressed: (likess[index] == true)
+                                          ? () {
+                                        if (timer
+                                            ?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer =
+                                            Timer(
+                                              const Duration(
+                                                  milliseconds:
+                                                  340),
+                                                  () {
+                                                setState(
+                                                        () {
+                                                      likess[index] =
+                                                      false;
+                                                      loading =
+                                                      true;
+                                                    });
+                                                DatabaseService().unlikepost(
+                                                    likes,
+                                                    postId,
+                                                    uidController.text,
+                                                    displayNameController.text);
+                                              },
+                                            );
+                                      }
+                                          : () {
+                                        if (timer
+                                            ?.isActive ??
+                                            false)
+                                          timer
+                                              .cancel(); //cancel if [timer] is null or running
+                                        timer =
+                                            Timer(
+                                              const Duration(
+                                                  milliseconds:
+                                                  340),
+                                                  () {
+                                                setState(
+                                                        () {
+                                                      likess[index] =
+                                                      true;
+                                                      loading =
+                                                      true;
+                                                    });
+                                                DatabaseService().likepost(
+                                                    likes,
+                                                    postId,
+                                                    uidController.text,
+                                                    displayNameController.text);
+                                              },
+                                            );
+                                      },
+                                      icon: Icon(
+                                          Icons.thumb_up),
+                                      iconSize: 25,
+                                      color: (likess[index] ==
+                                          true)
+                                          ? Colors.deepPurple
+                                          : Colors.grey,
+                                    ):Container(color: Colors.red),
+
+                                    Text(
+                                      likes.toString(),style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 3.0),
+                                      child: IconButton(
+
+                                        onPressed: () {
+                                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                                            return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          }));
+                                          addStringToSF(displayName,displayNameController.text,postId,comments);
+                                        },
+                                        icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
+                                      ),
+                                    ),
+
+                                    Text(comments.toString()),
+
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => UploadImage(isVideo:false,ownerUid: uid,ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
+                                        );
+                                      },
+                                      icon: Icon(FontAwesomeIcons.share,color: Colors.deepPurpleAccent),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            (description != null)?Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
+                                child: Row(
+                                  children: [
+
+                                    Container(
+                                      width: MediaQuery.of(context).size.width*0.9,
+                                      child: RichText(
+                                        textAlign: TextAlign.start,
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: displayName + "  ",
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,
+                                                  fontSize: 18.0),
+                                            ),
+                                            TextSpan(
+                                              text: description,
+                                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                                  fontSize: 15.0),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
+                            ):Container(
+                              height: 1.0,
+                            ),
+
+
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 14,vertical: 5.0
+                              ),
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                readTimestamp(timestamp.seconds),
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 10.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ):Container(
                         decoration: BoxDecoration(
                           border: Border(
