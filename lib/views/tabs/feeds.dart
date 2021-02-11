@@ -90,6 +90,10 @@ class _FeedsPageState extends State<FeedsPage> {
 
   _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
 
+  BetterPlayerController _betterPlayerController;
+
+  BetterPlayerDataSource betterPlayerDataSource;
+
 
   @override
   void initState() {
@@ -101,7 +105,16 @@ class _FeedsPageState extends State<FeedsPage> {
     cpurlController = TextEditingController();
     cdisplayNameController = TextEditingController();
 
+    //videoPlayerController = VideoPlayerController.network('');
+
     super.initState();
+
+    BetterPlayerDataSource betterPlayerDataSource;
+
+    _betterPlayerController = BetterPlayerController(
+        BetterPlayerConfiguration(),
+        betterPlayerDataSource: betterPlayerDataSource);
+
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
 
@@ -946,7 +959,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                       child: AspectRatio(
                                         aspectRatio: 1,
                                         child: BetterPlayerListVideoPlayer(
-                                          BetterPlayerDataSource(
+                                          betterPlayerDataSource = BetterPlayerDataSource(
                                             BetterPlayerDataSourceType.NETWORK,
                                             url,
                                           ),
