@@ -953,7 +953,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                   child :(cam == 1)?Transform(
                                     alignment: Alignment.center,
                                     transform: Matrix4.rotationY(math.pi),
-                                    child: (url== null)?Container():(!cloading[index])?Container():Container(
+                                    child: (url== null)?Container():(!cloading[index])?Container():
+                                    Container(
                                       height: 500,
                                       margin: EdgeInsets.symmetric(vertical: 2.5),
                                       child: AspectRatio(
@@ -961,9 +962,9 @@ class _FeedsPageState extends State<FeedsPage> {
                                         child: BetterPlayerListVideoPlayer(
                                           betterPlayerDataSource = BetterPlayerDataSource(
                                             BetterPlayerDataSourceType.NETWORK,
-                                            url,
+                                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
                                           ),
-                                          key: Key(url.hashCode.toString()),
+                                          key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
                                           playFraction: 1,
                                           autoPause: true,
                                           autoPlay: true,
