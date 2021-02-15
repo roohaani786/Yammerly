@@ -579,19 +579,19 @@ class CameraScreenState extends State<CameraScreen>
                 ),
               ),
               IconButton(
-                icon: Icon(
-                  Icons.camera_alt,color: Colors.transparent,
-                ),
-                onPressed: (){},
                 // icon: Icon(
-                //   (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-                //   color: Colors.white,
+                //   Icons.camera_alt,color: Colors.transparent,
                 // ),
-                // onPressed: () {
-                //   setState(() {
-                //     _isRecordingMode = !_isRecordingMode;
-                //   });
-                // },
+                // onPressed: (){},
+                icon: Icon(
+                  (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isRecordingMode = !_isRecordingMode;
+                  });
+                },
               ),
             ],
           ),

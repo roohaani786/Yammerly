@@ -109,11 +109,11 @@ class _FeedsPageState extends State<FeedsPage> {
 
     super.initState();
 
-    BetterPlayerDataSource betterPlayerDataSource;
-
-    _betterPlayerController = BetterPlayerController(
-        BetterPlayerConfiguration(),
-        betterPlayerDataSource: betterPlayerDataSource);
+    // BetterPlayerDataSource betterPlayerDataSource;
+    //
+    // _betterPlayerController = BetterPlayerController(
+    //     BetterPlayerConfiguration(),
+    //     betterPlayerDataSource: betterPlayerDataSource);
 
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -363,7 +363,6 @@ class _FeedsPageState extends State<FeedsPage> {
                   child: ListView.builder(
                     controller: scrollController,
                     itemCount: snapshot.data.documents.length,
-
                     itemBuilder: (context, index) {
                       int len = snapshot.data.documents.length;
 
@@ -1018,66 +1017,62 @@ class _FeedsPageState extends State<FeedsPage> {
                                       ),
                                     ),
 
-                                  ):(url==null)?Container():(!cloading[index])?Container():Container(
-                                    height: 500,
-                                    margin: EdgeInsets.symmetric(vertical: 2.5),
-                                    child: AspectRatio(
-                                      aspectRatio: 1,
-                                      child: BetterPlayerListVideoPlayer(
-                                        BetterPlayerDataSource(
-                                          BetterPlayerDataSourceType.NETWORK,
-                                          url,
-                                        ),
-                                        key: Key(url.hashCode.toString()),
-                                        playFraction: 1,
-                                        autoPause: true,
+                                  ):(url==null)?Container():(!cloading[index])?Container():AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: BetterPlayerListVideoPlayer(
+                                      BetterPlayerDataSource(
+                                        BetterPlayerDataSourceType.NETWORK,
+                                        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                                      ),
+                                      key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
+                                      playFraction: 1,
+                                      autoPause: true,
+                                      autoPlay: true,
+                                      configuration: BetterPlayerConfiguration(
+                                        fit: BoxFit.cover,
+                                        aspectRatio: 0.5,
+                                        looping: true,
                                         autoPlay: true,
-                                        configuration: BetterPlayerConfiguration(
-                                          fit: BoxFit.cover,
-                                          aspectRatio: 0.5,
-                                          looping: true,
-                                          autoPlay: true,
-                                          showPlaceholderUntilPlay: true,
-                                          // placeholder: Container(
-                                          //   height: 500,
-                                          //   width: double.infinity,
-                                          //   decoration: BoxDecoration(
-                                          //     // gradient: LinearGradient(
-                                          //     //   colors: [
-                                          //     //     Colors.blue,
-                                          //     //     Colors.red,
-                                          //     //   ],
-                                          //     //   begin: Alignment.topLeft,
-                                          //     //   end: Alignment.bottomRight,
-                                          //     // ),
-                                          //     color : Colors.purple,
-                                          //   ),
-                                          // ),
-                                          controlsConfiguration: BetterPlayerControlsConfiguration(
-                                            enableProgressBar: false,
-                                            controlBarColor: Colors.white54,
-                                            enableFullscreen: false,
-                                            enableOverflowMenu: false,
-                                            enablePlayPause: true,
-                                          ),
-                                          errorBuilder: (context, errorMessage) {
-                                            return Center(
-                                              child: Column(
-                                                children: [
-                                                  Icon(
-                                                    Icons.error,
-                                                    color: Colors.white,
-                                                    size: 60,
-                                                  ),
-                                                  Text(
-                                                    errorMessage,
-                                                    style: TextStyle(color: Colors.white54),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
+                                        showPlaceholderUntilPlay: true,
+                                        // placeholder: Container(
+                                        //   height: 500,
+                                        //   width: double.infinity,
+                                        //   decoration: BoxDecoration(
+                                        //     // gradient: LinearGradient(
+                                        //     //   colors: [
+                                        //     //     Colors.blue,
+                                        //     //     Colors.red,
+                                        //     //   ],
+                                        //     //   begin: Alignment.topLeft,
+                                        //     //   end: Alignment.bottomRight,
+                                        //     // ),
+                                        //     color : Colors.purple,
+                                        //   ),
+                                        // ),
+                                        controlsConfiguration: BetterPlayerControlsConfiguration(
+                                          enableProgressBar: false,
+                                          controlBarColor: Colors.white54,
+                                          enableFullscreen: false,
+                                          enableOverflowMenu: false,
+                                          enablePlayPause: true,
                                         ),
+                                        errorBuilder: (context, errorMessage) {
+                                          return Center(
+                                            child: Column(
+                                              children: [
+                                                Icon(
+                                                  Icons.error,
+                                                  color: Colors.white,
+                                                  size: 60,
+                                                ),
+                                                Text(
+                                                  errorMessage,
+                                                  style: TextStyle(color: Colors.white54),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),

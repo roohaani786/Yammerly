@@ -127,11 +127,15 @@ class _ChatsPageState extends State<ChatsPage> {
                     AspectRatio(
                         aspectRatio: 16 / 9,
                         child: BetterPlayer.network(
-                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4')),
+                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                        )
+                    ),
                     AspectRatio(
                         aspectRatio: 16 / 9,
                         child: BetterPlayer.network(
-                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4')),
+                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                        )
+                    ),
                   ],
                 ),
               ],

@@ -9,8 +9,11 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_preview.dart';
+import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:video_player/video_player.dart';
 
@@ -632,6 +635,35 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     );
   }
 
+  File _image;
+  bool upload = false;
+  Future pickImage() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+        upload = true;
+      });
+    });
+
+    if (_image != null){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+    }else{
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CameraExampleHome(cam: cam,),));
+    }
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => UploadImage(file: _image,)),
+//    );
+    print("Done..");
+  }
+
+  bool _isRecordingMode = false;
+  bool _isRecording = false;
+
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
     return Container(
@@ -640,46 +672,136 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.camera_alt),
-            color: Colors.white,
-            onPressed: controller != null &&
-                controller.value.isInitialized &&
-                !controller.value.isRecordingVideo
-                ? onTakePictureButtonPressed
-                : null,
+
+          // IconButton(
+          //
+          //     icon: Icon(FontAwesomeIcons.photoVideo,
+          //       color: Colors.white60,), onPressed:
+          //     (){
+          //   pickImage();
+          //   if (upload == true){
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+          //   }else{
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) => CameraExampleHome(cam: 0,),)
+          //     );
+          //   }
+          // }
+          //
+          // ),
+
+          // FlatButton(
+          //   color: Colors.transparent,
+          //   onPressed: () async => null,
+          //   child: CircleAvatar(
+          //     backgroundColor: Colors.white,
+          //     radius: 28.0,
+          //     child: IconButton(
+          //       highlightColor: Colors.transparent,
+          //       icon: Icon(
+          //         (_isRecordingMode)
+          //             ? (_isRecording) ? Icons.stop : Icons.videocam
+          //             : Icons.camera_alt,
+          //         size: 28.0,
+          //         color: (_isRecording) ? Colors.red : Colors.black,
+          //       ),
+          //       onPressed: () {
+          //         print("$_isRecordingMode");
+          //
+          //         if (!_isRecordingMode) {
+          //           (controller != null &&
+          //               controller.value.isInitialized &&
+          //               !controller.value.isRecordingVideo)
+          //               ? onTakePictureButtonPressed
+          //               : null;
+          //           print("camera start");
+          //         } else {
+          //           if (_isRecording) {
+          //             (controller != null &&
+          //                 controller.value.isInitialized &&
+          //                 controller.value.isRecordingVideo)
+          //                 ? onStopButtonPressed
+          //                 : null;
+          //             print("video stop");
+          //           } else {
+          //             (controller != null &&
+          //                 controller.value.isInitialized &&
+          //                 !controller.value.isRecordingVideo)
+          //                 ? onVideoRecordButtonPressed
+          //                 : null;
+          //               print("video start");
+          //           }
+          //         }
+          //       },
+          //     ),
+          //
+          //   ),
+          // ),
+
+          // IconButton(
+          //   // icon: Icon(
+          //   //   Icons.camera_alt,color: Colors.transparent,
+          //   // ),
+          //   // onPressed: (){},
+          //   icon: Icon(
+          //     (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
+          //     color: Colors.white,
+          //   ),
+          //   onPressed: () {
+          //     // setState(() {
+          //     //   _isRecordingMode = !_isRecordingMode;
+          //     // });
+          //   },
+          // ),
+
+
+
+          CircleAvatar(
+            backgroundColor: Colors.white,
+            radius: 28.0,
+            child: IconButton(
+              icon: const Icon(Icons.camera_alt),
+              color: Colors.black,
+              onPressed: controller != null &&
+                  controller.value.isInitialized &&
+                  !controller.value.isRecordingVideo
+                  ? onTakePictureButtonPressed
+                  : null,
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.videocam),
-            color: Colors.white,
-            onPressed: controller != null &&
-                controller.value.isInitialized &&
-                !controller.value.isRecordingVideo
-                ? onVideoRecordButtonPressed
-                : null,
-          ),
-          IconButton(
-            icon: controller != null && controller.value.isRecordingPaused
-                ? Icon(Icons.play_arrow)
-                : Icon(Icons.pause),
-            color: Colors.white,
-            onPressed: controller != null &&
-                controller.value.isInitialized &&
-                controller.value.isRecordingVideo
-                ? (controller != null && controller.value.isRecordingPaused
-                ? onResumeButtonPressed
-                : onPauseButtonPressed)
-                : null,
-          ),
-          IconButton(
-            icon: const Icon(Icons.stop),
-            color: Colors.red,
-            onPressed: controller != null &&
-                controller.value.isInitialized &&
-                controller.value.isRecordingVideo
-                ? onStopButtonPressed
-                : null,
-          )
+          // IconButton(
+          //   icon: const Icon(Icons.videocam),
+          //   color: Colors.white,
+          //   onPressed: controller != null &&
+          //       controller.value.isInitialized &&
+          //       !controller.value.isRecordingVideo
+          //       ? onVideoRecordButtonPressed
+          //       : null,
+          // ),
+          // IconButton(
+          //   icon: controller != null && controller.value.isRecordingPaused
+          //       ? Icon(Icons.play_arrow)
+          //       : Icon(Icons.pause),
+          //   color: Colors.white,
+          //   onPressed: controller != null && controller.value.isInitialized && controller.value.isRecordingVideo
+          //       ? (controller != null && controller.value.isRecordingPaused
+          //       ? onResumeButtonPressed
+          //       : onPauseButtonPressed)
+          //       : null,
+          // ),
+          // IconButton(
+          //   icon: const Icon(Icons.stop),
+          //   color: Colors.red,
+          //   onPressed: controller != null &&
+          //       controller.value.isInitialized &&
+          //       controller.value.isRecordingVideo
+          //       ? onStopButtonPressed
+          //       : null,
+          // )
         ],
       ),
     );
@@ -769,6 +891,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   void onTakePictureButtonPressed() {
+    print("camera start 2");
     takePicture().then((XFile file) {
       if (mounted) {
         setState(() {
