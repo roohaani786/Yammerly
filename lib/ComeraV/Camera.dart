@@ -213,7 +213,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                       child: Stack(
                         children: [
 
+
                           _cameraPreviewWidget(),
+
 
                           Positioned(
                             top: 24.0,
@@ -248,36 +250,41 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                             ),
                           ),
 
-                          Padding(
-                            padding: EdgeInsets.only(top: 24.0),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: IconButton(
-                                icon: Icon(
-                                  // (flashOn) ? Icons.flash_on : Icons.flash_off,
-                                  Icons.flash_on,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  // setState(() {
-                                  //   flashOn = !flashOn;
-                                  // });
-                                  onFlashModeButtonPressed();
+                          Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 24.0),
+                                child: Align(
+                                  alignment: Alignment.topCenter,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      // (flashOn) ? Icons.flash_on : Icons.flash_off,
+                                      Icons.flash_on,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      // setState(() {
+                                      //   flashOn = !flashOn;
+                                      // });
+                                      onFlashModeButtonPressed();
 
-                                  // setState(() {
-                                  //   flashOn = !flashOn;
-                                  // });
-                                  // if (!flashOn) {
-                                  //   //Lamp.turnOff();
-                                  //   TorchCompat.turnOff();
-                                  // } else {
-                                  //   TorchCompat.turnOn();
-                                  //   //Lamp.turnOn();
-                                  // }
-                                },
-                                //onPressed: () => TorchCompat.turnOff(),
+                                      // setState(() {
+                                      //   flashOn = !flashOn;
+                                      // });
+                                      // if (!flashOn) {
+                                      //   //Lamp.turnOff();
+                                      //   TorchCompat.turnOff();
+                                      // } else {
+                                      //   TorchCompat.turnOn();
+                                      //   //Lamp.turnOn();
+                                      // }
+                                    },
+                                    //onPressed: () => TorchCompat.turnOff(),
+                                  ),
+                                ),
                               ),
-                            ),
+                              _modeControlRowWidget(),
+                            ],
                           ),
 
                           Align(
@@ -301,7 +308,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                   ),
                 ),
                 //_captureControlRowWidget(),
-                _modeControlRowWidget(),
+
                 // Padding(
                 //   padding: const EdgeInsets.all(5.0),
                 //   child: Row(
@@ -468,7 +475,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               icon: Icon(Icons.flash_off),
               color: controller?.value?.flashMode == FlashMode.off
                   ? Colors.orange
-                  : Colors.deepPurple,
+                  : Colors.white,
               onPressed: controller != null
                   ? () => onSetFlashModeButtonPressed(FlashMode.off)
                   : null,
@@ -477,7 +484,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               icon: Icon(Icons.flash_auto),
               color: controller?.value?.flashMode == FlashMode.auto
                   ? Colors.orange
-                  : Colors.deepPurple,
+                  : Colors.white,
               onPressed: controller != null
                   ? () => onSetFlashModeButtonPressed(FlashMode.auto)
                   : null,
@@ -486,7 +493,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               icon: Icon(Icons.flash_on),
               color: controller?.value?.flashMode == FlashMode.always
                   ? Colors.orange
-                  : Colors.deepPurple,
+                  : Colors.white,
               onPressed: controller != null
                   ? () => onSetFlashModeButtonPressed(FlashMode.always)
                   : null,
@@ -495,7 +502,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               icon: Icon(Icons.highlight),
               color: controller?.value?.flashMode == FlashMode.torch
                   ? Colors.orange
-                  : Colors.deepPurple,
+                  : Colors.white,
               onPressed: controller != null
                   ? () => onSetFlashModeButtonPressed(FlashMode.torch)
                   : null,
@@ -673,26 +680,26 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
 
-          // IconButton(
-          //
-          //     icon: Icon(FontAwesomeIcons.photoVideo,
-          //       color: Colors.white60,), onPressed:
-          //     (){
-          //   pickImage();
-          //   if (upload == true){
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
-          //   }else{
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) => CameraExampleHome(cam: 0,),)
-          //     );
-          //   }
-          // }
-          //
-          // ),
+          IconButton(
+
+              icon: Icon(FontAwesomeIcons.photoVideo,
+                color: Colors.white60,), onPressed:
+              (){
+            pickImage();
+            if (upload == true){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+            }else{
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CameraExampleHome(cam: 0,),)
+              );
+            }
+          }
+
+          ),
 
           // FlatButton(
           //   color: Colors.transparent,
@@ -741,26 +748,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           //
           //   ),
           // ),
-
-          // IconButton(
-          //   // icon: Icon(
-          //   //   Icons.camera_alt,color: Colors.transparent,
-          //   // ),
-          //   // onPressed: (){},
-          //   icon: Icon(
-          //     (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-          //     color: Colors.white,
-          //   ),
-          //   onPressed: () {
-          //     // setState(() {
-          //     //   _isRecordingMode = !_isRecordingMode;
-          //     // });
-          //   },
-          // ),
+          //
 
 
 
-          CircleAvatar(
+          (!_isRecordingMode)?CircleAvatar(
             backgroundColor: Colors.white,
             radius: 28.0,
             child: IconButton(
@@ -772,36 +764,60 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                   ? onTakePictureButtonPressed
                   : null,
             ),
+          ):Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.videocam),
+                color: Colors.white,
+                onPressed: controller != null &&
+                    controller.value.isInitialized &&
+                    !controller.value.isRecordingVideo
+                    ? onVideoRecordButtonPressed
+                    : null,
+              ),
+
+              IconButton(
+                icon: controller != null && controller.value.isRecordingPaused
+                    ? Icon(Icons.play_arrow)
+                    : Icon(Icons.pause),
+                color: Colors.white,
+                onPressed: controller != null && controller.value.isInitialized && controller.value.isRecordingVideo
+                    ? (controller != null && controller.value.isRecordingPaused
+                    ? onResumeButtonPressed
+                    : onPauseButtonPressed)
+                    : null,
+              ),
+              IconButton(
+                icon: const Icon(Icons.stop),
+                color: Colors.red,
+                onPressed: controller != null &&
+                    controller.value.isInitialized &&
+                    controller.value.isRecordingVideo
+                    ? onStopButtonPressed
+                    : null,
+              ),
+            ],
           ),
-          // IconButton(
-          //   icon: const Icon(Icons.videocam),
-          //   color: Colors.white,
-          //   onPressed: controller != null &&
-          //       controller.value.isInitialized &&
-          //       !controller.value.isRecordingVideo
-          //       ? onVideoRecordButtonPressed
-          //       : null,
-          // ),
-          // IconButton(
-          //   icon: controller != null && controller.value.isRecordingPaused
-          //       ? Icon(Icons.play_arrow)
-          //       : Icon(Icons.pause),
-          //   color: Colors.white,
-          //   onPressed: controller != null && controller.value.isInitialized && controller.value.isRecordingVideo
-          //       ? (controller != null && controller.value.isRecordingPaused
-          //       ? onResumeButtonPressed
-          //       : onPauseButtonPressed)
-          //       : null,
-          // ),
-          // IconButton(
-          //   icon: const Icon(Icons.stop),
-          //   color: Colors.red,
-          //   onPressed: controller != null &&
-          //       controller.value.isInitialized &&
-          //       controller.value.isRecordingVideo
-          //       ? onStopButtonPressed
-          //       : null,
-          // )
+
+
+
+
+          IconButton(
+            // icon: Icon(
+            //   Icons.camera_alt,color: Colors.transparent,
+            // ),
+            // onPressed: (){},
+            icon: Icon(
+              (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
+              color: Colors.white,
+              size: 30,
+            ),
+            onPressed: () {
+              setState(() {
+                _isRecordingMode = !_isRecordingMode;
+              });
+            },
+          ),
         ],
       ),
     );

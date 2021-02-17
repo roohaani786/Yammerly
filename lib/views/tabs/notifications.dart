@@ -41,7 +41,7 @@ class NotificationsPageState extends State<NotificationsPage> {
     return  StreamBuilder(
       stream: NotificationRefrence.document(currUid)
           .collection("notification")
-          .orderBy("timestamp", descending: false)
+          .orderBy("timestamp", descending: true)
           .snapshots(),
       builder: (context, dataSnapshot){
         if (!dataSnapshot.hasData){
@@ -107,13 +107,13 @@ class NotificationsPageState extends State<NotificationsPage> {
     return Scaffold(
         backgroundColor: Colors.white,
 
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Text("Notifications", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
-          // leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black,), onPressed: (){
-          //   Navigator.pop(context);
-          // }),
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: Colors.white,
+        //   title: Text("Notifications", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
+        //   // leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black,), onPressed: (){
+        //   //   Navigator.pop(context);
+        //   // }),
+        // ),
         //appBar: header(context, strTitle: "Comments"),
 
         body: Column(

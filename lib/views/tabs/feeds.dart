@@ -428,8 +428,10 @@ class _FeedsPageState extends State<FeedsPage> {
 
                             getlikes(displayNamecurrentUser, postId, index);
 
-                            Notification() async {
-                              //print(currUid);
+                            Notification(String displayNameCurrUser) async {
+                              print(displayNameCurrUser);
+                              print(displayNamecurrentUser);
+                              print("911");
 
                               setState(() {
                                 // file = null;
@@ -441,7 +443,7 @@ class _FeedsPageState extends State<FeedsPage> {
                             .document(NotificationId)
                             .setData({"likes" : likes+1,
                           "notificationId" : NotificationId,
-                          "username": displayNamecurrentUser,
+                          "username": displayNameCurrUser,
                           //"comment": commentTextEditingController.text,
 
                           "timestamp": DateTime.now(),
@@ -713,14 +715,10 @@ class _FeedsPageState extends State<FeedsPage> {
                                       padding: EdgeInsets.only(left: 10),
                                       onPressed: (likess[index] == true)
                                           ? () {
-                                                          if (timer?.isActive ??
-                                                              false)
-                                                            timer
-                                                                .cancel(); //cancel if [timer] is null or running
+                                                          if (timer?.isActive ??false)
+                                                            timer.cancel(); //cancel if [timer] is null or running
                                                           timer = Timer(
-                                                            const Duration(
-                                                                milliseconds:
-                                                                    340),
+                                                            const Duration(milliseconds: 340),
                                                             () {
                                                               setState(() {
                                                                 likess[index] =
@@ -728,21 +726,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                 loading = true;
                                                               });
                                                               DatabaseService()
-                                                                  .unlikepost(
-                                                                      likes,
-                                                                      postId,
-                                                                      uidController
-                                                                          .text,
-                                                                      displayNameController
-                                                                          .text);
+                                                                  .unlikepost(likes, postId, uidController.text, displayNameController.text);
                                                             },
                                                           );
                                                         }
                                                       : () {
-                                                          if (timer?.isActive ??
-                                                              false)
-                                                            timer
-                                                                .cancel(); //cancel if [timer] is null or running
+                                                          if (timer?.isActive ?? false)
+                                                            timer.cancel(); //cancel if [timer] is null or running
                                                           timer = Timer(
                                                             const Duration(
                                                                 milliseconds:
@@ -754,13 +744,8 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                 loading = true;
                                                               });
                                                               DatabaseService()
-                                                                  .likepost(
-                                                                      likes,
-                                                                      postId,
-                                                                      uidController
-                                                                          .text,
-                                                                      displayNameController
-                                                                          .text);
+                                                                  .likepost(likes, postId, uidController.text, displayNameController.text);
+                                                              Notification(displayNamecurrentUser);
                                                             },
                                                           );
                                                         },
@@ -1141,6 +1126,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                     postId,
                                                     uidController.text,
                                                     displayNameController.text);
+                                                Notification(displayNamecurrentUser);
                                               },
                                             );
                                       },
@@ -1411,6 +1397,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                             postId,
                                                                             uidController.text,
                                                                             displayNameController.text);
+                                                                        Notification(displayNamecurrentUser);
                                                                       },
                                                                     );
                                                                   },
