@@ -698,7 +698,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               );
             }
           }
-
           ),
 
           // FlatButton(
