@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-
+import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -246,6 +246,32 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
           print("haa");
         });
       }
+    });
+  }
+
+  String NotificationId;
+  Notification(String displayNameCurrUser,int followers) async {
+    print(displayNameCurrUser);
+    print(displayNamecurrentUser);
+    print("911");
+
+    setState(() {
+      // file = null;
+      NotificationId = Uuid().v4();
+    });
+
+    return await Firestore.instance.collection("users")
+        .document(uid).collection("notification")
+        .document(NotificationId)
+        .setData({"followers" : followers+1,
+      "notificationId" : NotificationId,
+      "username": displayNameCurrUser,
+      //"comment": commentTextEditingController.text,
+
+      "timestamp": DateTime.now(),
+      "url": photoUrlX,
+      "uid": uidX,
+      "status" : "Follow",
     });
   }
 
@@ -628,7 +654,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               });
 
                                                               DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidControllerX.text,photoUrlX);
-
+                                                              Notification(displayNamecurrentUser,followers);
                                                               // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
                                                               DatabaseService().increaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid,photoUrl);
                                                             }else{
