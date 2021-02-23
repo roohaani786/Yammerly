@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -49,6 +50,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   DocumentSnapshot docSnap;
   User user;
   FirebaseUser currUser;
+  Timer timer;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -648,27 +650,39 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                           ),
                                                           onPressed: () {
                                                             if(followed == false){
-                                                              setState(() {
-                                                                //getFollowers();
-                                                                followed = true;
-                                                              });
+                                                              if (timer?.isActive ??false)
+                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                              timer = Timer(
+                                                                  const Duration(milliseconds: 340),
+                                                                      () {
+                                                                        setState(() {
+                                                                          //getFollowers();
+                                                                          followed = true;
+                                                                        });
 
-                                                              DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidControllerX.text,photoUrlX);
-                                                              Notification(displayNamecurrentUser,followers);
-                                                              // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
-                                                              DatabaseService().increaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid,photoUrl);
+                                                                        DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidControllerX.text,photoUrlX);
+                                                                        Notification(displayNamecurrentUser,followers);
+                                                                        // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
+                                                                        DatabaseService().increaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid,photoUrl);
+                                                                      });
                                                             }else{
-                                                              DatabaseService()
-                                                                  .unfollowUser(
-                                                                  followers, uid,
-                                                                  displayNamecurrentUser);
+                                                              if (timer?.isActive ??false)
+                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                              timer = Timer(
+                                                                  const Duration(milliseconds: 340),
+                                                                      () {
+                                                                        DatabaseService()
+                                                                            .unfollowUser(
+                                                                            followers, uid,
+                                                                            displayNamecurrentUser);
 
-                                                              DatabaseService()
-                                                                  .decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
-                                                              setState(() {
-                                                                //getFollowers();
-                                                                followed = false;
-                                                              });
+                                                                        DatabaseService()
+                                                                            .decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
+                                                                        setState(() {
+                                                                          //getFollowers();
+                                                                          followed = false;
+                                                                        });
+                                                                      });
                                                             }
                                                           },
                                                           shape: RoundedRectangleBorder(

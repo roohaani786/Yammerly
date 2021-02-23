@@ -454,6 +454,15 @@ class _FeedsPageState extends State<FeedsPage> {
                         });
                       }
 
+                      DeleteNotification(String displayName){
+                        Firestore.instance
+                            .collection("users")
+                            .document(uid)
+                            .collection('notification')
+                            .document(displayName)
+                            .delete();
+                      }
+
                       return (shared==true)?Container(
                         decoration: BoxDecoration(
                           border: Border(
@@ -727,6 +736,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                               });
                                                               DatabaseService()
                                                                   .unlikepost(likes, postId, uidController.text, displayNameController.text);
+                                                              DeleteNotification(displayNamecurrentUser);
                                                             },
                                                           );
                                                         }
@@ -1099,6 +1109,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                     postId,
                                                     uidController.text,
                                                     displayNameController.text);
+                                                DeleteNotification(displayNamecurrentUser);
                                               },
                                             );
                                       }
@@ -1370,6 +1381,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                             postId,
                                                                             uidController.text,
                                                                             displayNameController.text);
+                                                                        DeleteNotification(displayNamecurrentUser);
                                                                       },
                                                                     );
                                                                   }
