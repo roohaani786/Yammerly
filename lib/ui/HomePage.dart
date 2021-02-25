@@ -2,6 +2,8 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -142,25 +144,33 @@ class _HomePageState extends State<HomePage> {
   DateTime currentBackPressTime;
 
   Future<bool> onWillPop() {
-    return showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(false),
-            child: Text("NO"),
-          ),
-          SizedBox(height: 16),
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(true),
-            child: Text("YES"),
-          ),
-        ],
-      ),
-    ) ??
-        false;
+    // DateTime now = DateTime.now();
+    // if (currentBackPressTime == null ||
+    //     now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+    //   currentBackPressTime = now;
+    //   Fluttertoast.showToast(msg: "exit_warning");
+    //   return Future.value(false);
+    // }
+    // return Future.value(true);
+    // return showDialog(
+    //   context: context,
+    //   builder: (context) => new AlertDialog(
+    //     title: new Text('Are you sure?'),
+    //     content: new Text('Do you want to exit an App'),
+    //     actions: <Widget>[
+    //       new GestureDetector(
+    //         onTap: () => Navigator.of(context).pop(false),
+    //         child: Text("NO"),
+    //       ),
+    //       SizedBox(height: 16),
+    //       new GestureDetector(
+    //         onTap: () => Navigator.of(context).pop(true),
+    //         child: Text("YES"),
+    //       ),
+    //     ],
+    //   ),
+    // ) ??
+    //     false;
   }
 
   //final FirebaseMessaging _fcm = FirebaseMessaging();
@@ -169,9 +179,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 //    final user = Provider.of<User>(context);
 //    _saveDeviceToken(user.uid);
-    return GestureDetector(
-      onTap: (){print("hu");},
-//      onTap: () => Navigator.of(context).pop(HomePage()),
+    return WillPopScope(
+      onWillPop: null,//onWillPop,
       child: Scaffold(
         body: myPageView,
       ),
@@ -278,6 +287,15 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
 
   Future<bool> onWillPop() async {
     print("on will pop");
+
+    // DateTime now = DateTime.now();
+    // if (currentBackPressTime == null ||
+    //     now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+    //   currentBackPressTime = now;
+    //   Fluttertoast.showToast(msg: "exit_warning");
+    //   return Future.value(false);
+    // }
+    // return Future.value(true);
     if (tabController.index == 1) {
       await SystemNavigator.pop();
     }
@@ -365,24 +383,29 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
           length: 4,
           //initialIndex: (initialindexg == null) ? 1 : initialindexg,
           child: Scaffold(
-            body: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: tabController,
-              children: [
-                new Container(
-                  child: ChatsPage(),
-                ),
-                new Container(
-                  child: FeedsPage(
-                    displayNamecurrentUser: displayNameController.text,
+            body: DoubleBackToCloseApp(
+              snackBar: const SnackBar(
+                content: Text('Tap back again to leave'),
+              ),
+              child: TabBarView(
+                physics: NeverScrollableScrollPhysics(),
+                controller: tabController,
+                children: [
+                  new Container(
+                    child: ChatsPage(),
                   ),
-                ),
-                new Container(
-                  //child: FeedsPage(),
-                  child: NotificationsPage(currUid: uidController.text),
-                ),
-                new Container(child: AccountBottomIconScreen()),
-              ],
+                  new Container(
+                    child: FeedsPage(
+                      displayNamecurrentUser: displayNameController.text,
+                    ),
+                  ),
+                  new Container(
+                    //child: FeedsPage(),
+                    child: NotificationsPage(currUid: uidController.text),
+                  ),
+                  new Container(child: AccountBottomIconScreen()),
+                ],
+              ),
             ),
             bottomNavigationBar: new Container(
               height: 60.0,

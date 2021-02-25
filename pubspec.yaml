@@ -176,6 +176,9 @@ dependencies:
   #A transparent image in Dart code, represented as a Uint8List.
   #Plugin link:- https://pub.dev/packages/transparent_image
 
+  double_back_to_close_app: ^1.2.0
+  #use for double back to exit app
+
 
 dev_dependencies:
   flutter_test:

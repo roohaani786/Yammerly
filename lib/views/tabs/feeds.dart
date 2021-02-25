@@ -77,10 +77,6 @@ class _FeedsPageState extends State<FeedsPage> {
   final timelineReference = Firestore.instance.collection('posts');
   String postIdX;
 
-  //bool _liked = false;
-  //var like = new List();
-  //int likeint;
-
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -273,7 +269,6 @@ class _FeedsPageState extends State<FeedsPage> {
         .get();
     cpurlController.text = docSnap.data['photoURL'];
     cdisplayNameController.text = docSnap.data['displayName'];
-    //photoUrlController.text = docSnap.data["photoURL"];
     setState(() {
       cpurl[index] = cpurlController.text;
       cdisplayName[index] = cdisplayNameController.text;
@@ -283,7 +278,6 @@ class _FeedsPageState extends State<FeedsPage> {
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
-//    var format = DateFormat('HH:mm a');
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     var diff = now.difference(date);
     var time = '';
@@ -321,7 +315,6 @@ class _FeedsPageState extends State<FeedsPage> {
     return time;
   }
 
-
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
@@ -347,7 +340,6 @@ class _FeedsPageState extends State<FeedsPage> {
       prefs.setInt('commCount', 0);
       prefs.setInt('comments',comments);
     }
-
 
     return GestureDetector(
       child: Scaffold(
@@ -428,6 +420,31 @@ class _FeedsPageState extends State<FeedsPage> {
 
                             getlikes(displayNamecurrentUser, postId, index);
 
+                      ShareNotification(String displayNameCurrUser) async {
+                        print(displayNameCurrUser);
+                        print(displayNamecurrentUser);
+                        print("911");
+
+                        setState(() {
+                          // file = null;
+                          NotificationId = Uuid().v4();
+                        });
+
+                        return await Firestore.instance.collection("users")
+                            .document(uid).collection("notification")
+                            .document(NotificationId)
+                            .setData({"share" : shares+1,
+                          "notificationId" : NotificationId,
+                          "username": displayNameCurrUser,
+                          //"comment": commentTextEditingController.text,
+                          "timestamp": DateTime.now(),
+                          "url": photoUrl,
+                          "uid": uid,
+                          "status" : "Share",
+                          "postId" : postId,
+                        });
+                      }
+
                             Notification(String displayNameCurrUser) async {
                               print(displayNameCurrUser);
                               print(displayNamecurrentUser);
@@ -459,6 +476,7 @@ class _FeedsPageState extends State<FeedsPage> {
                             .collection("users")
                             .document(uid)
                             .collection('notification')
+                            //.where('displayName','==',displayName);
                             .document(displayName)
                             .delete();
                       }
@@ -791,6 +809,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                     IconButton(
                                       onPressed: () {
+                                        ShareNotification(displayNamecurrentUser);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) => UploadImage(isVideo: false,ownerPostId: postIdX,file: File(url),sharedurl: url,ownerdiscription: OwnerDescription,ownerphotourl: OwnerPhotourl,ownerdisplayname:OwnerDisplayName,shared: true,cam: cam,ownerUid:OwnerUid)),
@@ -1174,6 +1193,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                     IconButton(
                                       onPressed: () {
+                                        ShareNotification(displayNamecurrentUser);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) => UploadImage(isVideo:false,ownerUid: uid,ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
@@ -1446,6 +1466,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                     IconButton(
                                       onPressed: () {
+                                        ShareNotification(displayNamecurrentUser);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) => UploadImage(isVideo:false,ownerUid: uid,ownerPostId: postId,shares: shares,file: File(url),sharedurl: url,ownerdiscription: description,ownerphotourl: photoUrl,ownerdisplayname: displayName,shared: true,cam: cam,ownerTimeStamp: timestamp)),
