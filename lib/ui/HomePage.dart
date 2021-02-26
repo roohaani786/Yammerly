@@ -18,7 +18,7 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
-
+import 'dart:async';
 import 'messagingsystem.dart';
 import 'searchlist.dart';
 
@@ -144,34 +144,12 @@ class _HomePageState extends State<HomePage> {
   DateTime currentBackPressTime;
 
   Future<bool> onWillPop() {
-    // DateTime now = DateTime.now();
-    // if (currentBackPressTime == null ||
-    //     now.difference(currentBackPressTime) > Duration(seconds: 2)) {
-    //   currentBackPressTime = now;
-    //   Fluttertoast.showToast(msg: "exit_warning");
-    //   return Future.value(false);
-    // }
-    // return Future.value(true);
-    // return showDialog(
-    //   context: context,
-    //   builder: (context) => new AlertDialog(
-    //     title: new Text('Are you sure?'),
-    //     content: new Text('Do you want to exit an App'),
-    //     actions: <Widget>[
-    //       new GestureDetector(
-    //         onTap: () => Navigator.of(context).pop(false),
-    //         child: Text("NO"),
-    //       ),
-    //       SizedBox(height: 16),
-    //       new GestureDetector(
-    //         onTap: () => Navigator.of(context).pop(true),
-    //         child: Text("YES"),
-    //       ),
-    //     ],
-    //   ),
-    // ) ??
-    //     false;
+    print("hore ho kya bhai");
+    SystemNavigator.pop();
+    SystemNavigator.pop();
   }
+
+
 
   //final FirebaseMessaging _fcm = FirebaseMessaging();
 
@@ -180,7 +158,7 @@ class _HomePageState extends State<HomePage> {
 //    final user = Provider.of<User>(context);
 //    _saveDeviceToken(user.uid);
     return WillPopScope(
-      onWillPop: null,//onWillPop,
+      onWillPop: onWillPop,
       child: Scaffold(
         body: myPageView,
       ),
@@ -297,7 +275,9 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     // }
     // return Future.value(true);
     if (tabController.index == 1) {
-      await SystemNavigator.pop();
+      print("bahi aa rahe ho kya");
+      SystemNavigator.pop();
+      SystemNavigator.pop();
     }
 
     Future.delayed(Duration(milliseconds: 200), () {
@@ -309,6 +289,13 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     return tabController.index == 1;
   }
 
+  Future<bool> onWillPop2() {
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     // Local dragStartDetail.
@@ -318,7 +305,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     // TODO: implement build
 
     return WillPopScope(
-      onWillPop: onWillPop,
+      onWillPop: null,//onWillPop,
       child: Scaffold(
         appBar: AppBar(
           title: Text(

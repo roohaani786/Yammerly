@@ -31,11 +31,7 @@ class NotificationsPageState extends State<NotificationsPage> {
   //     .orderBy("timestamp", descending: true)
   //     .snapshots();
 
-
-
-
-
-  retrieveNotifications(){
+  retrieveNotificationsLike(){
      print("bhujm");
      print(currUid);
     return  StreamBuilder(
@@ -49,9 +45,84 @@ class NotificationsPageState extends State<NotificationsPage> {
             color: Colors.white,
           );
         }
-        List<Notification> Notifications = [];
+        List<NotificationLike> Notifications = [];
         dataSnapshot.data.documents.forEach((document){
-          Notifications.add(Notification.fromDocument(document));
+          Notifications.add(NotificationLike.fromDocument(document));
+        });
+        return ListView(
+          children: Notifications,
+        );
+      },
+    );
+  }
+
+  retrieveNotificationsComment(){
+    print("bhujm");
+    print(currUid);
+    return  StreamBuilder(
+      stream: NotificationRefrence.document(currUid)
+          .collection("notification")
+          .orderBy("timestamp", descending: true)
+          .snapshots(),
+      builder: (context, dataSnapshot){
+        if (!dataSnapshot.hasData){
+          return Container(
+            color: Colors.white,
+          );
+        }
+        List<NotificationComment> Notifications = [];
+        dataSnapshot.data.documents.forEach((document){
+          Notifications.add(NotificationComment.fromDocument(document));
+        });
+        return ListView(
+          children: Notifications,
+        );
+      },
+    );
+  }
+
+  retrieveNotificationsShare(){
+    print("bhujm");
+    print(currUid);
+    return  StreamBuilder(
+      stream: NotificationRefrence.document(currUid)
+          .collection("notification")
+          .orderBy("timestamp", descending: true)
+          .snapshots(),
+      builder: (context, dataSnapshot){
+        if (!dataSnapshot.hasData){
+          return Container(
+            color: Colors.white,
+          );
+        }
+        List<NotificationShare> Notifications = [];
+        dataSnapshot.data.documents.forEach((document){
+          Notifications.add(NotificationShare.fromDocument(document));
+        });
+        return ListView(
+          children: Notifications,
+        );
+      },
+    );
+  }
+
+  retrieveNotificationsFollow(){
+    print("bhujm");
+    print(currUid);
+    return  StreamBuilder(
+      stream: NotificationRefrence.document(currUid)
+          .collection("notification")
+          .orderBy("timestamp", descending: true)
+          .snapshots(),
+      builder: (context, dataSnapshot){
+        if (!dataSnapshot.hasData){
+          return Container(
+            color: Colors.white,
+          );
+        }
+        List<NotificationFollow> Notifications = [];
+        dataSnapshot.data.documents.forEach((document){
+          Notifications.add(NotificationFollow.fromDocument(document));
         });
         return ListView(
           children: Notifications,
@@ -82,53 +153,57 @@ class NotificationsPageState extends State<NotificationsPage> {
 
   var commentCount = 0;
 
-  // CommentCount() async {
-  //   return StreamBuilder(
-  //     stream: CommentsRefrence.document(postId)
-  //         .snapshots(),
-  //     builder: (context, dataSnapshot) {
-  //        commentCount = 'comments';
-  //       }
-
-
-  //   );
-  // }
-
 
   @override
   void initState() {
 
-    retrieveNotifications();
+    retrieveNotificationsLike();
 
   }
 
   @override
   Widget build(BuildContext) {
-    return Scaffold(
-        backgroundColor: Colors.white,
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+          backgroundColor: Colors.white,
 
-        // appBar: AppBar(
-        //   backgroundColor: Colors.white,
-        //   title: Text("Notifications", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.normal),),
-        //   // leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.black,), onPressed: (){
-        //   //   Navigator.pop(context);
-        //   // }),
-        // ),
-        //appBar: header(context, strTitle: "Comments"),
+          appBar: TBar(),
 
-        body: Column(
-          children: [
-            Expanded(
-              child: retrieveNotifications(),
-            ),
-          ],
-        )
+          body: TabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              retrieveNotificationsLike(),
+              retrieveNotificationsComment(),
+              retrieveNotificationsShare(),
+              retrieveNotificationsFollow(),
+              // Container(
+              //     //color: Colors.blue,
+              //     child: Icon(
+              //         Icons.movie
+              //     )
+              // ),
+              // Container(
+              //   //color: Colors.blue,
+              //   child: Icon(
+              //       Icons.games
+              //   ),
+              // ),
+              // Container(
+              //   //color: Colors.blue,
+              //   child: Icon(
+              //       Icons.games
+              //   ),
+              // ),
+            ],
+          ),
 
+      ),
     );
   }
 }
 
-class Notification extends StatelessWidget {
+class NotificationFollow extends StatelessWidget {
   final String userName;
   final String userId;
   final String url;
@@ -139,10 +214,10 @@ class Notification extends StatelessWidget {
   final String notificationId;
   final int likes;
 
-  Notification({this.userName,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationFollow({this.userName,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
-  factory Notification.fromDocument(DocumentSnapshot documentSnapshot){
-    return Notification(
+  factory NotificationFollow.fromDocument(DocumentSnapshot documentSnapshot){
+    return NotificationFollow(
       userName: documentSnapshot["username"],
       userId: documentSnapshot["uid"],
       url: documentSnapshot["url"],
@@ -175,7 +250,7 @@ class Notification extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
-    return Padding(
+    return (status == "Follow")?Padding(
       padding: EdgeInsets.only(bottom: 6.0),
       child: Container(
 
@@ -207,19 +282,6 @@ class Notification extends StatelessWidget {
 
                     ),
                   )
-//                      Text(userName + " :",style: TextStyle(fontSize: 18.0,color: Colors.black,
-//                        fontWeight: FontWeight.bold,),),
-//                      Padding(
-//                        padding: const EdgeInsets.only(left: 2.0),
-//                        child: Expanded(
-//                          //width: 170.0,
-//                          child: SizedBox(
-//                            width: 108.0,
-//                            child: Text(comment,style: TextStyle(fontSize: 15.0,color: Colors.black,
-//                            ),),
-//                          ),
-//                        ),
-//                      ),
                 ],
               ):Text(""),
               leading: (userName != null || comment != null)?CircleAvatar(
@@ -232,187 +294,359 @@ class Notification extends StatelessWidget {
 
       ),
 
-    );
+    ):Container();
   }
 }
 
+class NotificationShare extends StatelessWidget {
+  final String userName;
+  final String userId;
+  final String url;
+  final String comment;
+  final Timestamp timestamp;
+  final String status;
+  final String commentId;
+  final String notificationId;
+  final int likes;
 
+  NotificationShare({this.userName,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
+  factory NotificationShare.fromDocument(DocumentSnapshot documentSnapshot){
+    return NotificationShare(
+      userName: documentSnapshot["username"],
+      userId: documentSnapshot["uid"],
+      url: documentSnapshot["url"],
+      comment: documentSnapshot["comment"],
+      timestamp: documentSnapshot["timestamp"],
+      status: documentSnapshot["status"],
+      commentId: documentSnapshot["commentId"],
+      notificationId: documentSnapshot["notificationId"],
+      likes: documentSnapshot["likes"],
 
+    );
+  }
 
-// import 'package:flutter/material.dart';
-//
-// import 'package:techstagram/utils/utils.dart';
-//
-// class NotificationsPage extends StatefulWidget {
-//
-//
-//   @override
-//   _NotificationsPageState createState() => _NotificationsPageState();
-// }
-//
-// class _NotificationsPageState extends State<NotificationsPage> {
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final deviceHeight = MediaQuery.of(context).size.height;
-//     final deviceWidth = MediaQuery.of(context).size.width;
-//
-//     final pageTitle = Padding(
-//       padding: EdgeInsets.only(top: 1.0, bottom: 30.0),
-//       child: Text(
-//         "Notifications",
-//         style: TextStyle(
-//           fontWeight: FontWeight.bold,
-//           color: Colors.black,
-//           fontSize: 40.0,
-//         ),
-//       ),
-//     );
-//
-//     final image = Image.asset(
-//       AvailableImages.emptyState['assetPath'],
-//     );
-//
-//     final notificationHeader = Container(
-//       padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
-//       child: Text(
-//         "Coming Soon....",
-//         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
-//       ),
-//     );
-//     final notificationText = Text(
-//       "Notification feature is coming soon on our app.",
-//       style: TextStyle(
-//         fontWeight: FontWeight.w600,
-//         fontSize: 16.0,
-//         color: Colors.grey.withOpacity(0.6),
-//       ),
-//       textAlign: TextAlign.center,
-//     );
-//
-//     return Scaffold(
-//       // resizeToAvoidBottomPadding: false,
-//       body: SingleChildScrollView(
-//         child: Container(
-//           padding: EdgeInsets.only(
-//             top: 30.0,
-//             left: 30.0,
-//             right: 30.0,
-//             bottom: 30.0,
-//           ),
-//           height: deviceHeight,
-//           width: deviceWidth,
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: <Widget>[
-//               pageTitle,
-//               SizedBox(
-//                 height: deviceHeight * 0.1,
-//               ),
-//               Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: <Widget>[
-//                   image,
-//                   notificationHeader,
-//                   notificationText
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+  String tAgo(DateTime d) {
+    Duration diff = DateTime.now().difference(d);
+    if (diff.inDays > 365)
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "year" : "years"} ago";
+    if (diff.inDays > 30)
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "month" : "months"} ago";
+    if (diff.inDays > 7)
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "week" : "weeks"} ago";
+    if (diff.inDays > 0)
+      return "${diff.inDays} ${diff.inDays == 1 ? "day" : "days"} ago";
+    if (diff.inHours > 0)
+      return "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+    if (diff.inMinutes > 0)
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+    return "just now";
+  }
 
+  @override
+  Widget build(BuildContext) {
+    return (status == "Share")?Padding(
+      padding: EdgeInsets.only(bottom: 6.0),
+      child: Container(
 
+        color: Colors.white,
 
+        child: Stack(
+          children: [
+            ListTile(
+              title: (userName != null || comment != null)?Row(
+                children: [
+                  Expanded(
+                    child: RichText(
+                      textAlign: TextAlign.start,
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: userName + " :  ",
+                            style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                          ),
+                          TextSpan(
+                            text: status,
+                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                fontSize: 15.0),
+                          ),
+                        ],
+                      ),
 
-// import 'package:flutter/material.dart';
-//
-// import 'package:techstagram/utils/utils.dart';
-//
-// class NotificationsPage extends StatefulWidget {
-//
-//
-//   @override
-//   _NotificationsPageState createState() => _NotificationsPageState();
-// }
-//
-// class _NotificationsPageState extends State<NotificationsPage> {
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final deviceHeight = MediaQuery.of(context).size.height;
-//     final deviceWidth = MediaQuery.of(context).size.width;
-//
-//     final pageTitle = Padding(
-//       padding: EdgeInsets.only(top: 1.0, bottom: 30.0),
-//       child: Text(
-//         "Notifications",
-//         style: TextStyle(
-//           fontWeight: FontWeight.bold,
-//           color: Colors.black,
-//           fontSize: 40.0,
-//         ),
-//       ),
-//     );
-//
-//     final image = Image.asset(
-//       AvailableImages.emptyState['assetPath'],
-//     );
-//
-//     final notificationHeader = Container(
-//       padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
-//       child: Text(
-//         "Coming Soon....",
-//         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
-//       ),
-//     );
-//     final notificationText = Text(
-//       "Notification feature is coming soon on our app.",
-//       style: TextStyle(
-//         fontWeight: FontWeight.w600,
-//         fontSize: 16.0,
-//         color: Colors.grey.withOpacity(0.6),
-//       ),
-//       textAlign: TextAlign.center,
-//     );
-//
-//     return Scaffold(
-//       // resizeToAvoidBottomPadding: false,
-//       body: SingleChildScrollView(
-//         child: Container(
-//           padding: EdgeInsets.only(
-//             top: 30.0,
-//             left: 30.0,
-//             right: 30.0,
-//             bottom: 30.0,
-//           ),
-//           height: deviceHeight,
-//           width: deviceWidth,
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: <Widget>[
-//               pageTitle,
-//               SizedBox(
-//                 height: deviceHeight * 0.1,
-//               ),
-//               Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: <Widget>[
-//                   image,
-//                   notificationHeader,
-//                   notificationText
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+                    ),
+                  )
+                ],
+              ):Text(""),
+              leading: (userName != null || comment != null)?CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(url),
+              ):null,
+              subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+            ),
+          ],
+        ),
+
+      ),
+
+    ):Container();
+  }
+}
+
+class NotificationComment extends StatelessWidget {
+  final String userName;
+  final String userId;
+  final String url;
+  final String comment;
+  final Timestamp timestamp;
+  final String status;
+  final String commentId;
+  final String notificationId;
+  final int likes;
+
+  NotificationComment({this.userName,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+
+  factory NotificationComment.fromDocument(DocumentSnapshot documentSnapshot){
+    return NotificationComment(
+      userName: documentSnapshot["username"],
+      userId: documentSnapshot["uid"],
+      url: documentSnapshot["url"],
+      comment: documentSnapshot["comment"],
+      timestamp: documentSnapshot["timestamp"],
+      status: documentSnapshot["status"],
+      commentId: documentSnapshot["commentId"],
+      notificationId: documentSnapshot["notificationId"],
+      likes: documentSnapshot["likes"],
+
+    );
+  }
+
+  String tAgo(DateTime d) {
+    Duration diff = DateTime.now().difference(d);
+    if (diff.inDays > 365)
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "year" : "years"} ago";
+    if (diff.inDays > 30)
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "month" : "months"} ago";
+    if (diff.inDays > 7)
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "week" : "weeks"} ago";
+    if (diff.inDays > 0)
+      return "${diff.inDays} ${diff.inDays == 1 ? "day" : "days"} ago";
+    if (diff.inHours > 0)
+      return "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+    if (diff.inMinutes > 0)
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+    return "just now";
+  }
+
+  @override
+  Widget build(BuildContext) {
+    return (status == "Comment")?Padding(
+      padding: EdgeInsets.only(bottom: 6.0),
+      child: Container(
+
+        color: Colors.white,
+
+        child: Stack(
+          children: [
+            ListTile(
+              title: (userName != null || comment != null)?Row(
+                children: [
+                  Expanded(
+                    child: RichText(
+                      textAlign: TextAlign.start,
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: userName + " :  ",
+                            style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                          ),
+                          TextSpan(
+                            text: status,
+                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                fontSize: 15.0),
+                          ),
+                        ],
+                      ),
+
+                    ),
+                  )
+                ],
+              ):Text(""),
+              leading: (userName != null || comment != null)?CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(url),
+              ):null,
+              subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+            ),
+          ],
+        ),
+
+      ),
+
+    ):Container();
+  }
+}
+
+class NotificationLike extends StatelessWidget {
+  final String userName;
+  final String userId;
+  final String url;
+  final String comment;
+  final Timestamp timestamp;
+  final String status;
+  final String commentId;
+  final String notificationId;
+  final int likes;
+
+  NotificationLike({this.userName,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+
+  factory NotificationLike.fromDocument(DocumentSnapshot documentSnapshot){
+    return NotificationLike(
+      userName: documentSnapshot["username"],
+      userId: documentSnapshot["uid"],
+      url: documentSnapshot["url"],
+      comment: documentSnapshot["comment"],
+      timestamp: documentSnapshot["timestamp"],
+      status: documentSnapshot["status"],
+      commentId: documentSnapshot["commentId"],
+      notificationId: documentSnapshot["notificationId"],
+      likes: documentSnapshot["likes"],
+
+    );
+  }
+
+  String tAgo(DateTime d) {
+    Duration diff = DateTime.now().difference(d);
+    if (diff.inDays > 365)
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "year" : "years"} ago";
+    if (diff.inDays > 30)
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "month" : "months"} ago";
+    if (diff.inDays > 7)
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "week" : "weeks"} ago";
+    if (diff.inDays > 0)
+      return "${diff.inDays} ${diff.inDays == 1 ? "day" : "days"} ago";
+    if (diff.inHours > 0)
+      return "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+    if (diff.inMinutes > 0)
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+    return "just now";
+  }
+
+  @override
+  Widget build(BuildContext) {
+    return (status == "like")?Padding(
+      padding: EdgeInsets.only(bottom: 6.0),
+      child: Container(
+
+        color: Colors.white,
+
+        child: Stack(
+          children: [
+            ListTile(
+              title: (userName != null || comment != null)?Row(
+                children: [
+                  Expanded(
+                    child: RichText(
+                      textAlign: TextAlign.start,
+                      softWrap: true,
+                      overflow: TextOverflow.visible,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: userName + " :  ",
+                            style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                          ),
+                          TextSpan(
+                            text: status,
+                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                fontSize: 15.0),
+                          ),
+                        ],
+                      ),
+
+                    ),
+                  )
+                ],
+              ):Text(""),
+              leading: (userName != null || comment != null)?CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(url),
+              ):null,
+              subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+            ),
+          ],
+        ),
+
+      ),
+
+    ):Container();
+  }
+}
+
+class TBar extends StatelessWidget implements PreferredSizeWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        // boxShadow: [
+        //   new BoxShadow(blurRadius: 10.0)
+        // ],
+        color: Colors.white,
+        //borderRadius: BorderRadius.circular(50),
+        // border: Border.all(
+        //     color: Colors.lightBlue,
+        //     width: 3.0
+        // ),
+      ),
+      child: TabBar(
+        labelColor: Colors.white,
+        //indicatorColor: Colors.blue,
+        unselectedLabelColor: Colors.grey,
+        indicator: BoxDecoration(
+          borderRadius: BorderRadius.circular(0),
+          color: Colors.grey[300],
+        ),
+        tabs: [
+          Tab(
+            icon: Icon(
+              Icons.thumb_up,
+              color: Colors.deepPurple,
+              size: 24.0,
+              semanticLabel: 'Text to announce in accessibility modes',
+            ),
+          ),
+          Tab(
+            icon: Icon(
+              Icons.comment_rounded,
+              color: Colors.deepPurple,
+              size: 24.0,
+              semanticLabel: 'Text to announce in accessibility modes',
+            ),
+          ),
+          Tab(
+            icon: Icon(
+              Icons.share,
+              color: Colors.deepPurple,
+              size: 24.0,
+              semanticLabel: 'Text to announce in accessibility modes',
+            ),
+          ),
+          Tab(
+            icon: Icon(
+              Icons.person,
+              color: Colors.deepPurple,
+              size: 24.0,
+              semanticLabel: 'Text to announce in accessibility modes',
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize {
+    return Size.fromHeight(200.0);
+  }
+}
