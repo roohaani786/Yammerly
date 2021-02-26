@@ -119,6 +119,7 @@ class CommentsPageState extends State<CommentsPage> {
       "uid": uid,
       "status" : "Comment",
       "postId" : postId,
+      "postUrl" : postImageUrl,
     });
 
   }

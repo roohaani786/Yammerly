@@ -17,6 +17,7 @@ import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'dart:math' as math;
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 class postPage extends StatefulWidget {
@@ -631,26 +632,37 @@ class _postPageState extends State<postPage> {
                                 width: MediaQuery.of(context).size.width * 0.95,
                                 child: Column(
                                   children: [
+
                                     GestureDetector(
-                                     
-                                      child : (cam == 1)? Transform(
-                                        alignment: Alignment.center,
-                                        transform: Matrix4.rotationY(math.pi),
-                                        child: FadeInImage(
-                                          image: NetworkImage(url),
-                                          fit: BoxFit.cover,
-                                          //image: NetworkImage("posts[i].postImage"),
-                                          placeholder: AssetImage("assets/images/loading.gif"),
-                                          width: MediaQuery.of(context).size.width,
-                                        ),
-                                      ):FadeInImage(
-                                        image: NetworkImage(url),
-                                        fit: BoxFit.cover,
-                                        //image: NetworkImage("posts[i].postImage"),
-                                        placeholder: AssetImage("assets/images/loading.gif"),
-                                        width: MediaQuery.of(context).size.width,
-                                      ),
+                                    child : (cam == 1)? Transform(
+                                  alignment: Alignment.center,
+                                  transform: Matrix4.rotationY(math.pi),
+                                  child: (url==null)?Container():CachedNetworkImage(imageUrl:url),
+                                  //image: NetworkImage("posts[i].postImage"),
+
+                                ):(url==null)?Container():CachedNetworkImage(imageUrl:url),
+
                                     ),
+                                    // GestureDetector(
+                                    //
+                                    //   child : (cam == 1)? Transform(
+                                    //     alignment: Alignment.center,
+                                    //     transform: Matrix4.rotationY(math.pi),
+                                    //     child: FadeInImage(
+                                    //       image: NetworkImage(url),
+                                    //       fit: BoxFit.cover,
+                                    //       //image: NetworkImage("posts[i].postImage"),
+                                    //       placeholder: AssetImage("assets/images/loading.gif"),
+                                    //       width: MediaQuery.of(context).size.width,
+                                    //     ),
+                                    //   ):FadeInImage(
+                                    //     image: NetworkImage(url),
+                                    //     fit: BoxFit.cover,
+                                    //     //image: NetworkImage("posts[i].postImage"),
+                                    //     placeholder: AssetImage("assets/images/loading.gif"),
+                                    //     width: MediaQuery.of(context).size.width,
+                                    //   ),
+                                    // ),
                                     Container(
                                         width:
                                         MediaQuery.of(context)

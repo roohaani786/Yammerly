@@ -27,6 +27,7 @@ import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedsPage extends StatefulWidget {
 
@@ -442,6 +443,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         "uid": uid,
                         "status" : "Share",
                         "postId" : postId,
+                        "postUrl" : url,
                       });
                     }
 
@@ -468,6 +470,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         "uid": uid,
                         "status" : "like",
                         "postId" : postId,
+                        "postUrl" : url,
                       });
                     }
 
@@ -688,25 +691,35 @@ class _FeedsPageState extends State<FeedsPage> {
                                 ),
                                 child: Column(
                                   children: [
+
                                     GestureDetector(
                                       child : (cam == 1)? Transform(
                                         alignment: Alignment.center,
                                         transform: Matrix4.rotationY(math.pi),
-                                        child: (url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
-                                          image: url,
-                                          fit: BoxFit.cover,
-                                          //image: NetworkImage("posts[i].postImage"),
-                                          placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
-                                          width: MediaQuery.of(context).size.width,
-                                        ),
-                                      ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
-                                        image: url,//NetworkImage(url),
-                                        fit: BoxFit.cover,
+                                        child: (url==null)?Container():(!cloading[index])?Container():CachedNetworkImage(imageUrl:url),
                                         //image: NetworkImage("posts[i].postImage"),
-                                        placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
-                                        width: MediaQuery.of(context).size.width,
-                                      ),
+
+                                      ):(url==null)?Container():(!cloading[index])?Container():CachedNetworkImage(imageUrl:url),
                                     ),
+                                    // GestureDetector(
+                                    //   child : (cam == 1)? Transform(
+                                    //     alignment: Alignment.center,
+                                    //     transform: Matrix4.rotationY(math.pi),
+                                    //     child: (url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                    //       image: url,
+                                    //       fit: BoxFit.cover,
+                                    //       //image: NetworkImage("posts[i].postImage"),
+                                    //       placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                    //       width: MediaQuery.of(context).size.width,
+                                    //     ),
+                                    //   ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                    //     image: url,//NetworkImage(url),
+                                    //     fit: BoxFit.cover,
+                                    //     //image: NetworkImage("posts[i].postImage"),
+                                    //     placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
+                                    //     width: MediaQuery.of(context).size.width,
+                                    //   ),
+                                    // ),
 
                                     Container(
                                       width: MediaQuery.of(context).size.width*0.95,

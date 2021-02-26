@@ -213,8 +213,9 @@ class NotificationFollow extends StatelessWidget {
   final String commentId;
   final String notificationId;
   final int likes;
+  final String postUrl;
 
-  NotificationFollow({this.userName,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationFollow({this.userName,this.userId,this.postUrl,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
   factory NotificationFollow.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationFollow(
@@ -227,6 +228,7 @@ class NotificationFollow extends StatelessWidget {
       commentId: documentSnapshot["commentId"],
       notificationId: documentSnapshot["notificationId"],
       likes: documentSnapshot["likes"],
+      postUrl: documentSnapshot["postUrl"],
 
     );
   }
@@ -250,13 +252,9 @@ class NotificationFollow extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
-    return (status == "Follow")?Padding(
-      padding: EdgeInsets.only(bottom: 6.0),
-      child: Container(
-
-        color: Colors.white,
-
-        child: Stack(
+    return (status == "Follow")?Column(
+      children: [
+        Stack(
           children: [
             ListTile(
               title: (userName != null || comment != null)?Row(
@@ -269,11 +267,11 @@ class NotificationFollow extends StatelessWidget {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: userName + " :  ",
+                            text: userName + " ",
                             style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                           ),
                           TextSpan(
-                            text: status,
+                            text: "started following you",
                             style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                 fontSize: 15.0),
                           ),
@@ -289,11 +287,18 @@ class NotificationFollow extends StatelessWidget {
               ):null,
               subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
             ),
+            // Container(
+            //     child: Image.network(url)
+            // ),
           ],
         ),
-
-      ),
-
+        Divider(
+          thickness: 1,
+          color: Colors.grey,
+          indent: 15,
+          endIndent: 15,
+        ),
+      ],
     ):Container();
   }
 }
@@ -308,8 +313,9 @@ class NotificationShare extends StatelessWidget {
   final String commentId;
   final String notificationId;
   final int likes;
+  final String postUrl;
 
-  NotificationShare({this.userName,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationShare({this.userName,this.userId,this.postUrl,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
   factory NotificationShare.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationShare(
@@ -322,6 +328,7 @@ class NotificationShare extends StatelessWidget {
       commentId: documentSnapshot["commentId"],
       notificationId: documentSnapshot["notificationId"],
       likes: documentSnapshot["likes"],
+      postUrl: documentSnapshot["postUrl"],
 
     );
   }
@@ -345,13 +352,9 @@ class NotificationShare extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
-    return (status == "Share")?Padding(
-      padding: EdgeInsets.only(bottom: 6.0),
-      child: Container(
-
-        color: Colors.white,
-
-        child: Stack(
+    return (status == "Share")?Column(
+      children: [
+        Stack(
           children: [
             ListTile(
               title: (userName != null || comment != null)?Row(
@@ -364,11 +367,11 @@ class NotificationShare extends StatelessWidget {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: userName + " :  ",
+                            text: userName + " ",
                             style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                           ),
                           TextSpan(
-                            text: status,
+                            text: "has shared your post",
                             style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                 fontSize: 15.0),
                           ),
@@ -384,11 +387,18 @@ class NotificationShare extends StatelessWidget {
               ):null,
               subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
             ),
+            // Container(
+            //     child: Image.network(url)
+            // ),
           ],
         ),
-
-      ),
-
+        Divider(
+          thickness: 1,
+          color: Colors.grey,
+          indent: 15,
+          endIndent: 15,
+        ),
+      ],
     ):Container();
   }
 }
@@ -403,8 +413,9 @@ class NotificationComment extends StatelessWidget {
   final String commentId;
   final String notificationId;
   final int likes;
+  final String postUrl;
 
-  NotificationComment({this.userName,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationComment({this.userName,this.postUrl,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
   factory NotificationComment.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationComment(
@@ -417,6 +428,7 @@ class NotificationComment extends StatelessWidget {
       commentId: documentSnapshot["commentId"],
       notificationId: documentSnapshot["notificationId"],
       likes: documentSnapshot["likes"],
+      postUrl: documentSnapshot["postUrl"],
 
     );
   }
@@ -440,13 +452,9 @@ class NotificationComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
-    return (status == "Comment")?Padding(
-      padding: EdgeInsets.only(bottom: 6.0),
-      child: Container(
-
-        color: Colors.white,
-
-        child: Stack(
+    return (status == "Comment")?Column(
+      children: [
+        Stack(
           children: [
             ListTile(
               title: (userName != null || comment != null)?Row(
@@ -459,11 +467,11 @@ class NotificationComment extends StatelessWidget {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: userName + " :  ",
+                            text: userName + " ",
                             style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                           ),
                           TextSpan(
-                            text: status,
+                            text: "has commented on your post",
                             style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                 fontSize: 15.0),
                           ),
@@ -479,11 +487,18 @@ class NotificationComment extends StatelessWidget {
               ):null,
               subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
             ),
+            // Container(
+            //     child: Image.network(url)
+            // ),
           ],
         ),
-
-      ),
-
+        Divider(
+          thickness: 1,
+          color: Colors.grey,
+          indent: 15,
+          endIndent: 15,
+        ),
+      ],
     ):Container();
   }
 }
@@ -498,8 +513,9 @@ class NotificationLike extends StatelessWidget {
   final String commentId;
   final String notificationId;
   final int likes;
+  final String postUrl;
 
-  NotificationLike({this.userName,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationLike({this.userName,this.userId,this.postUrl,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
   factory NotificationLike.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationLike(
@@ -512,6 +528,7 @@ class NotificationLike extends StatelessWidget {
       commentId: documentSnapshot["commentId"],
       notificationId: documentSnapshot["notificationId"],
       likes: documentSnapshot["likes"],
+      postUrl: documentSnapshot["postUrl"],
 
     );
   }
@@ -535,13 +552,9 @@ class NotificationLike extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
-    return (status == "like")?Padding(
-      padding: EdgeInsets.only(bottom: 6.0),
-      child: Container(
-
-        color: Colors.white,
-
-        child: Stack(
+    return (status == "like")?Column(
+      children: [
+        Stack(
           children: [
             ListTile(
               title: (userName != null || comment != null)?Row(
@@ -554,11 +567,11 @@ class NotificationLike extends StatelessWidget {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: userName + " :  ",
+                            text: userName + " ",
                             style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                           ),
                           TextSpan(
-                            text: status,
+                            text: "has like you post",
                             style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                 fontSize: 15.0),
                           ),
@@ -574,11 +587,18 @@ class NotificationLike extends StatelessWidget {
               ):null,
               subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
             ),
+            // Container(
+            //     child: Image.network(url)
+            // ),
           ],
         ),
-
-      ),
-
+        Divider(
+          thickness: 1,
+          color: Colors.grey,
+          indent: 15,
+          endIndent: 15,
+        ),
+      ],
     ):Container();
   }
 }
