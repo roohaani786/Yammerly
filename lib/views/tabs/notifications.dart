@@ -593,10 +593,10 @@ class TBar extends StatelessWidget implements PreferredSizeWidget {
         // ],
         color: Colors.white,
         //borderRadius: BorderRadius.circular(50),
-        // border: Border.all(
-        //     color: Colors.lightBlue,
-        //     width: 3.0
-        // ),
+        border: Border.all(
+            color: Colors.white,
+            width: 5.0
+        ),
       ),
       child: TabBar(
         labelColor: Colors.white,
