@@ -203,6 +203,8 @@ class NotificationsPageState extends State<NotificationsPage> {
   }
 }
 
+//notfication for follow tab
+
 class NotificationFollow extends StatelessWidget {
   final String userName;
   final String userId;
@@ -236,17 +238,17 @@ class NotificationFollow extends StatelessWidget {
   String tAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
     if (diff.inDays > 365)
-      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "year" : "years"} ago";
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "y" : "y"}";
     if (diff.inDays > 30)
-      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "month" : "months"} ago";
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "m" : "m"}";
     if (diff.inDays > 7)
-      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "week" : "weeks"} ago";
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "w" : "w"}";
     if (diff.inDays > 0)
-      return "${diff.inDays} ${diff.inDays == 1 ? "day" : "days"} ago";
+      return "${diff.inDays} ${diff.inDays == 1 ? "d" : "d"} ";
     if (diff.inHours > 0)
-      return "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+      return "${diff.inHours} ${diff.inHours == 1 ? "h" : "h"} ";
     if (diff.inMinutes > 0)
-      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "m" : "m"} ";
     return "just now";
   }
 
@@ -256,52 +258,61 @@ class NotificationFollow extends StatelessWidget {
       children: [
         Stack(
           children: [
-            ListTile(
-              title: (userName != null || comment != null)?Row(
-                children: [
-                  Expanded(
-                    child: RichText(
-                      textAlign: TextAlign.start,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: userName + " ",
-                            style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                          ),
-                          TextSpan(
-                            text: "started following you",
-                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                fontSize: 15.0),
-                          ),
-                        ],
-                      ),
+            Container(
+              //width: 320.0,
+              child: ListTile(
+                title: (userName != null || comment != null)?Row(
+                  children: [
+                    Expanded(
+                      child: RichText(
+                        textAlign: TextAlign.start,
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: userName + " ",
+                              style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                            ),
+                            TextSpan(
+                              text: "started following you",
+                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                  fontSize: 15.0),
+                            ),
+                            TextSpan(
+                              text: " " +tAgo(timestamp.toDate()),
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
 
-                    ),
-                  )
-                ],
-              ):Text(""),
-              leading: (userName != null || comment != null)?CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(url),
-              ):null,
-              subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                      ),
+                    )
+                  ],
+                ):Text(""),
+                leading: (userName != null || comment != null)?CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(url),
+                ):null,
+                //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+              ),
             ),
             // Container(
             //     child: Image.network(url)
             // ),
           ],
         ),
-        Divider(
-          thickness: 1,
-          color: Colors.grey,
-          indent: 15,
-          endIndent: 15,
-        ),
+        // Divider(
+        //   thickness: 1,
+        //   color: Colors.grey,
+        //   indent: 15,
+        //   endIndent: 15,
+        // ),
       ],
     ):Container();
   }
 }
+
+//notoification of share tab
 
 class NotificationShare extends StatelessWidget {
   final String userName;
@@ -336,17 +347,17 @@ class NotificationShare extends StatelessWidget {
   String tAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
     if (diff.inDays > 365)
-      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "year" : "years"} ago";
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "y" : "y"} ";
     if (diff.inDays > 30)
-      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "month" : "months"} ago";
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "mo" : "mo"} ";
     if (diff.inDays > 7)
-      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "week" : "weeks"} ago";
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "w" : "w"} ";
     if (diff.inDays > 0)
-      return "${diff.inDays} ${diff.inDays == 1 ? "day" : "days"} ago";
+      return "${diff.inDays} ${diff.inDays == 1 ? "d" : "d"} ";
     if (diff.inHours > 0)
-      return "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+      return "${diff.inHours} ${diff.inHours == 1 ? "h" : "h"} ";
     if (diff.inMinutes > 0)
-      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "m" : "m"} ";
     return "just now";
   }
 
@@ -356,52 +367,66 @@ class NotificationShare extends StatelessWidget {
       children: [
         Stack(
           children: [
-            ListTile(
-              title: (userName != null || comment != null)?Row(
-                children: [
-                  Expanded(
-                    child: RichText(
-                      textAlign: TextAlign.start,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: userName + " ",
-                            style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                          ),
-                          TextSpan(
-                            text: "has shared your post",
-                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                fontSize: 15.0),
-                          ),
-                        ],
-                      ),
+            Container(
+              width: 320,
+              child: ListTile(
+                title: (userName != null || comment != null)?Row(
+                  children: [
+                    Expanded(
+                      child: RichText(
+                        textAlign: TextAlign.start,
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: userName + " ",
+                              style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                            ),
+                            TextSpan(
+                              text: "shared your post",
+                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                  fontSize: 15.0),
+                            ),
+                            TextSpan(
+                              text: " " +tAgo(timestamp.toDate()),
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
 
-                    ),
-                  )
-                ],
-              ):Text(""),
-              leading: (userName != null || comment != null)?CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(url),
-              ):null,
-              subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                      ),
+                    )
+                  ],
+                ):Text(""),
+                leading: (userName != null || comment != null)?CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(url),
+                ):null,
+                //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+              ),
+            ),
+            (postUrl == null)?Container():Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
+                child: Container(
+                    height: 40,
+                    width: 40.0,
+                    child: CachedNetworkImage(imageUrl:postUrl)
+                ),
+              ),
             ),
             // Container(
             //     child: Image.network(url)
             // ),
           ],
         ),
-        Divider(
-          thickness: 1,
-          color: Colors.grey,
-          indent: 15,
-          endIndent: 15,
-        ),
       ],
     ):Container();
   }
 }
+
+//notification of comment tab
 
 class NotificationComment extends StatelessWidget {
   final String userName;
@@ -436,17 +461,17 @@ class NotificationComment extends StatelessWidget {
   String tAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
     if (diff.inDays > 365)
-      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "year" : "years"} ago";
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "y" : "y"} ";
     if (diff.inDays > 30)
-      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "month" : "months"} ago";
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "mo" : "mo"} ";
     if (diff.inDays > 7)
-      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "week" : "weeks"} ago";
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "w" : "w"}";
     if (diff.inDays > 0)
-      return "${diff.inDays} ${diff.inDays == 1 ? "day" : "days"} ago";
+      return "${diff.inDays} ${diff.inDays == 1 ? "d" : "d"} ";
     if (diff.inHours > 0)
-      return "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+      return "${diff.inHours} ${diff.inHours == 1 ? "h" : "h"} ";
     if (diff.inMinutes > 0)
-      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "m" : "m"} ";
     return "just now";
   }
 
@@ -456,52 +481,72 @@ class NotificationComment extends StatelessWidget {
       children: [
         Stack(
           children: [
-            ListTile(
-              title: (userName != null || comment != null)?Row(
-                children: [
-                  Expanded(
-                    child: RichText(
-                      textAlign: TextAlign.start,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: userName + " ",
-                            style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                          ),
-                          TextSpan(
-                            text: "has commented on your post",
-                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                fontSize: 15.0),
-                          ),
-                        ],
-                      ),
+            Container(
+              width: 320.0,
+              child: ListTile(
+                title: (userName != null || comment != null)?Row(
+                  children: [
+                    Expanded(
+                      child: RichText(
+                        textAlign: TextAlign.start,
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: userName + " ",
+                              style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                            ),
+                            TextSpan(
+                              text: "commented on your post",
+                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                  fontSize: 15.0),
+                            ),
+                            TextSpan(
+                              text: " " +tAgo(timestamp.toDate()),
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
 
-                    ),
-                  )
-                ],
-              ):Text(""),
-              leading: (userName != null || comment != null)?CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(url),
-              ):null,
-              subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                      ),
+                    )
+                  ],
+                ):Text(""),
+                leading: (userName != null || comment != null)?CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(url),
+                ):null,
+                //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+              ),
+            ),
+            (postUrl == null)?Container():Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
+                child: Container(
+                    height: 40,
+                    width: 40.0,
+                    child: CachedNetworkImage(imageUrl:postUrl)
+                ),
+              ),
             ),
             // Container(
             //     child: Image.network(url)
             // ),
           ],
         ),
-        Divider(
-          thickness: 1,
-          color: Colors.grey,
-          indent: 15,
-          endIndent: 15,
-        ),
+        // Divider(
+        //   thickness: 1,
+        //   color: Colors.grey,
+        //   indent: 15,
+        //   endIndent: 15,
+        // ),
       ],
     ):Container();
   }
 }
+
+//notification of like tab
 
 class NotificationLike extends StatelessWidget {
   final String userName;
@@ -529,24 +574,23 @@ class NotificationLike extends StatelessWidget {
       notificationId: documentSnapshot["notificationId"],
       likes: documentSnapshot["likes"],
       postUrl: documentSnapshot["postUrl"],
-
     );
   }
 
   String tAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
     if (diff.inDays > 365)
-      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "year" : "years"} ago";
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "y" : "y"}";
     if (diff.inDays > 30)
-      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "month" : "months"} ago";
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "mo" : "mo"}";
     if (diff.inDays > 7)
-      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "week" : "weeks"} ago";
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "w" : "w"} ";
     if (diff.inDays > 0)
-      return "${diff.inDays} ${diff.inDays == 1 ? "day" : "days"} ago";
+      return "${diff.inDays} ${diff.inDays == 1 ? "d" : "d"}";
     if (diff.inHours > 0)
-      return "${diff.inHours} ${diff.inHours == 1 ? "hour" : "hours"} ago";
+      return "${diff.inHours} ${diff.inHours == 1 ? "h" : "h"}";
     if (diff.inMinutes > 0)
-      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "minute" : "minutes"} ago";
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "m" : "m"}";
     return "just now";
   }
 
@@ -556,48 +600,64 @@ class NotificationLike extends StatelessWidget {
       children: [
         Stack(
           children: [
-            ListTile(
-              title: (userName != null || comment != null)?Row(
-                children: [
-                  Expanded(
-                    child: RichText(
-                      textAlign: TextAlign.start,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: userName + " ",
-                            style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                          ),
-                          TextSpan(
-                            text: "has like you post",
-                            style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                fontSize: 15.0),
-                          ),
-                        ],
-                      ),
+            Container(
+              //color: Colors.red,
+              width: 320.0,
+              child: ListTile(
+                title: (userName != null || comment != null)?Row(
+                  children: [
+                    Expanded(
+                      child: RichText(
+                        textAlign: TextAlign.start,
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: userName + " ",
+                              style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                            ),
+                            TextSpan(
+                              text: "liked you photo.",
+                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                  fontSize: 15.0),
+                            ),
+                            TextSpan(
+                              text: " " +tAgo(timestamp.toDate()),
+                                style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
 
-                    ),
-                  )
-                ],
-              ):Text(""),
-              leading: (userName != null || comment != null)?CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(url),
-              ):null,
-              subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                      ),
+                    )
+                  ],
+                ):Text(""),
+                leading: (userName != null || comment != null)?CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(url),
+                ):null,
+               // subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+              ),
             ),
-            // Container(
-            //     child: Image.network(url)
-            // ),
+            (postUrl == null)?Container():Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
+                child: Container(
+                  height: 40,
+                    width: 40.0,
+                    child: CachedNetworkImage(imageUrl:postUrl)
+                ),
+              ),
+            ),
           ],
         ),
-        Divider(
-          thickness: 1,
-          color: Colors.grey,
-          indent: 15,
-          endIndent: 15,
-        ),
+        // Divider(
+        //   thickness: 1,
+        //   color: Colors.grey,
+        //   indent: 15,
+        //   endIndent: 15,
+        // ),
       ],
     ):Container();
   }

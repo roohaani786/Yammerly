@@ -436,7 +436,7 @@ class _FeedsPageState extends State<FeedsPage> {
                           .document(NotificationId)
                           .setData({"share" : shares+1,
                         "notificationId" : NotificationId,
-                        "username": displayNameCurrUser,
+                        "username": displayNamecurrentUser,
                         //"comment": commentTextEditingController.text,
                         "timestamp": DateTime.now(),
                         "url": photoUrl,

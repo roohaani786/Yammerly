@@ -98,7 +98,7 @@ class CheckState extends State<Check> with AfterLayoutMixin<Check> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       body:Center(),
     );
   }
