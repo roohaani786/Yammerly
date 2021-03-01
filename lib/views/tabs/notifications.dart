@@ -428,8 +428,7 @@ class NotificationShare extends StatelessWidget {
 
 //notification of comment tab
 
-class NotificationComment extends StatelessWidget {
-  DocumentSnapshot docSnap;
+class NotificationComment extends StatefulWidget {
   final String userId;
   final String comment;
   final Timestamp timestamp;
@@ -453,35 +452,58 @@ class NotificationComment extends StatelessWidget {
       postId: documentSnapshot["postId"],
     );
   }
+
+  @override
+  _NotificationCommentState createState() => _NotificationCommentState();
+}
+
+class _NotificationCommentState extends State<NotificationComment> {
+  DocumentSnapshot docSnap;
+  String userName;
+  String postUrl;
+  String photoUrl;
+
   TextEditingController userNameController,photoUrlController,postUrlController;
 
+  void initState() {
+    userNameController = TextEditingController();
+    photoUrlController = TextEditingController();
+    postUrlController = TextEditingController();
+
+    super.initState();
+
+    Fetchprofile();
+    Fetchpost();
+
+  }
+
   Fetchprofile() async{
+    print("pust");
     docSnap = await Firestore.instance
         .collection("users")
-        .document(userId)
+        .document(widget.userId)
         .get();
     photoUrlController.text = docSnap.data['photoURL'];
     userNameController.text = docSnap.data['displayName'];
-    // setState(() {
-    //   userName = cpurlController.text;
-    //   cdisplayName[index] = cdisplayNameController.text;
-    //   cloading[index] = true;
-    // });
+    setState(() {
+      userName = userNameController.text;
+      photoUrl = photoUrlController.text;
+      //cloading[index] = true;
+    });
   }
 
   Fetchpost() async{
     docSnap = await Firestore.instance
         .collection("posts")
-        .document(postId)
+        .document(widget.postId)
         .get();
     postUrlController.text = docSnap.data['url'];
-    // setState(() {
-    //   userName = cpurlController.text;
-    //   cdisplayName[index] = cdisplayNameController.text;
-    //   cloading[index] = true;
-    // });
+    setState(() {
+      postUrl = postUrlController.text;
+      // cdisplayName[index] = cdisplayNameController.text;
+      // cloading[index] = true;
+    });
   }
-
 
   String tAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
@@ -502,14 +524,14 @@ class NotificationComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
-    return (status == "Comment")?Column(
+    return (widget.status == "Comment")?Column(
       children: [
         Stack(
           children: [
             Container(
               width: 320.0,
               child: ListTile(
-                title: (userNameController.text != null || comment != null)?Row(
+                title: (userName != null || widget.comment != null)?Row(
                   children: [
                     Expanded(
                       child: RichText(
@@ -519,7 +541,7 @@ class NotificationComment extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: userNameController.text + " ",
+                              text: userName + " ",
                               style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                             ),
                             TextSpan(
@@ -528,7 +550,7 @@ class NotificationComment extends StatelessWidget {
                                   fontSize: 15.0),
                             ),
                             TextSpan(
-                              text: " " +tAgo(timestamp.toDate()),
+                              text: " " +tAgo(widget.timestamp.toDate()),
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],
@@ -538,20 +560,20 @@ class NotificationComment extends StatelessWidget {
                     )
                   ],
                 ):Text(""),
-                leading: (userNameController.text != null || comment != null)?CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(photoUrlController.text),
+                leading: (userName != null || widget.comment != null)?CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(photoUrl),
                 ):null,
                 //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
               ),
             ),
-            (postUrlController.text == null)?Container():Align(
+            (postUrl == null)?Container():Align(
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
                 child: Container(
                     height: 40,
                     width: 40.0,
-                    child: CachedNetworkImage(imageUrl:postUrlController.text)
+                    child: CachedNetworkImage(imageUrl:postUrl)
                 ),
               ),
             ),
