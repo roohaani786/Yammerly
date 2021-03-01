@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
@@ -906,7 +907,7 @@ class TBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           Tab(
             icon: Icon(
-              Icons.share,
+              FontAwesomeIcons.shareAlt,
               color: Colors.deepPurple,
               size: 24.0,
               semanticLabel: 'Text to announce in accessibility modes',
@@ -914,7 +915,7 @@ class TBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           Tab(
             icon: Icon(
-              Icons.person,
+              FontAwesomeIcons.userPlus,
               color: Colors.deepPurple,
               size: 24.0,
               semanticLabel: 'Text to announce in accessibility modes',
