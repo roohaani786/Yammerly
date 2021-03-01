@@ -205,35 +205,84 @@ class NotificationsPageState extends State<NotificationsPage> {
 
 //notfication for follow tab
 
-class NotificationFollow extends StatelessWidget {
-  final String userName;
+class NotificationFollow extends StatefulWidget {
   final String userId;
-  final String url;
   final String comment;
   final Timestamp timestamp;
   final String status;
   final String commentId;
   final String notificationId;
   final int likes;
-  final String postUrl;
+  final String postId;
 
-  NotificationFollow({this.userName,this.userId,this.postUrl,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationFollow({this.postId,this.userId,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
   factory NotificationFollow.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationFollow(
-      userName: documentSnapshot["username"],
       userId: documentSnapshot["uid"],
-      url: documentSnapshot["url"],
       comment: documentSnapshot["comment"],
       timestamp: documentSnapshot["timestamp"],
       status: documentSnapshot["status"],
       commentId: documentSnapshot["commentId"],
       notificationId: documentSnapshot["notificationId"],
       likes: documentSnapshot["likes"],
-      postUrl: documentSnapshot["postUrl"],
-
+      postId: documentSnapshot["postId"],
     );
   }
+
+  @override
+  _NotificationFollowState createState() => _NotificationFollowState();
+}
+
+class _NotificationFollowState extends State<NotificationFollow> {
+
+  DocumentSnapshot docSnap;
+  String userName;
+  String postUrl;
+  String photoUrl;
+
+  TextEditingController userNameController,photoUrlController,postUrlController;
+
+  void initState() {
+    userNameController = TextEditingController();
+    photoUrlController = TextEditingController();
+    postUrlController = TextEditingController();
+
+    super.initState();
+
+    Fetchprofile();
+    Fetchpost();
+
+  }
+
+  Fetchprofile() async{
+    print("pust");
+    docSnap = await Firestore.instance
+        .collection("users")
+        .document(widget.userId)
+        .get();
+    photoUrlController.text = docSnap.data['photoURL'];
+    userNameController.text = docSnap.data['displayName'];
+    setState(() {
+      userName = userNameController.text;
+      photoUrl = photoUrlController.text;
+      //cloading[index] = true;
+    });
+  }
+
+  Fetchpost() async{
+    docSnap = await Firestore.instance
+        .collection("posts")
+        .document(widget.postId)
+        .get();
+    postUrlController.text = docSnap.data['url'];
+    setState(() {
+      postUrl = postUrlController.text;
+      // cdisplayName[index] = cdisplayNameController.text;
+      // cloading[index] = true;
+    });
+  }
+
 
   String tAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
@@ -254,14 +303,14 @@ class NotificationFollow extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
-    return (status == "Follow")?Column(
+    return (widget.status == "Follow")?Column(
       children: [
         Stack(
           children: [
             Container(
               //width: 320.0,
               child: ListTile(
-                title: (userName != null || comment != null)?Row(
+                title: (userName != null || widget.comment != null)?Row(
                   children: [
                     Expanded(
                       child: RichText(
@@ -271,16 +320,16 @@ class NotificationFollow extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: userName + " ",
+                              text: (userName == null)?"loading...":userName,
                               style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                             ),
                             TextSpan(
-                              text: "started following you",
+                              text: " started following you ",
                               style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                   fontSize: 15.0),
                             ),
                             TextSpan(
-                              text: " " +tAgo(timestamp.toDate()),
+                              text: tAgo(widget.timestamp.toDate()),
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],
@@ -290,8 +339,8 @@ class NotificationFollow extends StatelessWidget {
                     )
                   ],
                 ):Text(""),
-                leading: (userName != null || comment != null)?CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(url),
+                leading: (userName != null || widget.comment != null)?CircleAvatar(
+                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
                 ):null,
                 //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
               ),
@@ -314,35 +363,85 @@ class NotificationFollow extends StatelessWidget {
 
 //notoification of share tab
 
-class NotificationShare extends StatelessWidget {
-  final String userName;
+class NotificationShare extends StatefulWidget {
   final String userId;
-  final String url;
   final String comment;
   final Timestamp timestamp;
   final String status;
   final String commentId;
   final String notificationId;
   final int likes;
-  final String postUrl;
+  final String postId;
 
-  NotificationShare({this.userName,this.userId,this.postUrl,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationShare({this.postId,this.userId,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
   factory NotificationShare.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationShare(
-      userName: documentSnapshot["username"],
       userId: documentSnapshot["uid"],
-      url: documentSnapshot["url"],
       comment: documentSnapshot["comment"],
       timestamp: documentSnapshot["timestamp"],
       status: documentSnapshot["status"],
       commentId: documentSnapshot["commentId"],
       notificationId: documentSnapshot["notificationId"],
       likes: documentSnapshot["likes"],
-      postUrl: documentSnapshot["postUrl"],
+      postId: documentSnapshot["postId"],
 
     );
   }
+
+  @override
+  _NotificationShareState createState() => _NotificationShareState();
+}
+
+class _NotificationShareState extends State<NotificationShare> {
+
+  DocumentSnapshot docSnap;
+  String userName;
+  String postUrl;
+  String photoUrl;
+
+  TextEditingController userNameController,photoUrlController,postUrlController;
+
+  void initState() {
+    userNameController = TextEditingController();
+    photoUrlController = TextEditingController();
+    postUrlController = TextEditingController();
+
+    super.initState();
+
+    Fetchprofile();
+    Fetchpost();
+
+  }
+
+  Fetchprofile() async{
+    print("pust");
+    docSnap = await Firestore.instance
+        .collection("users")
+        .document(widget.userId)
+        .get();
+    photoUrlController.text = docSnap.data['photoURL'];
+    userNameController.text = docSnap.data['displayName'];
+    setState(() {
+      userName = userNameController.text;
+      photoUrl = photoUrlController.text;
+      //cloading[index] = true;
+    });
+  }
+
+  Fetchpost() async{
+    docSnap = await Firestore.instance
+        .collection("posts")
+        .document(widget.postId)
+        .get();
+    postUrlController.text = docSnap.data['url'];
+    setState(() {
+      postUrl = postUrlController.text;
+      // cdisplayName[index] = cdisplayNameController.text;
+      // cloading[index] = true;
+    });
+  }
+
 
   String tAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
@@ -363,14 +462,14 @@ class NotificationShare extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
-    return (status == "Share")?Column(
+    return (widget.status == "Share")?Column(
       children: [
         Stack(
           children: [
             Container(
               width: 320,
               child: ListTile(
-                title: (userName != null || comment != null)?Row(
+                title: (userName != null || widget.comment != null)?Row(
                   children: [
                     Expanded(
                       child: RichText(
@@ -380,16 +479,16 @@ class NotificationShare extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: userName + " ",
-                              style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                              text: (userName == null)?"loading...":userName,
+                              style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
                             ),
                             TextSpan(
-                              text: "shared your post",
+                              text: " shared your post ",
                               style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                   fontSize: 15.0),
                             ),
                             TextSpan(
-                              text: " " +tAgo(timestamp.toDate()),
+                              text: tAgo(widget.timestamp.toDate()),
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],
@@ -399,8 +498,8 @@ class NotificationShare extends StatelessWidget {
                     )
                   ],
                 ):Text(""),
-                leading: (userName != null || comment != null)?CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(url),
+                leading: (userName != null || widget.comment != null)?CircleAvatar(
+                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
                 ):null,
                 //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
               ),
@@ -566,7 +665,7 @@ class _NotificationCommentState extends State<NotificationComment> {
                   ],
                 ):Text(""),
                 leading: (userName != null || widget.comment != null)?CircleAvatar(
-                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):NetworkImage(photoUrl),
+                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
                 ):null,
                 //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
               ),
@@ -600,34 +699,84 @@ class _NotificationCommentState extends State<NotificationComment> {
 
 //notification of like tab
 
-class NotificationLike extends StatelessWidget {
-  final String userName;
+class NotificationLike extends StatefulWidget {
   final String userId;
-  final String url;
   final String comment;
   final Timestamp timestamp;
   final String status;
   final String commentId;
   final String notificationId;
   final int likes;
-  final String postUrl;
+  final String postId;
 
-  NotificationLike({this.userName,this.userId,this.postUrl,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationLike({this.postId,this.userId,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
   factory NotificationLike.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationLike(
-      userName: documentSnapshot["username"],
       userId: documentSnapshot["uid"],
-      url: documentSnapshot["url"],
       comment: documentSnapshot["comment"],
       timestamp: documentSnapshot["timestamp"],
       status: documentSnapshot["status"],
       commentId: documentSnapshot["commentId"],
       notificationId: documentSnapshot["notificationId"],
       likes: documentSnapshot["likes"],
-      postUrl: documentSnapshot["postUrl"],
+      postId: documentSnapshot["postId"],
     );
   }
+
+  @override
+  _NotificationLikeState createState() => _NotificationLikeState();
+}
+
+class _NotificationLikeState extends State<NotificationLike> {
+
+  DocumentSnapshot docSnap;
+  String userName;
+  String postUrl;
+  String photoUrl;
+
+  TextEditingController userNameController,photoUrlController,postUrlController;
+
+  void initState() {
+    userNameController = TextEditingController();
+    photoUrlController = TextEditingController();
+    postUrlController = TextEditingController();
+
+    super.initState();
+
+    Fetchprofile();
+    Fetchpost();
+
+  }
+
+  Fetchprofile() async{
+    print("pust");
+    docSnap = await Firestore.instance
+        .collection("users")
+        .document(widget.userId)
+        .get();
+    photoUrlController.text = docSnap.data['photoURL'];
+    userNameController.text = docSnap.data['displayName'];
+    setState(() {
+      userName = userNameController.text;
+      photoUrl = photoUrlController.text;
+      //cloading[index] = true;
+    });
+  }
+
+  Fetchpost() async{
+    docSnap = await Firestore.instance
+        .collection("posts")
+        .document(widget.postId)
+        .get();
+    postUrlController.text = docSnap.data['url'];
+    setState(() {
+      postUrl = postUrlController.text;
+      // cdisplayName[index] = cdisplayNameController.text;
+      // cloading[index] = true;
+    });
+  }
+
 
   String tAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
@@ -648,7 +797,7 @@ class NotificationLike extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
-    return (status == "like")?Column(
+    return (widget.status == "like")?Column(
       children: [
         Stack(
           children: [
@@ -656,7 +805,7 @@ class NotificationLike extends StatelessWidget {
               //color: Colors.red,
               width: 320.0,
               child: ListTile(
-                title: (userName != null || comment != null)?Row(
+                title: (userName != null || widget.comment != null)?Row(
                   children: [
                     Expanded(
                       child: RichText(
@@ -666,16 +815,16 @@ class NotificationLike extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: userName + " ",
+                              text: (userName == null)?"loading":userName,
                               style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
                             ),
                             TextSpan(
-                              text: "liked you photo.",
+                              text: " liked you photo. ",
                               style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                   fontSize: 15.0),
                             ),
                             TextSpan(
-                              text: " " +tAgo(timestamp.toDate()),
+                              text: tAgo(widget.timestamp.toDate()),
                                 style: TextStyle(color: Colors.grey),
                             ),
                           ],
@@ -685,8 +834,8 @@ class NotificationLike extends StatelessWidget {
                     )
                   ],
                 ):Text(""),
-                leading: (userName != null || comment != null)?CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(url),
+                leading: (userName != null || widget.comment != null)?CircleAvatar(
+                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
                 ):null,
                // subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
               ),
