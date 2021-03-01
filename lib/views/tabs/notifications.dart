@@ -542,15 +542,20 @@ class _NotificationCommentState extends State<NotificationComment> {
                           children: [
                             TextSpan(
                               text: (userName == null)?"loading":userName,
-                              style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                              style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
                             ),
                             TextSpan(
-                              text: " commented on your post ",
+                              text: " commented: ",
                               style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                   fontSize: 15.0),
                             ),
                             TextSpan(
-                              text: tAgo(widget.timestamp.toDate()),
+                              text: widget.comment,
+                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                  fontSize: 15.0),
+                            ),
+                            TextSpan(
+                              text: " " + tAgo(widget.timestamp.toDate()),
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],
