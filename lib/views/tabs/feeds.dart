@@ -81,8 +81,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController emailController,urlController,descriptionController,
-      displayNameController,photoUrlController,
+    TextEditingController emailController,urlController,descriptionController,
+        displayNameController,photoUrlController,
       timestampController,likesController,uidController,cpurlController,cdisplayNameController;
 
   _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
@@ -436,20 +436,33 @@ class _FeedsPageState extends State<FeedsPage> {
                           .document(NotificationId)
                           .setData({"share" : shares+1,
                         "notificationId" : NotificationId,
-                        "username": displayNamecurrentUser,
                         //"comment": commentTextEditingController.text,
+
                         "timestamp": DateTime.now(),
-                        "url": photoUrl,
-                        "uid": uid,
-                        "status" : "Share",
+                        "uid": uidController.text,
+                        "status" : "like",
                         "postId" : postId,
-                        "postUrl" : url,
                       });
+
+                      // return await Firestore.instance.collection("users")
+                      //     .document(uid).collection("notification")
+                      //     .document(NotificationId)
+                      //     .setData({"share" : shares+1,
+                      //   "notificationId" : NotificationId,
+                      //   "username": displayNamecurrentUser,
+                      //   //"comment": commentTextEditingController.text,
+                      //   "timestamp": DateTime.now(),
+                      //   "url": photoUrl,
+                      //   "uid": uid,
+                      //   "status" : "Share",
+                      //   "postId" : postId,
+                      //   "postUrl" : url,
+                      // });
                     }
 
-                          Notification(String displayNameCurrUser) async {
-                            print(displayNameCurrUser);
-                            print(displayNamecurrentUser);
+                          Notification() async {
+                            // print(displayNameCurrUser);
+                            // print(displayNamecurrentUser);
                             print("911");
 
                             setState(() {
@@ -457,21 +470,38 @@ class _FeedsPageState extends State<FeedsPage> {
                         NotificationId = Uuid().v4();
                       });
 
-                      return await Firestore.instance.collection("users")
-                          .document(uid).collection("notification")
-                          .document(NotificationId)
-                          .setData({"likes" : likes+1,
-                        "notificationId" : NotificationId,
-                        "username": displayNameCurrUser,
-                        //"comment": commentTextEditingController.text,
+                            print(uid);
+                            print(uidController.text);
+                            print("912");
+                            return await Firestore.instance.collection("users")
+                                .document(uid).collection("notification")
+                                .document(NotificationId)
+                                .setData({"likes" : likes+1,
+                              "notificationId" : NotificationId,
+                              //"comment": commentTextEditingController.text,
 
-                        "timestamp": DateTime.now(),
-                        "url": photoUrl,
-                        "uid": uid,
-                        "status" : "like",
-                        "postId" : postId,
-                        "postUrl" : url,
-                      });
+                              "timestamp": DateTime.now(),
+                              "uid": uidController.text,
+                              "status" : "like",
+                              "postId" : postId,
+                            });
+
+
+                      // return await Firestore.instance.collection("users")
+                      //     .document(uid).collection("notification")
+                      //     .document(NotificationId)
+                      //     .setData({"likes" : likes+1,
+                      //   "notificationId" : NotificationId,
+                      //   "username": displayNameCurrUser,
+                      //   //"comment": commentTextEditingController.text,
+                      //
+                      //   "timestamp": DateTime.now(),
+                      //   "url": photoUrl,
+                      //   "uid": uid,
+                      //   "status" : "like",
+                      //   "postId" : postId,
+                      //   "postUrl" : url,
+                      // });
                     }
 
                     DeleteNotification(String displayName){
@@ -786,7 +816,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                             });
                                                             DatabaseService()
                                                                 .likepost(likes, postId, uidController.text, displayNameController.text);
-                                                            Notification(displayNamecurrentUser);
+                                                            Notification();
                                                           },
                                                         );
                                                       },
@@ -807,7 +837,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       onPressed: () {
                                         Navigator.push(context, MaterialPageRoute(builder: (context){
-                                          return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          return CommentsPage(currUser: uidController.text,comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                         }));
 
                                         addStringToSF(cdisplayName[index],displayNameController.text,postId,comments);
@@ -1169,7 +1199,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                   postId,
                                                   uidController.text,
                                                   displayNameController.text);
-                                              Notification(displayNamecurrentUser);
+                                              Notification();
                                             },
                                           );
                                     },
@@ -1194,7 +1224,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       onPressed: () {
                                         Navigator.push(context, MaterialPageRoute(builder: (context){
-                                          return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          return CommentsPage(currUser: uidController.text,comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                         }));
                                         addStringToSF(displayName,displayNameController.text,postId,comments);
                                       },
@@ -1419,30 +1449,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                   );
                                                                 }
                                                               : () {
-                                                                  if (timer
-                                                                          ?.isActive ??
-                                                                      false)
-                                                                    timer
-                                                                        .cancel(); //cancel if [timer] is null or running
-                                                                  timer =
-                                                                      Timer(
-                                                                    const Duration(
-                                                                        milliseconds:
-                                                                            340),
-                                                                    () {
-                                                                      setState(
-                                                                          () {
-                                                                        likess[index] =
-                                                                            true;
-                                                                        loading =
-                                                                            true;
+                                                                  if (timer?.isActive ?? false)
+                                                                    timer.cancel(); //cancel if [timer] is null or running
+                                                                  timer = Timer(const Duration(milliseconds: 340), () {
+                                                                    setState(() {likess[index] = true;
+                                                                      loading = true;
                                                                       });
-                                                                      DatabaseService().likepost(
-                                                                          likes,
-                                                                          postId,
-                                                                          uidController.text,
-                                                                          displayNameController.text);
-                                                                      Notification(displayNamecurrentUser);
+                                                                      DatabaseService().likepost(likes, postId, uidController.text, displayNameController.text);
+                                                                      Notification();
                                                                     },
                                                                   );
                                                                 },
@@ -1467,7 +1481,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       onPressed: () {
                                         Navigator.push(context, MaterialPageRoute(builder: (context){
-                                          return CommentsPage(comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          return CommentsPage(currUser: uidController.text,comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                         }));
                                         addStringToSF(displayName,displayNameController.text,postId,comments);
                                       },

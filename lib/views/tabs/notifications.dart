@@ -429,34 +429,59 @@ class NotificationShare extends StatelessWidget {
 //notification of comment tab
 
 class NotificationComment extends StatelessWidget {
-  final String userName;
+  DocumentSnapshot docSnap;
   final String userId;
-  final String url;
   final String comment;
   final Timestamp timestamp;
   final String status;
   final String commentId;
   final String notificationId;
   final int likes;
-  final String postUrl;
+  final String postId;
 
-  NotificationComment({this.userName,this.postUrl,this.userId,this.url,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationComment({this.postId,this.userId,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
 
   factory NotificationComment.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationComment(
-      userName: documentSnapshot["username"],
       userId: documentSnapshot["uid"],
-      url: documentSnapshot["url"],
       comment: documentSnapshot["comment"],
       timestamp: documentSnapshot["timestamp"],
       status: documentSnapshot["status"],
       commentId: documentSnapshot["commentId"],
       notificationId: documentSnapshot["notificationId"],
       likes: documentSnapshot["likes"],
-      postUrl: documentSnapshot["postUrl"],
-
+      postId: documentSnapshot["postId"],
     );
   }
+  TextEditingController userNameController,photoUrlController,postUrlController;
+
+  Fetchprofile() async{
+    docSnap = await Firestore.instance
+        .collection("users")
+        .document(userId)
+        .get();
+    photoUrlController.text = docSnap.data['photoURL'];
+    userNameController.text = docSnap.data['displayName'];
+    // setState(() {
+    //   userName = cpurlController.text;
+    //   cdisplayName[index] = cdisplayNameController.text;
+    //   cloading[index] = true;
+    // });
+  }
+
+  Fetchpost() async{
+    docSnap = await Firestore.instance
+        .collection("posts")
+        .document(postId)
+        .get();
+    postUrlController.text = docSnap.data['url'];
+    // setState(() {
+    //   userName = cpurlController.text;
+    //   cdisplayName[index] = cdisplayNameController.text;
+    //   cloading[index] = true;
+    // });
+  }
+
 
   String tAgo(DateTime d) {
     Duration diff = DateTime.now().difference(d);
@@ -484,7 +509,7 @@ class NotificationComment extends StatelessWidget {
             Container(
               width: 320.0,
               child: ListTile(
-                title: (userName != null || comment != null)?Row(
+                title: (userNameController.text != null || comment != null)?Row(
                   children: [
                     Expanded(
                       child: RichText(
@@ -494,7 +519,7 @@ class NotificationComment extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: userName + " ",
+                              text: userNameController.text + " ",
                               style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                             ),
                             TextSpan(
@@ -513,20 +538,20 @@ class NotificationComment extends StatelessWidget {
                     )
                   ],
                 ):Text(""),
-                leading: (userName != null || comment != null)?CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(url),
+                leading: (userNameController.text != null || comment != null)?CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(photoUrlController.text),
                 ):null,
                 //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
               ),
             ),
-            (postUrl == null)?Container():Align(
+            (postUrlController.text == null)?Container():Align(
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
                 child: Container(
                     height: 40,
                     width: 40.0,
-                    child: CachedNetworkImage(imageUrl:postUrl)
+                    child: CachedNetworkImage(imageUrl:postUrlController.text)
                 ),
               ),
             ),
