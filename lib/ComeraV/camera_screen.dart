@@ -17,8 +17,8 @@ import 'package:techstagram/main.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:async';
 
 class CameraScreen extends StatefulWidget {
   final int cam;
@@ -44,6 +44,12 @@ class CameraScreenState extends State<CameraScreen>
   bool _loading = false;
   int cam;
   bool check = false;
+  AnimationController _flashModeControlRowAnimationController;
+  Animation<double> _flashModeControlRowAnimation;
+  AnimationController _exposureModeControlRowAnimationController;
+  AnimationController _focusModeControlRowAnimationController;
+  Animation<double> _exposureModeControlRowAnimation;
+  Animation<double> _focusModeControlRowAnimation;
 
 
 
@@ -52,6 +58,36 @@ class CameraScreenState extends State<CameraScreen>
   void initState() {
     _initCamera();
     super.initState();
+
+    _flashModeControlRowAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+     // vsync: this,
+    );
+
+    _exposureModeControlRowAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+     // vsync: this,
+    );
+
+    _focusModeControlRowAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+     // vsync: this,
+    );
+
+    _focusModeControlRowAnimation = CurvedAnimation(
+      parent: _focusModeControlRowAnimationController,
+      curve: Curves.easeInCubic,
+    );
+
+    _exposureModeControlRowAnimation = CurvedAnimation(
+      parent: _exposureModeControlRowAnimationController,
+      curve: Curves.easeInCubic,
+    );
+
+    _flashModeControlRowAnimation = CurvedAnimation(
+      parent: _flashModeControlRowAnimationController,
+      curve: Curves.easeInCubic,
+    );
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -139,6 +175,8 @@ class CameraScreenState extends State<CameraScreen>
 
   @override
   void dispose() {
+    _flashModeControlRowAnimationController.dispose();
+    _exposureModeControlRowAnimationController.dispose();
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
@@ -151,36 +189,36 @@ class CameraScreenState extends State<CameraScreen>
     super.dispose();
   }
 
-  void _onHorizontalDrag(DragEndDetails details,context) {
-    if (details.primaryVelocity == 0)
-      // user have just tapped on screen (no dragging)
-      return;
-
-    if (details.primaryVelocity.compareTo(0) == -1) {
-      dispose();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 0)),
-      );
-
-
-    }
-//     else {
+//   void _onHorizontalDrag(DragEndDetails details,context) {
+//     if (details.primaryVelocity == 0)
+//       // user have just tapped on screen (no dragging)
+//       return;
+//
+//     if (details.primaryVelocity.compareTo(0) == -1) {
+//       dispose();
 //       Navigator.push(
 //         context,
-//         MaterialPageRoute(builder: (context) => CameraScreen()),
+//         MaterialPageRoute(builder: (context) => HomePage(initialindexg: 0)),
 //       );
-// //      Navigator.push(
-// //          context,
-// //          MaterialPageRoute(
-// //              builder: (BuildContext context) => HomePage())).then((res) {
-// //        setState(() {
-// //          cameraon = true;
-// //        });
-// //      }
-// //      );
+//
+//
 //     }
-  }
+// //     else {
+// //       Navigator.push(
+// //         context,
+// //         MaterialPageRoute(builder: (context) => CameraScreen()),
+// //       );
+// // //      Navigator.push(
+// // //          context,
+// // //          MaterialPageRoute(
+// // //              builder: (BuildContext context) => HomePage())).then((res) {
+// // //        setState(() {
+// // //          cameraon = true;
+// // //        });
+// // //      }
+// // //      );
+// //     }
+//   }
 
   bool flashOn=false;
   File _image;
@@ -306,15 +344,15 @@ class CameraScreenState extends State<CameraScreen>
       );
     }
     Future<bool> _onWillPop() {
-      Navigator.pop(context);
-      // return Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) {
-      //       return HomePage(initialindexg: 1);
-      //     },
-      //   ),
-      // );
+      //Navigator.pop(context);
+      return Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return HomePage(initialindexg: 1);
+          },
+        ),
+      );
     }
 
     if (!_controller.value.isInitialized) {
@@ -365,7 +403,7 @@ class CameraScreenState extends State<CameraScreen>
                       MaterialPageRoute(builder: (context) => MyApp()),
                     );
                     //Navigator.pushNamed(context, '/HomePage');
-                     //Navigator.of(context, rootNavigator: true).pop(context);
+                    //Navigator.of(context, rootNavigator: true).pop(context);
                     //Navigator.of(context).maybePop();
                     // if(check == true){
                     //   Navigator.pop(context);
@@ -401,6 +439,7 @@ class CameraScreenState extends State<CameraScreen>
                       setState(() {
                         flashOn = !flashOn;
                       });
+                      onFlashModeButtonPressed();
 
                       // setState(() {
                       //   flashOn = !flashOn;
@@ -478,10 +517,20 @@ class CameraScreenState extends State<CameraScreen>
                 // Navigator.push(
                 //     context,
                 //     MaterialPageRoute(builder: (context) => pickImage(),));
-                    Navigator.push(
+                pickImage();
+                if (upload == true){
+                  Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => gallery()),
-                    );
+                      MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                }else{
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CameraScreen(
+                          cam: 0,
+                        ),
+                      ));
+                }
               }
 
               ),
@@ -530,19 +579,19 @@ class CameraScreenState extends State<CameraScreen>
                 ),
               ),
               IconButton(
-                icon: Icon(
-                  Icons.camera_alt,color: Colors.transparent,
-                ),
-                onPressed: (){},
                 // icon: Icon(
-                //   (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-                //   color: Colors.white,
+                //   Icons.camera_alt,color: Colors.transparent,
                 // ),
-                // onPressed: () {
-                //   setState(() {
-                //     _isRecordingMode = !_isRecordingMode;
-                //   });
-                // },
+                // onPressed: (){},
+                icon: Icon(
+                  (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isRecordingMode = !_isRecordingMode;
+                  });
+                },
               ),
             ],
           ),
@@ -550,6 +599,19 @@ class CameraScreenState extends State<CameraScreen>
       ),
     );
   }
+
+//  Future _turnFlash() async {
+//    bool hasTorch = await Torch.hasTorch;
+//    if(hasTorch){
+//      (flashOn || cam!=null) ? Torch.turnOn() : Torch.turnOff();
+//      var f = await Torch.hasTorch;
+//      Torch.flash(Duration(milliseconds: 300));
+//      setState((){
+//        _hasFlash = f;
+//        //flashOn = !flashOn;
+//      });
+//    }
+//  }
 
   Future<FileSystemEntity> getLastImage() async {
     final Directory extDir = await getApplicationDocumentsDirectory();
@@ -591,7 +653,9 @@ class CameraScreenState extends State<CameraScreen>
     }
     _controller = CameraController(cameraDescription, ResolutionPreset.ultraHigh);
     _controller.addListener(() {
-      if (mounted) setState(() {});
+      if (mounted) setState(() {
+
+      });
       if (_controller.value.hasError) {
         showInSnackBar('Camera error ${_controller.value.errorDescription}');
       }
@@ -617,15 +681,28 @@ class CameraScreenState extends State<CameraScreen>
       final Directory extDir = await getApplicationDocumentsDirectory();
       final String dirPath = '${extDir.path}/media';
       await Directory(dirPath).create(recursive: true);
-      final String filePath = '$dirPath/${_timestamp()}.jpeg';
+      String filePath = '$dirPath/${_timestamp()}.jpeg';
       print('path: $filePath');
-      //await _controller.takePicture(filePath);
+
+
+      // Attempt to take a picture and log where it's been saved.
+      XFile halua = await _controller.takePicture();
       setState(() {});
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Gallery(filePath: filePath,cam: cam,)),
+            builder: (context) => Gallery(filePath: halua,cam: cam,)),
       );
+    }
+  }
+
+  void onFlashModeButtonPressed() {
+    if (_flashModeControlRowAnimationController.value == 1) {
+      _flashModeControlRowAnimationController.reverse();
+    } else {
+      _flashModeControlRowAnimationController.forward();
+      _exposureModeControlRowAnimationController.reverse();
+      _focusModeControlRowAnimationController.reverse();
     }
   }
 

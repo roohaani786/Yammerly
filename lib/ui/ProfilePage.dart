@@ -450,7 +450,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       padding: const EdgeInsets.only(top: 20.0),
                                       child: GestureDetector(
                                         onTap: (){
-                                          print("delete clicked");
                                           deleteCoverPhoto();
                                           Navigator.of(context, rootNavigator: true).pop(context);
                                         },

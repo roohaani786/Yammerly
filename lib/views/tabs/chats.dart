@@ -1,3 +1,4 @@
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
@@ -108,7 +109,7 @@ class _ChatsPageState extends State<ChatsPage> {
               right: 30.0,
               bottom: 30.0,
             ),
-            height: deviceHeight,
+            height: deviceHeight+500,
             width: deviceWidth,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,6 +124,18 @@ class _ChatsPageState extends State<ChatsPage> {
                     image,
                     notificationHeader,
                     notificationText,
+                    AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: BetterPlayer.network(
+                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                        )
+                    ),
+                    AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: BetterPlayer.network(
+                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                        )
+                    ),
                   ],
                 ),
               ],

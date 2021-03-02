@@ -17,12 +17,13 @@ class CommentsPage extends StatefulWidget{
   final String photoUrl;
   final String displayNamecurrentUser;
   final int comments;
+  final String currUser;
 
 
-  CommentsPage({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
+  CommentsPage({this.currUser,this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
 
   @override
-  CommentsPageState createState() => CommentsPageState(comments: comments,postId: postId, uid: uid, postImageUrl: postImageUrl,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
+  CommentsPageState createState() => CommentsPageState(currUser: currUser,comments: comments,postId: postId, uid: uid, postImageUrl: postImageUrl,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
 }
 
 class CommentsPageState extends State<CommentsPage> {
@@ -35,13 +36,14 @@ class CommentsPageState extends State<CommentsPage> {
   final String photoUrl;
   final String displayNamecurrentUser;
   final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
+  final String currUser;
 
   String CommentId = Uuid().v4();
   String NotificationId = Uuid().v4();
 
   TextEditingController commentTextEditingController = TextEditingController();
 
-  CommentsPageState({this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
+  CommentsPageState({this.currUser,this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
 
   retrieveComments(){
     print("user");
@@ -111,15 +113,30 @@ class CommentsPageState extends State<CommentsPage> {
         .document(NotificationId)
         .setData({"commentId" : CommentId,
       "notificationId" : NotificationId,
-      "username": displayNamecurrentUser,
-      "comment": commentTextEditingController.text,
+      //"comment": commentTextEditingController.text,
 
       "timestamp": DateTime.now(),
-      "url": photoUrl,
-      "uid": uid,
+      "uid": currUser,
       "status" : "Comment",
       "postId" : postId,
+      "comment": commentTextEditingController.text,
     });
+
+    // return await Firestore.instance.collection("users")
+    //     .document(uid).collection("notification")
+    //     .document(NotificationId)
+    //     .setData({"commentId" : CommentId,
+    //   "notificationId" : NotificationId,
+    //   "username": displayNamecurrentUser,
+    //   "comment": commentTextEditingController.text,
+    //
+    //   "timestamp": DateTime.now(),
+    //   "url": photoUrl,
+    //   "uid": uid,
+    //   "status" : "Comment",
+    //   "postId" : postId,
+    //   "postUrl" : postImageUrl,
+    // });
 
   }
 

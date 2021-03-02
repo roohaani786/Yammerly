@@ -38,28 +38,28 @@ class _MyAppState extends State<MyApp> {
       title: 'Yammerly',
       debugShowCheckedModeBanner: false,
 
-      routes: {
-        '/Login': (context) => LoginScreen(),
-        '/Welcome': (context) => WelcomeScreen(),
-        '/nayasignup': (context) => SignUpScreen(),
-        '/Profile': (context) => AccountBottomIconScreen(),
-        '/HomePage': (context) => HomePage(initialindexg: 1,),
-      },
+      // routes: {
+      //   '/Login': (context) => LoginScreen(),
+      //   '/Welcome': (context) => WelcomeScreen(),
+      //   '/nayasignup': (context) => SignUpScreen(),
+      //   '/Profile': (context) => AccountBottomIconScreen(),
+      //   '/HomePage': (context) => HomePage(initialindexg: 1,cam: 0,),
+      // },
 
-      theme: new ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        primarySwatch: Colors.blue,
-        primaryColor: Colors.black,
-        primaryIconTheme: IconThemeData(color: Colors.black),
-        primaryTextTheme: TextTheme(
-            headline6: TextStyle(
-              color: Colors.black,
-            )),
-        textTheme: TextTheme(
-            headline6: TextStyle(
-              color: Colors.black,
-            )),
-      ),
+      // theme: new ThemeData(
+      //   visualDensity: VisualDensity.adaptivePlatformDensity,
+      //   primarySwatch: Colors.blue,
+      //   primaryColor: Colors.black,
+      //   primaryIconTheme: IconThemeData(color: Colors.black),
+      //   primaryTextTheme: TextTheme(
+      //       headline6: TextStyle(
+      //         color: Colors.black,
+      //       )),
+      //   textTheme: TextTheme(
+      //       headline6: TextStyle(
+      //         color: Colors.black,
+      //       )),
+      // ),
 
       home: Check(),
     );
@@ -98,7 +98,7 @@ class CheckState extends State<Check> with AfterLayoutMixin<Check> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       body:Center(),
     );
   }

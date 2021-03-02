@@ -17,7 +17,7 @@ class _VideoControlsState extends State<VideoControls>
   @override
   void initState() {
     _animationController = AnimationController(
-      //vsync: this,
+      vsync: this,
       duration: Duration(milliseconds: 300),
     );
     widget.videoController.addListener(_videoListener);
@@ -40,50 +40,52 @@ class _VideoControlsState extends State<VideoControls>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      color: const Color(0x40000000),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Text(
-                  '0:00',
-                  style: TextStyle(color: Colors.white),
-                ),
-                Expanded(
-                  child: VideoProgressIndicator(
-                    widget.videoController,
-                    allowScrubbing: true,
-                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                    colors: VideoProgressColors(
-                      playedColor: Colors.white,
+    return Card(
+      child: Container(
+        height: 80,
+        color: Colors.deepPurple,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Text(
+                    '0:00',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Expanded(
+                    child: VideoProgressIndicator(
+                      widget.videoController,
+                      allowScrubbing: true,
+                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      colors: VideoProgressColors(
+                        playedColor: Colors.white,
+                      ),
                     ),
                   ),
-                ),
-                Text(
-                  timeFormatter(widget.videoController.value.duration),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-          Center(
-            child: IconButton(
-              iconSize: 40,
-              icon: AnimatedIcon(
-                icon: AnimatedIcons.play_pause,
-                progress: _animationController,
-                color: Colors.white,
+                  Text(
+                    timeFormatter(widget.videoController.value.duration),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
-              onPressed: _handleOnPressed,
             ),
-          )
-        ],
+            Center(
+              child: IconButton(
+                iconSize: 40,
+                icon: AnimatedIcon(
+                  icon: AnimatedIcons.play_pause,
+                  progress: _animationController,
+                  color: Colors.white,
+                ),
+                onPressed: _handleOnPressed,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

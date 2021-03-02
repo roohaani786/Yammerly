@@ -1,12 +1,15 @@
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:techstagram/ComeraV/Camera.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
@@ -15,7 +18,7 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
-
+import 'dart:async';
 import 'messagingsystem.dart';
 import 'searchlist.dart';
 
@@ -23,16 +26,17 @@ import 'searchlist.dart';
 class HomePage extends StatefulWidget {
 
   HomePage({ Key key, this.title = "Yammerly",
-    this.uid,this.initialindexg,
+    this.uid,this.initialindexg,this.cam
   }) : super(key: key); //update this to include the uid in the constructor
 
   final String title;
   final String uid;
+  final int cam;
   int initialindexg;
   FirebaseUser user;
 
   @override
-  _HomePageState createState() => _HomePageState(initialindexg);
+  _HomePageState createState() => _HomePageState(initialindexg,cam);
 }
 
 final PageController _pageController = PageController(initialPage: 1,keepPage: true);
@@ -45,9 +49,10 @@ class _HomePageState extends State<HomePage> {
   FirebaseProvider firebaseProvider;
   // Create the page controller in your widget
 
-  _HomePageState(this.initialindexg);
+  _HomePageState(this.initialindexg,this.cam);
 
   int initialindexg;
+  int cam;
   TextEditingController emailController,urlController,descriptionController,
       displayNameController,uidController,photoUrlController,phonenumberController,
       bioController;
@@ -116,7 +121,9 @@ class _HomePageState extends State<HomePage> {
       controller: _pageController,
       allowImplicitScrolling: true,
       children: <Widget>[
-        CameraScreen(cam: 0),
+        CameraExampleHome(cam: 0,check: true),
+        //CameraExampleHome(),
+        //CameraScreen(cam: 0, check: true),
         TabLayoutDemo(initialindexg),
         // Container(color: Colors.yellow),
       ],
@@ -137,36 +144,21 @@ class _HomePageState extends State<HomePage> {
   DateTime currentBackPressTime;
 
   Future<bool> onWillPop() {
-    return showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(false),
-            child: Text("NO"),
-          ),
-          SizedBox(height: 16),
-          new GestureDetector(
-            onTap: () => Navigator.of(context).pop(true),
-            child: Text("YES"),
-          ),
-        ],
-      ),
-    ) ??
-        false;
+    print("hore ho kya bhai");
+    SystemNavigator.pop();
+    SystemNavigator.pop();
   }
 
-  final FirebaseMessaging _fcm = FirebaseMessaging();
+
+
+  //final FirebaseMessaging _fcm = FirebaseMessaging();
 
   @override
   Widget build(BuildContext context) {
 //    final user = Provider.of<User>(context);
 //    _saveDeviceToken(user.uid);
-    return GestureDetector(
-      onTap: (){print("hu");},
-//      onTap: () => Navigator.of(context).pop(HomePage()),
+    return WillPopScope(
+      onWillPop: onWillPop,
       child: Scaffold(
         body: myPageView,
       ),
@@ -273,8 +265,19 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
 
   Future<bool> onWillPop() async {
     print("on will pop");
+
+    // DateTime now = DateTime.now();
+    // if (currentBackPressTime == null ||
+    //     now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+    //   currentBackPressTime = now;
+    //   Fluttertoast.showToast(msg: "exit_warning");
+    //   return Future.value(false);
+    // }
+    // return Future.value(true);
     if (tabController.index == 1) {
-      await SystemNavigator.pop();
+      print("bahi aa rahe ho kya");
+      SystemNavigator.pop();
+      SystemNavigator.pop();
     }
 
     Future.delayed(Duration(milliseconds: 200), () {
@@ -286,6 +289,13 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     return tabController.index == 1;
   }
 
+  Future<bool> onWillPop2() {
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     // Local dragStartDetail.
@@ -295,7 +305,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     // TODO: implement build
 
     return WillPopScope(
-      onWillPop: onWillPop,
+      onWillPop: null,//onWillPop,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -318,10 +328,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                   print("camera open");
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => CameraScreen(
-                        cam: 0,
-                        check: true,
-                      ),
+                      builder: (context) => CameraExampleHome(cam: 0,check: true),
                     ),
                   );
                 },
@@ -363,24 +370,29 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
           length: 4,
           //initialIndex: (initialindexg == null) ? 1 : initialindexg,
           child: Scaffold(
-            body: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: tabController,
-              children: [
-                new Container(
-                  child: ChatsPage(),
-                ),
-                new Container(
-                  child: FeedsPage(
-                    displayNamecurrentUser: displayNameController.text,
+            body: DoubleBackToCloseApp(
+              snackBar: const SnackBar(
+                content: Text('Tap back again to leave'),
+              ),
+              child: TabBarView(
+                physics: NeverScrollableScrollPhysics(),
+                controller: tabController,
+                children: [
+                  new Container(
+                    child: ChatsPage(),
                   ),
-                ),
-                new Container(
-                  //child: FeedsPage(),
-                  child: NotificationsPage(currUid: uidController.text),
-                ),
-                new Container(child: AccountBottomIconScreen()),
-              ],
+                  new Container(
+                    child: FeedsPage(
+                      displayNamecurrentUser: displayNameController.text,
+                    ),
+                  ),
+                  new Container(
+                    //child: FeedsPage(),
+                    child: NotificationsPage(currUid: uidController.text),
+                  ),
+                  new Container(child: AccountBottomIconScreen()),
+                ],
+              ),
             ),
             bottomNavigationBar: new Container(
               height: 60.0,
