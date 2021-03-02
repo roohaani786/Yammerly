@@ -471,6 +471,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
                           controlUploadAndSaveShared(shared,isVideo);
                           PostI();
                           ShareI();
+                          ShareIU();
                         }else{
                           if(_formKey.currentState.validate()) {
                             controlUploadAndSave(shared,isVideo);
