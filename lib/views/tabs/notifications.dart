@@ -271,11 +271,11 @@ class NotificationFollow extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: userName + " ",
+                              text: userName,
                               style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                             ),
                             TextSpan(
-                              text: "started following you",
+                              text: "  started following you",
                               style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                   fontSize: 15.0),
                             ),
@@ -541,11 +541,11 @@ class _NotificationCommentState extends State<NotificationComment> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: userName + " ",
+                              text: userName,
                               style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
                             ),
                             TextSpan(
-                              text: "commented on your post",
+                              text: " commented on your post",
                               style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
                                   fontSize: 15.0),
                             ),
