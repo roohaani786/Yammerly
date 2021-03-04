@@ -394,7 +394,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                 ),
                 new Container(
                   //child: FeedsPage(),
-                  child: NotificationsPage(currUid: uidController.text),
+                  child: NotificationsPage(currUid: uidController.text,displayNameCurrUser: displayNameController.text),
                 ),
                 new Container(child: AccountBottomIconScreen()),
               ],

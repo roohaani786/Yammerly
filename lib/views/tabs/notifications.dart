@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:uuid/uuid.dart';
@@ -11,16 +12,18 @@ final NotificationRefrence = Firestore.instance.collection("users");
 
 class NotificationsPage extends StatefulWidget{
   final String currUid;
+  final String displayNameCurrUser;
 
 
-  NotificationsPage({this.currUid,});
+  NotificationsPage({this.currUid,this.displayNameCurrUser});
 
   @override
-  NotificationsPageState createState() => NotificationsPageState(currUid: currUid,);
+  NotificationsPageState createState() => NotificationsPageState(currUid: currUid,displayNameCurrUser: displayNameCurrUser);
 }
 
 class NotificationsPageState extends State<NotificationsPage> {
   final String currUid;
+  final String displayNameCurrUser;
   final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
 
   String CommentId = Uuid().v4();
@@ -28,15 +31,18 @@ class NotificationsPageState extends State<NotificationsPage> {
 
   TextEditingController commentTextEditingController = TextEditingController();
 
-  NotificationsPageState({this.currUid,});
+  NotificationsPageState({this.currUid,this.displayNameCurrUser});
   // return Firestore.instance
   //     .collection("posts")
   //     .orderBy("timestamp", descending: true)
   //     .snapshots();
 
-  retrieveNotificationsLike(){
+
+  retrieveNotificationsLike() {
      print("bhujm");
      print(currUid);
+
+
     return  StreamBuilder(
       stream: NotificationRefrence.document(currUid)
           .collection("notification")
@@ -155,11 +161,16 @@ class NotificationsPageState extends State<NotificationsPage> {
   //setData({'liked': userEmail});
 
   var commentCount = 0;
+  saveCurrUser() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('currUid', currUid);
+      prefs.setString('displayNameCurrUser', displayNameCurrUser);
+  }
 
 
   @override
   void initState() {
-
+    saveCurrUser();
     retrieveNotificationsLike();
 
   }
@@ -322,7 +333,7 @@ class _NotificationFollowState extends State<NotificationFollow> {
               },
             child: Container(
               //width: 320.0,
-              width: deviceWidth*0.8,
+              width: deviceWidth*1,
               child: ListTile(
                 title: (userName != null || widget.comment != null)?Row(
                   children: [
@@ -414,6 +425,8 @@ class _NotificationShareState extends State<NotificationShare> {
   String userName;
   String postUrl;
   String photoUrl;
+  String displayNameCurrUser;
+  String currUid;
 
   TextEditingController userNameController,photoUrlController,postUrlController;
 
@@ -426,7 +439,16 @@ class _NotificationShareState extends State<NotificationShare> {
 
     Fetchprofile();
     Fetchpost();
+    getCurrUid();
 
+  }
+  getCurrUid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currUid = prefs.getString("currUid");
+    displayNameCurrUser = prefs.getString("displayNameCurrUser");
+
+    print("abab");
+    print(currUid);
   }
 
   Fetchprofile() async{
@@ -534,7 +556,7 @@ class _NotificationShareState extends State<NotificationShare> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: userName,PostUrl: postUrl,uidX: widget.userId,delete: false,)),
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNameCurrUser,PostUrl: postUrl,uidX: currUid,delete: false,)),
                 );
               },
               child: Align(
@@ -596,6 +618,8 @@ class _NotificationCommentState extends State<NotificationComment> {
   String postUrl;
   String photoUrl;
   String displayNamePostUser;
+  String displayNameCurrUser;
+  String currUid;
 
   TextEditingController userNameController,photoUrlController,postUrlController,displayNamePostUserController;
 
@@ -609,7 +633,17 @@ class _NotificationCommentState extends State<NotificationComment> {
 
     Fetchprofile();
     Fetchpost();
+    getCurrUid();
 
+  }
+
+  getCurrUid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currUid = prefs.getString("currUid");
+    displayNameCurrUser = prefs.getString("displayNameCurrUser");
+
+    print("abab");
+    print(currUid);
   }
 
   Fetchprofile() async{
@@ -671,7 +705,7 @@ class _NotificationCommentState extends State<NotificationComment> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNamePostUser,PostUrl: postUrl,uidX: widget.userId,delete: true,)),
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNameCurrUser,PostUrl: postUrl,uidX: currUid,delete: false,)),
                 );
               },
               child: Container(
@@ -722,7 +756,7 @@ class _NotificationCommentState extends State<NotificationComment> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNamePostUser,PostUrl: postUrl,uidX: widget.userId,delete: false,)),
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNameCurrUser,PostUrl: postUrl,uidX: currUid,delete: false,)),
                 );
               },
               child: Align(
@@ -791,6 +825,8 @@ class _NotificationLikeState extends State<NotificationLike> {
   String postUrl;
   String photoUrl;
   String displayNamePostUser;
+  String currUid;
+  String displayNameCurrUser;
 
   TextEditingController userNameController,photoUrlController,postUrlController,displayNamePostUserController;
 
@@ -799,12 +835,26 @@ class _NotificationLikeState extends State<NotificationLike> {
     photoUrlController = TextEditingController();
     postUrlController = TextEditingController();
     displayNamePostUserController = TextEditingController();
+    // setState(() async{
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   currUser = prefs.getString("currUser");
+    // });
 
     super.initState();
 
     Fetchprofile();
     Fetchpost();
+    getCurrUid();
 
+  }
+
+  getCurrUid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currUid = prefs.getString("currUid");
+    displayNameCurrUser = prefs.getString("displayNameCurrUser");
+
+    print("abab");
+    print(currUid);
   }
 
   Fetchprofile() async{
@@ -839,6 +889,8 @@ class _NotificationLikeState extends State<NotificationLike> {
     print(postUrl);
     print(displayNamePostUser);
     print(widget.userId);
+    print(currUid);
+    print(displayNameCurrUser);
   }
 
 
@@ -918,7 +970,7 @@ class _NotificationLikeState extends State<NotificationLike> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNamePostUser,PostUrl: postUrl,uidX: widget.userId,delete: false,)),
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNameCurrUser,PostUrl: postUrl,uidX: currUid,delete: false,)),
                 );
               },
               child: Align(
