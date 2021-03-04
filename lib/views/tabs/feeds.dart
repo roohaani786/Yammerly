@@ -87,13 +87,14 @@ class _FeedsPageState extends State<FeedsPage> {
 
   _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
 
-  BetterPlayerController _betterPlayerController;
+  // BetterPlayerController _betterPlayerController;
 
-  BetterPlayerDataSource betterPlayerDataSource;
+  // BetterPlayerDataSource betterPlayerDataSource;
 
 
   @override
   void initState() {
+
     emailController = TextEditingController();
     likesController = TextEditingController();
     uidController = TextEditingController();
@@ -102,20 +103,8 @@ class _FeedsPageState extends State<FeedsPage> {
     cpurlController = TextEditingController();
     cdisplayNameController = TextEditingController();
 
-    //videoPlayerController = VideoPlayerController.network('');
-
     super.initState();
 
-    // BetterPlayerDataSource betterPlayerDataSource;
-    //
-    // _betterPlayerController = BetterPlayerController(
-    //     BetterPlayerConfiguration(),
-    //     betterPlayerDataSource: betterPlayerDataSource);
-
-    // Subscriptions are created here
-    authService.profile.listen((state) => setState(() => _profile = state));
-
-    authService.loading.listen((state) => setState(() => _loading = state));
     fetchPosts();
     fetchProfileData();
     fetchLikes();
@@ -125,15 +114,6 @@ class _FeedsPageState extends State<FeedsPage> {
   File crop;
   Timer timer; //declare timer variable
 
-  // getPostCount() async {
-  //   await DatabaseService().getPosts().then((val){
-  //     setState(() {
-  //       Plength = val;
-  //     });
-  //   });
-  //   print("yaha ai bhai length");
-  //   print(Plength);
-  // }
 
   Future pickImage() async {
     if(_image == null){
@@ -325,13 +305,7 @@ class _FeedsPageState extends State<FeedsPage> {
       AvailableImages.emptyState['assetPath'],
     );
 
-    final notificationHeader = Container(
-      padding: EdgeInsets.only(top: 30.0, bottom: 10.0),
-      child: Text(
-        "No Posts",
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
-      ),
-    );
+    final notificationHeader = CircularProgressIndicator(backgroundColor: Colors.purple,);
 
     addStringToSF(String displayName, String displayNameCurrUser,String postId,int comments) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -350,9 +324,9 @@ class _FeedsPageState extends State<FeedsPage> {
         builder: (context, snapshot) {
           return snapshot.hasData
               ? Column(
-            children: [
+                children: [
 
-              new Expanded(
+                 new Expanded(
                 child: ListView.builder(
                   controller: scrollController,
                   itemCount: snapshot.data.documents.length,
@@ -442,7 +416,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                           "timestamp": DateTime.now(),
                           "uid": uidController.text,
-                          "status" : "like",
+                          "status" : "hare",
                           "postId" : postId,
                         });
 
@@ -559,7 +533,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(40),
-                                            child: Image(
+                                            child:(cpurl[index] != null) ?Image(
                                               image: (cpurl[index] != null)?
                                               (cloading[index])?NetworkImage(cpurl[index]):NetworkImage("url"):NetworkImage(
                                                   "https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png"
@@ -567,7 +541,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                               width: 40,
                                               height: 40,
                                               fit: BoxFit.cover,
-                                            ),
+                                            ):CircularProgressIndicator(),
                                           ),
                                           SizedBox(
                                             width: 10,
@@ -575,7 +549,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           (cloading[index])?Text(cdisplayName[index],style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18.0,
-                                          ),):Container(child: Text("Loading...")),
+                                          ),):Container(child:CircularProgressIndicator()),
                                         ],
                                       ),
 
@@ -1013,139 +987,143 @@ class _FeedsPageState extends State<FeedsPage> {
                             },
                             onTap: null,
 
-                            child: Container(
-                              height: 350.0,
-                              child: GestureDetector(
+                            //VIDEO RESOURCE
 
-                                child :(cam == 1)?Transform(
-                                  alignment: Alignment.center,
-                                  transform: Matrix4.rotationY(math.pi),
-                                  child: (url== null)?Container():(!cloading[index])?Container():
-                                  Container(
-                                    height: 500,
-                                    margin: EdgeInsets.symmetric(vertical: 2.5),
-                                    child: AspectRatio(
-                                      aspectRatio: 1,
-                                      child: BetterPlayerListVideoPlayer(
-                                        betterPlayerDataSource = BetterPlayerDataSource(
-                                          BetterPlayerDataSourceType.NETWORK,
-                                          'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                                        ),
-                                        key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
-                                        playFraction: 1,
-                                        autoPause: true,
-                                        autoPlay: true,
-                                        configuration: BetterPlayerConfiguration(
-                                          fit: BoxFit.cover,
-                                          aspectRatio: 0.5,
-                                          looping: true,
-                                          autoPlay: true,
-                                          showPlaceholderUntilPlay: true,
-                                          // placeholder: Container(
-                                          //   height: 500,
-                                          //   width: double.infinity,
-                                          //   decoration: BoxDecoration(
-                                          //     // gradient: LinearGradient(
-                                          //     //   colors: [
-                                          //     //     Colors.blue,
-                                          //     //     Colors.red,
-                                          //     //   ],
-                                          //     //   begin: Alignment.topLeft,
-                                          //     //   end: Alignment.bottomRight,
-                                          //     // ),
-                                          //     color: Colors.purple,
-                                          //   ),
-                                          // ),
-                                          controlsConfiguration: BetterPlayerControlsConfiguration(
-                                            enableProgressBar: false,
-                                            controlBarColor: Colors.white54,
-                                            enableFullscreen: false,
-                                            enableOverflowMenu: false,
-                                            enablePlayPause: true,
-                                          ),
-                                          errorBuilder: (context, errorMessage) {
-                                            return Center(
-                                              child: Column(
-                                                children: [
-                                                  Icon(
-                                                    Icons.error,
-                                                    color: Colors.white,
-                                                    size: 60,
-                                                  ),
-                                                  Text(
-                                                    errorMessage,
-                                                    style: TextStyle(color: Colors.white54),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                            // child: Container(
+                            //   height: 350.0,
+                            //   child: GestureDetector(
 
-                                ):(url==null)?Container():(!cloading[index])?Container():AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: BetterPlayerListVideoPlayer(
-                                    BetterPlayerDataSource(
-                                      BetterPlayerDataSourceType.NETWORK,
-                                      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                                    ),
-                                    key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
-                                    playFraction: 1,
-                                    autoPause: true,
-                                    autoPlay: true,
-                                    configuration: BetterPlayerConfiguration(
-                                      fit: BoxFit.cover,
-                                      aspectRatio: 0.5,
-                                      looping: true,
-                                      autoPlay: true,
-                                      showPlaceholderUntilPlay: true,
-                                      // placeholder: Container(
-                                      //   height: 500,
-                                      //   width: double.infinity,
-                                      //   decoration: BoxDecoration(
-                                      //     // gradient: LinearGradient(
-                                      //     //   colors: [
-                                      //     //     Colors.blue,
-                                      //     //     Colors.red,
-                                      //     //   ],
-                                      //     //   begin: Alignment.topLeft,
-                                      //     //   end: Alignment.bottomRight,
-                                      //     // ),
-                                      //     color : Colors.purple,
-                                      //   ),
-                                      // ),
-                                      controlsConfiguration: BetterPlayerControlsConfiguration(
-                                        enableProgressBar: false,
-                                        controlBarColor: Colors.white54,
-                                        enableFullscreen: false,
-                                        enableOverflowMenu: false,
-                                        enablePlayPause: true,
-                                      ),
-                                      errorBuilder: (context, errorMessage) {
-                                        return Center(
-                                          child: Column(
-                                            children: [
-                                              Icon(
-                                                Icons.error,
-                                                color: Colors.white,
-                                                size: 60,
-                                              ),
-                                              Text(
-                                                errorMessage,
-                                                style: TextStyle(color: Colors.white54),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            //     child :(cam == 1)?Transform(
+                            //       alignment: Alignment.center,
+                            //       transform: Matrix4.rotationY(math.pi),
+                            //       child: (url== null)?Container():(!cloading[index])?Container():
+                            //       Container(
+                            //         height: 500,
+                            //         margin: EdgeInsets.symmetric(vertical: 2.5),
+                            //         child: AspectRatio(
+                            //           aspectRatio: 1,
+                            //           child: 
+                            //           BetterPlayerListVideoPlayer(
+                            //             betterPlayerDataSource = BetterPlayerDataSource(
+                            //               BetterPlayerDataSourceType.NETWORK,
+                            //               'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                            //             ),
+                            //             key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
+                            //             playFraction: 1,
+                            //             autoPause: true,
+                            //             autoPlay: true,
+                            //             configuration: BetterPlayerConfiguration(
+                            //               fit: BoxFit.cover,
+                            //               aspectRatio: 0.5,
+                            //               looping: true,
+                            //               autoPlay: true,
+                            //               showPlaceholderUntilPlay: true,
+                            //               // placeholder: Container(
+                            //               //   height: 500,
+                            //               //   width: double.infinity,
+                            //               //   decoration: BoxDecoration(
+                            //               //     // gradient: LinearGradient(
+                            //               //     //   colors: [
+                            //               //     //     Colors.blue,
+                            //               //     //     Colors.red,
+                            //               //     //   ],
+                            //               //     //   begin: Alignment.topLeft,
+                            //               //     //   end: Alignment.bottomRight,
+                            //               //     // ),
+                            //               //     color: Colors.purple,
+                            //               //   ),
+                            //               // ),
+                            //               controlsConfiguration: BetterPlayerControlsConfiguration(
+                            //                 enableProgressBar: false,
+                            //                 controlBarColor: Colors.white54,
+                            //                 enableFullscreen: false,
+                            //                 enableOverflowMenu: false,
+                            //                 enablePlayPause: true,
+                            //               ),
+                            //               errorBuilder: (context, errorMessage) {
+                            //                 return Center(
+                            //                   child: Column(
+                            //                     children: [
+                            //                       Icon(
+                            //                         Icons.error,
+                            //                         color: Colors.white,
+                            //                         size: 60,
+                            //                       ),
+                            //                       Text(
+                            //                         errorMessage,
+                            //                         style: TextStyle(color: Colors.white54),
+                            //                       ),
+                            //                     ],
+                            //                   ),
+                            //                 );
+                            //               },
+                            //             ),
+                            //           ),
+                                      
+                            //         ),
+                            //       ),
+
+                            //     ):(url==null)?Container():(!cloading[index])?Container():AspectRatio(
+                            //       aspectRatio: 16 / 9,
+                            //       child: BetterPlayerListVideoPlayer(
+                            //         BetterPlayerDataSource(
+                            //           BetterPlayerDataSourceType.NETWORK,
+                            //           'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                            //         ),
+                            //         key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
+                            //         playFraction: 1,
+                            //         autoPause: true,
+                            //         autoPlay: true,
+                            //         configuration: BetterPlayerConfiguration(
+                            //           fit: BoxFit.cover,
+                            //           aspectRatio: 0.5,
+                            //           looping: true,
+                            //           autoPlay: true,
+                            //           showPlaceholderUntilPlay: true,
+                            //           // placeholder: Container(
+                            //           //   height: 500,
+                            //           //   width: double.infinity,
+                            //           //   decoration: BoxDecoration(
+                            //           //     // gradient: LinearGradient(
+                            //           //     //   colors: [
+                            //           //     //     Colors.blue,
+                            //           //     //     Colors.red,
+                            //           //     //   ],
+                            //           //     //   begin: Alignment.topLeft,
+                            //           //     //   end: Alignment.bottomRight,
+                            //           //     // ),
+                            //           //     color : Colors.purple,
+                            //           //   ),
+                            //           // ),
+                            //           controlsConfiguration: BetterPlayerControlsConfiguration(
+                            //             enableProgressBar: false,
+                            //             controlBarColor: Colors.white54,
+                            //             enableFullscreen: false,
+                            //             enableOverflowMenu: false,
+                            //             enablePlayPause: true,
+                            //           ),
+                            //           errorBuilder: (context, errorMessage) {
+                            //             return Center(
+                            //               child: Column(
+                            //                 children: [
+                            //                   Icon(
+                            //                     Icons.error,
+                            //                     color: Colors.white,
+                            //                     size: 60,
+                            //                   ),
+                            //                   Text(
+                            //                     errorMessage,
+                            //                     style: TextStyle(color: Colors.white54),
+                            //                   ),
+                            //                 ],
+                            //               ),
+                            //             );
+                            //           },
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ),
 
                           Row(
@@ -1403,7 +1381,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                 child :(cam == 1)?Transform(
                                   alignment: Alignment.center,
                                   transform: Matrix4.rotationY(math.pi),
-                                  child: (url== null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                  child: (url== null)?CircularProgressIndicator():(!cloading[index])?CircularProgressIndicator():FadeInImage.memoryNetwork(
                                     image: url,//NetworkImage(url),
                                     fit: BoxFit.cover,
                                     //image: NetworkImage("posts[i].postImage"),
@@ -1411,7 +1389,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                     width: MediaQuery.of(context).size.width,
                                   ),
 
-                                ):(url==null)?Container():(!cloading[index])?Container():FadeInImage.memoryNetwork(
+                                ):(url==null)?CircularProgressIndicator():(!cloading[index])?CircularProgressIndicator():FadeInImage.memoryNetwork(
                                   image: url,//NetworkImage(url,),
                                   fit: BoxFit.cover,
                                   placeholder: kTransparentImage,//AssetImage("assets/images/loading.gif"),
@@ -1576,33 +1554,8 @@ class _FeedsPageState extends State<FeedsPage> {
               ),
             ],
           )
-              : Container(
-            padding: EdgeInsets.only(
-              top: 40.0,
-              left: 30.0,
-              right: 30.0,
-              bottom: 30.0,
-            ),
-            height: deviceHeight,
-            width: deviceWidth,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                //pageTitle,
-                SizedBox(
-                  height: deviceHeight * 0.1,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    image,
-                    notificationHeader,
-                    //notificationText,
-                  ],
-                ),
-              ],
-            ),
-          );
+              : Align(alignment: Alignment.center,
+                child: CircularProgressIndicator());
         },
       ),
 

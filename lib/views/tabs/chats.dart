@@ -66,10 +66,10 @@ class _ChatsPageState extends State<ChatsPage> {
     );
 
     final notificationText = Text(
-      "Status feature is coming soon on our app.",
+      "Status update feature is coming soon on our app.",
       style: TextStyle(
         fontWeight: FontWeight.w600,
-        fontSize: 15.0,
+        fontSize: 13.0,
         color: Colors.grey.withOpacity(0.6),
       ),
     );
@@ -124,18 +124,7 @@ class _ChatsPageState extends State<ChatsPage> {
                     image,
                     notificationHeader,
                     notificationText,
-                    AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: BetterPlayer.network(
-                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-                        )
-                    ),
-                    AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: BetterPlayer.network(
-                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-                        )
-                    ),
+                  
                   ],
                 ),
               ],

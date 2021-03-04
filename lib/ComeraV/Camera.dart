@@ -819,11 +819,17 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               });
               if(_isRecordingMode){
                 print("video");
-                controller != null &&
+
+              
+                if(controller != null &&
                     controller.value.isInitialized &&
-                    !controller.value.isRecordingVideo
-                    ? onVideoRecordButtonPressed()
-                    : print("nahi gaya");
+                    !controller.value.isRecordingVideo){
+                    onStopButtonPressed();
+                    onVideoRecordButtonPressed();
+                    }
+                    else{
+                        onStopButtonPressed();
+                    }
               }
             },
           ),
