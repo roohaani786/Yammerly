@@ -103,24 +103,35 @@ class CommentsPageState extends State<CommentsPage> {
   Notification() async {
     //print(currUid);
 
-    setState(() {
-      // file = null;
-      NotificationId = Uuid().v4();
-    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String displayName = prefs.getString("displayName");
+    String displayNameCurrUser = prefs.getString('displayNameCurrUser');
 
-    return await Firestore.instance.collection("users")
-        .document(uid).collection("notification")
-        .document(NotificationId)
-        .setData({"commentId" : CommentId,
-      "notificationId" : NotificationId,
-      //"comment": commentTextEditingController.text,
+    print("911");
 
-      "timestamp": DateTime.now(),
-      "uid": currUser,
-      "status" : "Comment",
-      "postId" : postId,
-      "comment": commentTextEditingController.text,
-    });
+    if(displayName != displayNameCurrUser){
+      print("911");
+      setState(() {
+        // file = null;
+        NotificationId = Uuid().v4();
+      });
+
+      return await Firestore.instance.collection("users")
+          .document(uid).collection("notification")
+          .document(NotificationId)
+          .setData({"commentId" : CommentId,
+        "notificationId" : NotificationId,
+        //"comment": commentTextEditingController.text,
+
+        "timestamp": DateTime.now(),
+        "uid": currUser,
+        "status" : "Comment",
+        "postId" : postId,
+        "comment": commentTextEditingController.text,
+      });
+
+    }
+
 
     // return await Firestore.instance.collection("users")
     //     .document(uid).collection("notification")

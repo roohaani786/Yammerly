@@ -426,23 +426,29 @@ class _FeedsPageState extends State<FeedsPage> {
                       print(displayNamecurrentUser);
                       print("911");
 
-                      setState(() {
-                        // file = null;
-                        NotificationId = Uuid().v4();
-                      });
+                      if(displayName != displayNameCurrUser){
 
-                      return await Firestore.instance.collection("users")
-                          .document(uid).collection("notification")
-                          .document(NotificationId)
-                          .setData({"share" : shares+1,
-                        "notificationId" : NotificationId,
-                        //"comment": commentTextEditingController.text,
+                        setState(() {
+                          // file = null;
+                          NotificationId = Uuid().v4();
+                        });
 
-                        "timestamp": DateTime.now(),
-                        "uid": uidController.text,
-                        "status" : "like",
-                        "postId" : postId,
-                      });
+                        return await Firestore.instance.collection("users")
+                            .document(uid).collection("notification")
+                            .document(NotificationId)
+                            .setData({"share" : shares+1,
+                          "notificationId" : NotificationId,
+                          //"comment": commentTextEditingController.text,
+
+                          "timestamp": DateTime.now(),
+                          "uid": uidController.text,
+                          "status" : "like",
+                          "postId" : postId,
+                        });
+
+                      }
+
+
 
                       // return await Firestore.instance.collection("users")
                       //     .document(uid).collection("notification")
@@ -465,26 +471,31 @@ class _FeedsPageState extends State<FeedsPage> {
                             // print(displayNamecurrentUser);
                             print("911");
 
-                            setState(() {
-                              // file = null;
-                        NotificationId = Uuid().v4();
-                      });
+                            if(displayName != displayNamecurrentUser){
+                              print("911");
 
-                            print(uid);
-                            print(uidController.text);
-                            print("912");
-                            return await Firestore.instance.collection("users")
-                                .document(uid).collection("notification")
-                                .document(NotificationId)
-                                .setData({"likes" : likes+1,
-                              "notificationId" : NotificationId,
-                              //"comment": commentTextEditingController.text,
+                              setState(() {
+                                // file = null;
+                                NotificationId = Uuid().v4();
+                              });
 
-                              "timestamp": DateTime.now(),
-                              "uid": uidController.text,
-                              "status" : "like",
-                              "postId" : postId,
-                            });
+                              print(uid);
+                              print(uidController.text);
+                              print("912");
+                              return await Firestore.instance.collection("users")
+                                  .document(uid).collection("notification")
+                                  .document(NotificationId)
+                                  .setData({"likes" : likes+1,
+                                "notificationId" : NotificationId,
+                                //"comment": commentTextEditingController.text,
+
+                                "timestamp": DateTime.now(),
+                                "uid": uidController.text,
+                                "status" : "like",
+                                "postId" : postId,
+                              });
+
+                            }
 
 
                       // return await Firestore.instance.collection("users")
