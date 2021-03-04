@@ -765,15 +765,17 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             ),
           ):Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.videocam),
-                color: Colors.white,
-                onPressed: controller != null &&
-                    controller.value.isInitialized &&
-                    !controller.value.isRecordingVideo
-                    ? onVideoRecordButtonPressed
-                    : null,
-              ),
+
+              //the comment code is button for video playing
+              // IconButton(
+              //   icon: const Icon(Icons.videocam),
+              //   color: Colors.white,
+              //   onPressed: controller != null &&
+              //       controller.value.isInitialized &&
+              //       !controller.value.isRecordingVideo
+              //       ? onVideoRecordButtonPressed
+              //       : null,
+              // ),
 
               IconButton(
                 icon: controller != null && controller.value.isRecordingPaused
@@ -815,6 +817,14 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               setState(() {
                 _isRecordingMode = !_isRecordingMode;
               });
+              if(_isRecordingMode){
+                print("video");
+                controller != null &&
+                    controller.value.isInitialized &&
+                    !controller.value.isRecordingVideo
+                    ? onVideoRecordButtonPressed()
+                    : print("nahi gaya");
+              }
             },
           ),
         ],
@@ -997,6 +1007,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   void onVideoRecordButtonPressed() {
+    print("video");
     startVideoRecording().then((_) {
       if (mounted) setState(() {});
     });
