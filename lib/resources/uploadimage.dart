@@ -23,7 +23,7 @@ class UploadImage extends StatefulWidget {
   String ownerdiscription;
   String ownerphotourl;
   String ownerdisplayname;
-  bool shared;
+  bool shared = false;
   int shares;
   String ownerPostId;
   Timestamp ownerTimeStamp;
@@ -43,7 +43,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
   String ownerdiscription;
   String ownerphotourl;
   String ownerdisplayname;
-  bool shared;
+  bool shared = false;
   String sharedurl;
   int shares;
   String ownerPostId;

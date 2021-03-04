@@ -655,7 +655,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     if (_image != null){
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+          MaterialPageRoute(builder: (context) => UploadImage(file: _image,shared: false,isVideo:false),));
     }else{
       Navigator.push(
           context,
@@ -689,7 +689,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             if (upload == true){
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                  MaterialPageRoute(builder: (context) => UploadImage(file: _image,shared: false,isVideo:false),));
             }else{
               Navigator.push(
                   context,

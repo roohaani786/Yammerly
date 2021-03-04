@@ -442,7 +442,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                           "timestamp": DateTime.now(),
                           "uid": uidController.text,
-                          "status" : "like",
+                          "status" : "share",
                           "postId" : postId,
                         });
 

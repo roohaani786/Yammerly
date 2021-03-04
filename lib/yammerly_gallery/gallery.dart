@@ -85,7 +85,7 @@ class _galleryState extends State<gallery> {
           context,
           MaterialPageRoute(builder: (context) =>
               UploadImage(file: selectedfile,
-                shared: false,)),
+                shared: false,isVideo:false)),
         );
         setState(() {
           selectedfile == null;
