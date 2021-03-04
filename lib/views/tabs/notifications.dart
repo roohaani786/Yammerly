@@ -595,13 +595,15 @@ class _NotificationCommentState extends State<NotificationComment> {
   String userName;
   String postUrl;
   String photoUrl;
+  String displayNamePostUser;
 
-  TextEditingController userNameController,photoUrlController,postUrlController;
+  TextEditingController userNameController,photoUrlController,postUrlController,displayNamePostUserController;
 
   void initState() {
     userNameController = TextEditingController();
     photoUrlController = TextEditingController();
     postUrlController = TextEditingController();
+    displayNamePostUserController = TextEditingController();
 
     super.initState();
 
@@ -631,8 +633,10 @@ class _NotificationCommentState extends State<NotificationComment> {
         .document(widget.postId)
         .get();
     postUrlController.text = docSnap.data['url'];
+    displayNamePostUserController.text = docSnap.data['displayName'];
     setState(() {
       postUrl = postUrlController.text;
+      displayNamePostUser = displayNamePostUserController.text;
       // cdisplayName[index] = cdisplayNameController.text;
       // cloading[index] = true;
     });
@@ -667,7 +671,7 @@ class _NotificationCommentState extends State<NotificationComment> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: userName,PostUrl: postUrl,uidX: widget.userId,delete: false,)),
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNamePostUser,PostUrl: postUrl,uidX: widget.userId,delete: true,)),
                 );
               },
               child: Container(
@@ -718,7 +722,7 @@ class _NotificationCommentState extends State<NotificationComment> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: userName,PostUrl: postUrl,uidX: widget.userId,delete: false,)),
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNamePostUser,PostUrl: postUrl,uidX: widget.userId,delete: false,)),
                 );
               },
               child: Align(
@@ -786,13 +790,15 @@ class _NotificationLikeState extends State<NotificationLike> {
   String userName;
   String postUrl;
   String photoUrl;
+  String displayNamePostUser;
 
-  TextEditingController userNameController,photoUrlController,postUrlController;
+  TextEditingController userNameController,photoUrlController,postUrlController,displayNamePostUserController;
 
   void initState() {
     userNameController = TextEditingController();
     photoUrlController = TextEditingController();
     postUrlController = TextEditingController();
+    displayNamePostUserController = TextEditingController();
 
     super.initState();
 
@@ -822,11 +828,17 @@ class _NotificationLikeState extends State<NotificationLike> {
         .document(widget.postId)
         .get();
     postUrlController.text = docSnap.data['url'];
+    displayNamePostUserController.text = docSnap['displayName'];
     setState(() {
       postUrl = postUrlController.text;
+      displayNamePostUser = displayNamePostUserController.text;
       // cdisplayName[index] = cdisplayNameController.text;
       // cloading[index] = true;
     });
+    print("dick");
+    print(postUrl);
+    print(displayNamePostUser);
+    print(widget.userId);
   }
 
 
@@ -906,7 +918,7 @@ class _NotificationLikeState extends State<NotificationLike> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: userName,PostUrl: postUrl,uidX: widget.userId,delete: false,)),
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNamePostUser,PostUrl: postUrl,uidX: widget.userId,delete: false,)),
                 );
               },
               child: Align(
