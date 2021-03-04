@@ -382,7 +382,7 @@ class Comment extends StatelessWidget {
                 title: (userName != null || comment != null)?Row(
                   children: [
                     Container(
-                      width: deviceWidth*0.65,
+                      width: deviceWidth*0.60,
                       //height: deviceHeight*0.01,
                       child: RichText(
                         textAlign: TextAlign.start,

@@ -179,6 +179,8 @@ dependencies:
   double_back_to_close_app: ^1.2.0
   #use for double back to exit app
 
+  firebase_messaging:
+
 
 dev_dependencies:
   flutter_test:

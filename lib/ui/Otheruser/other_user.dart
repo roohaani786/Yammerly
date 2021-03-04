@@ -653,7 +653,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               if (timer?.isActive ??false)
                                                                 timer.cancel(); //cancel if [timer] is null or running
                                                               timer = Timer(
-                                                                  const Duration(milliseconds: 340),
+                                                                  const Duration(milliseconds: 1500),
                                                                       () {
                                                                         setState(() {
                                                                           //getFollowers();

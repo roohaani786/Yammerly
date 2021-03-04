@@ -144,9 +144,17 @@ class _HomePageState extends State<HomePage> {
   DateTime currentBackPressTime;
 
   Future<bool> onWillPop() {
-    print("hore ho kya bhai");
-    SystemNavigator.pop();
-    SystemNavigator.pop();
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null || now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      Fluttertoast.showToast(msg: "tap again for back");
+      return Future.value(false);
+    }
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    return Future.value(true);
+    // print("hore ho kya bhai");
+    // SystemNavigator.pop();
+    // SystemNavigator.pop();
   }
 
 
@@ -304,125 +312,122 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     Drag drag;
     // TODO: implement build
 
-    return WillPopScope(
-      onWillPop: null,//onWillPop,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Yammerly',
-            style: TextStyle(
-                color: Colors.deepPurple,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.white,
-          leading: Row(
-            children: [
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.camera,
-                  color: Colors.deepPurple,
-                  //size: 10.0,
-                ),
-                onPressed: () {
-                  print("camera open");
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => CameraExampleHome(cam: 0,check: true),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-          actions: <Widget>[
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Yammerly',
+          style: TextStyle(
+              color: Colors.deepPurple,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        leading: Row(
+          children: [
             IconButton(
               icon: Icon(
-                FontAwesomeIcons.searchengin,
+                FontAwesomeIcons.camera,
                 color: Colors.deepPurple,
+                //size: 10.0,
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
+                print("camera open");
+                Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => CloudFirestoreSearch(
-                            displayNamecurrentUser: displayNameController.text,
-                            uidX: uidController.text,
-                          )),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.textsms,
-                color: Colors.deepPurple,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ConversationPage()),
+                    builder: (context) => CameraExampleHome(cam: 0,check: true),
+                  ),
                 );
               },
             ),
           ],
         ),
-        body: DefaultTabController(
-          length: 4,
-          //initialIndex: (initialindexg == null) ? 1 : initialindexg,
-          child: Scaffold(
-            body: DoubleBackToCloseApp(
-              snackBar: const SnackBar(
-                content: Text('Tap back again to leave'),
-              ),
-              child: TabBarView(
-                physics: NeverScrollableScrollPhysics(),
-                controller: tabController,
-                children: [
-                  new Container(
-                    child: ChatsPage(),
-                  ),
-                  new Container(
-                    child: FeedsPage(
-                      displayNamecurrentUser: displayNameController.text,
-                    ),
-                  ),
-                  new Container(
-                    //child: FeedsPage(),
-                    child: NotificationsPage(currUid: uidController.text),
-                  ),
-                  new Container(child: AccountBottomIconScreen()),
-                ],
-              ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              FontAwesomeIcons.searchengin,
+              color: Colors.deepPurple,
             ),
-            bottomNavigationBar: new Container(
-              height: 60.0,
-              child: new TabBar(
-                controller: tabController,
-                tabs: [
-                  Tab(
-                    icon: new Icon(Icons.blur_circular, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.home, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.notifications, size: 30),
-                    //text: new Text(curARRrUid),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.account_circle, size: 30),
-                  )
-                ],
-                labelColor: Colors.purple,
-                unselectedLabelColor: Colors.deepPurple,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorPadding: EdgeInsets.all(5.0),
-                indicatorWeight: 3.0,
-                indicatorColor: Colors.deepPurple,
-              ),
-            ),
-            backgroundColor: Colors.white,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CloudFirestoreSearch(
+                          displayNamecurrentUser: displayNameController.text,
+                          uidX: uidController.text,
+                        )),
+              );
+            },
           ),
+          IconButton(
+            icon: Icon(
+              Icons.textsms,
+              color: Colors.deepPurple,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ConversationPage()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: DefaultTabController(
+        length: 4,
+        //initialIndex: (initialindexg == null) ? 1 : initialindexg,
+        child: Scaffold(
+          body: DoubleBackToCloseApp(
+            snackBar: const SnackBar(
+              content: Text('Tap back again to leave'),
+            ),
+            child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: tabController,
+              children: [
+                new Container(
+                  child: ChatsPage(),
+                ),
+                new Container(
+                  child: FeedsPage(
+                    displayNamecurrentUser: displayNameController.text,
+                  ),
+                ),
+                new Container(
+                  //child: FeedsPage(),
+                  child: NotificationsPage(currUid: uidController.text),
+                ),
+                new Container(child: AccountBottomIconScreen()),
+              ],
+            ),
+          ),
+          bottomNavigationBar: new Container(
+            height: 60.0,
+            child: new TabBar(
+              controller: tabController,
+              tabs: [
+                Tab(
+                  icon: new Icon(Icons.blur_circular, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.home, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.notifications, size: 30),
+                  //text: new Text(curARRrUid),
+                ),
+                Tab(
+                  icon: new Icon(Icons.account_circle, size: 30),
+                )
+              ],
+              labelColor: Colors.purple,
+              unselectedLabelColor: Colors.deepPurple,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorPadding: EdgeInsets.all(5.0),
+              indicatorWeight: 3.0,
+              indicatorColor: Colors.deepPurple,
+            ),
+          ),
+          backgroundColor: Colors.white,
         ),
       ),
     );
