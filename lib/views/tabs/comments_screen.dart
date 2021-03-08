@@ -337,7 +337,8 @@ class Comment extends StatelessWidget {
       await Firestore.instance.collection('posts').document(postId)
           .collection("comments").document(commentId).delete();
 
-    }else if(displayName == displayNameCurrUser){
+    }
+    else if(displayName == displayNameCurrUser){
       print("delte clickd");
 
       DatabaseService().CommentD(postId,comments,commCount);
@@ -349,11 +350,12 @@ class Comment extends StatelessWidget {
           .collection("comments").document(commentId).delete();
     }
     else{
+      print("aaya bhai ko");
       return showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('You are not the owner of this post'),
+              title: Text('You are not the owner of this comment'),
               actions: <Widget>[
 
               ],

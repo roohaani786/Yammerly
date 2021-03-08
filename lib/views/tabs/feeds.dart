@@ -722,6 +722,7 @@ class _FeedsPageState extends State<FeedsPage> {
                               child: Container(
                                 //height: 450.0,
                                 width: deviceWidth,
+
                                 decoration: BoxDecoration(
                                   // border: Border(
                                   //     bottom: BorderSide(width: 2.0, color: Colors.grey),
@@ -848,7 +849,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       onPressed: () {
                                         Navigator.push(context, MaterialPageRoute(builder: (context){
-                                          return CommentsPage(currUser: uidController.text,comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          return CommentsPage(currUser: uidController.text,comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: cdisplayName[index],photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                         }));
 
                                         addStringToSF(cdisplayName[index],displayNameController.text,postId,comments);
@@ -1235,9 +1236,9 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       onPressed: () {
                                         Navigator.push(context, MaterialPageRoute(builder: (context){
-                                          return CommentsPage(currUser: uidController.text,comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          return CommentsPage(currUser: uidController.text,comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: cdisplayName[index],photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                         }));
-                                        addStringToSF(displayName,displayNameController.text,postId,comments);
+                                        addStringToSF(cdisplayName[index],displayNameController.text,postId,comments);
                                       },
                                       icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                     ),
@@ -1492,9 +1493,9 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                       onPressed: () {
                                         Navigator.push(context, MaterialPageRoute(builder: (context){
-                                          return CommentsPage(currUser: uidController.text,comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: displayName,photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
+                                          return CommentsPage(currUser: uidController.text,comments: comments,postId: postId, uid: uid, postImageUrl: url,timestamp: timestamp,displayName: cdisplayName[index],photoUrl: photoUrlController.text,displayNamecurrentUser: displayNameController.text);
                                         }));
-                                        addStringToSF(displayName,displayNameController.text,postId,comments);
+                                        addStringToSF(cdisplayName[index],displayNameController.text,postId,comments);
                                       },
                                       icon: Icon(Icons.insert_comment,color: Colors.deepPurpleAccent),
                                     ),
