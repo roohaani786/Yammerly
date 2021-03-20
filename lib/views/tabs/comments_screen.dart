@@ -45,7 +45,13 @@ class CommentsPageState extends State<CommentsPage> {
 
   CommentsPageState({this.currUser,this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
 
-  retrieveComments(){
+
+  SaveCurrUserId()
+  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('currUserId', currUser);
+  }  retrieveComments(){
+
     print("user");
     print(displayNamecurrentUser);
     return  StreamBuilder(
@@ -118,7 +124,7 @@ class CommentsPageState extends State<CommentsPage> {
 
       return await Firestore.instance.collection("users")
           .document(uid).collection("notification")
-          .document(NotificationId)
+          .document(currUser+postId+commentTextEditingController.text)
           .setData({"commentId" : CommentId,
         "notificationId" : NotificationId,
         //"comment": commentTextEditingController.text,
@@ -225,6 +231,7 @@ class CommentsPageState extends State<CommentsPage> {
   void initState() {
 
     retrieveComments();
+    SaveCurrUserId();
 
   }
 
@@ -314,6 +321,25 @@ class Comment extends StatelessWidget {
   }
 
   get context => null;
+
+  DeleteNotification() async {
+
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String postId = prefs.getString('postId');
+    String currUid = prefs.getString('currUserId');
+    print(currUid);
+    print(postId);
+    print(comment);
+    print("amios");
+    Firestore.instance
+        .collection("users")
+        .document(userId)
+        .collection('notification')
+    //.where('displayName','==',displayName);
+        .document(currUid+postId+comment)
+        .delete();
+  }
 
   deleteComments(String displayNameComment) async {
 
@@ -421,6 +447,7 @@ class Comment extends StatelessWidget {
                     icon: Icon(Icons.delete),
                     onPressed: () {
                       deleteComments(userName);
+                      DeleteNotification();
                       print("delete me");
                     },
                   )

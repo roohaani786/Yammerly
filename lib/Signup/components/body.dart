@@ -364,6 +364,7 @@ class _BodyState extends State<Body> {
                   'bio': "Proud Hashtager",
                   'emailVerified': false,
                   'phoneVerified': false,
+                  'private' : false,
                 })
                     .then((result) =>
                 {

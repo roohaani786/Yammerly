@@ -125,6 +125,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   int followers;
   int following;
   int posts;
+  bool private = false;
   String coverPhotoUrl;
   String uidCurrUser;
   String postIdX;
@@ -181,6 +182,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
       followers = docSnap.data["followers"];
       following  = docSnap.data["following"];
       posts  = docSnap.data["posts"];
+      private = docSnap.data["private"];
       coverPhotoUrlController.text = docSnap.data['coverPhotoUrl'];
 
       setState(() {
@@ -471,6 +473,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
                           });
                     },
+
                     child: Container(
                       height : MediaQuery.of(context).size.height*0.20,
                       width: MediaQuery.of(context).size.width,
@@ -520,72 +523,6 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             SizedBox(
                               height: deviceHeight*0.11,
                             ),
-                            // Container(
-                            //   height: 30.0,
-                            //   width: 30.0,
-                            //   decoration: const ShapeDecoration(
-                            //     color: Colors.black,
-                            //     shape: CircleBorder(),
-                            //   ),
-                            //   child: IconButton(
-                            //     color: Colors.white,
-                            //     //color: Colors.white,
-                            //     icon: new Icon(
-                            //         Icons.edit,
-                            //       size: 15,
-                            //     ),
-                            //       onPressed: (){
-                            //         showDialog<void>(
-                            //             context: context,// THIS WAS MISSING// user must tap button!
-                            //             builder: (BuildContext context) {
-                            //               return AlertDialog(
-                            //                 title: Text('Select image from :-',style: TextStyle(
-                            //                   fontSize: 15.0,
-                            //                 ),),
-                            //                 content: SingleChildScrollView(
-                            //                   child: ListBody(
-                            //                     children: <Widget>[
-                            //                       GestureDetector(
-                            //                         onTap: (){
-                            //                           pickImagefromCamera();
-                            //                           Navigator.of(context, rootNavigator: true).pop(context);
-                            //                         },
-                            //                         child: Row(
-                            //                           children: [
-                            //                             Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
-                            //                             Padding(
-                            //                               padding: const EdgeInsets.only(left: 20.0),
-                            //                               child: Text('Camera'),
-                            //                             ),
-                            //                           ],
-                            //                         ),
-                            //                       ),
-                            //                       Padding(
-                            //                         padding: const EdgeInsets.only(top: 20.0),
-                            //                         child: GestureDetector(
-                            //                           onTap: (){
-                            //                             pickImage();
-                            //                             Navigator.of(context, rootNavigator: true).pop(context);
-                            //                           },
-                            //                           child: Row(
-                            //                             children: [
-                            //                               Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
-                            //                               Padding(
-                            //                                 padding: const EdgeInsets.only(left: 20.0),
-                            //                                 child: Text('Gallery'),
-                            //                               ),
-                            //                             ],
-                            //                           ),
-                            //                         ),
-                            //                       ),
-                            //                     ],
-                            //                   ),
-                            //                 ),
-                            //               );
-                            //             });
-                            //       },
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
@@ -610,7 +547,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                   children: <Widget>[
 
                                     Container(
-                                      height: 40.0,
+                                      height: height*0.3,
                                       width: width,
                                       margin: EdgeInsets.only(top: 8.0),
                                       decoration: BoxDecoration(

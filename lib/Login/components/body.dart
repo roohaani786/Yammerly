@@ -560,23 +560,6 @@ class _BodyState extends State<Body> {
                             SocalIcon(
                                 iconSrc: "assets/icons/google-icon.svg",
                                 press: () {
-//                                  signInWithGoogle(success).whenComplete(() {
-//                           if (success == true)
-//                                    Navigator.of(context).push(
-//                                      MaterialPageRoute(
-//                                        builder: (context) {
-//                                          return HomePage(
-////                                    title: "Welcome",
-//                                          );
-//                                        },
-//                                      ),
-//                                    );
-//                           else
-//                             Navigator.pop(
-//                               context
-//                             );
-//
-//                                  });
 
                                   onGoogleSignIn(context);
                                 }),

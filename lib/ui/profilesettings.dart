@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:techstagram/Changepassword/login_screen.dart';
@@ -23,12 +25,29 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
   bool valuef = true;
+  bool valueP = false;
   final String email;
   final String phonenumber;
   bool emailVerification;
   final String uid;
   final auth = FirebaseAuth.instance;
   Timer timer;
+  bool emailVerify = false;
+  int followers;
+  int following;
+  int posts;
+  bool private = false;
+  FirebaseUser currUser;
+  DocumentSnapshot docSnap;
+  TextEditingController firstNameController,
+      lastNameController,
+      emailController,
+      bioController,genderController,linkController,photoUrlController,coverPhotoUrlController,
+      displayNameController,workController,educationController,
+      phonenumberController,
+      currentCityController,homeTownController,relationshipController,
+      followersController,followingController,pinCodeController,userPostsController,uidController;
+
 
   void sendVerificationEmail() async{
     print("andar aaya");
@@ -41,6 +60,47 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
     await firebaseUser.sendEmailVerification();
 
+  }
+
+  fetchProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(currUser.uid)
+          .get();
+
+      displayNameController.text = docSnap.data["displayName"];
+      firstNameController.text = docSnap.data["fname"];
+      lastNameController.text = docSnap.data["surname"];
+      uidController.text = docSnap.data["uid"];
+      emailController.text = docSnap.data["email"];
+      photoUrlController.text = docSnap.data["photoURL"];
+      phonenumberController.text = docSnap.data["phonenumber"];
+      emailVerify = docSnap.data["emailVerified"];
+      bioController.text = docSnap.data["bio"];
+      followers = docSnap.data["followers"];
+      following  = docSnap.data["following"];
+      posts  = docSnap.data["posts"];
+      private = docSnap.data["private"];
+      coverPhotoUrlController.text = docSnap.data['coverPhotoUrl'];
+
+      if(private){
+        setState(() {
+          valueP = true;
+        });
+      }else{
+        setState(() {
+          valueP = false;
+        });
+      }
+      // setState(() {
+      //   isLoading = false;
+      // });
+
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
   }
 
 
@@ -72,10 +132,35 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     // user = auth.currentUser as FirebaseUser;
 //    user.sendEmailVerification();
 
+    firstNameController = TextEditingController();
+    lastNameController = TextEditingController();
+    emailController = TextEditingController();
+    phonenumberController = TextEditingController();
+    // emailVerificationController = TextEditingController();
+    pinCodeController = TextEditingController();
+    bioController = TextEditingController();
+    genderController = TextEditingController();
+    linkController = TextEditingController();
+    photoUrlController = TextEditingController();
+    coverPhotoUrlController = TextEditingController();
+    displayNameController = TextEditingController();
+    workController = TextEditingController();
+    educationController = TextEditingController();
+    currentCityController = TextEditingController();
+    homeTownController = TextEditingController();
+    relationshipController = TextEditingController();
+    pinCodeController = TextEditingController();
+    followersController = TextEditingController();
+    followingController = TextEditingController();
+    userPostsController = TextEditingController();
+    uidController = TextEditingController();
+
     timer = Timer.periodic(Duration(seconds: 2), (timer) {
       checkEmailVerified();
     });
     super.initState();
+
+    fetchProfileData();
   }
 
   Future<void> checkEmailVerified() async {
@@ -91,6 +176,21 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         emailVerification = true;
       });
     }
+  }
+
+  setprivate(bool private) async {
+
+    print(private);
+    print(uid);
+    print("dekho");
+
+    await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .updateData({'private': private});
+
+    print("yaha aaya");
+
   }
 
   @override
@@ -191,16 +291,44 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             tiles: [
 
               SettingsTile.switchTile(
+                title: (valueP)?'Private':'Public',
+                leading: Icon((valueP)?Icons.privacy_tip_outlined:Icons.person_outline_outlined,color: Colors.grey,),
+                switchValue: valueP,
+                switchActiveColor: Colors.deepPurple,
+                onToggle: (value) {
+                  if(valueP == true){
+                    setState(() {
+                      valueP = false;
+                    });
+                    setprivate(valueP);
+                  }
+                  else{
+                    setState(() {
+                      valueP = true;
+                    });
+                    setprivate(valueP);
+                  }
+                },
+              ),
+
+              SettingsTile.switchTile(
                 title: 'Use fingerprint',
                 leading: Icon(Icons.fingerprint,color: Colors.grey,),
                 switchValue: false,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {
                   if(valuef == true){
-                    valuef = false;
+
+                    setState(() {
+                      valuef = false;
+                    });
+
                   }
                   else{
-                    valuef = true;
+
+                    setState(() {
+                      valuef = true;
+                    });
                   }
                 },
               ),

@@ -71,6 +71,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     super.initState();
     fetchProfileData();
     getUserPosts(uid);
+    fetchOProfileData();
+    checkPrivate();
   }
 
   int followingX;
@@ -132,6 +134,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   //   }
   // }
 
+  bool private;
+
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
@@ -145,6 +149,62 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       photoUrlX = docSnap.data["photoURL"];
       print("fg");
       print(currUser.uid);
+
+      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
+
+  bool show;
+
+  checkPrivate() async {
+    if(private == true){
+      await Firestore.instance.collection('users')
+          .document(uid)
+          .collection('followers')
+          .document(displayNamecurrentUser)
+          .get()
+          .then((value) {
+        if (value.exists) {
+          print(uidX);
+          print("if me aaya");
+          setState(() {
+            show = true;
+          });
+        }else{
+          print("else me aaya");
+          setState(() {
+            show = false;
+          });
+        }
+      });
+    }else if(private == false){
+      print("private nahi hai");
+      setState(() {
+        show = true;
+      });
+    }else{
+      setState((){
+        show = true;
+      });
+    }
+  }
+
+  fetchOProfileData() async {
+    currUser = await FirebaseAuth.instance.currentUser();
+    try {
+      docSnap = await Firestore.instance
+          .collection("users")
+          .document(uid)
+          .get();
+
+      private = docSnap.data["private"];
+      print("fgd");
+      print(private);
 
       setState(() {
 //        isLoading = false;
@@ -223,14 +283,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   Future<bool> _onWillPop() {
     Navigator.pop(context);
-    // return Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) {
-    //       return HomePage(initialindexg: 1);
-    //     },
-    //   ),
-    // );
   }
 
   getlikes( String displayName, String postId) {
@@ -251,6 +303,18 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     });
   }
 
+  DeleteNotification() async {
+
+    print("amios");
+    Firestore.instance
+        .collection("users")
+        .document(uid)
+        .collection('notification')
+    //.where('displayName','==',displayName);
+        .document(uidX)
+        .delete();
+  }
+
   String NotificationId;
   Notification(String displayNameCurrUser,int followers) async {
     print(displayNameCurrUser);
@@ -264,7 +328,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
     return await Firestore.instance.collection("users")
         .document(uid).collection("notification")
-        .document(NotificationId)
+        .document(uidX)
         .setData({"followers" : followers+1,
       "notificationId" : NotificationId,
       "username": displayNameCurrUser,
@@ -276,6 +340,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       "status" : "Follow",
     });
   }
+
 
   List<DocumentSnapshot> list;
 
@@ -669,15 +734,13 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               if (timer?.isActive ??false)
                                                                 timer.cancel(); //cancel if [timer] is null or running
                                                               timer = Timer(
-                                                                  const Duration(milliseconds: 340),
+                                                                  const Duration(milliseconds: 1500),
                                                                       () {
-                                                                        DatabaseService()
-                                                                            .unfollowUser(
-                                                                            followers, uid,
-                                                                            displayNamecurrentUser);
+                                                                        DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
 
-                                                                        DatabaseService()
-                                                                            .decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
+                                                                        DeleteNotification();
+
+                                                                        DatabaseService().decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
                                                                         setState(() {
                                                                           //getFollowers();
                                                                           followed = false;
@@ -694,88 +757,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                           )),
                                                     ),
 
-
-//                                                     (displayName != displayNamecurrentUser)?Padding(
-//                                                       padding: const EdgeInsets.only(left: 20.0),
-//                                                       child: SizedBox(
-//                                                         width: 120,
-//                                                         child: FlatButton(
 //
-//                                                             color: Colors.white,
-//                                                             child: new Text(
-//                                                               "Message",
-//                                                               style: TextStyle(
-//                                                                 color: Colors.purple,
-//                                                               ),
-//                                                             ),
-//                                                             onPressed: () {
-//
-// //                                                      Navigator.push(
-// //                                                        context,
-// //                                                        MaterialPageRoute(
-// //                                                            builder: (
-// //                                                                context) =>
-// //                                                                ProfileSettings()),
-// //                                                      );
-//
-//                                                             },
-//                                                             shape: RoundedRectangleBorder(
-//                                                               side: BorderSide(
-//                                                                   color: Colors.purple,
-//                                                                   width: 2),
-//                                                               borderRadius: BorderRadius
-//                                                                   .circular(30.0),
-//                                                             )),
-//                                                       ),
-//                                                     ):FlatButton(
-//                                                         color: Colors.transparent,
-//                                                         //color: Colors.white,
-//                                                         child: new Text(
-//                                                           "Edit Profile",
-//                                                           style: TextStyle(
-//                                                             color: Colors.black,
-//                                                             //color: Color(0xffed1e79),
-//                                                           ),
-//                                                         ),
-//                                                         onPressed: () {
-//
-//                                                           Navigator.push(
-//                                                             context,
-//                                                             MaterialPageRoute(builder: (context) => ProfilePage()),
-//                                                           );
-//                                                         },
-//                                                         shape: RoundedRectangleBorder(
-//                                                           side: BorderSide(
-//                                                               color: Colors.purple,
-//                                                               //color: Color(0xffed1e79),
-//                                                               width: 2.5),
-//                                                           borderRadius: BorderRadius.circular(30.0),
-//                                                         )),
                                                   ]
                                               ),
-                                              // (displayName != displayNamecurrentUser)?SizedBox(
-                                              //   width: 120,
-                                              //   child: FlatButton(
-                                              //       color: Colors.purple,
-                                              //       child: new Text(
-                                              //         "about",
-                                              //         style: TextStyle(
-                                              //           color: Colors.white,
-                                              //         ),
-                                              //       ),
-                                              //       onPressed: () {
-                                              //         Navigator.push(
-                                              //           context,
-                                              //           MaterialPageRoute(builder: (context) => AboutOtherUser(uid: uid)),//uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName)),
-                                              //         );
-                                              //       },
-                                              //       shape: RoundedRectangleBorder(
-                                              //         //side: BorderSide(color: Colors.white, width: 2),
-                                              //         borderRadius: BorderRadius
-                                              //             .circular(30.0),
-                                              //       )),
-                                              //
-                                              // ):Container(),
                                               SizedBox(
                                                 height: 10,
                                                 width: deviceWidth,
@@ -833,13 +817,20 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                         int likes = snapshot.data.documents[index]['likes'];
                                                         readTimestamp(timestamp.seconds);
 
+
+
+                                                        checkPrivate();
+
                                                         getlikes(displayName,postId);
+
+
+
 
 
                                                         if(likes< 0 || likes == 0){
                                                           liked = false;
                                                         }
-                                                        return Container(
+                                                        return (show == null)?Container():(show)?Container(
                                                           child: Container(
                                                             color: Colors.white,
                                                             child: Column(
@@ -892,6 +883,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                           // height: 150.0,
                                                           // width: 150.0,
                                                           //child: Image.network(url),
+                                                        ):
+                                                        Container(
+
                                                         );
                                                       }
                                                   )

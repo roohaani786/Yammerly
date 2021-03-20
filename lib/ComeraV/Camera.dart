@@ -824,6 +824,15 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                     !controller.value.isRecordingVideo
                     ? onVideoRecordButtonPressed()
                     : print("nahi gaya");
+
+                Timer(Duration(seconds: 30), () {
+                  print("Yeah, this line is printed after 3 second");
+                  controller != null &&
+                      controller.value.isInitialized &&
+                      controller.value.isRecordingVideo
+                      ? onStopButtonPressed()
+                      : null;
+                });
               }
             },
           ),
