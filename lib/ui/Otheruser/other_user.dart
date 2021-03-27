@@ -816,17 +816,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                         String postId = snapshot.data.documents[index]['postId'];
                                                         int likes = snapshot.data.documents[index]['likes'];
                                                         readTimestamp(timestamp.seconds);
-
-
-
                                                         checkPrivate();
 
                                                         getlikes(displayName,postId);
-
-
-
-
-
                                                         if(likes< 0 || likes == 0){
                                                           liked = false;
                                                         }

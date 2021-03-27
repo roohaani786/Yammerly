@@ -535,7 +535,6 @@ class _FeedsPageState extends State<FeedsPage> {
                     }
 
                     return (show[index] != true)?Container(
-                      child : Text("BHAI BAI"),
                     ):(shared==true)?Container(
                       decoration: BoxDecoration(
                         border: Border(
