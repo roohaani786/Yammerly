@@ -853,7 +853,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                 _isRecordingMode = !_isRecordingMode;
               });
               if(_isRecordingMode){
-                print("video");
+                print("viDdeo");
                 controller != null &&
                     controller.value.isInitialized &&
                     !controller.value.isRecordingVideo
@@ -861,7 +861,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                     : print("nahi gaya");
                 rightButtonPressed();
 
-                Timer(Duration(seconds: 300), () {
+                Timer(Duration(seconds: 30), () {
                   print("Yeah, this line is printed after 3 second");
                   controller != null &&
                       controller.value.isInitialized &&
@@ -869,6 +869,13 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                       ? onStopButtonPressed()
                       : null;
                 });
+              }else{
+                stopVideoRecording();
+                dependencies.stopwatch.reset();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CameraExampleHome(cam: cam,)),
+                );
               }
             },
           ),
@@ -1052,7 +1059,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   void onVideoRecordButtonPressed() {
-    print("video");
+    print("videoooo");
     startVideoRecording().then((_) {
       if (mounted) setState(() {});
     });
@@ -1089,13 +1096,16 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   Future<void> startVideoRecording() async {
+    print("bhai bhaaaa");
     if (!controller.value.isInitialized) {
+
       showInSnackBar('Error: select a camera first.');
       return;
     }
 
     if (controller.value.isRecordingVideo) {
-      // A recording is already started, do nothing.
+
+      //A recording is already started, do nothing.
       return;
     }
 
@@ -1258,6 +1268,10 @@ class CameraApp extends StatelessWidget {
 //   }
 //   runApp(CameraApp());
 // }
+
+
+//timer thing is start from here
+
 
 class ElapsedTime {
   final int hundreds;
