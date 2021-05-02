@@ -809,11 +809,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                   
                   GestureDetector(
                     onTap: () {
-                     // rightButtonPressed();   
-                      dependencies.stopwatch.stop();  
-                    // setState(() {
-                    //   dependencies.stopwatch.stop();
-                    // });
+                     rightButtonPressed();   
+                     // dependencies.stopwatch.stop();  
                     },
                     child: IconButton(
                       icon: controller != null && controller.value.isRecordingPaused
@@ -830,9 +827,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                   GestureDetector(
                     onTap: (){
                       rightButtonPressed();
-                //  setState(() {
-                //       dependencies.stopwatch.stop();
-                //     });
                     },
                     child: IconButton(
                       icon: const Icon(Icons.stop),
@@ -882,41 +876,59 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                   //  Icon(Icons.play_arrow);
                   // }
     
+  // if(_isRecordingMode ){
+  //               print("30 sec k baad band");
+  //               Timer(Duration(seconds: 30), () {
+  //                 print("Yeah, this line is printed after 3 second");
+  // 
+  //                 controller != null &&
+  //                     controller.value.isInitialized &&
+  //                     controller.value.isRecordingVideo
+  //                     ? onStopButtonPressed()
+  //                     : null;
+  //               });
+  //             }else{
+  //               stopVideoRecording();
+  //               dependencies.stopwatch.reset();
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(builder: (context) => CameraExampleHome(cam: cam,)),
+  //               );
+  //             }
+  //             if(_isRecordingMode ){
+  //               print("video");
+  //               controller != null && 
+  //                   controller.value.isInitialized 
+  //                   &&
+  //                   !controller.value.isRecordingVideo
+  //                   //camera or video one at a time
+  //                   ? print("recording abhi chalu nhi hui hai")
+  //                   //? onVideoRecordButtonPressed()
+  //                   : print("nahi gaya");
+  //               // rightButtonPressed();
 
-              // if(_isRecordingMode ){
-              //   print("video");
-              //   controller != null &&
-              //       controller.value.isInitialized 
-              //       &&
-              //       !controller.value.isRecordingVideo
-              //       //camera or video one at a time
-              //       ? print("recording abhi chalu nhi hui hai")
-              //     //  ? onVideoRecordButtonPressed()
-              //       : print("nahi gaya");
-              //   // rightButtonPressed();
-
-              //   // Timer(Duration(seconds: 30), () {
-              //   //   print("Yeah, this line is printed after 3 second");
-              //   //   controller != null &&
-              //   //       controller.value.isInitialized &&
-              //   //       controller.value.isRecordingVideo
-              //   //       ? onStopButtonPressed()
-              //   //       : null;
-              //   // });
-              // }else{
-              //   stopVideoRecording();
-              //   dependencies.stopwatch.reset();
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => CameraExampleHome(cam: cam,)),
-              //   );
-              // }
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  //               Timer(Duration(seconds: 30), () {
+  //                 print("Yeah, this line is printed after 3 second");
+  //                 controller != null &&
+  //                     controller.value.isInitialized &&
+  //                     controller.value.isRecordingVideo
+  //                     ? onStopButtonPressed()
+  //                     : null;
+  //               });
+  //             }else{
+  //               stopVideoRecording();
+  //               dependencies.stopwatch.reset();
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(builder: (context) => CameraExampleHome(cam: cam,)),
+  //               );
+  //             }
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   /// Display a row of toggle to select the camera (or a message if no camera is available).
   // Widget _cameraTogglesRowWidget() {
@@ -1092,19 +1104,12 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     });
   }
 
-  void onVideoRecordButtonPressed() {
+  void onVideoRecordButtonPressed() { 
        rightButtonPressed();
-                //            Timer(Duration(seconds: 30), () {
-                //   print("timer chalu");
-                //   controller != null &&
-                //       controller.value.isInitialized &&
-                //       controller.value.isRecordingVideo
-                //       ? onStopButtonPressed()
-                //       : null;
-                // });
     print("videoooo");
     startVideoRecording().then((_) {
-      if (mounted) setState(() {});
+      if (mounted) setState(() { 
+      });
     });
   }
 
@@ -1129,7 +1134,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     print("pause hui");
     pauseVideoRecording().then((_) {
       if (mounted) setState(() {dependencies.stopwatch.stop();});
-      showInSnackBar('Video recording paused');
+     // showInSnackBar('Video recording paused');
     });
   }
 
@@ -1137,7 +1142,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     print("resume hui hui");
     resumeVideoRecording().then((_) {
       if (mounted) setState(() {dependencies.stopwatch.start();});
-      showInSnackBar('Video recording resumed');
+     // showInSnackBar('Video recording resumed');
     });
   }
 
