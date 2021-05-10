@@ -237,7 +237,7 @@ class _GalleryState extends State<Gallery> {
                                           // MaterialPageRoute(
                                           //   builder: (context) {
                                           //     return CameraScreen(cam: cam,);
-                                          //   }
+                                          //   }R
                                           // ));
                                           Navigator.push(
                                             context,

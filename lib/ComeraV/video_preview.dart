@@ -14,6 +14,7 @@ class VideoPreview extends StatefulWidget {
   _VideoPreviewState createState() => _VideoPreviewState(videoPath,cam);
 }
 
+
 class _VideoPreviewState extends State<VideoPreview>
     with SingleTickerProviderStateMixin {
   _VideoPreviewState(this.videoPath, this.cam);
@@ -51,124 +52,180 @@ class _VideoPreviewState extends State<VideoPreview>
 
   @override
   Widget build(BuildContext context) {
+    Future<bool> _onWillPop() async {
+    print('pop-');
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Text("Discard post ?"),
+            content: Text("If you go back now, you will lose your Post.",
+                style: TextStyle(color: Colors.deepPurple)),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 120.0),
+
+                child: Column(
+                  children: [
+                    FlatButton(
+                      child: Text("Discard", style:
+                      TextStyle(
+                        color: Colors.red,
+                      ),),
+                      onPressed: () {
+                      //  _deleteFile();R
+                       _pauseVideo();
+                        print(cam);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return CameraExampleHome(cam: cam,);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    FlatButton(
+                      child: Text("Keep", style:
+                      TextStyle(
+                        color: Colors.black,
+                      ),),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
+                ),
+              )
+            ],
+          );
+        });
+  }
     final size = MediaQuery.of(context).size;
     if (_controller.value.initialized) {
-      return SafeArea(
-        child: Card(
-          child: Stack(
-            children: <Widget>[
-              ClipRect(
-                child: Container(
-                  child: Transform.scale(
-                    scale: _controller.value.aspectRatio/ size.aspectRatio,
-                    child: Center(
-                      child: AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
+      return WillPopScope(
+        onWillPop: _onWillPop,
+              child: SafeArea(
+          child: Card(
+            child: Stack(
+              children: <Widget>[
+                ClipRect(
+                  child: Container(
+                    child: Transform.scale(
+                      scale: _controller.value.aspectRatio/ size.aspectRatio,
+                      child: Center(
+                        child: AspectRatio(
+                          aspectRatio: _controller.value.aspectRatio,
+                          child: VideoPlayer(_controller),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0, left: 6.0),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: IconButton(icon: Icon(Icons.close,
-                    color: Colors.grey.shade400,
-                    size: 30.0,), onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            backgroundColor: Colors.white,
-                            title: Text("Discard post ?"),
-                            content: Text(
-                                "If you go back now, you will loose your post.",
-                                style: TextStyle(
-                                    color: Colors.deepPurple
-                                )),
-                            actions: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(right: 120.0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, left: 6.0),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(icon: Icon(Icons.close,
+                      color: Colors.grey.shade400,
+                      size: 30.0,), onPressed: () {
+                       // Future<bool> _onWillPop() async {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.white,
+                              title: Text("Discard post ?"),
+                              content: Text(
+                                  "If you go back now, you will lose your Post",
+                                  style: TextStyle(
+                                      color: Colors.deepPurple
+                                  )),
+                              actions: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 120.0),
 
-                                child: Column(
-                                  children: [
-                                    FlatButton(
-                                      child: Text("Discard", style:
-                                      TextStyle(
-                                        color: Colors.red,
-                                      ),),
-                                      onPressed: () {
-                                        //_deleteFile();
-                                        // Navigator.pop(context,
-                                        // MaterialPageRoute(
-                                        //   builder: (context) {
-                                        //     return CameraScreen(cam: cam,);
-                                        //   }
-                                        // ));
-                                        _pauseVideo();
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) {
-                                              return CameraExampleHome(cam: cam,);
-                                            },
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    FlatButton(
-                                      child: Text("Keep", style:
-                                      TextStyle(
-                                        color: Colors.black,
-                                      ),),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    )
-                                  ],
-                                ),
+                                  child: Column(
+                                    children: [
+                                      FlatButton(
+                                        child: Text("Discard", style:
+                                        TextStyle(
+                                          color: Colors.red,
+                                        ),),
+                                        onPressed: () {
+                                          //_deleteFile();
+                                          // Navigator.pop(context,
+                                          // MaterialPageRoute(
+                                          //   builder: (context) {
+                                          //     return CameraScreen(cam: cam,);
+                                          //   }
+                                          // ));
+                                        //  _pauseVideo();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) {
+                                                return CameraExampleHome(cam: cam,);
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      FlatButton(
+                                        child: Text("Keep", style:
+                                        TextStyle(
+                                          color: Colors.black,
+                                        ),),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ],
+                                  ),
 
-                              )
-                            ],
-                          );
-                        });
-                  },
+                                )
+                              ],
+                            );
+                          });
+                    }
+                    //}
+                    ),
                   ),
                 ),
-              ),
 
-              Positioned(
-                top: 24.0,
-                right: 12.0,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
+                Positioned(
+                  top: 24.0,
+                  right: 12.0,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      _pauseVideo();
+                      // Navigator.pop(context,
+                      //   MaterialPageRoute(builder: (context) => HomePage()),);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => UploadImage(isVideo: true,file: File(widget.videoPath),
+                          shared: false,)),
+                      );
+                    },
                   ),
-                  onPressed: () {
-                    _pauseVideo();
-                    // Navigator.pop(context,
-                    //   MaterialPageRoute(builder: (context) => HomePage()),);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => UploadImage(isVideo: true,file: File(widget.videoPath),
-                        shared: false,)),
-                    );
-                  },
                 ),
-              ),
 
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: VideoControls(
-                  videoController: _controller,
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: VideoControls(
+                    videoController: _controller,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
