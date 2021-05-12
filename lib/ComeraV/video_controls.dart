@@ -17,7 +17,7 @@ class _VideoControlsState extends State<VideoControls>
   @override
   void initState() {
     _animationController = AnimationController(
-      vsync: this,
+      //value: this,
       duration: Duration(milliseconds: 300),
     );
     widget.videoController.addListener(_videoListener);

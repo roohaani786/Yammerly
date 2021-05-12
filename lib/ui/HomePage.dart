@@ -352,9 +352,9 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                 context,
                 MaterialPageRoute(
                     builder: (context) => CloudFirestoreSearch(
-                          displayNamecurrentUser: displayNameController.text,
-                          uidX: uidController.text,
-                        )),
+                      displayNamecurrentUser: displayNameController.text,
+                      uidX: uidController.text,
+                    )),
               );
             },
           ),
