@@ -48,7 +48,7 @@ class _ChatsPageState extends State<ChatsPage> {
     final pageTitle = Padding(
       padding: EdgeInsets.only(top: 0.0, bottom: 20.0),
       child: Text(
-        "Status Updates",
+        "Status updates ",
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: Colors.black,

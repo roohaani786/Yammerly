@@ -694,7 +694,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   bool _isRecordingMode = false;
   bool _isRecording = false;
-  bool _oneAtatime = false;
+ 
 
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
@@ -1097,20 +1097,37 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   void onVideoRecordButtonPressed() {
-    rightButtonPressed();
-    //            Timer(Duration(seconds: 30), () {
-    //   print("timer chalu");
-    //   controller != null &&
-    //       controller.value.isInitialized &&
-    //       controller.value.isRecordingVideo
-    //       ? onStopButtonPressed()
-    //       : null;
-    // });
-    print("videoooo");
+    Future.delayed(const Duration(milliseconds: 1000), () {
+
+  setState(() {
+     rightButtonPressed();
+   
+  });
+
+});
+   
+  //  if(dependencies.stopwatch.elapsedMilliseconds==30000)
+  //  {
+  //    print("timer stop me aaya");
+  //    dependencies.stopwatch.stop();
+  //    onStopButtonPressed();
+
+  //  }
+               Timer(Duration(seconds: 30), () {
+      print("timer chalu");
+      controller != null &&
+          controller.value.isInitialized &&
+          controller.value.isRecordingVideo
+          ? onStopButtonPressed()
+          : null;
+    });
+    print("videoo");
     startVideoRecording().then((_) {
-      if (mounted) setState(() {});
+      if (mounted) setState(() {
+      });
     });
   }
+
 
   void onStopButtonPressed() {
     print("recording band hogyi ");
