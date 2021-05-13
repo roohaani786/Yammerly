@@ -6,8 +6,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/yammerly_gallery/file.dart';
 import 'package:storage_path/storage_path.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 class gallery extends StatefulWidget {
   gallery({Key key, this.title}) : super(key: key);
 
