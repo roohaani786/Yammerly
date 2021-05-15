@@ -21,6 +21,7 @@ class CameraExampleHome extends StatefulWidget {
   final int cam;
   final bool check;
 
+
   const CameraExampleHome({Key key, this.cam, this.check}) : super(key: key);
   @override
   _CameraExampleHomeState createState() {
@@ -72,6 +73,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   final Stopwatch stopwatch = new Stopwatch();
   final List<ValueChanged<ElapsedTime>> timerListeners =
       <ValueChanged<ElapsedTime>>[];
+  Duration maxVideoDuration = Duration(seconds: 31), pausedVideoDuration = Duration(seconds: 0);
 
   void leftButtonPressed() {
     setState(() {
@@ -228,8 +230,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             onDoubleTap: () {
               _onCameraSwitch();
             },
-
-            
             child: Column(
               children: <Widget>[
                 Expanded(
@@ -1101,7 +1101,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   setState(() {
      rightButtonPressed();
-   
   });
 
 });
@@ -1113,17 +1112,20 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   //    onStopButtonPressed();
 
   //  }
-               Timer(Duration(seconds: 30), () {
-      print("timer chalu");
-      controller != null &&
-          controller.value.isInitialized &&
-          controller.value.isRecordingVideo
-          ? onStopButtonPressed()
-          : null;
-    });
     print("videoo");
     startVideoRecording().then((_) {
+      maxVideoDuration = Duration(seconds: 31);
+      Timer(maxVideoDuration, () {
+        print("timer chalu");
+        (controller != null &&
+            controller.value.isInitialized &&
+            controller.value.isRecordingVideo &&
+            !controller.value.isRecordingPaused)?
+        onStopButtonPressed():
+        null;
+      });
       if (mounted) setState(() {
+
       });
     });
   }
@@ -1134,7 +1136,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     stopVideoRecording().then((file) {
       if (mounted)
         setState(() {
-          dependencies.stopwatch.reset();
         });
       if (file != null) {
         //showInSnackBar('Video recorded to ${file.path}');
@@ -1156,6 +1157,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       if (mounted)
         setState(() {
           dependencies.stopwatch.stop();
+          pausedVideoDuration = Duration(milliseconds: dependencies.stopwatch.elapsedMilliseconds);
+          print(pausedVideoDuration);
         });
       //   showInSnackBar('Video recording paused');
     });
@@ -1167,6 +1170,17 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       if (mounted)
         setState(() {
           dependencies.stopwatch.start();
+          maxVideoDuration -= pausedVideoDuration;
+          Timer(maxVideoDuration, () {
+            print("timer chalu");
+            (controller != null &&
+                controller.value.isInitialized &&
+                controller.value.isRecordingVideo &&
+                !controller.value.isRecordingPaused)?
+            onStopButtonPressed():
+            null;
+          });
+
         });
       // showInSnackBar('Video recording resumed');
     });

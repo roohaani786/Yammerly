@@ -110,7 +110,7 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-    fetchPosts();
+    //fetchPosts();
     fetchProfileData();
     fetchLikes();
     //getPostCount();
@@ -119,15 +119,15 @@ class _FeedsPageState extends State<FeedsPage> {
   File crop;
   Timer timer; //declare timer variable
 
-  // getPostCount() async {
-  //   await DatabaseService().getPosts().then((val){
-  //     setState(() {
-  //       Plength = val;
-  //     });
-  //   });
-  //   print("yaha ai bhai length");
-  //   print(Plength);
-  // }
+  getPostCount() async {
+    await DatabaseService().getPosts().then((val){
+      setState(() {
+        Plength = val;
+      });
+    });
+    print("yaha ai bhai length");
+    print(Plength);
+  }
 
   Future pickImage() async {
     if(_image == null){
