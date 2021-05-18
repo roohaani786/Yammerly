@@ -136,6 +136,9 @@ dependencies:
   #A Flutter plugin for iOS, Android and Web for playing back video on a Widget surface.
   #Plugin link:- https://pub.dev/packages/video_player
 
+  image_gallery:
+  #Flutter plugin to showing all the images from the storage in Android and iOS .
+
   settings_ui:
   #Create native settings for Flutter app in minutes. Use single interfaces to build
   #Plugin link:- https://pub.dev/packages/settings_ui

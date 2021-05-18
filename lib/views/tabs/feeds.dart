@@ -110,7 +110,7 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-    //fetchPosts();
+    fetchPosts();
     fetchProfileData();
     fetchLikes();
     //getPostCount();

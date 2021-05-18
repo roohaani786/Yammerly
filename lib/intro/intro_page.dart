@@ -21,6 +21,7 @@ class _IntroPageState extends State<IntroPage> {
     });
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: Column(
         children: <Widget>[

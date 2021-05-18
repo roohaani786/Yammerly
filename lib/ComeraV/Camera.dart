@@ -1134,20 +1134,16 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   void onStopButtonPressed() {
     print("recording band hogyi ");
     stopVideoRecording().then((file) {
-      if (mounted)
+      if (mounted && file!= null)
         setState(() {
+          videoFile = file;
+          String vf = file.path;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => VideoPreview(videoPath: vf, cam: cam)),
+          );
         });
-      if (file != null) {
-        //showInSnackBar('Video recorded to ${file.path}');
-        videoFile = file;
-        String vf = file.path;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => VideoPreview(videoPath: vf, cam: cam)),
-        );
-        // _startVideoPlayer();
-      }
     });
   }
 
@@ -1180,7 +1176,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             onStopButtonPressed():
             null;
           });
-
         });
       // showInSnackBar('Video recording resumed');
     });
