@@ -1047,114 +1047,113 @@ class _FeedsPageState extends State<FeedsPage> {
                                         playFraction: 1,
                                         autoPause: true,
                                         autoPlay: true,
-                                        configuration: BetterPlayerConfiguration(
-                                          fit: BoxFit.cover,
-                                          aspectRatio: 0.5,
-                                          looping: true,
-                                          autoPlay: true,
-                                          showPlaceholderUntilPlay: true,
-                                          // placeholder: Container(
-                                          //   height: 500,
-                                          //   width: double.infinity,
-                                          //   decoration: BoxDecoration(
-                                          //     // gradient: LinearGradient(
-                                          //     //   colors: [
-                                          //     //     Colors.blue,
-                                          //     //     Colors.red,
-                                          //     //   ],
-                                          //     //   begin: Alignment.topLeft,
-                                          //     //   end: Alignment.bottomRight,
-                                          //     // ),
-                                          //     color: Colors.purple,
-                                          //   ),
-                                          // ),
-                                          controlsConfiguration: BetterPlayerControlsConfiguration(
-                                            enableProgressBar: false,
-                                            controlBarColor: Colors.white54,
-                                            enableFullscreen: false,
-                                            enableOverflowMenu: false,
-                                            enablePlayPause: true,
-                                          ),
-                                          errorBuilder: (context, errorMessage) {
-                                            return Center(
-                                              child: Column(
-                                                children: [
-                                                  Icon(
-                                                    Icons.error,
-                                                    color: Colors.white,
-                                                    size: 60,
-                                                  ),
-                                                  Text(
-                                                    errorMessage,
-                                                    style: TextStyle(color: Colors.white54),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        ),
+                                        // configuration: BetterPlayerConfiguration(
+                                        //   fit: BoxFit.cover,
+                                        //   aspectRatio: 0.5,
+                                        //   looping: true,
+                                        //   autoPlay: true,
+                                        //   showPlaceholderUntilPlay: true,
+                                        //   // placeholder: Container(
+                                        //   //   height: 500,
+                                        //   //   width: double.infinity,
+                                        //   //   decoration: BoxDecoration(
+                                        //   //     // gradient: LinearGradient(
+                                        //   //     //   colors: [
+                                        //   //     //     Colors.blue,
+                                        //   //     //     Colors.red,
+                                        //   //     //   ],
+                                        //   //     //   begin: Alignment.topLeft,
+                                        //   //     //   end: Alignment.bottomRight,
+                                        //   //     // ),
+                                        //   //     color: Colors.purple,
+                                        //   //   ),
+                                        //   // ),
+                                        //   controlsConfiguration: BetterPlayerControlsConfiguration(
+                                        //     enableProgressBar: false,
+                                        //     controlBarColor: Colors.white54,
+                                        //     enableFullscreen: false,
+                                        //     enableOverflowMenu: false,
+                                        //     enablePlayPause: true,
+                                        //   ),
+                                        //   errorBuilder: (context, errorMessage) {
+                                        //     return Center(
+                                        //       child: Column(
+                                        //         children: [
+                                        //           Icon(
+                                        //             Icons.error,
+                                        //             color: Colors.white,
+                                        //             size: 60,
+                                        //           ),
+                                        //           Text(
+                                        //             errorMessage,
+                                        //             style: TextStyle(color: Colors.white54),
+                                        //           ),
+                                        //         ],
+                                        //       ),
+                                        //     );
+                                        //   },
+                                        // ),
                                       ),
                                     ),
                                   ),
-
                                 ):(url==null)?Container():(!cloading[index])?Container():AspectRatio(
                                   aspectRatio: 16 / 9,
-                                  child: BetterPlayerListVideoPlayer(
-                                    BetterPlayerDataSource(
-                                      BetterPlayerDataSourceType.NETWORK,
-                                      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                                    ),
-                                    key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
-                                    playFraction: 1,
-                                    autoPause: true,
-                                    autoPlay: true,
-                                    configuration: BetterPlayerConfiguration(
-                                      fit: BoxFit.cover,
-                                      aspectRatio: 0.5,
-                                      looping: true,
-                                      autoPlay: true,
-                                      showPlaceholderUntilPlay: true,
-                                      // placeholder: Container(
-                                      //   height: 500,
-                                      //   width: double.infinity,
-                                      //   decoration: BoxDecoration(
-                                      //     // gradient: LinearGradient(
-                                      //     //   colors: [
-                                      //     //     Colors.blue,
-                                      //     //     Colors.red,
-                                      //     //   ],
-                                      //     //   begin: Alignment.topLeft,
-                                      //     //   end: Alignment.bottomRight,
-                                      //     // ),
-                                      //     color : Colors.purple,
-                                      //   ),
-                                      // ),
-                                      controlsConfiguration: BetterPlayerControlsConfiguration(
-                                        enableProgressBar: false,
-                                        controlBarColor: Colors.white54,
-                                        enableFullscreen: false,
-                                        enableOverflowMenu: false,
-                                        enablePlayPause: true,
-                                      ),
-                                      errorBuilder: (context, errorMessage) {
-                                        return Center(
-                                          child: Column(
-                                            children: [
-                                              Icon(
-                                                Icons.error,
-                                                color: Colors.white,
-                                                size: 60,
-                                              ),
-                                              Text(
-                                                errorMessage,
-                                                style: TextStyle(color: Colors.white54),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
+                                  // child: BetterPlayerListVideoPlayer(
+                                  //   BetterPlayerDataSource(
+                                  //     BetterPlayerDataSourceType.NETWORK,
+                                  //     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                                  //   ),
+                                  //   key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
+                                  //   playFraction: 1,
+                                  //   autoPause: true,
+                                  //   autoPlay: true,
+                                  //   configuration: BetterPlayerConfiguration(
+                                  //     fit: BoxFit.cover,
+                                  //     aspectRatio: 0.5,
+                                  //     looping: true,
+                                  //     autoPlay: true,
+                                  //     showPlaceholderUntilPlay: true,
+                                  //     // placeholder: Container(
+                                  //     //   height: 500,
+                                  //     //   width: double.infinity,
+                                  //     //   decoration: BoxDecoration(
+                                  //     //     // gradient: LinearGradient(
+                                  //     //     //   colors: [
+                                  //     //     //     Colors.blue,
+                                  //     //     //     Colors.red,
+                                  //     //     //   ],
+                                  //     //     //   begin: Alignment.topLeft,
+                                  //     //     //   end: Alignment.bottomRight,
+                                  //     //     // ),
+                                  //     //     color : Colors.purple,
+                                  //     //   ),
+                                  //     // ),
+                                  //     controlsConfiguration: BetterPlayerControlsConfiguration(
+                                  //       enableProgressBar: false,
+                                  //       controlBarColor: Colors.white54,
+                                  //       enableFullscreen: false,
+                                  //       enableOverflowMenu: false,
+                                  //       enablePlayPause: true,
+                                  //     ),
+                                  //     errorBuilder: (context, errorMessage) {
+                                  //       return Center(
+                                  //         child: Column(
+                                  //           children: [
+                                  //             Icon(
+                                  //               Icons.error,
+                                  //               color: Colors.white,
+                                  //               size: 60,
+                                  //             ),
+                                  //             Text(
+                                  //               errorMessage,
+                                  //               style: TextStyle(color: Colors.white54),
+                                  //             ),
+                                  //           ],
+                                  //         ),
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // ),
                                 ),
                               ),
                             ),

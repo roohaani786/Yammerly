@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/intro/step_model.dart';
 
+
 class IntroPage extends StatefulWidget {
   @override
   _IntroPageState createState() => _IntroPageState();
@@ -11,9 +12,10 @@ class _IntroPageState extends State<IntroPage> {
   List<StepModel> list = StepModel.list;
   var _controller = PageController();
   var initialPage = 0;
-
   @override
   Widget build(BuildContext context) {
+    var deviceHeight = MediaQuery.of(context).size.height;
+    var deviceWidth = MediaQuery.of(context).size.width;
     _controller.addListener(() {
       setState(() {
         initialPage = _controller.page.round();
@@ -59,10 +61,8 @@ class _IntroPageState extends State<IntroPage> {
               child: Icon(Icons.arrow_back_ios),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 160.0),
-          ),
-
+          SizedBox(
+            width: MediaQuery.of(context).size.width*0.45),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -97,8 +97,8 @@ class _IntroPageState extends State<IntroPage> {
         itemBuilder: (context, index) {
           return Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 25.0),
+              SizedBox(
+                height: MediaQuery.of(context).size.height*0.15,
                 child: Text(
               "Welcome to Yammerly",
                   style: TextStyle(
@@ -110,8 +110,8 @@ class _IntroPageState extends State<IntroPage> {
                 ),
               ),
 
-Padding(
-  padding: const EdgeInsets.only(top: 100.0),
+SizedBox(
+  height: MediaQuery.of(context).size.height * 0.1,
 ),
 //              SizedBox(
 //                height: 15,

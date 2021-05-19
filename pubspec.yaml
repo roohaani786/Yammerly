@@ -131,7 +131,7 @@ dependencies:
   #Flutter package for building responsive layout based on screen sizes and orientation.
   #It could be wristwatch, small/medium/large mobile, small/large tablet or desktop.
   #Plugin link:- https://pub.dev/packages/responsive_layout_builder
-
+  chewie:
   video_player: ^0.10.2+5
   #A Flutter plugin for iOS, Android and Web for playing back video on a Widget surface.
   #Plugin link:- https://pub.dev/packages/video_player

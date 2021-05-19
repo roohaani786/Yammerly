@@ -910,9 +910,11 @@ Widget _buildStatItem(String label, String count) {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
-      Text(
-        label,
-        style: _statLabelTextStyle,
+      Flexible(
+        child: Text(
+          label,
+          style: _statLabelTextStyle,
+        ),
       ),
       Text(
         count,
