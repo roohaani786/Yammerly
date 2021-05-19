@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-import 'package:better_player/better_player.dart';
+import 'package:video_player/video_player.dart';
+
+import 'chats.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +24,7 @@ import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/utils/utils.dart';
+import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -87,9 +90,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
   _FeedsPageState({this.displayNamecurrentUser,this.postIdX});
 
-  BetterPlayerController _betterPlayerController;
-
-  BetterPlayerDataSource betterPlayerDataSource;
+  
 
 
   @override
@@ -106,6 +107,12 @@ class _FeedsPageState extends State<FeedsPage> {
 
     super.initState();
 
+    // BetterPlayerDataSource betterPlayerDataSource;
+    //
+    // _betterPlayerController = BetterPlayerController(
+    //     BetterPlayerConfiguration(),
+    //     betterPlayerDataSource: betterPlayerDataSource);
+
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
 
@@ -119,15 +126,15 @@ class _FeedsPageState extends State<FeedsPage> {
   File crop;
   Timer timer; //declare timer variable
 
-  getPostCount() async {
-    await DatabaseService().getPosts().then((val){
-      setState(() {
-        Plength = val;
-      });
-    });
-    print("yaha ai bhai length");
-    print(Plength);
-  }
+  // getPostCount() async {
+  //   await DatabaseService().getPosts().then((val){
+  //     setState(() {
+  //       Plength = val;
+  //     });
+  //   });
+  //   print("yaha ai bhai length");
+  //   print(Plength);
+  // }
 
   Future pickImage() async {
     if(_image == null){
@@ -270,62 +277,6 @@ class _FeedsPageState extends State<FeedsPage> {
       cloading[index] = true;
     });
   }
-  List<bool> private = List.filled(10000,false);
-
-  fetchPrivate(String userId,index) async {
-    docSnap = await Firestore.instance
-        .collection("users")
-        .document(userId)
-        .get();
-    setState(() {
-      private[index] = docSnap.data['private'];
-    });
-
-  }
-
-  List<bool> show = List.filled(10000, false);
-
-  checkPrivate(String userId,int index) async {
-
-    if(private[index] == true){
-      print("bhai bhai");
-
-      await Firestore.instance.collection('users')
-          .document(userId)
-          .collection('followers')
-          .document(displayNamecurrentUser)
-          .get()
-          .then((value) {
-        if (value.exists) {
-          print("bahi bhi");
-          setState(() {
-            show[index] = true;
-          });
-        }else if(!value.exists){
-          print("bhai bi");
-          print(private[index]);
-          print(index);
-          setState(() {
-            show[index] = false;
-          });
-        }
-      });
-    }else if(private[index] == false){
-      print("else if");
-      setState(() {
-        show[index] = true;
-      });
-     }else{
-      setState((){
-        show[index] = true;
-      });
-    }
-
-    print("whatt");
-    //print(show);
-    print(show);
-    print(index);
-  }
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
@@ -392,6 +343,7 @@ class _FeedsPageState extends State<FeedsPage> {
       prefs.setInt('comments',comments);
     }
 
+
     return Scaffold(
       key: _scaffoldKey,
       body: StreamBuilder(
@@ -448,15 +400,19 @@ class _FeedsPageState extends State<FeedsPage> {
 
                     bool isVideo = snapshot.data.documents[index]['isVideo'];
 
-
                     if(isVideo == null){
                       isVideo = false;
                     }
 
                           bool button = true;
+
+                          // setState(() async {
+                          //   SharedPreferences prefs = await SharedPreferences.getInstance();
+                          //   button = prefs.getBool("button" ?? true);
+                          // });
+
                           readTimestamp(timestamp.seconds);
-                          fetchPrivate(uid,index);
-                          checkPrivate(uid,index);
+
                           Fetchprofile(uid, index);
 
                           if (likes == 0 || likes < 0) {
@@ -484,12 +440,31 @@ class _FeedsPageState extends State<FeedsPage> {
                             .setData({"share" : shares+1,
                           "notificationId" : NotificationId,
                           //"comment": commentTextEditingController.text,
+
                           "timestamp": DateTime.now(),
                           "uid": uidController.text,
                           "status" : "share",
                           "postId" : postId,
                         });
+
                       }
+
+
+
+                      // return await Firestore.instance.collection("users")
+                      //     .document(uid).collection("notification")
+                      //     .document(NotificationId)
+                      //     .setData({"share" : shares+1,
+                      //   "notificationId" : NotificationId,
+                      //   "username": displayNamecurrentUser,
+                      //   //"comment": commentTextEditingController.text,
+                      //   "timestamp": DateTime.now(),
+                      //   "url": photoUrl,
+                      //   "uid": uid,
+                      //   "status" : "Share",
+                      //   "postId" : postId,
+                      //   "postUrl" : url,
+                      // });
                     }
 
                           Notification() async {
@@ -510,7 +485,7 @@ class _FeedsPageState extends State<FeedsPage> {
                               print("912");
                               return await Firestore.instance.collection("users")
                                   .document(uid).collection("notification")
-                                  .document(uidController.text+postId)
+                                  .document(NotificationId)
                                   .setData({"likes" : likes+1,
                                 "notificationId" : NotificationId,
                                 //"comment": commentTextEditingController.text,
@@ -522,6 +497,23 @@ class _FeedsPageState extends State<FeedsPage> {
                               });
 
                             }
+
+
+                      // return await Firestore.instance.collection("users")
+                      //     .document(uid).collection("notification")
+                      //     .document(NotificationId)
+                      //     .setData({"likes" : likes+1,
+                      //   "notificationId" : NotificationId,
+                      //   "username": displayNameCurrUser,
+                      //   //"comment": commentTextEditingController.text,
+                      //
+                      //   "timestamp": DateTime.now(),
+                      //   "url": photoUrl,
+                      //   "uid": uid,
+                      //   "status" : "like",
+                      //   "postId" : postId,
+                      //   "postUrl" : url,
+                      // });
                     }
 
                     DeleteNotification(String displayName){
@@ -530,12 +522,11 @@ class _FeedsPageState extends State<FeedsPage> {
                           .document(uid)
                           .collection('notification')
                           //.where('displayName','==',displayName);
-                          .document(uidController.text+postId)
+                          .document(displayName)
                           .delete();
                     }
 
-                    return (show[index] != true)?Container(
-                    ):(shared==true)?Container(
+                    return (shared==true)?Container(
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
@@ -941,8 +932,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
                       // post container
-                    ):(isVideo)?
-                    Container(
+                    ):(isVideo)?Container(
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
@@ -1038,15 +1028,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                     margin: EdgeInsets.symmetric(vertical: 2.5),
                                     child: AspectRatio(
                                       aspectRatio: 1,
-                                      child: BetterPlayerListVideoPlayer(
-                                        betterPlayerDataSource = BetterPlayerDataSource(
-                                          BetterPlayerDataSourceType.NETWORK,
-                                          'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                                      child: ChatsPage(
+                                       
+                      videoPlayerController: VideoPlayerController.network('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4')
                                         ),
                                         key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
-                                        playFraction: 1,
-                                        autoPause: true,
-                                        autoPlay: true,
+                                      
                                         configuration: BetterPlayerConfiguration(
                                           fit: BoxFit.cover,
                                           aspectRatio: 0.5,
@@ -1325,8 +1312,7 @@ class _FeedsPageState extends State<FeedsPage> {
                           ),
                         ],
                       ),
-                    ):
-                    Container(
+                    ):Container(
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(width: 10.0, color: Colors.grey[100]),
@@ -1584,7 +1570,6 @@ class _FeedsPageState extends State<FeedsPage> {
                         ],
                       ),
                     );
-                   // Container();
                   },
                 ),
               ),
