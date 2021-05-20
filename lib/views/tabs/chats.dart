@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/utils/utils.dart';
-import 'package:chewie/chewie.dart';
+//import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 
 class ChatsPage extends StatefulWidget {
@@ -20,18 +20,18 @@ class ChatsPage extends StatefulWidget {
 //bool cameraon = true;
 
 class _ChatsPageState extends State<ChatsPage> {
-  ChewieController _chewieController;
+  //ChewieController _chewieController;
 
   
 @override
   void initState() {
     super.initState();
-    _chewieController = ChewieController(
-      videoPlayerController: widget.videoPlayerController,
-      aspectRatio: 16 / 9,
-      autoInitialize: true,
-      looping: widget.looping,
-    );
+   // _chewieController = ChewieController(
+   //    videoPlayerController: widget.videoPlayerController,
+   //    aspectRatio: 16 / 9,
+   //    autoInitialize: true,
+   //    looping: widget.looping,
+   //  );
   }
   void _onHorizontalDrag(DragEndDetails details) {
     if (details.primaryVelocity == 0)
@@ -56,9 +56,9 @@ class _ChatsPageState extends State<ChatsPage> {
   
 
   Widget build(BuildContext context) {
-    Chewie(
-      controller: _chewieController,
-    );
+    // Chewie(
+    //   controller: _chewieController,
+    // );
     final deviceWidth = MediaQuery.of(context).size.width;
 
     final pageTitle = Padding(
@@ -165,6 +165,6 @@ class _ChatsPageState extends State<ChatsPage> {
   void dispose() {
     super.dispose();
     widget.videoPlayerController.dispose();
-    _chewieController.dispose();
+    //_chewieController.dispose();
   }
 }

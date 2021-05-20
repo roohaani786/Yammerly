@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -14,13 +15,13 @@ class AuthService {
 
 
   // Shared State for Widgets
-  Observable<FirebaseUser> user; // firebase user
-  Observable<Map<String, dynamic>> profile; // custom user data in Firestore
+  Stream<FirebaseUser> user; // firebase user
+  Stream<Map<String, dynamic>> profile; // custom user data in Firestore
   PublishSubject loading = PublishSubject();
 
 
   AuthService() {
-    user = Observable(_auth.onAuthStateChanged);
+    user = _auth.onAuthStateChanged;
 
     profile = user.switchMap((FirebaseUser u) {
       if (u != null) {
@@ -30,7 +31,7 @@ class AuthService {
             .snapshots()
             .map((snap) => snap.data);
       } else {
-        return Observable.just({});
+        return Stream.value(({}));
       }
     });
   }

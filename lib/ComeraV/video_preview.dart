@@ -104,7 +104,7 @@ class _VideoPreviewState extends State<VideoPreview>
         });
   }
     final size = MediaQuery.of(context).size;
-    if (_controller.value.isInitialized) {
+    if (_controller.value.initialized) {
       return WillPopScope(
         onWillPop: _onWillPop,
               child: SafeArea(
