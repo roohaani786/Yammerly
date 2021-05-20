@@ -195,8 +195,8 @@ class _galleryState extends State<gallery> {
 
                 maxCrossAxisExtent: 150.0,
                 // padding: const EdgeInsets.all(4.0),
-                mainAxisSpacing: 4.0,
-                crossAxisSpacing: 4.0,
+                mainAxisSpacing: 1.0,
+                crossAxisSpacing: 1.0,
                 children: _buildGridTileList(allImage.length))
             //   child: GridView.builder(
             //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

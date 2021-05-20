@@ -117,7 +117,7 @@ class _VideoPreviewState extends State<VideoPreview>
                       scale: _controller.value.aspectRatio/ size.aspectRatio,
                       child: Center(
                         child: AspectRatio(
-                          aspectRatio: _co.ntroller.value.aspectRatio,
+                          aspectRatio: _controller.value.aspectRatio,
                           child: VideoPlayer(_controller),
                         ),
                       ),

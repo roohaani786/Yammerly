@@ -10,18 +10,29 @@ class ChatsPage extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
   final bool looping;
 
-  const ChatsPage({Key key, @required this.videoPlayerController, this.looping})
+   ChatsPage({Key key, @required this.videoPlayerController, this.looping})
       : super(key: key);
 
   @override
   _ChatsPageState createState() => _ChatsPageState();
 }
 
-bool cameraon = true;
+//bool cameraon = true;
 
 class _ChatsPageState extends State<ChatsPage> {
   ChewieController _chewieController;
 
+  
+@override
+  void initState() {
+    super.initState();
+    _chewieController = ChewieController(
+      videoPlayerController: widget.videoPlayerController,
+      aspectRatio: 16 / 9,
+      autoInitialize: true,
+      looping: widget.looping,
+    );
+  }
   void _onHorizontalDrag(DragEndDetails details) {
     if (details.primaryVelocity == 0)
       // user have just tapped on screen (no dragging)
@@ -40,23 +51,9 @@ class _ChatsPageState extends State<ChatsPage> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    widget.videoPlayerController.dispose();
-    _chewieController.dispose();
-  }
+  
 
-  @override
-  void initState() {
-    super.initState();
-    _chewieController = ChewieController(
-      videoPlayerController: widget.videoPlayerController,
-      aspectRatio: 16 / 9,
-      autoInitialize: true,
-      looping: widget.looping,
-    );
-  }
+  
 
   Widget build(BuildContext context) {
     Chewie(
@@ -163,5 +160,11 @@ class _ChatsPageState extends State<ChatsPage> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    widget.videoPlayerController.dispose();
+    _chewieController.dispose();
   }
 }
