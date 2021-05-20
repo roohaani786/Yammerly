@@ -26,7 +26,7 @@ dependencies:
 
   #Number of plugins in use:- (34)
 
-  cupertino_icons: ^0.1.3
+  cupertino_icons: 1.0.3
   #This adds the Cupertino Icons font to your application.
   #Use with the CupertinoIcons class for iOS style icons.
   #Plugin link:- https://pub.dev/packages/cupertino_icons
@@ -61,7 +61,7 @@ dependencies:
   #live synchronization and offline support on Android and iOS.
   #Plugin link:- https://pub.dev/packages/cloud_firestore
 
-  rxdart: 0.20.0
+  rxdart: 0.27.0
   #RxDart is an implementation of the popular reactiveX api for asynchronous programming,
   #Leveraging the native Dart Streams api.
   #Plugin link:- https://pub.dev/packages/rxdart
@@ -83,7 +83,7 @@ dependencies:
   #Flutter plugin for reading and writing simple key-value pairs. Wraps NSUserDefaults on iOS and SharedPreferences on Android.
   #Plugin link:- https://pub.dev/packages/shared_preferences
 
-  cached_network_image: ^2.0.0-rc
+  cached_network_image: ^3.0.0
   #Flutter library to load and cache network images. Can also be used with placeholder and error widgets.
   #Plugin link:- https://pub.dev/packages/cached_network_image
 
@@ -96,11 +96,11 @@ dependencies:
   #A Flutter plugin for allowing users to authenticate with native Android &amp; iOS Facebook login SDKs.
   #Plugin link:- https://pub.dev/packages/flutter_facebook_login
 
-  flutter_svg: 0.18.0
+  flutter_svg: ^0.22.0
   #An SVG rendering and widget library for Flutter, which allows painting and displaying Scalable Vector Graphics 1.1 files.
   #Plugin link:- https://pub.dev/packages/flutter_svg
 
-  camera: ^0.7.0
+  camera: ^0.8.1
   #A Flutter plugin for getting information about and controlling the camera on Android and iOS.
   #Supports previewing the camera feed, capturing images, capturing video, and streaming image buffers to dart.
   #Plugin link:- https://pub.dev/packages/camera
@@ -123,7 +123,7 @@ dependencies:
   #i.e. after the first frame has been displayed.
   #Plugin link:- https://pub.dev/packages/after_layout
 
-  better_player:
+  
   #Advanced video player based on video_player and Chewie.
   #It's solves many typical use cases and it's easy to run.
 
@@ -132,7 +132,7 @@ dependencies:
   #It could be wristwatch, small/medium/large mobile, small/large tablet or desktop.
   #Plugin link:- https://pub.dev/packages/responsive_layout_builder
 
-  video_player: ^0.10.2+5
+  video_player: 2.1.1 
   #A Flutter plugin for iOS, Android and Web for playing back video on a Widget surface.
   #Plugin link:- https://pub.dev/packages/video_player
 
@@ -143,7 +143,7 @@ dependencies:
   #Create native settings for Flutter app in minutes. Use single interfaces to build
   #Plugin link:- https://pub.dev/packages/settings_ui
 
-  flutter_icons: ^1.0.0+1
+  flutter_icons: ^1.1.0
   #Customizable Icons for Flutter,Inspired by react-native-vector-icons
   #Plugin link:- https://pub.dev/packages/flutter_icons
 
@@ -163,24 +163,27 @@ dependencies:
   #A composable, Future-based library for making HTTP requests.
   #Package link:- https://pub.dev/packages/http
 
-  string_validator: ^0.1.4
+  string_validator: 
   #String validation and sanitization for Dart.
   #Plugin link:- https://pub.dev/packages/string_validator
 
-  image_editor_pro: ^1.0.6
+  image_editor_pro: 
   #Image Editor Plugin with simple, easy support for image editing using paints,text and emoji like stories.
   #Plugin link:- https://pub.dev/packages/image_editor_pro
 
-  storage_path: ^0.2.0
+  storage_path: 
   #A flutter plugin to get all images, audios, videos and files location path in json format.
   #Plugin link:- https://pub.dev/packages/storage_path
 
-  transparent_image: ^1.0.0
+  transparent_image: 
   #A transparent image in Dart code, represented as a Uint8List.
   #Plugin link:- https://pub.dev/packages/transparent_image
 
-  double_back_to_close_app: ^1.2.0
+  double_back_to_close_app: 2.0.1 
   #use for double back to exit app
+
+  chewie: 1.0.0
+  #video player 
 
   firebase_messaging:
 
@@ -189,7 +192,7 @@ dev_dependencies:
     sdk: flutter
 
 # For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+# following page: https://dart.dev/tools/pub/pubspec 
 
 # The following section is specific to Flutter.
 flutter:

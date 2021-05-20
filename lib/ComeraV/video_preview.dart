@@ -104,7 +104,7 @@ class _VideoPreviewState extends State<VideoPreview>
         });
   }
     final size = MediaQuery.of(context).size;
-    if (_controller.value.initialized) {
+    if (_controller.value.isInitialized) {
       return WillPopScope(
         onWillPop: _onWillPop,
               child: SafeArea(
@@ -117,7 +117,7 @@ class _VideoPreviewState extends State<VideoPreview>
                       scale: _controller.value.aspectRatio/ size.aspectRatio,
                       child: Center(
                         child: AspectRatio(
-                          aspectRatio: _controller.value.aspectRatio,
+                          aspectRatio: _co.ntroller.value.aspectRatio,
                           child: VideoPlayer(_controller),
                         ),
                       ),
