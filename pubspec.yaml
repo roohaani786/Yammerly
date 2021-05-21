@@ -123,8 +123,8 @@ dependencies:
   #i.e. after the first frame has been displayed.
   #Plugin link:- https://pub.dev/packages/after_layout
 
-  
-  #Advanced video player based on video_player and Chewie.
+  better_player: 
+#Advanced video player based on video_player and Chewie.
   #It's solves many typical use cases and it's easy to run.
 
   responsive_layout_builder:
