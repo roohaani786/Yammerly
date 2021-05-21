@@ -403,8 +403,7 @@ class _UploadImageState extends State<UploadImage> with AutomaticKeepAliveClient
                   Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Form(
-                        autovalidate: true,
-                        key: _formKey,
+                        autovalidateMode: AutovalidateMode.always, key: _formKey,
                         child: TextFormField(
                           controller: descriptionController,
                           enabled: true,

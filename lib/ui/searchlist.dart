@@ -64,7 +64,7 @@ String uidf = CloudFirestoreSearch().uidX;
         :
 //        Firestore.instance.collection("users").snapshots(),
 //        (fname != "" && fname != null)
-             Firestore.instance
+             FirebaseFirestore.instance
             .collection('users')
             .where("searchKeywords", arrayContains: fname)
             .snapshots(),
@@ -81,13 +81,13 @@ String uidf = CloudFirestoreSearch().uidX;
           shape: BoxShape.circle,
               ),child: CircularProgressIndicator()))
               : ListView.builder(
-            itemCount: snapshot.data.documents.length,
+            itemCount: snapshot.data.docs.length,
             itemBuilder: (context, index) {
 //              DocumentSnapshot sd = snapshot.data.documents[index];
-              searchKey = snapshot.data.documents[index]["displayName"];
-              String photoUrl = snapshot.data.documents[index]["photoURL"];
-              String uid = snapshot.data.documents[index]["uid"];
-              String displayName = snapshot.data.documents[index]["displayName"];
+              searchKey = snapshot.data.docs[index]["displayName"];
+              String photoUrl = snapshot.data.docs[index]["photoURL"];
+              String uid = snapshot.data.docs[index]["uid"];
+              String displayName = snapshot.data.docs[index]["displayName"];
               print(displayName);
               return (searchKey!= null)?Card(
                 child: Row(
@@ -97,7 +97,7 @@ String uidf = CloudFirestoreSearch().uidX;
                       width: 25,
                     ),
 
-                        FlatButton(
+                        TextButton(
                           onPressed: (){
                             Navigator.push(
                               context,

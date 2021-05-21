@@ -95,14 +95,14 @@ class _FollowingList extends State<FollowingList> {
                 shape: BoxShape.circle,
               ),child: CircularProgressIndicator()))
               : ListView.builder(
-            itemCount: snapshot.data.documents.length,
+            itemCount: snapshot.data.docs.length,
             itemBuilder: (context, index) {
 //              DocumentSnapshot sd = snapshot.data.documents[index];
-              searchKey = snapshot.data.documents[index]["followingname"];
-              String photoUrl = snapshot.data.documents[index]["photoUrl"];
-              String uid = snapshot.data.documents[index]["uid"];
+              searchKey = snapshot.data.docs[index]["followingname"];
+              String photoUrl = snapshot.data.docs[index]["photoUrl"];
+              String uid = snapshot.data.docs[index]["uid"];
               //bandekiuid = snapshot.data.documents[index]["uid"];
-              String displayName = snapshot.data.documents[index]["followingname"];
+              String displayName = snapshot.data.docs[index]["followingname"];
               print(displayName);
               return (searchKey!= null)?Card(
                 child: Row(
@@ -112,7 +112,7 @@ class _FollowingList extends State<FollowingList> {
                       width: 25,
                     ),
 
-                    FlatButton(
+                    TextButton(
                       onPressed: (){
                         Navigator.push(
                           context,

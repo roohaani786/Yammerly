@@ -54,7 +54,7 @@ class _GalleryState extends State<Gallery> {
 
                 child: Column(
                   children: [
-                    FlatButton(
+                    TextButton(
                       child: Text("Discard", style:
                       TextStyle(
                         color: Colors.red,
@@ -72,7 +72,7 @@ class _GalleryState extends State<Gallery> {
                         );
                       },
                     ),
-                    FlatButton(
+                    TextButton(
                       child: Text("Keep", style:
                       TextStyle(
                         color: Colors.black,
@@ -224,7 +224,7 @@ class _GalleryState extends State<Gallery> {
 
                                   child: Column(
                                     children: [
-                                      FlatButton(
+                                      TextButton(
                                         child: Text("Discard", style:
                                         TextStyle(
                                           color: Colors.red,
@@ -249,7 +249,7 @@ class _GalleryState extends State<Gallery> {
                                           );
                                         },
                                       ),
-                                      FlatButton(
+                                      TextButton(
                                         child: Text("Keep", style:
                                         TextStyle(
                                           color: Colors.black,

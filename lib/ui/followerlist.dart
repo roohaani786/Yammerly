@@ -80,8 +80,8 @@ class _FollowersList extends State<FollowersList> {
               setState(() {
 //                fname = val;
                 searchKey = val;
-                streamQuery = Firestore.instance.collection('users')
-                    .document(uidX).collection('followers')
+                streamQuery = FirebaseFirestore.instance.collection('users')
+                    .doc(uidX).collection('followers')
                     .where('displayName', isGreaterThanOrEqualTo: searchKey)
                     .where('displayName', isLessThan: searchKey +'z')
                     .snapshots();
@@ -100,9 +100,9 @@ class _FollowersList extends State<FollowersList> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: (searchKey != "" && searchKey != null)?streamQuery
-            : Firestore.instance
+            : FirebaseFirestore.instance
             .collection("users")
-            .document(uidX)
+            .doc(uidX)
             .collection('followers')
             .snapshots(),
 //        (fname != "" && fname != null)
@@ -124,12 +124,12 @@ class _FollowersList extends State<FollowersList> {
               ),child: CircularProgressIndicator()))
               : ListView.builder(
 
-              itemCount: snapshot.data.documents.length,
+              itemCount: snapshot.data.docs.length,
               itemBuilder: (context, index) {
 //              DocumentSnapshot sd = snapshot.data.documents[index];
-              searchKey = snapshot.data.documents[index]["followername"];
-              String uid = snapshot.data.documents[index]["followeruid"];
-              String displayName = snapshot.data.documents[index]["followername"];
+              searchKey = snapshot.data.docs[index]["followername"];
+              String uid = snapshot.data.docs[index]["followeruid"];
+              String displayName = snapshot.data.docs[index]["followername"];
               print(displayName);
 
               return (searchKey!= null)?Card(
@@ -140,7 +140,7 @@ class _FollowersList extends State<FollowersList> {
                       width: 25,
                     ),
 
-                    FlatButton(
+                    TextButton(
                       onPressed: (){
                         Navigator.push(
                           context,

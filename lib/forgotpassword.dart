@@ -6,6 +6,7 @@ import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/constants.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+// ignore: unused_import
 import 'checkmail.dart';
 
 class ForgotScreen extends StatefulWidget {
@@ -26,11 +27,11 @@ class _ForgotScreen extends State<ForgotScreen> {
 
 
   Future<bool> useremailCheck(String email) async {
-    final result = await Firestore.instance
+    final result = await FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: email)
-        .getDocuments();
-    return result.documents.isEmpty;
+        .get();
+    return result.docs.isEmpty;
   }
 
   String emailValidator(String value) {
@@ -86,6 +87,7 @@ class _ForgotScreen extends State<ForgotScreen> {
                       color: Colors.deepPurple
                   )),
                   actions: <Widget>[
+                    // ignore: deprecated_member_use
                     FlatButton(
                       child: Text("Close"),
                       onPressed: () {
@@ -196,6 +198,7 @@ class _ForgotScreen extends State<ForgotScreen> {
                     Padding(
                         padding:
                             EdgeInsets.only(top: 20.0, left: 30.0, right: 30.0),
+                        // ignore: deprecated_member_use
                         child: RaisedButton(
                           onPressed: () {
                             resetPass(email);

@@ -98,8 +98,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
   getPostsUser(String uidX) async {
-    return Firestore.instance.collection('users')
-        .document(uidX)
+    return FirebaseFirestore.instance.collection('users')
+        .doc(uidX)
         .collection('posts')
         .orderBy("timestamp", descending: true)
         .snapshots();
@@ -163,10 +163,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   checkPrivate() async {
     if(private == true){
-      await Firestore.instance.collection('users')
-          .document(uid)
+      await FirebaseFirestore.instance.collection('users')
+          .doc(uid)
           .collection('followers')
-          .document(displayNamecurrentUser)
+          .doc(displayNamecurrentUser)
           .get()
           .then((value) {
         if (value.exists) {
@@ -217,10 +217,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
 
   getFollowers() {
-    Firestore.instance.collection('users')
-        .document(uid)
+    FirebaseFirestore.instance.collection('users')
+        .doc(uid)
         .collection('followers')
-        .document(displayNamecurrentUser)
+        .doc(displayNamecurrentUser)
         .get()
         .then((value) {
       if (value.exists) {
@@ -684,7 +684,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                   children: [
                                                     SizedBox(
                                                       width: 120,
-                                                      child: (displayName == displayNamecurrentUser)?FlatButton(
+                                                      child: (displayName == displayNamecurrentUser)?MaterialButton(
                                                           color: Colors.purple,
                                                           child: new Text(
                                                             "About me",

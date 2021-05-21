@@ -49,7 +49,7 @@ class _ConversationPageState extends State<ConversationPage> {
 //                    InputWidget() //
                      Align(
                        alignment: Alignment.center,
-                       child: FlatButton(onPressed: (){},
+                       child: TextButton(onPressed: (){},
                        child: Text("Messaging feature is coming soon....",style:
                          TextStyle(
                            color: Colors.purple,

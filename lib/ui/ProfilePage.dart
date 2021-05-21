@@ -200,7 +200,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   int itemCount;
 
   Future deleteCoverPhoto() async {
-    await print(uidController.text);
+    print(uidController.text);
   print("bababa");
   Firestore.instance
       .collection("users")

@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -11,7 +10,7 @@ class AuthService {
   // Dependencies
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Firestore _db = Firestore.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
 
   // Shared State for Widgets
@@ -27,7 +26,7 @@ class AuthService {
       if (u != null) {
         return _db
             .collection('users')
-            .document(u.uid)
+            .doc(u.uid)
             .snapshots()
             .map((snap) => snap.data);
       } else {
@@ -96,11 +95,11 @@ class AuthService {
   }
 
   Future<bool> usernameCheck(String displayName) async {
-    final result = await Firestore.instance
+    final result = await FirebaseFirestore.instance
         .collection('users')
         .where('displayName', isEqualTo: displayName)
-        .getDocuments();
-    return result.documents.isEmpty;
+        .get();
+    return result.docs.isEmpty;
   }
 
 

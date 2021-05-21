@@ -60,9 +60,9 @@ class UserData {
   }
   getUserData(ProfileNotifier profileNotifier) async {
     QuerySnapshot snapshot =
-    await Firestore.instance.collection("users").getDocuments();
+    await FirebaseFirestore.instance.collection("users").get();
     List<UserData> _profileList = [];
-    snapshot.documents.forEach((doc) {
+    snapshot.docs.forEach((doc) {
       UserData data = UserData.fromMap(doc.data);
       _profileList.add(data);
     });

@@ -275,7 +275,7 @@ class _BodyState extends State<Body> {
         try {
           FacebookAccessToken facebookAccessToken =
               facebookLoginResult.accessToken;
-          final AuthCredential credential = FacebookAuthProvider.getCredential(
+          final AuthCredential credential = FacebookAuthProvider.Credential(
               accessToken: facebookAccessToken.token);
           final FirebaseUser user = (await auth.signInWithCredential(
               credential))
@@ -303,6 +303,7 @@ class _BodyState extends State<Body> {
                       color: Colors.deepPurple
                   )),
                   actions: <Widget>[
+                    // ignore: deprecated_member_use
                     FlatButton(
                       child: Text("Close"),
                       onPressed: () {

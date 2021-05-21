@@ -76,7 +76,7 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
   Stream<QuerySnapshot> postsStream;
-  final timelineReference = Firestore.instance.collection('posts');
+  final timelineReference = FirebaseFirestore.instance.collection('posts');
   String postIdX;
 
 
@@ -115,7 +115,7 @@ class _FeedsPageState extends State<FeedsPage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-    fetchPosts();
+    //fetchPosts();
     fetchProfileData();
     fetchLikes();
     //getPostCount();
@@ -209,10 +209,10 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   getlikes( String displayNamecurrent, String postId, int index) async {
-    await Firestore.instance.collection('posts')
-        .document(postId)
+    await FirebaseFirestore.instance.collection('posts')
+        .doc(postId)
         .collection('likes')
-        .document(uidController.text)
+        .doc(uidController.text)
         .get()
         .then((value) {
       if (value.exists) {
@@ -230,9 +230,9 @@ class _FeedsPageState extends State<FeedsPage> {
   fetchLikes() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("likes")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
@@ -242,9 +242,9 @@ class _FeedsPageState extends State<FeedsPage> {
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
       emailController.text = docSnap.data["email"];
       likesController.text = docSnap.data["likes"];
@@ -256,16 +256,18 @@ class _FeedsPageState extends State<FeedsPage> {
     }
   }
 
+  // ignore: deprecated_member_use
   List<String> cpurl = new List(10000);
+  // ignore: deprecated_member_use
   var cdisplayName = new List(10000);
 
   //bool cloading = false;
   List<bool> cloading = List.filled(10000,false);
 
   Fetchprofile(String uid,int index) async{
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .get();
     cpurlController.text = docSnap.data['photoURL'];
     cdisplayNameController.text = docSnap.data['displayName'];
@@ -432,10 +434,10 @@ class _FeedsPageState extends State<FeedsPage> {
                           NotificationId = Uuid().v4();
                         });
 
-                        return await Firestore.instance.collection("users")
-                            .document(uid).collection("notification")
-                            .document(NotificationId)
-                            .setData({"share" : shares+1,
+                        return await FirebaseFirestore.instance.collection("users")
+                            .doc(uid).collection("notification")
+                            .doc(NotificationId)
+                            .set({"share" : shares+1,
                           "notificationId" : NotificationId,
                           //"comment": commentTextEditingController.text,
 
@@ -481,10 +483,10 @@ class _FeedsPageState extends State<FeedsPage> {
                               print(uid);
                               print(uidController.text);
                               print("912");
-                              return await Firestore.instance.collection("users")
-                                  .document(uid).collection("notification")
-                                  .document(NotificationId)
-                                  .setData({"likes" : likes+1,
+                              return await FirebaseFirestore.instance.collection("users")
+                                  .doc(uid).collection("notification")
+                                  .doc(NotificationId)
+                                  .set({"likes" : likes+1,
                                 "notificationId" : NotificationId,
                                 //"comment": commentTextEditingController.text,
 
@@ -515,12 +517,12 @@ class _FeedsPageState extends State<FeedsPage> {
                     }
 
                     DeleteNotification(String displayName){
-                      Firestore.instance
+                      FirebaseFirestore.instance
                           .collection("users")
-                          .document(uid)
+                          .doc(uid)
                           .collection('notification')
                           //.where('displayName','==',displayName);
-                          .document(displayName)
+                          .doc(displayName)
                           .delete();
                     }
 

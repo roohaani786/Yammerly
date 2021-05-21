@@ -100,13 +100,13 @@ class _OtherFollowersList extends State<OtherFollowersList> {
                 shape: BoxShape.circle,
               ),child: CircularProgressIndicator()))
               : ListView.builder(
-            itemCount: snapshot.data.documents.length,
+            itemCount: snapshot.data.docs.length,
             itemBuilder: (context, index) {
-              DocumentSnapshot sd = snapshot.data.documents[index];
-              searchKey = snapshot.data.documents[index]["followername"];
-              String photoUrl = snapshot.data.documents[index]["photoUrl"];
-              String uid = snapshot.data.documents[index]["uid"];
-              String displayName = snapshot.data.documents[index]["followername"];
+              DocumentSnapshot sd = snapshot.data.docs[index];
+              searchKey = snapshot.data.docs[index]["followername"];
+              String photoUrl = snapshot.data.docs[index]["photoUrl"];
+              String uid = snapshot.data.docs[index]["uid"];
+              String displayName = snapshot.data.docs[index]["followername"];
               return (searchKey!= null)?Card(
                 child: Row(
                   children: <Widget>[
@@ -115,7 +115,7 @@ class _OtherFollowersList extends State<OtherFollowersList> {
                       width: 25,
                     ),
 
-                    FlatButton(
+                    TextButton(
                       onPressed: (){
                         Navigator.push(
                           context,

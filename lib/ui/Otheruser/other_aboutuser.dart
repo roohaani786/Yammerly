@@ -239,8 +239,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
               ),
 
               Form(
-                autovalidate: true,
-                key: _formKey,
+                autovalidateMode: AutovalidateMode.always, key: _formKey,
                 child: Column(children: <Widget>[
 
                   (displayNameController.text=="")?Container():TextFormField(
@@ -304,7 +303,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 enabled: false,
                 maxLength: 10,
                 inputFormatters: [
-                  WhitelistingTextInputFormatter.digitsOnly
+                  FilteringTextInputFormatter.digitsOnly
                 ],
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
@@ -491,7 +490,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                 controller: pincodeController,
                 enabled: false,
                 inputFormatters: [
-                  WhitelistingTextInputFormatter.digitsOnly
+                  FilteringTextInputFormatter.digitsOnly
                 ],
                 keyboardType: TextInputType.number,
                 maxLines: 1,

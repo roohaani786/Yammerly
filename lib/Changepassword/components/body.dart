@@ -75,7 +75,7 @@ class _BodyState extends State<Body> {
   void _changePassword(String password) async{
     print(password);
     //Create an instance of the current user.
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    User user = await FirebaseAuth.instance.currentUser;
 
     //Pass in the password to updatePassword.
     user.updatePassword(password).then((_){
@@ -138,7 +138,7 @@ class _BodyState extends State<Body> {
 
 
   Future<String> signIn(String email,String password,String Npassword) async {
-    FirebaseUser user;
+    User user;
     String errorMessage;
 
     // this.setState(() {
@@ -147,7 +147,7 @@ class _BodyState extends State<Body> {
 
     try {
       if (_loginFormKey.currentState.validate()) {
-        AuthResult result = await FirebaseAuth.instance
+        UserCredential result = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
             email: emailInputController.text,
             password: ppwdInputController.text);
@@ -220,7 +220,7 @@ class _BodyState extends State<Body> {
 
   PublishSubject loading = PublishSubject();
 
-  Future<FirebaseUser> facebookLogin(BuildContext context) async {
+  Future<User> facebookLogin(BuildContext context) async {
     loading.add(true);
 
 
@@ -244,12 +244,12 @@ class _BodyState extends State<Body> {
         try {
           FacebookAccessToken facebookAccessToken =
               facebookLoginResult.accessToken;
-          final AuthCredential credential = FacebookAuthProvider.getCredential(
-              accessToken: facebookAccessToken.token);
-          final FirebaseUser user = (await auth.signInWithCredential(
+          final AuthCredential credential = FacebookAuthProvider.credential(
+            facebookAccessToken.token);
+          final User user = (await auth.signInWithCredential(
               credential))
               .user;
-          (await FirebaseAuth.instance.currentUser()).uid;
+          (await FirebaseAuth.instance.currentUser).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
@@ -270,6 +270,7 @@ class _BodyState extends State<Body> {
                       color: Colors.deepPurple
                   )),
                   actions: <Widget>[
+                    // ignore: deprecated_member_use
                     FlatButton(
                       child: Text("Close"),
                       onPressed: () {

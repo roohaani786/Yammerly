@@ -84,7 +84,7 @@ class _BodyState extends State<Body> {
                   color: Colors.deepPurple
               )),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   child: Text("Close"),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -273,11 +273,11 @@ class _BodyState extends State<Body> {
   }
 
   Future<bool> usernameCheck(String displayName) async {
-    final result = await Firestore.instance
+    final result = await FirebaseFirestore.instance
         .collection('users')
         .where('displayName', isEqualTo: displayName)
-        .getDocuments();
-    return result.documents.isEmpty;
+        .get();
+    return result.docs.isEmpty;
   }
 
   Future<String> signup(String email, String password, String firstname,
@@ -306,7 +306,7 @@ class _BodyState extends State<Body> {
                         color: Colors.deepPurple
                     )),
                     actions: <Widget>[
-                      FlatButton(
+                      TextButton(
                         child: Text("Close"),
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -326,7 +326,7 @@ class _BodyState extends State<Body> {
                         color: Colors.deepPurple
                     )),
                     actions: <Widget>[
-                      FlatButton(
+                      TextButton(
                         child: Text("Close"),
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -347,10 +347,10 @@ class _BodyState extends State<Body> {
                 password: pwdInputController.text)
 
                 .then((authResult) =>
-                Firestore.instance
+                FirebaseFirestore.instance
                     .collection("users")
-                    .document(authResult.user.uid)
-                    .setData({
+                    .doc(authResult.user.uid)
+                    .set({
                   "uid": authResult.user.uid,
                   "fname": firstNameInputController.text,
                   "surname": lastNameInputController.text,
@@ -399,7 +399,7 @@ class _BodyState extends State<Body> {
                               color: Colors.deepPurple
                           )),
                           actions: <Widget>[
-                            FlatButton(
+                            TextButton(
                               child: Text("Close"),
                               onPressed: () {
                                 Navigator.of(context).pop();
@@ -423,7 +423,7 @@ class _BodyState extends State<Body> {
                                 color: Colors.deepPurple
                             )),
                         actions: <Widget>[
-                          FlatButton(
+                          TextButton(
                             child: Text("Close"),
                             onPressed: () {
                               Navigator.of(context).pop();
@@ -442,7 +442,7 @@ class _BodyState extends State<Body> {
                   title: Text("Error"),
                   content: Text("The passwords do not match"),
                   actions: <Widget>[
-                    FlatButton(
+                    TextButton(
                       child: Text("Close"),
                       onPressed: () {
                         Navigator.of(context).pop();

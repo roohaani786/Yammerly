@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _otpController = TextEditingController();
 
-  FirebaseUser _firebaseUser;
+  User _firebaseUser;
   String _status;
 
   AuthCredential _phoneAuthCredential;

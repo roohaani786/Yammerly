@@ -123,11 +123,11 @@ class CameraScreenState extends State<CameraScreen>
   DocumentSnapshot docSnap;
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = await FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
       firstNameController.text = docSnap.data["fname"];
       lastNameController.text = docSnap.data["surname"];
@@ -222,7 +222,7 @@ class CameraScreenState extends State<CameraScreen>
 
   bool flashOn=false;
   File _image;
-  FirebaseUser currUser;
+  User currUser;
 
   TextEditingController firstNameController,
       lastNameController,
@@ -233,6 +233,7 @@ class CameraScreenState extends State<CameraScreen>
       currentCityController,homeTownController,relationshipController,pincodeController ;
   bool upload = false;
   Future pickImage() async {
+    // ignore: deprecated_member_use
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
         _image = image;
@@ -288,10 +289,10 @@ class CameraScreenState extends State<CameraScreen>
 
   String postId = Uuid().v4();
 
-  final postReference = Firestore.instance.collection("posts");
+  final postReference = FirebaseFirestore.instance.collection("posts");
 
   savePostInfoToFirestore(String url) {
-    postReference.document(postId).setData({
+    postReference.doc(postId).set({
       "postId": postId,
       "uid" : uidController.text,
       "displayName": displayNameController.text,
@@ -535,6 +536,7 @@ class CameraScreenState extends State<CameraScreen>
 
               ),
 
+              // ignore: deprecated_member_use
               FlatButton(
                 color: Colors.transparent,
                 onPressed: () async => null,
@@ -761,6 +763,7 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   void showInSnackBar(String message) {
+    // ignore: deprecated_member_use
     _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 

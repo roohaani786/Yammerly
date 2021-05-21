@@ -86,9 +86,9 @@ class _AboutUserState extends State<AboutUser> {
     try {
 
 
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(uid)
+          .doc(uid)
           .get();
       firstNameController.text = docSnap.data["fname"];
       lastNameController.text = docSnap.data["surname"];
@@ -140,9 +140,9 @@ class _AboutUserState extends State<AboutUser> {
     });
   }
 
-  final StorageReference storageReference =
+  final Reference storageReference =
   FirebaseStorage.instance.ref().child("Display Pictures");
-  final postReference = Firestore.instance.collection("users");
+  final postReference = FirebaseFirestore.instance.collection("users");
 
 
 
@@ -254,8 +254,7 @@ class _AboutUserState extends State<AboutUser> {
               ),
 
               Form(
-                autovalidate: true,
-                key: _formKey,
+                autovalidateMode: AutovalidateMode.always, key: _formKey,
                 child: Column(children: <Widget>[
 
                   (displayNameController.text=="")?Container():TextFormField(
@@ -319,7 +318,7 @@ class _AboutUserState extends State<AboutUser> {
                     enabled: false,
                     maxLength: 10,
                     inputFormatters: [
-                      WhitelistingTextInputFormatter.digitsOnly
+                      FilteringTextInputFormatter.digitsOnly
                     ],
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -506,7 +505,7 @@ class _AboutUserState extends State<AboutUser> {
                     controller: pincodeController,
                     enabled: false,
                     inputFormatters: [
-                      WhitelistingTextInputFormatter.digitsOnly
+                      FilteringTextInputFormatter.digitsOnly
                     ],
                     keyboardType: TextInputType.number,
                     maxLines: 1,

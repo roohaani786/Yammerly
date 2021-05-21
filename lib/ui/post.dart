@@ -100,7 +100,7 @@ class _postPageState extends State<postPage> {
 
 
   Stream<QuerySnapshot> postsStream;
-  final timelineReference = Firestore.instance.collection('posts');
+  final timelineReference = FirebaseFirestore.instance.collection('posts');
   String postIdX;
 
   fetchPosts() async {
@@ -129,9 +129,9 @@ class _postPageState extends State<postPage> {
       print(uidX);
       print("halelula");
       print(displayNamecurrentUser);
-      await Firestore.instance.collection('posts').document(postId).delete();
-      await Firestore.instance.collection('users').document(uidX)
-          .collection('posts').document(postId).delete();
+      await FirebaseFirestore.instance.collection('posts').doc(postId).delete();
+      await FirebaseFirestore.instance.collection('users').doc(uidX)
+          .collection('posts').doc(postId).delete();
 
       Navigator.push(
           context, MaterialPageRoute(
@@ -167,9 +167,9 @@ class _postPageState extends State<postPage> {
   getlikes( String displayNamecurrent, String postId, int index) async {
 
     await Firestore.instance.collection('posts')
-        .document(postId)
+        .doc(postId)
         .collection('likes')
-        .document(uidController.text)
+        .doc(uidController.text)
         .get()
         .then((value) {
       if (value.exists) {
@@ -193,7 +193,7 @@ class _postPageState extends State<postPage> {
     try {
       docSnap = await Firestore.instance
           .collection("likes")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
       setState(() {
         isLoading = false;
@@ -209,7 +209,7 @@ class _postPageState extends State<postPage> {
     try {
       docSnap = await Firestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
       emailController.text = docSnap.data["email"];
       likesController.text = docSnap.data["likes"];
@@ -287,14 +287,14 @@ class _postPageState extends State<postPage> {
           return AlertDialog(
             title: Text('Are you sure you want to delete post?'),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                   child: Text('Yes'),
                   onPressed: () {
                     // return Firestore.instance.collection("posts")
-                    //     .document(url)
+                    //     .doc(url)
                     //     .delete();
 
-                    Firestore.instance.collection("posts").document(url).get()
+                    FirebaseFirestore.instance.collection("posts").doc(url).get()
                         .then((doc) {
                       if (doc.exists) {
                         doc.reference.delete();
@@ -520,7 +520,7 @@ class _postPageState extends State<postPage> {
 
                                                         child: Column(
                                                           children: [
-                                                            FlatButton(
+                                                            TextButton(
                                                               child: Text("yes", style:
                                                               TextStyle(
                                                                 color: Colors.red,
@@ -532,7 +532,7 @@ class _postPageState extends State<postPage> {
                                                                     builder: (BuildContext context) => HomePage(initialindexg: 3)));
                                                               },
                                                             ),
-                                                            FlatButton(
+                                                            TextButton(
                                                               child: Text("No", style:
                                                               TextStyle(
                                                                 color: Colors.black,
@@ -992,7 +992,7 @@ class _postPageState extends State<postPage> {
 
                                                     child: Column(
                                                       children: [
-                                                        FlatButton(
+                                                        TextButton(
                                                           child: Text("yes", style:
                                                           TextStyle(
                                                             color: Colors.red,
@@ -1004,7 +1004,7 @@ class _postPageState extends State<postPage> {
                                                                 builder: (BuildContext context) => HomePage(initialindexg: 3)));
                                                           },
                                                         ),
-                                                        FlatButton(
+                                                        TextButton(
                                                           child: Text("No", style:
                                                           TextStyle(
                                                             color: Colors.black,

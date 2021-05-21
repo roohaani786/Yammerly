@@ -23,6 +23,7 @@ class RoundedButtonX extends StatelessWidget {
       height: 40.0,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(29),
+        // ignore: deprecated_member_use
         child: FlatButton(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
           color: color,

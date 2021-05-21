@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:techstagram/resources/uploadimage.dart';
@@ -23,8 +23,8 @@ class gallery extends StatefulWidget {
 class _galleryState extends State<gallery> {
 
   Map<dynamic, dynamic> allImageInfo = new HashMap();
-  List allImage=new  List();
-  List allNameList=new  List();
+  List allImage=[];
+  List allNameList=[];
 
   List<FileModel> files;
   FileModel selectedModel;
@@ -168,7 +168,7 @@ class _galleryState extends State<gallery> {
                   child: Container(
                     width: 80.0,
                     height: 15.0,
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () => getImage(File(allImage[selectedIndex])),
                       child: Text(
                         'Next',

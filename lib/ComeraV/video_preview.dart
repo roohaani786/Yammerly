@@ -68,6 +68,7 @@ class _VideoPreviewState extends State<VideoPreview>
 
                 child: Column(
                   children: [
+                    // ignore: deprecated_member_use
                     FlatButton(
                       child: Text("Discard", style:
                       TextStyle(
@@ -87,6 +88,7 @@ class _VideoPreviewState extends State<VideoPreview>
                         );
                       },
                     ),
+                    // ignore: deprecated_member_use
                     FlatButton(
                       child: Text("Keep", style:
                       TextStyle(
@@ -149,6 +151,7 @@ class _VideoPreviewState extends State<VideoPreview>
 
                                   child: Column(
                                     children: [
+                                      // ignore: deprecated_member_use
                                       FlatButton(
                                         child: Text("Discard", style:
                                         TextStyle(
@@ -173,6 +176,7 @@ class _VideoPreviewState extends State<VideoPreview>
                                           );
                                         },
                                       ),
+                                      // ignore: deprecated_member_use
                                       FlatButton(
                                         child: Text("Keep", style:
                                         TextStyle(

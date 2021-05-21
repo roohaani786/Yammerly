@@ -184,9 +184,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     print(uid);
     print("dekho");
 
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .updateData({'private': private});
 
     print("yaha aaya");
@@ -233,7 +233,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,),
                 trailing: (email != null)?(emailVerification == true)?Text("Verified",style: TextStyle(
                   color: Colors.deepPurple,
-                ),):FlatButton(
+                ),):TextButton(
                   onPressed: () {
                     sendVerificationEmail();
                   },

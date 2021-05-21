@@ -599,8 +599,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
 
               Form(
-                autovalidate: true,
-                key: _formKey,
+                autovalidateMode: AutovalidateMode.always, key: _formKey,
                 child: Column(children: <Widget>[
 
                   TextFormField(
