@@ -15,11 +15,10 @@ import 'package:string_validator/string_validator.dart';
 import 'package:techstagram/constants.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
-import 'package:techstagram/ui/HomePage.dart';
 
 class ProfilePage extends StatefulWidget {
   static final String pageName = "/ProfilePage";
-  final User user;
+  final FirebaseUser user;
 
   const ProfilePage({this.user, Key key}) : super(key: key);
 
@@ -28,7 +27,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isLoading = true;
   bool isEditable = true;
@@ -36,10 +34,19 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      phoneNumberController,uidController,
-      bioController,genderController,linkController,photoUrlController,
-      displayNameController,workController,educationController,
-      currentCityController,homeTownController,relationshipController,pincodeController;
+      phoneNumberController,
+      uidController,
+      bioController,
+      genderController,
+      linkController,
+      photoUrlController,
+      displayNameController,
+      workController,
+      educationController,
+      currentCityController,
+      homeTownController,
+      relationshipController,
+      pincodeController;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
@@ -80,36 +87,29 @@ class _ProfilePageState extends State<ProfilePage> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-
-
-
-
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = await FirebaseAuth.instance.currentUser;
     try {
-
-
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
-      firstNameController.text = docSnap.data["fname"];
-      lastNameController.text = docSnap.data["surname"];
-      phoneNumberController.text = docSnap.data["phonenumber"];
-      emailController.text = docSnap.data["email"];
-      bioController.text = docSnap.data["bio"];
-      genderController.text = docSnap.data["gender"];
-      linkController.text = docSnap.data["link"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      displayNameController.text = docSnap.data["displayName"];
-      workController.text = docSnap.data["work"];
-      educationController.text = docSnap.data["education"];
-      currentCityController.text = docSnap.data["currentCity"];
-      homeTownController.text = docSnap.data["homeTown"];
-      relationshipController.text = docSnap.data["relationship"];
-      pincodeController.text = docSnap.data["pincode"];
-
-      uidController.text = docSnap.data["uid"];
+      firstNameController.text = docSnap.data()['fname'];
+      lastNameController.text = docSnap.data()["surname"];
+      phoneNumberController.text = docSnap.data()["phonenumber"];
+      emailController.text = docSnap.data()["email"];
+      bioController.text = docSnap.data()["bio"];
+      genderController.text = docSnap.data()["gender"];
+      linkController.text = docSnap.data()["link"];
+      photoUrlController.text = docSnap.data()["photoURL"];
+      displayNameController.text = docSnap.data()["displayName"];
+      workController.text = docSnap.data()["work"];
+      educationController.text = docSnap.data()["education"];
+      currentCityController.text = docSnap.data()["currentCity"];
+      homeTownController.text = docSnap.data()["homeTown"];
+      relationshipController.text = docSnap.data()["relationship"];
+      pincodeController.text = docSnap.data()["pincode"];
+      uidController.text = docSnap.data()["uid"];
 
       setState(() {
         isLoading = false;
@@ -121,10 +121,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   File profileImageFile;
-  File _image;
+  PickedFile _image;
 
   Future pickImage() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+    await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
       setState(() {
         _image = image;
       });
@@ -133,10 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return ProfilePage();
   }
 
-
   bool uploading = false;
-
-
 
   compressPhoto() async {
     setState(() {
@@ -144,33 +141,33 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     final directory = await getTemporaryDirectory();
     final path = directory.path;
-    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
-    final compressedImage = File('$path/img_$uidController.jpg')
+    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytes());
+    final File compressedImage = File('$path/img_$uidController.jpg')
       ..writeAsBytesSync(
         ImD.encodeJpg(mImageFile, quality: 30),
       );
     setState(() {
-      _image = compressedImage;
-
+      _image = PickedFile(compressedImage.path);
     });
   }
+
   String Purl;
 
-  final StorageReference storageReference =
-  FirebaseStorage.instance.ref().child("Display Pictures");
-  final postReference = Firestore.instance.collection("users");
+  final Reference storageReference =
+      FirebaseStorage.instance.ref().child("Display Pictures");
+  final postReference = FirebaseFireStore.instance.collection("users");
 
-  savePostInfoToFirestore(String url,String uid) {
-    postReference.where('uid', isEqualTo: uid).getDocuments()
-        .then((docs) {
-      Firestore.instance.document(uid).updateData({'photoUrl': url}).then((val) {
+  savePostInfoToFirestore(String url, String uid) {
+    postReference.where('uid', isEqualTo: uid).getDocuments().then((docs) {
+      FirebaseFireStore.instance
+          .document(uid)
+          .updateData({'photoUrl': url}).then((val) {
         print("update ho gaya");
       });
     });
     // postReference.document(uid).updateData({
     //   "photoURL": url,
     // });
-
 
     setState(() {
       isChanged = false;
@@ -181,51 +178,42 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future uploadFile() async {
-
-    if(_image!=null){
+    if (_image != null) {
       await compressPhoto();
     }
 
     Random randomno = new Random();
 
-    StorageReference storageReference =
-
-    FirebaseStorage.instance
+    Reference storageReference = FirebaseStorage.instance
         .ref()
         .child('users/${randomno.nextInt(5000).toString()}.jpg');
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    StorageUploadTask uploadTask = storageReference.putFile(File(_image.path));
     await uploadTask.onComplete;
     print('File Uploaded');
     storageReference.getDownloadURL().then((fileURL) {
       setState(() {
-
         photoUrlController.text = fileURL;
         Purl = fileURL;
-
       });
     });
-    savePostInfoToFirestore(Purl,uidController.text);
+    savePostInfoToFirestore(Purl, uidController.text);
   }
 
-
   Future pickImagefromCamera() async {
-    await ImagePicker.pickImage(source: ImageSource.camera).then((image) {
+    await ImagePicker().getImage(source: ImageSource.camera).then((image) {
       setState(() {
         _image = image;
       });
     });
     uploadFile();
     return ProfilePage();
-
   }
-
 
   bool isChanged = false;
   String relationstring = "Select Relationship";
   String genderstring = "Select Gender";
   bool tickvalue = false;
   int check;
-
 
   bool firstnameE = false;
   bool lastnameE = false;
@@ -239,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String valueX = "Select Gender";
 
   // chagePhostPhoto(String purl,String uid){
-  //   Firestore.instance
+  //   FirebaseFireStore.instance
   //       .collection("posts")
   //       .updateData({'PhotoURL': purl});
   //   print("photo change huai");
@@ -252,22 +240,23 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: Colors.white,
         title: Text("Edit Profile"),
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.close,
-            color: Colors.redAccent,),
+          icon: Icon(
+            Icons.close,
+            color: Colors.redAccent,
+          ),
         ),
         actions: [
           IconButton(
             onPressed: () async {
-              if(_formKey.currentState.validate()) {
+              if (_formKey.currentState.validate()) {
                 if (!isEditable) {
                   setState(() => isEditable = true);
-                }
-                else {
+                } else {
                   bool isChanged = true;
-                  if (docSnap.data["fname"].toString().trim() !=
+                  if (docSnap.data()["fname"].toString().trim() !=
                       firstNameController.text.trim()) {
                     print("First Name Changed");
                     isChanged = true;
@@ -291,21 +280,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       genderController.text.trim()) {
                     print("Gender Changed");
                     isChanged = true;
-                  }
-                  else if (docSnap.data["link"].toString().trim() !=
+                  } else if (docSnap.data["link"].toString().trim() !=
                       linkController.text.trim()) {
                     print("Link Changed");
                     isChanged = true;
-                  }
-
-
-                  else if (docSnap.data["displayName"].toString().trim() !=
+                  } else if (docSnap.data["displayName"].toString().trim() !=
                       displayNameController.text.trim()) {
                     print("displayName Changed");
                     isChanged = true;
-                  }
-
-                  else if (docSnap.data["photoURL"].toString().trim() !=
+                  } else if (docSnap.data["photoURL"].toString().trim() !=
                       photoUrlController.text.trim()) {
 //      DatabaseService().updatephotoURL(uidController.text,photoUrlController.text);
                     print("photoUrl Changed");
@@ -316,39 +299,36 @@ class _ProfilePageState extends State<ProfilePage> {
                       workController.text.trim()) {
                     print("work Changed");
                     isChanged = true;
-                  }//work
+                  } //work
 
                   else if (docSnap.data["education"].toString().trim() !=
-                      educationController.text.trim() && educationController.text.length > 10.0) {
+                          educationController.text.trim() &&
+                      educationController.text.length > 10.0) {
                     print("education Changed");
                     isChanged = true;
-                  }//education
+                  } //education
 
                   else if (docSnap.data["currentCity"].toString().trim() !=
                       currentCityController.text.trim()) {
                     print("currentCity Changed");
                     isChanged = true;
-                  }//currentCity
+                  } //currentCity
 
                   else if (docSnap.data["homeTown"].toString().trim() !=
                       homeTownController.text.trim()) {
                     print("homeTown Changed");
                     isChanged = true;
-                  }//homeTown
+                  } //homeTown
 
-                  else if (docSnap.data["relationship"].toString().trim() !=
+                  else if (docSnap.data()["relationship"].toString().trim() !=
                       relationshipController.text.trim()) {
                     print("relationship Changed");
                     isChanged = true;
-                  }
-
-
-
-                  else if (docSnap.data["pincode"].toString().trim() !=
+                  } else if (docSnap.data()["pincode"].toString().trim() !=
                       pincodeController.text.trim()) {
                     print("Pincode Changed");
                     isChanged = true;
-                  }//relationship
+                  } //relationship
 
                   // else if (firstNameController.text!="" && firstNameController.text.length < 10.0){
                   //   isChanged = true;
@@ -399,7 +379,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     String snackbarContent = "";
                     setState(() => isLoading = true);
                     try {
-
                       Map<String, dynamic> data = {};
                       data["fname"] = firstNameController.text.trim();
                       data["surname"] = lastNameController.text.trim();
@@ -411,12 +390,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       data["photoURL"] = photoUrlController.text.trim();
                       data["displayName"] = displayNameController.text.trim();
                       data["pincode"] = pincodeController.text.trim();
-                      data["work"] = workController.text.trim();//work
-                      data["education"] = educationController.text.trim();//education
-                      data["currentCity"] = currentCityController.text.trim();//currentCity
-                      data["homeTown"] = homeTownController.text.trim();//hometown
-                      data["relationship"] = relationshipController.text.trim();//relationship
-                      Firestore.instance
+                      data["work"] = workController.text.trim(); //work
+                      data["education"] =
+                          educationController.text.trim(); //education
+                      data["currentCity"] =
+                          currentCityController.text.trim(); //currentCity
+                      data["homeTown"] =
+                          homeTownController.text.trim(); //hometown
+                      data["relationship"] =
+                          relationshipController.text.trim(); //relationship
+                      FirebaseFireStore.instance
                           .collection("users")
                           .document(uidController.text)
                           .setData(data, merge: true);
@@ -425,7 +408,7 @@ class _ProfilePageState extends State<ProfilePage> {
 //    DatabaseService().updatePostdisplayName(uidController.text,displayNameController.text);
 //    DatabaseService().updatephotoURL(displayNameController.text,photoUrlController.text);
                       snackbarContent = "Profile Updated";
-                      if(snackbarContent == "Profile Updated"){
+                      if (snackbarContent == "Profile Updated") {
                         Navigator.pop(context);
                         //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => HomePage(initialindexg: 3,)));
                       }
@@ -440,16 +423,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         snackbarContent = snackbarContent +
                             ". Login Email Not Changed (As Not Recently Logged In)";
                       } catch (e) {
-                        print("ERROR. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
-                            e.toString());
+                        print(
+                            "ERROR. FAILED TO CHANGE FIREBASE AUTH EMAIL. E = " +
+                                e.toString());
                         snackbarContent = snackbarContent +
                             ". Login Email Not Changed (As Not Recently Logged In)";
                       }
                       fetchProfileData();
                       //chagePhostPhoto(photoUrlController.text.trim(),uidController.text.trim());
                     } on PlatformException catch (e) {
-                      print("PlatformException in fetching user profile. E  = " +
-                          e.message);
+                      print(
+                          "PlatformException in fetching user profile. E  = " +
+                              e.message);
                       snackbarContent = "Failed To Update Profile";
                     }
                     _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -461,13 +446,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     setState(() => isEditable = false);
                   }
                 }
-              }else{
+              } else {
                 print("error hai bro");
               }
-
-            }
-            ,icon: Icon(Icons.done,
-            color: Colors.deepPurple,),
+            },
+            icon: Icon(
+              Icons.done,
+              color: Colors.deepPurple,
+            ),
           ),
         ],
       ),
@@ -483,563 +469,604 @@ class _ProfilePageState extends State<ProfilePage> {
         height: double.maxFinite,
         width: double.maxFinite,
         padding: EdgeInsets.all(12),
-
         child: isLoading
             ? Center(
-            child: Column(
-
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-
-                CircularProgressIndicator(),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(loadingMessage,
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                  ),)
-              ],
-            ))
+                child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    loadingMessage,
+                    style: TextStyle(
+                      color: Colors.deepPurple,
+                    ),
+                  )
+                ],
+              ))
             : SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 4,vertical: 8),
-          child: Column(
-            children: [
-              Text(
-                "My Account",
-                style: TextStyle(
-                    fontFamily: "Cookie-Regular", fontSize: 25.0),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              GestureDetector(
-                onTap: (){
-                  showDialog<void>(
-                      context: context,// THIS WAS MISSING// user must tap button!
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Select image from :-',style: TextStyle(
-                            fontSize: 15.0,
-                          ),),
-                          content: SingleChildScrollView(
-                            child: ListBody(
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: (){
-                                    pickImagefromCamera();
-                                    Navigator.of(context, rootNavigator: true).pop(context);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(FontAwesomeIcons.camera,color: kPrimaryColor,),
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                child: Column(
+                  children: [
+                    Text(
+                      "My Account",
+                      style: TextStyle(
+                          fontFamily: "Cookie-Regular", fontSize: 25.0),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        showDialog<void>(
+                            context:
+                                context, // THIS WAS MISSING// user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                  'Select image from :-',
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () {
+                                          pickImagefromCamera();
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop(context);
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              FontAwesomeIcons.camera,
+                                              color: kPrimaryColor,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: Text('Camera'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 20.0),
-                                        child: Text('Camera'),
+                                        padding:
+                                            const EdgeInsets.only(top: 20.0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            pickImage();
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop(context);
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                FontAwesomeIcons.images,
+                                                color: kPrimaryColor,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 20.0),
+                                                child: Text('Gallery'),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20.0),
-                                  child: GestureDetector(
-                                    onTap: (){
-                                      pickImage();
-                                      Navigator.of(context, rootNavigator: true).pop(context);
+                              );
+                            });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          //borderRadius: BorderRadius.circular(100),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 5,
+                          ),
+                        ),
+                        child: (isChanged == false)
+                            ? Container(
+                                height: 100,
+                                width: 100.0,
+                                child: Image(
+                                  image: NetworkImage(photoUrlController.text),
+                                  fit: BoxFit.cover,
+                                )
+                                //backgroundImage: NetworkImage(photoUrlController.text)
+                                )
+                            : Container(
+                                width: 25.0,
+                                height: 25.0,
+                                child: Image(
+                                  image: AssetImage("assets/25.gif"),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Form(
+                      autovalidateMode: AutovalidateMode.always,
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          TextFormField(
+                            controller: displayNameController,
+                            enabled: isEditable,
+                            validator: (value) {
+                              if (value.length > 20.0) {
+                                return 'Username should not be greater than 20 words';
+                              } else if (value.length == 0) {
+                                return 'Username should not be null';
+                              } else if (!isLowercase(value)) {
+                                return 'Username must be in lower case';
+                              } else if (value.contains(" ")) {
+                                return 'Remove space';
+                              }
+                            },
+                            keyboardType: TextInputType.text,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                labelText: "Username",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Container(
+                            child: Row(
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.45,
+                                  height: 70.0,
+                                  child: TextFormField(
+                                    controller: firstNameController,
+                                    enabled: isEditable,
+                                    validator: (value) {
+                                      if (value.length > 15.0) {
+                                        return 'Less than 15 words';
+                                      } else if (value.length == 0) {
+                                        return 'Should not be blank';
+                                      }
                                     },
-                                    child: Row(
-                                      children: [
-                                        Icon(FontAwesomeIcons.images,color: kPrimaryColor,),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 20.0),
-                                          child: Text('Gallery'),
-                                        ),
-                                      ],
-                                    ),
+                                    decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                            //fontSize: 10.0,
+                                            height: 0.3),
+                                        contentPadding:
+                                            new EdgeInsets.symmetric(
+                                                vertical: 5.0,
+                                                horizontal: 10.0),
+                                        labelText: "First Name",
+                                        labelStyle: TextStyle(
+                                            color: Colors.deepPurple,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13.0),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            borderSide: BorderSide(
+                                                color: Colors.black,
+                                                width: 1))),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.01,
+                                ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.45,
+                                  height: 70.0,
+                                  child: TextFormField(
+                                    controller: lastNameController,
+                                    enabled: isEditable,
+                                    validator: (value) {
+                                      if (value.length > 15.0) {
+                                        return 'Less than 15 words';
+                                      }
+                                      // }else if(value.length == 0){
+                                      //   return 'Null value';
+                                      // }
+                                    },
+                                    decoration: InputDecoration(
+                                        errorStyle: TextStyle(
+                                            //fontSize: 10.0,
+                                            height: 0.3),
+                                        contentPadding:
+                                            new EdgeInsets.symmetric(
+                                                vertical: 5.0,
+                                                horizontal: 10.0),
+                                        labelText: "Last Name",
+                                        labelStyle: TextStyle(
+                                            color: Colors.deepPurple,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13.0),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            borderSide: BorderSide(
+                                                color: Colors.black,
+                                                width: 1))),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        );
-
-                      });
-                },
-                child: Container(
-                    decoration: BoxDecoration(
-                      //borderRadius: BorderRadius.circular(100),
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 5,
-                      ),
-                    ),
-                    child: (isChanged == false) ? Container(
-                      height: 100,
-                      width: 100.0,
-                      child: Image(
-                        image: NetworkImage(
-                            photoUrlController.text),
-                        fit: BoxFit.cover,
-                      )
-                      //backgroundImage: NetworkImage(photoUrlController.text)
-                    ):Container(
-                  width: 25.0,
-                  height: 25.0,
-                  child: Image(
-                    image:  AssetImage("assets/25.gif"),
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                ),
-
-              ),
-              SizedBox(
-                height: 16,
-              ),
-
-              Form(
-                autovalidate: true,
-                key: _formKey,
-                child: Column(children: <Widget>[
-
-                  TextFormField(
-                    controller: displayNameController,
-                    enabled: isEditable,
-                    validator: (value) {
-                      if(value.length > 20.0){
-                        return 'Username should not be greater than 20 words';
-                      }else if(value.length ==0){
-                        return 'Username should not be null';
-                      }else if(!isLowercase(value)){
-                        return 'Username must be in lower case';
-                      }else if(value.contains(" ")){
-                        return 'Remove space';
-                      }
-                    },
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Username",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-
-                  SizedBox(
-                    height: 20.0,
-                  ),
-
-                  Container(
-                    child: Row(
-                      children: [
-                        Container(
-                          width:MediaQuery.of(context).size.width*0.45,
-                          height: 70.0,
-                          child: TextFormField(
-                            controller: firstNameController,
+                          TextFormField(
+                            controller: phoneNumberController,
                             enabled: isEditable,
                             validator: (value) {
-                              if(value.length > 15.0){
-                                return 'Less than 15 words';
-                              }else if(value.length == 0){
-                                return 'Should not be blank';
+                              if (value.length < 10.0 && value.length > 0) {
+                                return 'Phone number should be of 10 digits';
+                              } else if (value.length > 10.0) {
+                                return 'Phone number should be of 10 digits';
                               }
                             },
+                            //maxLength: 10,
+                            inputFormatters: [
+                              WhitelistingTextInputFormatter.digitsOnly
+                            ],
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                                errorStyle: TextStyle(
-                                  //fontSize: 10.0,
-                                    height: 0.3
-                                ),
-                                contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                                labelText: "First Name",labelStyle: TextStyle(
-                                color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                            ),
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                labelText: "Phone Number",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide:
-                                    BorderSide(color: Colors.black, width: 1))),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
                           ),
-                        ),
-
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width*0.01,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width*0.45,
-                          height: 70.0,
-                          child: TextFormField(
-                            controller: lastNameController,
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: emailController,
                             enabled: isEditable,
                             validator: (value) {
-                              if(value.length > 15.0) {
-                                return 'Less than 15 words';
+                              if (value.length > 30.0) {
+                                return 'email should not be greater than 30 words';
+                              } else if (value.length == 0) {
+                                return 'email should not be null';
                               }
-                              // }else if(value.length == 0){
-                              //   return 'Null value';
+                            },
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                labelText: "Email Id",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: bioController,
+                            enabled: isEditable,
+                            validator: (value) {
+                              if (value.length > 50.0) {
+                                return 'bio should not be greater than 50 words';
+                              }
+                            },
+                            keyboardType: TextInputType.text,
+                            maxLines: 2,
+                            decoration: InputDecoration(
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 10.0),
+                                labelText: "Bio",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 1,
+                            child: Row(
+                              children: [
+                                Column(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: new Text(
+                                        'Gender :',
+                                        style: new TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13.0,
+                                            color: Colors.deepPurple),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: new DropdownButton<String>(
+                                        hint: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 13.0),
+                                          child: (genderController.text == "")
+                                              ? Text(genderstring)
+                                              : Text(genderController.text),
+                                        ),
+                                        items: <String>[
+                                          'Male',
+                                          'Female',
+                                          'Others'
+                                        ].map((String value) {
+                                          return new DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          genderController.text = value;
+                                          setState(() {
+                                            genderstring = value;
+                                          });
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Align(
+                                  //padding: const EdgeInsets.only(left: 88.0),
+                                  alignment: Alignment.centerRight,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: new Text(
+                                            'Relationship :',
+                                            style: new TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13.0,
+                                                color: Colors.deepPurple),
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: new DropdownButton<String>(
+                                          hint: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0),
+                                            child: (relationshipController
+                                                        .text ==
+                                                    "")
+                                                ? Text(relationstring)
+                                                : Text(relationshipController
+                                                    .text),
+                                          ),
+                                          items: <String>['Single', 'Engaged']
+                                              .map((String value) {
+                                            return new DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            relationshipController.text = value;
+                                            setState(() {
+                                              relationstring = value;
+                                            });
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: linkController,
+                            enabled: isEditable,
+                            validator: (value) {
+                              if (value.length > 20.0) {
+                                return 'Website link should not be greater than 20 words';
+                              }
+                            },
+                            keyboardType: TextInputType.text,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                labelText: "Website",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: workController,
+                            enabled: isEditable,
+                            validator: (value) {
+                              if (value.length > 35.0) {
+                                return 'Work should not be greater than 35 words';
+                              }
+                            },
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                labelText: "Work",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: educationController,
+                            enabled: isEditable,
+                            validator: (value) {
+                              if (value.length > 30.0) {
+                                return 'Education should not be greater then 30 words';
+                              }
+                            },
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                labelText: "Education",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: currentCityController,
+                            enabled: isEditable,
+                            validator: (value) {
+                              if (value.length > 15.0) {
+                                return 'Current city should not be greater than 15 words';
+                              }
+                            },
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                labelText: "Current City",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: pincodeController,
+                            enabled: isEditable,
+                            validator: (value) {
+                              if (value.length > 6.0) {
+                                return 'pin code should be of 6 digit';
+                              }
+                              // else if(value.length < 6){
+                              //   return 'pin code should be of 6 digit';
                               // }
                             },
+                            inputFormatters: [
+                              WhitelistingTextInputFormatter.digitsOnly
+                            ],
+                            keyboardType: TextInputType.number,
+                            maxLines: 1,
                             decoration: InputDecoration(
-                                errorStyle: TextStyle(
-                                  //fontSize: 10.0,
-                                    height: 0.3
-                                ),
-                                contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                                labelText: "Last Name",labelStyle: TextStyle(
-                                color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                            ),
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                labelText: "Pin Code",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
-                                    borderSide:
-                                    BorderSide(color: Colors.black, width: 1))),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-
-                  TextFormField(
-                    controller: phoneNumberController,
-                    enabled: isEditable,
-                    validator: (value) {
-                      if(value.length < 10.0 && value.length > 0){
-                        return 'Phone number should be of 10 digits';
-                      }else if(value.length > 10.0){
-                        return 'Phone number should be of 10 digits';
-                      }
-                    },
-                    //maxLength: 10,
-                    inputFormatters: [
-                      WhitelistingTextInputFormatter.digitsOnly
-                    ],
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Phone Number",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  TextFormField(
-                    controller: emailController,
-                    enabled: isEditable,
-                    validator: (value) {
-
-                      if(value.length > 30.0){
-                        return 'email should not be greater than 30 words';
-
-                      }else if(value.length ==0){
-                        return 'email should not be null';
-                      }
-                    },
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Email Id",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-
-                  SizedBox(
-                    height: 20,
-                  ),
-
-
-                  TextFormField(
-                    controller: bioController,
-                    enabled: isEditable,
-                    validator: (value) {
-                      if(value.length > 50.0){
-                        return 'bio should not be greater than 50 words';
-                      }
-                    },
-                    keyboardType: TextInputType.text,
-                    maxLines: 2,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                        labelText: "Bio",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-
-
-                  Container(
-                    width: MediaQuery.of(context).size.width*1,
-                    child: Row(
-                      children: [
-                        Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: new Text(
-                                'Gender :',
-                                style: new TextStyle(
+                          SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: homeTownController,
+                            enabled: isEditable,
+                            validator: (value) {
+                              if (value.length > 15.0) {
+                                return 'Home town should not be greater then 15 words';
+                              }
+                            },
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                                contentPadding: new EdgeInsets.symmetric(
+                                    vertical: 5.0, horizontal: 10.0),
+                                labelText: "Home Town",
+                                labelStyle: TextStyle(
+                                    color: Colors.deepPurple,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 13.0,
-                                    color: Colors.deepPurple
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: new DropdownButton<String>(
-                                hint: Padding(
-                                  padding: const EdgeInsets.only(left: 13.0),
-                                  child: (genderController.text == "")?Text(genderstring):Text(genderController.text),
-                                ),
-                                items: <String>['Male', 'Female','Others'].map((String value) {
-                                  return new DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  genderController.text = value;
-                                  setState(() {
-                                    genderstring = value;
-                                  });
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                        Align(
-                          //padding: const EdgeInsets.only(left: 88.0),
-                          alignment: Alignment.centerRight,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: new Text(
-                                    'Relationship :',
-                                    style: new TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13.0,
-                                        color: Colors.deepPurple
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: new DropdownButton<String>(
-                                  hint: Padding(
-                                    padding: const EdgeInsets.only(left: 10.0),
-                                    child: (relationshipController.text=="")?Text(relationstring):Text(relationshipController.text),
-                                  ),
-                                  items: <String>['Single', 'Engaged'].map((String value) {
-                                    return new DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    relationshipController.text = value;
-                                    setState(() {
-                                      relationstring = value;
-                                    });
-                                  },
-                                ),
-                              )
-                            ],
+                                    fontSize: 13.0),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1))),
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-
-
-
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  TextFormField(
-                    controller: linkController,
-                    enabled: isEditable,
-                    validator: (value) {
-                      if(value.length > 20.0){
-                        return 'Website link should not be greater than 20 words';
-                      }
-                    },
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Website",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  TextFormField(
-                    controller: workController,
-                    enabled: isEditable,
-                    validator: (value) {
-                      if(value.length > 35.0){
-                        return 'Work should not be greater than 35 words';
-                      }
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Work",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  TextFormField(
-                    controller: educationController,
-                    enabled: isEditable,
-                    validator: (value) {
-                      if(value.length > 30.0){
-                        return 'Education should not be greater then 30 words';
-                      }
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Education",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  TextFormField(
-                    controller: currentCityController,
-                    enabled: isEditable,
-                    validator: (value) {
-                      if(value.length > 15.0){
-                        return 'Current city should not be greater than 15 words';
-                      }
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Current City",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  TextFormField(
-                    controller: pincodeController,
-                    enabled: isEditable,
-                    validator: (value) {
-                      if(value.length > 6.0){
-                        return 'pin code should be of 6 digit';
-                      }
-                      // else if(value.length < 6){
-                      //   return 'pin code should be of 6 digit';
-                      // }
-                    },
-                    inputFormatters: [
-                      WhitelistingTextInputFormatter.digitsOnly
-                    ],
-                    keyboardType: TextInputType.number,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Pin Code",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  TextFormField(
-                    controller: homeTownController,
-                    enabled: isEditable,
-                    validator: (value) {
-                      if(value.length > 15.0){
-                        return 'Home town should not be greater then 15 words';
-                      }
-                    },
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Home Town",labelStyle: TextStyle(
-                        color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 13.0
-                    ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide:
-                            BorderSide(color: Colors.black, width: 1))),
-                  ),
-
-
-                ],
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }
