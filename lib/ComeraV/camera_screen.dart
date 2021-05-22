@@ -275,7 +275,7 @@ class CameraScreenState extends State<CameraScreen>
     });
     Navigator.pop(context);
   }
-  final StorageReference storageReference =
+  final Reference storageReference =
   FirebaseStorage.instance.ref().child("Post Pictures");
 
   Future<String> uploadPhoto(mImageFile) async {

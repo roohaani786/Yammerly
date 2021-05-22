@@ -187,7 +187,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
-        .updateData({'private': private});
+        .update({'private': private});
 
     print("yaha aaya");
 

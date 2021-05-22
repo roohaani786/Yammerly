@@ -302,7 +302,7 @@ class _GalleryState extends State<Gallery> {
                             .circular(20)),
                         child: Container(
                           width: 230.0,
-                          child: FlatButton(
+                          child: MaterialButton(
                             color: Colors.transparent,
                             onPressed: () =>
                             // Navigator.push(

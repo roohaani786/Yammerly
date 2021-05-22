@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -275,8 +277,8 @@ class _NotificationFollowState extends State<NotificationFollow> {
         .collection("users")
         .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data['photoURL'];
-    userNameController.text = docSnap.data['displayName'];
+    photoUrlController.text = docSnap.data()['photoURL'];
+    userNameController.text = DocumentSnapshot.data()['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
