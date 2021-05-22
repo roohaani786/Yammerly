@@ -19,17 +19,21 @@ import 'package:techstagram/utils/utils.dart';
 import '../HomePage.dart';
 import '../aboutuser.dart';
 
-class OtherUserProfile extends StatefulWidget{
-
+class OtherUserProfile extends StatefulWidget {
   final String uid;
   final String uidX;
   final String displayNamecurrentUser;
   final String displayName;
 
-  OtherUserProfile({this.uid,this.displayNamecurrentUser,this.displayName,this.uidX});
+  OtherUserProfile(
+      {this.uid, this.displayNamecurrentUser, this.displayName, this.uidX});
 
   @override
-  _OtherUserProfileState createState() => _OtherUserProfileState(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName,uidX: uidX);
+  _OtherUserProfileState createState() => _OtherUserProfileState(
+      uid: uid,
+      displayNamecurrentUser: displayNamecurrentUser,
+      displayName: displayName,
+      uidX: uidX);
 }
 
 class _OtherUserProfileState extends State<OtherUserProfile> {
@@ -38,14 +42,14 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   final String displayNamecurrentUser;
   final String displayName;
 
-  _OtherUserProfileState({this.uid,this.displayNamecurrentUser,this.displayName,this.uidX});
+  _OtherUserProfileState(
+      {this.uid, this.displayNamecurrentUser, this.displayName, this.uidX});
 
   bool followed = false;
 
   ScrollController scrollController = new ScrollController();
 
-
-  TextEditingController uidControllerX,followingControllerX;
+  TextEditingController uidControllerX, followingControllerX;
 
   DocumentSnapshot docSnap;
   User user;
@@ -56,7 +60,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   bool _loading = false;
 
   Stream<QuerySnapshot> userPostsStream;
-
 
   @override
   void initState() {
@@ -90,7 +93,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   );
 
   getUserPosts(String uidX) async {
-    getPostsUser(uidX).then((val){
+    getPostsUser(uidX).then((val) {
       setState(() {
         userPostsStream = val;
       });
@@ -98,7 +101,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
   getPostsUser(String uidX) async {
-    return Firestore.instance.collection('users')
+    return Firestore.instance
+        .collection('users')
         .document(uidX)
         .collection('posts')
         .orderBy("timestamp", descending: true)
@@ -162,8 +166,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   bool show;
 
   checkPrivate() async {
-    if(private == true){
-      await Firestore.instance.collection('users')
+    if (private == true) {
+      await Firestore.instance
+          .collection('users')
           .document(uid)
           .collection('followers')
           .document(displayNamecurrentUser)
@@ -175,20 +180,20 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
           setState(() {
             show = true;
           });
-        }else{
+        } else {
           print("else me aaya");
           setState(() {
             show = false;
           });
         }
       });
-    }else if(private == false){
+    } else if (private == false) {
       print("private nahi hai");
       setState(() {
         show = true;
       });
-    }else{
-      setState((){
+    } else {
+      setState(() {
         show = true;
       });
     }
@@ -197,10 +202,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   fetchOProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
-      docSnap = await Firestore.instance
-          .collection("users")
-          .document(uid)
-          .get();
+      docSnap =
+          await Firestore.instance.collection("users").document(uid).get();
 
       private = docSnap.data["private"];
       print("fgd");
@@ -215,9 +218,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     }
   }
 
-
   getFollowers() {
-    Firestore.instance.collection('users')
+    Firestore.instance
+        .collection('users')
         .document(uid)
         .collection('followers')
         .document(displayNamecurrentUser)
@@ -228,15 +231,13 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
           followed = true;
           print(followed);
         });
-      }
-      else{
+      } else {
         setState(() {
           followed = false;
         });
       }
     });
   }
-
 
   String readTimestamp(int timestamp) {
     var now = DateTime.now();
@@ -245,7 +246,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     var diff = now.difference(date);
     var time = '';
 
-    if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
+    if (diff.inSeconds <= 0 ||
+        diff.inSeconds > 0 && diff.inMinutes == 0 ||
+        diff.inMinutes > 0 && diff.inHours == 0 ||
+        diff.inHours > 0 && diff.inDays == 0) {
       //time = format.format(date);
     } else if (diff.inDays > 0 && diff.inDays < 7) {
       if (diff.inDays == 1) {
@@ -266,8 +270,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   bool liked = false;
 
-  getfollowers( String displayNamecurrentUser, String uid) {
-    Firestore.instance.collection('users')
+  getfollowers(String displayNamecurrentUser, String uid) {
+    Firestore.instance
+        .collection('users')
         .document(uid)
         .collection('followers')
         .document(displayNamecurrentUser)
@@ -285,10 +290,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     Navigator.pop(context);
   }
 
-  getlikes( String displayName, String postId) {
+  getlikes(String displayName, String postId) {
     // print("postid");
     // print(postId);
-    Firestore.instance.collection('posts')
+    Firestore.instance
+        .collection('posts')
         .document(postId)
         .collection('likes')
         .document(displayName)
@@ -304,19 +310,18 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
   DeleteNotification() async {
-
     print("amios");
     Firestore.instance
         .collection("users")
         .document(uid)
         .collection('notification')
-    //.where('displayName','==',displayName);
+        //.where('displayName','==',displayName);
         .document(uidX)
         .delete();
   }
 
   String NotificationId;
-  Notification(String displayNameCurrUser,int followers) async {
+  Notification(String displayNameCurrUser, int followers) async {
     print(displayNameCurrUser);
     print(displayNamecurrentUser);
     print("911");
@@ -326,21 +331,23 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       NotificationId = Uuid().v4();
     });
 
-    return await Firestore.instance.collection("users")
-        .document(uid).collection("notification")
+    return await Firestore.instance
+        .collection("users")
+        .document(uid)
+        .collection("notification")
         .document(uidX)
-        .setData({"followers" : followers+1,
-      "notificationId" : NotificationId,
+        .setData({
+      "followers": followers + 1,
+      "notificationId": NotificationId,
       "username": displayNameCurrUser,
       //"comment": commentTextEditingController.text,
 
       "timestamp": DateTime.now(),
       "url": photoUrlX,
       "uid": uidX,
-      "status" : "Follow",
+      "status": "Follow",
     });
   }
-
 
   List<DocumentSnapshot> list;
 
@@ -351,10 +358,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
     Stream userQuery;
 
-    userQuery = Firestore.instance.collection('users')
-
+    userQuery = Firestore.instance
+        .collection('users')
         .where('displayName', isEqualTo: displayName)
-
         .snapshots();
 
     String displayNameX = displayName;
@@ -369,139 +375,194 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text(displayNameX,style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),),
+          title: Text(
+            displayNameX,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         body: StreamBuilder(
           stream: userQuery,
           builder: (context, snapshot) {
             return snapshot.hasData
-                ?
-            ListView.builder(
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) {
+                ? ListView.builder(
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) {
 //                DocumentSnapshot sd = snapshot.data.documents[index];
-                String photoUrl = snapshot.data.documents[index]["photoURL"];
-                String coverPhotoUrl = snapshot.data.documents[index]["coverPhotoUrl"];
-                String uid = snapshot.data.documents[index]["uid"];
-                String displayName = snapshot.data.documents[index]["displayName"];
-                String bio = snapshot.data.documents[index]["bio"];
-                int followers = snapshot.data.documents[index]["followers"];
-                String firstName = snapshot.data.documents[index]["fname"];
-                String lastName = snapshot.data.documents[index]["surname"];
+                      String photoUrl =
+                          snapshot.data.documents[index]["photoURL"];
+                      String coverPhotoUrl =
+                          snapshot.data.documents[index]["coverPhotoUrl"];
+                      String uid = snapshot.data.documents[index]["uid"];
+                      String displayName =
+                          snapshot.data.documents[index]["displayName"];
+                      String bio = snapshot.data.documents[index]["bio"];
+                      int followers =
+                          snapshot.data.documents[index]["followers"];
+                      String firstName =
+                          snapshot.data.documents[index]["fname"];
+                      String lastName =
+                          snapshot.data.documents[index]["surname"];
 
-                if(followers == 0){
-                  followed = false;
-                }
-                int following = snapshot.data.documents[index]["following"];
-                print(following);
-                int posts = snapshot.data.documents[index]["posts"];
-                if(followers == 0){
-                  followed = false;
-                }
+                      if (followers == 0) {
+                        followed = false;
+                      }
+                      int following =
+                          snapshot.data.documents[index]["following"];
+                      print(following);
+                      int posts = snapshot.data.documents[index]["posts"];
+                      if (followers == 0) {
+                        followed = false;
+                      }
 
-                getfollowers(displayNamecurrentUser,uid);
-                return (uid != null) ?
-                SingleChildScrollView(
-                  child: SafeArea(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Stack(
-                        children: [
-                          (coverPhotoUrl == null)?Container(
-                            height : MediaQuery.of(context).size.height*0.20,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('assets/images/nocover.png'),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            //color: Colors.lightBlueAccent,
-                          ):Container(
-                            height : MediaQuery.of(context).size.height*0.20,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(coverPhotoUrl),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-
-                          // opar neeche start
-                          Align(
-                            alignment: Alignment.center,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: deviceHeight*0.22,
-                                  ),
-                                  Container(
-                                    height: MediaQuery.of(context).size.height*0.35,
-                                    width:MediaQuery.of(context).size.width,
-
-                                    // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
-                                    child: Column(
-                                      //mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          width: MediaQuery.of(context).size.width,
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.30,
-                                              ),
-
-                                              Container(
-                                                width:MediaQuery.of(context).size.width*0.70,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment
-                                                      .spaceAround,
-                                                  children: <Widget>[
-                                                    _buildStatItem("POSTS", posts.toString()),
-                                                    GestureDetector(
-                                                      onTap: () => Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                OtherFollowersList(displayName: displayName,uid: uid,displayNamecurrentUser: displayNamecurrentUser,uidX: uidX,)
-                                                        ),
-                                                      ),
-                                                      child: _buildStatItem("FOLLOWERS",
-                                                          followers.toString()),
-                                                    ),
-
-                                                    GestureDetector(
-                                                      onTap: () => Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                OtherFollowersList(displayName: displayName,uid: uid,displayNamecurrentUser: displayNamecurrentUser,uidX: uidX,)
-                                                        ),
-                                                      ),
-
-                                                      child: _buildStatItem("FOLLOWING",
-                                                          following.toString()),
-                                                    ),
-
-                                                  ],
+                      getfollowers(displayNamecurrentUser, uid);
+                      return (uid != null)
+                          ? SingleChildScrollView(
+                              child: SafeArea(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Stack(
+                                    children: [
+                                      (coverPhotoUrl == null)
+                                          ? Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.20,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                      'assets/images/nocover.png'),
+                                                  fit: BoxFit.fill,
                                                 ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
+                                              ),
+                                              //color: Colors.lightBlueAccent,
+                                            )
+                                          : Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.20,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      coverPhotoUrl),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
 
-                                        SizedBox(
-                                          height: 30,
-                                          width: 300,
-                                          // child: Divider(
-                                          //   color: Colors.teal.shade700,
-                                          // ),
-                                        ),
-                                        Container(
+                                      // opar neeche start
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                height: deviceHeight * 0.22,
+                                              ),
+                                              Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.35,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+
+                                                // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                                                child: Column(
+                                                  //mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.30,
+                                                          ),
+                                                          Container(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.70,
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceAround,
+                                                              children: <
+                                                                  Widget>[
+                                                                _buildStatItem(
+                                                                    "POSTS",
+                                                                    posts
+                                                                        .toString()),
+                                                                GestureDetector(
+                                                                  onTap: () =>
+                                                                      Navigator
+                                                                          .push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (context) =>
+                                                                            OtherFollowersList(
+                                                                              displayName: displayName,
+                                                                              uid: uid,
+                                                                              displayNamecurrentUser: displayNamecurrentUser,
+                                                                              uidX: uidX,
+                                                                            )),
+                                                                  ),
+                                                                  child: _buildStatItem(
+                                                                      "FOLLOWERS",
+                                                                      followers
+                                                                          .toString()),
+                                                                ),
+                                                                GestureDetector(
+                                                                  onTap: () =>
+                                                                      Navigator
+                                                                          .push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (context) =>
+                                                                            OtherFollowersList(
+                                                                              displayName: displayName,
+                                                                              uid: uid,
+                                                                              displayNamecurrentUser: displayNamecurrentUser,
+                                                                              uidX: uidX,
+                                                                            )),
+                                                                  ),
+                                                                  child: _buildStatItem(
+                                                                      "FOLLOWING",
+                                                                      following
+                                                                          .toString()),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 30,
+                                                      width: 300,
+                                                      // child: Divider(
+                                                      //   color: Colors.teal.shade700,
+                                                      // ),
+                                                    ),
+                                                    Container(
                                                       height:
                                                           MediaQuery.of(context)
                                                                   .size
@@ -550,387 +611,500 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                                   : Container(
                                                                       width: deviceWidth *
                                                                           0.80,
-                                                                      child: Text(
-                                                      displayName,
-                                                      textAlign: TextAlign.left,
-                                                      style: TextStyle(
-                                                        fontSize: 26.0,
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Pacifico',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Container(
-                                                    width: deviceWidth*0.80,
-                                                    child: Text(
-                                                      displayName,
-                                                      textAlign: TextAlign.left,
-                                                      style: TextStyle(
-                                                        fontSize: 15.0,
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontFamily: 'Pacifico',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  (bio!=null)?Container(
-                                                    width: deviceWidth*0.80,
-                                                    child: Text(
-                                                      bio,
-                                                      textAlign: TextAlign.left,
-                                                      style: TextStyle(
-                                                        fontFamily: 'Source Sans Pro',
-                                                        fontSize: 15.0,
-                                                        color: Colors.grey,
-                                                        letterSpacing: 2.5,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ):Text("")
-                                                ],
-                                              ),
-                                              Column(
-                                                children: [
-                                                  (displayNamecurrentUser!=displayName)?Padding(
-                                                    padding: const EdgeInsets.only(top: 10.0,),
-                                                    child: Align(
-                                                      alignment: Alignment.topRight,
-                                                      child: SizedBox(
-                                                        width: 30,
-                                                        height: 30.0,
-                                                        child: Ink(
-                                                          decoration: const ShapeDecoration(
-                                                            color: Colors.black,
-                                                            shape: CircleBorder(),
-                                                          ),
-                                                          child: IconButton(
-                                                              color: Colors.white,
-                                                              icon: Icon(
-                                                                FontAwesomeIcons.rocketchat,
-                                                                size: 15,
+                                                                      child:
+                                                                          Text(
+                                                                        displayName,
+                                                                        textAlign:
+                                                                            TextAlign.left,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              26.0,
+                                                                          color:
+                                                                              Colors.black,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          fontFamily:
+                                                                              'Pacifico',
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                              SizedBox(
+                                                                height: 5.0,
                                                               ),
-                                                              onPressed: () {
+                                                              Container(
+                                                                width:
+                                                                    deviceWidth *
+                                                                        0.80,
+                                                                child: Text(
+                                                                  displayName,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        15.0,
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        'Pacifico',
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 5.0,
+                                                              ),
+                                                              (bio != null)
+                                                                  ? Container(
+                                                                      width: deviceWidth *
+                                                                          0.80,
+                                                                      child:
+                                                                          Text(
+                                                                        bio,
+                                                                        textAlign:
+                                                                            TextAlign.left,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontFamily:
+                                                                              'Source Sans Pro',
+                                                                          fontSize:
+                                                                              15.0,
+                                                                          color:
+                                                                              Colors.grey,
+                                                                          letterSpacing:
+                                                                              2.5,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  : Text("")
+                                                            ],
+                                                          ),
+                                                          Column(
+                                                            children: [
+                                                              (displayNamecurrentUser !=
+                                                                      displayName)
+                                                                  ? Padding(
+                                                                      padding:
+                                                                          const EdgeInsets
+                                                                              .only(
+                                                                        top:
+                                                                            10.0,
+                                                                      ),
+                                                                      child:
+                                                                          Align(
+                                                                        alignment:
+                                                                            Alignment.topRight,
+                                                                        child:
+                                                                            SizedBox(
+                                                                          width:
+                                                                              30,
+                                                                          height:
+                                                                              30.0,
+                                                                          child:
+                                                                              Ink(
+                                                                            decoration:
+                                                                                const ShapeDecoration(
+                                                                              color: Colors.black,
+                                                                              shape: CircleBorder(),
+                                                                            ),
+                                                                            child: IconButton(
+                                                                                color: Colors.white,
+                                                                                icon: Icon(
+                                                                                  FontAwesomeIcons.rocketchat,
+                                                                                  size: 15,
+                                                                                ),
+                                                                                onPressed: () {}),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  : Container(),
+                                                              SizedBox(
+                                                                height: 5.0,
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                  top: 10.0,
+                                                                ),
+                                                                child: Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .topRight,
+                                                                  child:
+                                                                      SizedBox(
+                                                                    width: 30,
+                                                                    height:
+                                                                        30.0,
+                                                                    child: Ink(
+                                                                      decoration:
+                                                                          const ShapeDecoration(
+                                                                        color: Colors
+                                                                            .black,
+                                                                        shape:
+                                                                            CircleBorder(),
+                                                                      ),
+                                                                      child: (displayName ==
+                                                                              displayNamecurrentUser)
+                                                                          ? IconButton(
+                                                                              color: Colors.white,
+                                                                              icon: Icon(
+                                                                                FontAwesomeIcons.userEdit,
+                                                                                size: 15,
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                Navigator.push(
+                                                                                  context,
+                                                                                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                                                                                );
+                                                                              })
+                                                                          : IconButton(
+                                                                              color: Colors.white,
+                                                                              icon: Icon(
+                                                                                FontAwesomeIcons.user,
+                                                                                size: 15,
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => AboutOtherUser(uid: uid)));
+                                                                              }),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.85,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.1,
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceAround,
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 120,
+                                                                  child: (displayName ==
+                                                                          displayNamecurrentUser)
+                                                                      ? MaterialButton(
+                                                                          color: Colors
+                                                                              .purple,
+                                                                          child:
+                                                                              new Text(
+                                                                            "About me",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color: Colors.white,
+                                                                            ),
+                                                                          ),
+                                                                          onPressed:
+                                                                              () {
+                                                                            Navigator.push(
+                                                                              context,
+                                                                              MaterialPageRoute(
+                                                                                  builder: (context) => AboutUser(
+                                                                                        uid: uidX,
+                                                                                      )),
+                                                                            );
+                                                                          },
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            side:
+                                                                                BorderSide(color: Colors.purple, width: 2.5),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(30.0),
+                                                                          ))
+                                                                      : MaterialButton(
+                                                                          color: Colors
+                                                                              .white,
+                                                                          child:
+                                                                              new Text(
+                                                                            (followed == false)
+                                                                                ? "Follow"
+                                                                                : "Unfollow",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color: (followed == false) ? Colors.purple : Colors.red,
+                                                                            ),
+                                                                          ),
+                                                                          onPressed:
+                                                                              () {
+                                                                            if (followed ==
+                                                                                false) {
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = true;
+                                                                                });
 
-                                                              }
+                                                                                DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
+                                                                                Notification(displayNamecurrentUser, followers);
+                                                                                // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
+                                                                                DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
+                                                                              });
+                                                                            } else {
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
+                                                                                DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
+
+                                                                                DeleteNotification();
+
+                                                                                DatabaseService().decreaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid);
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = false;
+                                                                                });
+                                                                              });
+                                                                            }
+                                                                          },
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            side:
+                                                                                BorderSide(color: (followed == false) ? Colors.purple : Colors.red, width: 2),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(30.0),
+                                                                          )),
+                                                                ),
+
+//
+                                                              ]),
+                                                          SizedBox(
+                                                            height: 10,
+                                                            width: deviceWidth,
+                                                            child: Divider(
+                                                              thickness: 2.0,
+                                                              color: Colors.teal
+                                                                  .shade700,
+                                                            ),
                                                           ),
-                                                        ),
+                                                        ],
                                                       ),
-                                                    ),
-                                                  ):Container(),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 10.0,),
-                                                    child: Align(
-                                                      alignment: Alignment.topRight,
-                                                      child: SizedBox(
-                                                        width: 30,
-                                                        height: 30.0,
-                                                        child: Ink(
-                                                          decoration: const ShapeDecoration(
-                                                            color: Colors.black,
-                                                            shape: CircleBorder(),
-                                                          ),
-                                                          child: (displayName == displayNamecurrentUser)?IconButton(
-                                                              color: Colors.white,
-                                                              icon: Icon(
-                                                                FontAwesomeIcons.userEdit,
-                                                                size: 15,
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height -
+                                                    300,
+                                                width: 340.0,
+
+                                                child: StreamBuilder(
+                                                    stream: userPostsStream,
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      if (snapshot.data ==
+                                                          null) {
+                                                        return Container();
+                                                      }
+                                                      int itemCount = snapshot
+                                                          .data
+                                                          .documents
+                                                          .length;
+                                                      return (posts != 0)
+                                                          ? Column(
+                                                              children: [
+                                                                new Expanded(
+                                                                    child: GridView.builder(
+                                                                        shrinkWrap: true,
+                                                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
+                                                                        controller: ScrollController(),
+                                                                        itemCount: itemCount,
+                                                                        itemBuilder: (context, index) {
+                                                                          String
+                                                                              postIdX =
+                                                                              snapshot.data.documents[index]['email'];
+                                                                          String
+                                                                              email =
+                                                                              snapshot.data.documents[index]['email'];
+                                                                          String
+                                                                              description =
+                                                                              snapshot.data.documents[index]['description'];
+                                                                          String
+                                                                              displayName =
+                                                                              snapshot.data.documents[index]['displayName'];
+                                                                          String
+                                                                              photoUrl =
+                                                                              snapshot.data.documents[index]['photoURL'];
+                                                                          String
+                                                                              uid =
+                                                                              snapshot.data.documents[index]["uid"];
+
+                                                                          Timestamp
+                                                                              timestamp =
+                                                                              snapshot.data.documents[index]['timestamp'];
+                                                                          String
+                                                                              url =
+                                                                              snapshot.data.documents[index]['url'];
+                                                                          int cam = snapshot
+                                                                              .data
+                                                                              .documents[index]['cam'];
+                                                                          String
+                                                                              postId =
+                                                                              snapshot.data.documents[index]['postId'];
+                                                                          int likes = snapshot
+                                                                              .data
+                                                                              .documents[index]['likes'];
+                                                                          readTimestamp(
+                                                                              timestamp.seconds);
+                                                                          checkPrivate();
+
+                                                                          getlikes(
+                                                                              displayName,
+                                                                              postId);
+                                                                          if (likes < 0 ||
+                                                                              likes == 0) {
+                                                                            liked =
+                                                                                false;
+                                                                          }
+                                                                          return (show == null)
+                                                                              ? Container()
+                                                                              : (show)
+                                                                                  ? Container(
+                                                                                      child: Container(
+                                                                                        color: Colors.white,
+                                                                                        child: Column(
+                                                                                          children: <Widget>[
+                                                                                            Column(
+                                                                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                                              children: [
+                                                                                                GestureDetector(
+                                                                                                  onTap: () {
+                                                                                                    Navigator.push(
+                                                                                                      context,
+                                                                                                      MaterialPageRoute(
+                                                                                                          builder: (context) => postPage(
+                                                                                                                displayNamecurrentUser: displayName,
+                                                                                                                PostUrl: url,
+                                                                                                                uidX: uid,
+                                                                                                                delete: false,
+                                                                                                              )),
+                                                                                                    );
+                                                                                                  },
+                                                                                                  child: ClipRRect(
+                                                                                                    borderRadius: BorderRadius.only(
+                                                                                                      topLeft: Radius.circular(8.0),
+                                                                                                      topRight: Radius.circular(8.0),
+                                                                                                      bottomLeft: Radius.circular(8.0),
+                                                                                                      bottomRight: Radius.circular(8.0),
+                                                                                                    ),
+                                                                                                    child: (cam == 1)
+                                                                                                        ? Transform(
+                                                                                                            alignment: Alignment.center,
+                                                                                                            transform: Matrix4.rotationY(math.pi),
+                                                                                                            child: Image.network(
+                                                                                                              url,
+                                                                                                              // width: 300,
+                                                                                                              height: 104,
+                                                                                                              fit: BoxFit.cover,
+                                                                                                            ),
+                                                                                                          )
+                                                                                                        : Image.network(
+                                                                                                            url,
+                                                                                                            // width: 300,
+                                                                                                            height: 104,
+                                                                                                            fit: BoxFit.cover,
+                                                                                                          ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
+                                                                                      // height: 150.0,
+                                                                                      // width: 150.0,
+                                                                                      //child: Image.network(url),
+                                                                                    )
+                                                                                  : Container();
+                                                                        })),
+                                                              ],
+                                                            )
+                                                          : Container(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .only(
+                                                                top: 5.0,
+                                                                left: 30.0,
+                                                                right: 30.0,
+                                                                bottom: 5.0,
                                                               ),
-                                                              onPressed: () {
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                                                                );
-                                                              }
-                                                          ):IconButton(
-                                                              color: Colors.white,
-                                                              icon: Icon(
-                                                                FontAwesomeIcons.user,
-                                                                size: 15,
+                                                              //height: 200,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.20,
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.20,
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: <
+                                                                    Widget>[
+                                                                  //pageTitle,
+                                                                  // SizedBox(
+                                                                  //   height: deviceHeight * 0.1,
+                                                                  // ),
+                                                                  Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: <
+                                                                        Widget>[
+                                                                      image,
+                                                                      notificationHeader,
+                                                                      //notificationText,
+                                                                    ],
+                                                                  ),
+                                                                ],
                                                               ),
-                                                              onPressed: () {
-                                                                Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(builder: (context) => AboutOtherUser(uid: uid))
-                                                                );
-                                                              }
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
+                                                            );
+                                                    }),
+
+                                                //child: Image.network(uidCurrUser),
                                               )
                                             ],
                                           ),
                                         ),
-                                        Container(
-                                          width: MediaQuery.of(context).size.width*0.85,
-                                          height: MediaQuery.of(context).size.height*0.1,
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                  mainAxisAlignment: MainAxisAlignment
-                                                      .spaceAround,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 120,
-                                                      child: (displayName == displayNamecurrentUser)?FlatButton(
-                                                          color: Colors.purple,
-                                                          child: new Text(
-                                                            "About me",
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                            ),
-                                                          ),
-                                                          onPressed: () {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => AboutUser(uid: uidX,)),
-                                                            );
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                                color: Colors.purple,
-                                                                width: 2.5),
-                                                            borderRadius: BorderRadius
-                                                                .circular(30.0),
-                                                          )
-                                                      ):FlatButton(
-                                                          color: Colors.white,
-                                                          child: new Text(
-                                                            (followed == false)?"Follow":"Unfollow",
-                                                            style: TextStyle(
-                                                              color: (followed == false)?Colors.purple:Colors.red,
-                                                            ),
-                                                          ),
-                                                          onPressed: () {
-                                                            if(followed == false){
-                                                              if (timer?.isActive ??false)
-                                                                timer.cancel(); //cancel if [timer] is null or running
-                                                              timer = Timer(
-                                                                  const Duration(milliseconds: 1500),
-                                                                      () {
-                                                                        setState(() {
-                                                                          //getFollowers();
-                                                                          followed = true;
-                                                                        });
+                                      ),
 
-                                                                        DatabaseService().followUser(followers, uid, displayNamecurrentUser,uidControllerX.text,photoUrlX);
-                                                                        Notification(displayNamecurrentUser,followers);
-                                                                        // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
-                                                                        DatabaseService().increaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid,photoUrl);
-                                                                      });
-                                                            }else{
-                                                              if (timer?.isActive ??false)
-                                                                timer.cancel(); //cancel if [timer] is null or running
-                                                              timer = Timer(
-                                                                  const Duration(milliseconds: 1500),
-                                                                      () {
-                                                                        DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
-
-                                                                        DeleteNotification();
-
-                                                                        DatabaseService().decreaseFollowing(uidX,followingX,displayNamecurrentUser,displayNameX,uid);
-                                                                        setState(() {
-                                                                          //getFollowers();
-                                                                          followed = false;
-                                                                        });
-                                                                      });
-                                                            }
-                                                          },
-                                                          shape: RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                                color: (followed == false)?Colors.purple:Colors.red,
-                                                                width: 2),
-                                                            borderRadius: BorderRadius
-                                                                .circular(30.0),
-                                                          )),
-                                                    ),
-
-//
-                                                  ]
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                                width: deviceWidth,
-                                                child: Divider(
-                                                  thickness: 2.0,
-                                                  color: Colors.teal.shade700,
-                                                ),
-                                              ),
-
-                                            ],
-                                          ),
-                                        )
-
-                                      ],
-                                    ),
-
-                                  ),
-                                  Container(
-                                    height: MediaQuery.of(context).size.height-300,
-                                    width: 340.0,
-
-                                    child: StreamBuilder(
-                                        stream: userPostsStream,
-                                        builder: (context, snapshot) {
-                                          if(snapshot.data == null){return Container();}
-                                          int itemCount = snapshot.data.documents.length;
-                                          return (posts != 0)
-                                              ? Column(
-                                            children: [
-                                              new Expanded(
-                                                  child: GridView.builder(
-                                                      shrinkWrap: true,
-                                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                          crossAxisCount: 3,
-                                                          crossAxisSpacing: 10.0,
-                                                          mainAxisSpacing: 10.0),
-                                                      controller: ScrollController(),
-                                                      itemCount: itemCount,
-                                                      itemBuilder: (context, index) {
-                                                        String postIdX = snapshot.data.documents[index]['email'];
-                                                        String email = snapshot.data.documents[index]['email'];
-                                                        String description =
-                                                        snapshot.data.documents[index]['description'];
-                                                        String displayName =
-                                                        snapshot.data.documents[index]['displayName'];
-                                                        String photoUrl =
-                                                        snapshot.data.documents[index]['photoURL'];
-                                                        String uid = snapshot.data.documents[index]["uid"];
-
-                                                        Timestamp timestamp =
-                                                        snapshot.data.documents[index]['timestamp'];
-                                                        String url = snapshot.data.documents[index]['url'];
-                                                        int cam = snapshot.data.documents[index]['cam'];
-                                                        String postId = snapshot.data.documents[index]['postId'];
-                                                        int likes = snapshot.data.documents[index]['likes'];
-                                                        readTimestamp(timestamp.seconds);
-                                                        checkPrivate();
-
-                                                        getlikes(displayName,postId);
-                                                        if(likes< 0 || likes == 0){
-                                                          liked = false;
-                                                        }
-                                                        return (show == null)?Container():(show)?Container(
-                                                          child: Container(
-                                                            color: Colors.white,
-                                                            child: Column(
-                                                              children: <Widget>[
-
-
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                                  children: [
-
-                                                                    GestureDetector(
-                                                                      onTap: () {
-                                                                        Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayName,PostUrl: url,uidX: uid,delete: false,)),
-                                                                        );
-                                                                      },
-                                                                      child: ClipRRect(
-                                                                        borderRadius: BorderRadius.only(
-                                                                          topLeft: Radius.circular(8.0),
-                                                                          topRight: Radius.circular(8.0),
-                                                                          bottomLeft: Radius.circular(8.0),
-                                                                          bottomRight: Radius.circular(8.0),
-                                                                        ),
-
-                                                                        child: (cam == 1)?Transform(
-                                                                          alignment: Alignment.center,
-                                                                          transform: Matrix4.rotationY(math.pi),
-                                                                          child: Image.network(
-                                                                            url,
-                                                                            // width: 300,
-                                                                            height: 104,
-                                                                            fit:BoxFit.cover,
-
-                                                                          ),
-                                                                        ):Image.network(
-                                                                          url,
-                                                                          // width: 300,
-                                                                          height: 104,
-                                                                          fit:BoxFit.cover,
-
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          // height: 150.0,
-                                                          // width: 150.0,
-                                                          //child: Image.network(url),
-                                                        ):
-                                                        Container(
-
-                                                        );
-                                                      }
-                                                  )
-                                              ),
-                                            ],
-                                          ): Container(
-                                            padding: EdgeInsets.only(
-                                              top: 5.0,
-                                              left: 30.0,
-                                              right: 30.0,
-                                              bottom: 5.0,
-                                            ),
-                                            //height: 200,
-                                            height: MediaQuery.of(context).size.height * 0.20,
-                                            width: MediaQuery.of(context).size.width * 0.20,
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                //pageTitle,
-                                                // SizedBox(
-                                                //   height: deviceHeight * 0.1,
-                                                // ),
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    image,
-                                                    notificationHeader,
-                                                    //notificationText,
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                    ),
-
-
-                                    //child: Image.network(uidCurrUser),
-
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-
-
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Container(
-                              height: deviceHeight*0.31,
-                              width: deviceWidth*0.96,
-                              padding: const EdgeInsets.only(right: 250.0),
-                              child:(photoUrl!=null)?Align(
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: Container(
+                                          height: deviceHeight * 0.31,
+                                          width: deviceWidth * 0.96,
+                                          padding: const EdgeInsets.only(
+                                              right: 250.0),
+                                          child: (photoUrl != null)
+                                              ? Align(
                                                   alignment:
                                                       Alignment.bottomLeft,
                                                   child: Container(
@@ -956,76 +1130,85 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       //   backgroundImage: NetworkImage(photoUrlController.text),
                                                       //
                                                       //   backgroundColor: Colors.transparent,
-                                  // ),
+                                                      // ),
+                                                      ),
+                                                )
+                                              : Container(
+                                                  child: IconButton(
+                                                      icon: Icon(
+                                                        FontAwesomeIcons
+                                                            .userCircle,
+                                                        color:
+                                                            Colors.deepPurple,
+                                                      ),
+                                                      onPressed: () {
+                                                        print("hello");
+                                                      }),
+                                                ),
+                                        ),
+                                      ),
+
+                                      // Padding(
+                                      //   padding: const EdgeInsets.only(top: 145,right: 250.0),
+                                      //   child:(photoUrl!=null)?Align(
+                                      //     alignment: Alignment.center,
+                                      //     child: Container(
+                                      //       decoration: BoxDecoration(
+                                      //         borderRadius: BorderRadius.circular(100),
+                                      //         border: Border.all(
+                                      //           color: Colors.white,
+                                      //           width: 5,
+                                      //         ),
+                                      //       ),
+                                      //       child: CircleAvatar(
+                                      //         radius: 50,
+                                      //         backgroundImage: NetworkImage(photoUrl),
+                                      //
+                                      //         backgroundColor: Colors.transparent,
+                                      //       ),
+                                      //     ),
+                                      //   ): CircleAvatar(
+                                      //     radius: 50,
+                                      //     child: IconButton(icon:
+                                      //     Icon(FontAwesomeIcons.userCircle,
+                                      //       color: Colors.deepPurple,), onPressed: (){print("hello");}),
+                                      //     backgroundColor: Colors.transparent,
+                                      //   ),
+                                      // ),
+
+                                      // (photoUrl!=null)?Padding(
+                                      //   padding: const EdgeInsets.only(
+                                      //       top: 80, left: 140.0, right: 140.0),
+                                      //   child:Align(
+                                      //     alignment: Alignment.center,
+                                      //     child: CircleAvatar(
+                                      //       radius: 35,
+                                      //       backgroundImage: NetworkImage(photoUrl),
+                                      //
+                                      //       backgroundColor: Colors.transparent,
+                                      //     ),
+                                      //   ),
+                                      // ):Padding(
+                                      //   padding: const EdgeInsets.only(
+                                      //       top: 70, left: 110.0,right: 110.0),
+                                      //   child: CircleAvatar(
+                                      //     radius: 50,
+                                      //     child: IconButton(icon:
+                                      //     Icon(FontAwesomeIcons.userCircle,
+                                      //       color: Colors.deepPurple,
+                                      //       size: 100.0,), onPressed: null),
+                                      //     backgroundColor: Colors.white60,
+                                      //   ),
+                                      // ),
+                                    ],
+                                  ),
                                 ),
-                              ): Container(
-                                child: IconButton(icon:
-                                Icon(FontAwesomeIcons.userCircle,
-                                  color: Colors.deepPurple,), onPressed: (){print("hello");}),
                               ),
-                            ),
-                          ),
-
-                          // Padding(
-                          //   padding: const EdgeInsets.only(top: 145,right: 250.0),
-                          //   child:(photoUrl!=null)?Align(
-                          //     alignment: Alignment.center,
-                          //     child: Container(
-                          //       decoration: BoxDecoration(
-                          //         borderRadius: BorderRadius.circular(100),
-                          //         border: Border.all(
-                          //           color: Colors.white,
-                          //           width: 5,
-                          //         ),
-                          //       ),
-                          //       child: CircleAvatar(
-                          //         radius: 50,
-                          //         backgroundImage: NetworkImage(photoUrl),
-                          //
-                          //         backgroundColor: Colors.transparent,
-                          //       ),
-                          //     ),
-                          //   ): CircleAvatar(
-                          //     radius: 50,
-                          //     child: IconButton(icon:
-                          //     Icon(FontAwesomeIcons.userCircle,
-                          //       color: Colors.deepPurple,), onPressed: (){print("hello");}),
-                          //     backgroundColor: Colors.transparent,
-                          //   ),
-                          // ),
-
-
-                          // (photoUrl!=null)?Padding(
-                          //   padding: const EdgeInsets.only(
-                          //       top: 80, left: 140.0, right: 140.0),
-                          //   child:Align(
-                          //     alignment: Alignment.center,
-                          //     child: CircleAvatar(
-                          //       radius: 35,
-                          //       backgroundImage: NetworkImage(photoUrl),
-                          //
-                          //       backgroundColor: Colors.transparent,
-                          //     ),
-                          //   ),
-                          // ):Padding(
-                          //   padding: const EdgeInsets.only(
-                          //       top: 70, left: 110.0,right: 110.0),
-                          //   child: CircleAvatar(
-                          //     radius: 50,
-                          //     child: IconButton(icon:
-                          //     Icon(FontAwesomeIcons.userCircle,
-                          //       color: Colors.deepPurple,
-                          //       size: 100.0,), onPressed: null),
-                          //     backgroundColor: Colors.white60,
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ) : Container();
-              },
-            ):Container();
+                            )
+                          : Container();
+                    },
+                  )
+                : Container();
           },
         ),
       ),
@@ -1058,7 +1241,6 @@ Widget _buildStatItem(String label, String count) {
         count,
         style: _statCountTextStyle,
       ),
-
     ],
   );
 }

@@ -21,7 +21,6 @@ class CameraExampleHome extends StatefulWidget {
   final int cam;
   final bool check;
 
-
   const CameraExampleHome({Key key, this.cam, this.check}) : super(key: key);
   @override
   _CameraExampleHomeState createState() {
@@ -73,7 +72,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   final Stopwatch stopwatch = new Stopwatch();
   final List<ValueChanged<ElapsedTime>> timerListeners =
       <ValueChanged<ElapsedTime>>[];
-  Duration maxVideoDuration = Duration(seconds: 31), pausedVideoDuration = Duration(seconds: 0);
+  Duration maxVideoDuration = Duration(seconds: 31),
+      pausedVideoDuration = Duration(seconds: 0);
 
   void leftButtonPressed() {
     setState(() {
@@ -662,9 +662,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   File _image;
   bool upload = false;
   Future pickImage() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+    await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
       setState(() {
-        _image = image;
+        _image = File(image.path);
         upload = true;
       });
     });
@@ -694,7 +694,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   bool _isRecordingMode = false;
   bool _isRecording = false;
- 
 
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
@@ -788,7 +787,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                     onPressed: controller != null &&
                             controller.value.isInitialized &&
                             !controller.value.isRecordingVideo
-                        
                         ? onTakePictureButtonPressed
                         : null,
                   ),
@@ -816,7 +814,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                         GestureDetector(
                           onTap: () {
                             // rightButtonPressed();
-                         //   dependencies.stopwatch.stop();
+                            //   dependencies.stopwatch.stop();
                             setState(() {
                               dependencies.stopwatch.stop();
                             });
@@ -830,7 +828,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                             onPressed: controller != null &&
                                     controller.value.isInitialized &&
                                     controller.value.isRecordingVideo
-                                ? (controller != null && 
+                                ? (controller != null &&
                                         controller.value.isRecordingPaused
                                     ? onResumeButtonPressed
                                     : onPauseButtonPressed)
@@ -839,7 +837,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                         ),
                         GestureDetector(
                           onTap: () {
-                                  dependencies.stopwatch.stop();
+                            dependencies.stopwatch.stop();
                           },
                           child: IconButton(
                             icon: const Icon(Icons.stop),
@@ -862,7 +860,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             // ),
             // onPressed: (){},
             icon: Icon(
-              
               (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
               color: Colors.white,
               size: 30,
@@ -872,7 +869,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                 //       _oneAtatime = !_oneAtatime;
 
                 _isRecordingMode = !_isRecordingMode;
-                
               });
 
 // if(_oneAtatime){
@@ -884,15 +880,14 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               //  Icon(Icons.play_arrow);
               // }
 
-              if(_isRecordingMode ){
+              if (_isRecordingMode) {
                 print("video");
                 controller != null &&
-                    controller.value.isInitialized
-                    &&
-                    !controller.value.isRecordingVideo
+                        controller.value.isInitialized &&
+                        !controller.value.isRecordingVideo
                     //camera or video one at a time
                     ? print("recording abhi chalu nhi hui hai")
-                  //  ? onVideoRecordButtonPressed()
+                    //  ? onVideoRecordButtonPressed()
                     : print("nahi gaya");
                 // rightButtonPressed();
 
@@ -904,12 +899,15 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                 //       ? onStopButtonPressed()
                 //       : null;
                 // });
-              }else{
+              } else {
                 stopVideoRecording();
                 dependencies.stopwatch.reset();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CameraExampleHome(cam: cam,)),
+                  MaterialPageRoute(
+                      builder: (context) => CameraExampleHome(
+                            cam: cam,
+                          )),
                 );
               }
             },
@@ -1098,43 +1096,38 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   void onVideoRecordButtonPressed() {
     Future.delayed(const Duration(milliseconds: 1000), () {
+      setState(() {
+        rightButtonPressed();
+      });
+    });
 
-  setState(() {
-     rightButtonPressed();
-  });
+    //  if(dependencies.stopwatch.elapsedMilliseconds==30000)
+    //  {
+    //    print("timer stop me aaya");
+    //    dependencies.stopwatch.stop();
+    //    onStopButtonPressed();
 
-});
-   
-  //  if(dependencies.stopwatch.elapsedMilliseconds==30000)
-  //  {
-  //    print("timer stop me aaya");
-  //    dependencies.stopwatch.stop();
-  //    onStopButtonPressed();
-
-  //  }
+    //  }
     print("videoo");
     startVideoRecording().then((_) {
       maxVideoDuration = Duration(seconds: 31);
       Timer(maxVideoDuration, () {
         print("timer chalu");
         (controller != null &&
-            controller.value.isInitialized &&
-            controller.value.isRecordingVideo &&
-            !controller.value.isRecordingPaused)?
-        onStopButtonPressed():
-        null;
+                controller.value.isInitialized &&
+                controller.value.isRecordingVideo &&
+                !controller.value.isRecordingPaused)
+            ? onStopButtonPressed()
+            : null;
       });
-      if (mounted) setState(() {
-
-      });
+      if (mounted) setState(() {});
     });
   }
-
 
   void onStopButtonPressed() {
     print("recording band hogyi ");
     stopVideoRecording().then((file) {
-      if (mounted && file!= null)
+      if (mounted && file != null)
         setState(() {
           videoFile = file;
           String vf = file.path;
@@ -1153,7 +1146,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       if (mounted)
         setState(() {
           dependencies.stopwatch.stop();
-          pausedVideoDuration = Duration(milliseconds: dependencies.stopwatch.elapsedMilliseconds);
+          pausedVideoDuration = Duration(
+              milliseconds: dependencies.stopwatch.elapsedMilliseconds);
           print(pausedVideoDuration);
         });
       //   showInSnackBar('Video recording paused');
@@ -1170,11 +1164,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           Timer(maxVideoDuration, () {
             print("timer chalu");
             (controller != null &&
-                controller.value.isInitialized &&
-                controller.value.isRecordingVideo &&
-                !controller.value.isRecordingPaused)?
-            onStopButtonPressed():
-            null;
+                    controller.value.isInitialized &&
+                    controller.value.isRecordingVideo &&
+                    !controller.value.isRecordingPaused)
+                ? onStopButtonPressed()
+                : null;
           });
         });
       // showInSnackBar('Video recording resumed');

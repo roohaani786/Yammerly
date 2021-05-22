@@ -186,8 +186,8 @@ class _BodyState extends State<Body> {
         print("bhaibhia");
         AuthResult result = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-            email: emailInputController.text,
-            password: pwdInputController.text);
+                email: emailInputController.text,
+                password: pwdInputController.text);
         user = result.user;
         Navigator.pushAndRemoveUntil(
           context,
@@ -220,7 +220,7 @@ class _BodyState extends State<Body> {
           break;
         default:
           errorMessage =
-          "An error occurred, maybe due to unfilled fields, internet or other issue.";
+              "An error occurred, maybe due to unfilled fields, internet or other issue.";
       }
 
       Future.error(errorMessage);
@@ -238,8 +238,10 @@ class _BodyState extends State<Body> {
                 '$errorMessage',
                 style: TextStyle(color: Colors.black),
               ),
-              title: Text("Error !", style:
-              TextStyle(color: Colors.red),),
+              title: Text(
+                "Error !",
+                style: TextStyle(color: Colors.red),
+              ),
             );
           });
     }
@@ -254,10 +256,8 @@ class _BodyState extends State<Body> {
   Future<FirebaseUser> facebookLogin(BuildContext context) async {
     loading.add(true);
 
-
     var facebookLogin = FacebookLogin();
-    var facebookLoginResult =
-    await facebookLogin.logIn(['public_profile']);
+    var facebookLoginResult = await facebookLogin.logIn(['public_profile']);
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
         print("Error");
@@ -277,15 +277,13 @@ class _BodyState extends State<Body> {
               facebookLoginResult.accessToken;
           final AuthCredential credential = FacebookAuthProvider.getCredential(
               accessToken: facebookAccessToken.token);
-          final FirebaseUser user = (await auth.signInWithCredential(
-              credential))
-              .user;
+          final FirebaseUser user =
+              (await auth.signInWithCredential(credential)).user;
           (await FirebaseAuth.instance.currentUser()).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
-
 
           AuthService().checkuserexists(user.uid, user, user.displayName);
           loading.add(false);
@@ -293,17 +291,15 @@ class _BodyState extends State<Body> {
           print("signed in " + user.displayName);
           return user;
         } catch (e) {
-
           showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text("Error"),
-                  content: Text(e.code, style: TextStyle(
-                      color: Colors.deepPurple
-                  )),
+                  content:
+                      Text(e.code, style: TextStyle(color: Colors.deepPurple)),
                   actions: <Widget>[
-                    FlatButton(
+                    MaterialButton(
                       child: Text("Close"),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -312,11 +308,10 @@ class _BodyState extends State<Body> {
                   ],
                 );
               });
-    }
+        }
 //        onLoginStatusChanged(true);
         break;
     }
-
   }
 
   //facebook logout method
@@ -337,164 +332,177 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-
     bool loginfail = false;
 
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         body: ResponsiveLayoutBuilder(
-          builder: (context, size) =>
-              Background(
-                child: !isLoading ? SingleChildScrollView(
-                  child: Form(
-                    key: _loginFormKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SvgPicture.asset(
-                          "assets/icons/login.svg",
-                          height: 200.0,
-                        ),
-                        SizedBox(height: 10.0),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              right: 10.0, top: 30.0, bottom: 0.0, left: 10.0),
-                          child: Container(
-                            height: 50.0,
-                            width: 250.0,
-                            child: Container(
-                              margin: EdgeInsets.symmetric(vertical: 5),
-                              padding:
-                              EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
-//                              width: size.width * 0.8,
-                              decoration: BoxDecoration(
-                                color: kPrimaryLightColor,
-                                borderRadius: BorderRadius.circular(29),
-                                border: Border.all(
-                                  color: (errordikhaoL == true)
-                                      ? Colors.red
-                                      : kPrimaryLightColor,
-                                ),
-                              ),
-                              child: TextFormField(
-                                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@.]'))],
-                                style: TextStyle(
-                                    fontSize: 12.0,
-                                    height: 1.6,
-                                    color: Colors.black),
-                                textInputAction: TextInputAction.next,
-                                focusNode: _email,
-                                //enableInteractiveSelection: false,
-                                onFieldSubmitted: (term) {
-                                  _fieldFocusChange(context, _email, _pwd);
-                                },
-                                cursorColor: kPrimaryColor,
-
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Colors.red,
-                                        )),
-                                    contentPadding: EdgeInsets.only(
-                                        left: 0, right: 3, top: 6, bottom: 12),
-                                    errorStyle: TextStyle(
-                                      fontSize: 10.0,
-                                      height: 0.3,
-                                    ),
-                                    icon: Icon(
-                                      Icons.email,
-                                      color: kPrimaryColor,
-                                    ),
-                                    fillColor: Colors.deepPurple.shade50,
-                                    filled: true,
-                                    hintText: "Email"),
-                                controller: emailInputController,
-                                validator: emailValidator,
-//                        keyboardType: TextInputType.emailAddress,
-//                      validator: emailValidator,
-                              ),
-                            ),
+          builder: (context, size) => Background(
+            child: !isLoading
+                ? SingleChildScrollView(
+                    child: Form(
+                      key: _loginFormKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SvgPicture.asset(
+                            "assets/icons/login.svg",
+                            height: 200.0,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Container(
-                            height: 50.0,
-                            width: 250.0,
-                            child: new Theme(
-                              data: new ThemeData(
-                                primaryColor: Colors.deepPurple,
-                              ),
+                          SizedBox(height: 10.0),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                right: 10.0,
+                                top: 30.0,
+                                bottom: 0.0,
+                                left: 10.0),
+                            child: Container(
+                              height: 50.0,
+                              width: 250.0,
                               child: Container(
                                 margin: EdgeInsets.symmetric(vertical: 5),
-                                padding: EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+                                padding: EdgeInsets.only(
+                                    top: 5, bottom: 2, right: 5, left: 10),
 //                              width: size.width * 0.8,
                                 decoration: BoxDecoration(
                                   color: kPrimaryLightColor,
                                   borderRadius: BorderRadius.circular(29),
+                                  border: Border.all(
+                                    color: (errordikhaoL == true)
+                                        ? Colors.red
+                                        : kPrimaryLightColor,
+                                  ),
+                                ),
+                                child: TextFormField(
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[a-zA-Z0-9@.]'))
+                                  ],
+                                  style: TextStyle(
+                                      fontSize: 12.0,
+                                      height: 1.6,
+                                      color: Colors.black),
+                                  textInputAction: TextInputAction.next,
+                                  focusNode: _email,
+                                  //enableInteractiveSelection: false,
+                                  onFieldSubmitted: (term) {
+                                    _fieldFocusChange(context, _email, _pwd);
+                                  },
+                                  cursorColor: kPrimaryColor,
+
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                        color: Colors.red,
+                                      )),
+                                      contentPadding: EdgeInsets.only(
+                                          left: 0,
+                                          right: 3,
+                                          top: 6,
+                                          bottom: 12),
+                                      errorStyle: TextStyle(
+                                        fontSize: 10.0,
+                                        height: 0.3,
+                                      ),
+                                      icon: Icon(
+                                        Icons.email,
+                                        color: kPrimaryColor,
+                                      ),
+                                      fillColor: Colors.deepPurple.shade50,
+                                      filled: true,
+                                      hintText: "Email"),
+                                  controller: emailInputController,
+                                  validator: emailValidator,
+//                        keyboardType: TextInputType.emailAddress,
+//                      validator: emailValidator,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Container(
+                              height: 50.0,
+                              width: 250.0,
+                              child: new Theme(
+                                data: new ThemeData(
+                                  primaryColor: Colors.deepPurple,
+                                ),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(vertical: 5),
+                                  padding: EdgeInsets.only(
+                                      top: 5, bottom: 2, right: 5, left: 10),
+//                              width: size.width * 0.8,
+                                  decoration: BoxDecoration(
+                                    color: kPrimaryLightColor,
+                                    borderRadius: BorderRadius.circular(29),
 //                                  border: Border.all(
 //                                    color: (errordikhaoL == true)
 //                                        ? Colors.red
 //                                        : kPrimaryLightColor,
 //                                  ),
-                                ),
-                                child: TextFormField(
-                                  //enableInteractiveSelection: false,
-                                  cursorColor: kPrimaryColor,
+                                  ),
+                                  child: TextFormField(
+                                    //enableInteractiveSelection: false,
+                                    cursorColor: kPrimaryColor,
 
-                                  decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.only(
-                                          left: 0, right: 3, top: 6, bottom: 12),
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: Colors.red)),
-                                      suffixIcon: GestureDetector(
-                                        onTap: () {
-                                          _toggle();
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0),
-                                          child: new Icon(
-                                            _obscureText
-                                                ? FontAwesomeIcons.eyeSlash
-                                                : FontAwesomeIcons.eye,
-                                            size: 15.0,
-                                            color: Colors.deepPurple,
+                                    decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                            left: 0,
+                                            right: 3,
+                                            top: 6,
+                                            bottom: 12),
+                                        errorBorder: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.red)),
+                                        suffixIcon: GestureDetector(
+                                          onTap: () {
+                                            _toggle();
+                                          },
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 5.0),
+                                            child: new Icon(
+                                              _obscureText
+                                                  ? FontAwesomeIcons.eyeSlash
+                                                  : FontAwesomeIcons.eye,
+                                              size: 15.0,
+                                              color: Colors.deepPurple,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      icon: Icon(
-                                        Icons.lock,
-                                        color: kPrimaryColor,
-                                      ),
-                                      border: InputBorder.none,
-                                      fillColor: Colors.deepPurple.shade50,
-                                      errorText:
-                                      loginfail ? 'password not match' : null,
-                                      filled: true,
-                                      hintText: "Password"),
-                                  controller: pwdInputController,
-                                  obscureText: _obscureText,
-                                  focusNode: _pwd,
-                                  onFieldSubmitted: (value) {
-                                    _pwd.unfocus();
-                                    RoundedButtonX();
-                                  },
-                                  style: TextStyle(
-                                      fontSize: 12.0,
-                                      height: 1.5,
-                                      color: Colors.black),
+                                        icon: Icon(
+                                          Icons.lock,
+                                          color: kPrimaryColor,
+                                        ),
+                                        border: InputBorder.none,
+                                        fillColor: Colors.deepPurple.shade50,
+                                        errorText: loginfail
+                                            ? 'password not match'
+                                            : null,
+                                        filled: true,
+                                        hintText: "Password"),
+                                    controller: pwdInputController,
+                                    obscureText: _obscureText,
+                                    focusNode: _pwd,
+                                    onFieldSubmitted: (value) {
+                                      _pwd.unfocus();
+                                      RoundedButtonX();
+                                    },
+                                    style: TextStyle(
+                                        fontSize: 12.0,
+                                        height: 1.5,
+                                        color: Colors.black),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        RoundedButtonX(
-                            text: "LOGIN",
-                            press: () {
+                          RoundedButtonX(
+                              text: "LOGIN",
+                              press: () {
 //                              if (_loginFormKey.currentState.validate()) {
 //                                FirebaseAuth.instance
 //                                    .signInWithEmailAndPassword(
@@ -517,104 +525,101 @@ class _BodyState extends State<Body> {
 //                                        .catchError((err) => print(err)))
 //                                    .catchError((err) => print(err));
 //                              }
-                              signIn(emailInputController.text,
-                                  pwdInputController.text);
-                            }),
-                        SizedBox(height: 20.0),
-                        AlreadyHaveAnAccountCheck(
-                          press: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return SignUpScreen();
+                                signIn(emailInputController.text,
+                                    pwdInputController.text);
+                              }),
+                          SizedBox(height: 20.0),
+                          AlreadyHaveAnAccountCheck(
+                            press: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return SignUpScreen();
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 0.0, top: 10.0),
+                            child: Container(
+                              width: double.infinity,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              ForgotScreen()));
                                 },
-                              ),
-                            );
-                          },
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 0.0, top: 10.0),
-                          child: Container(
-                            width: double.infinity,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            ForgotScreen()));
-                              },
-                              child: Text(
-                                "Forgot password ?",
-                                style: TextStyle(color: Color(0xFF6F35A5)),
-                                textAlign: TextAlign.center,
+                                child: Text(
+                                  "Forgot password ?",
+                                  style: TextStyle(color: Color(0xFF6F35A5)),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        OrDivider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SocalIcon(
-                                iconSrc: "assets/icons/google-icon.svg",
+                          OrDivider(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              SocalIcon(
+                                  iconSrc: "assets/icons/google-icon.svg",
+                                  press: () {
+                                    onGoogleSignIn(context);
+                                  }),
+                              SocalIcon(
+                                iconSrc: "assets/icons/facebook.svg",
                                 press: () {
-
-                                  onGoogleSignIn(context);
-                                }),
-                            SocalIcon(
-                              iconSrc: "assets/icons/facebook.svg",
-                              press: () {
-                                facebookLogin(context).then(
-                                      (user) {
-
-
-                                    setState(() {
-                                      isFacebookLoginIn = true;
-                                      successMessage =
-                                      'Logged in successfully.\nDisplay Name : ${user
-                                          .displayName}\nYou can now navigate to Home Page.';
-                                    });
-                                    if(isFacebookLoginIn == true){
-                                      facebooksuccess ? Navigator
-                                          .pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomePage(
-                                                    initialindexg: 1,
+                                  facebookLogin(context).then(
+                                    (user) {
+                                      setState(() {
+                                        isFacebookLoginIn = true;
+                                        successMessage =
+                                            'Logged in successfully.\nDisplay Name : ${user.displayName}\nYou can now navigate to Home Page.';
+                                      });
+                                      if (isFacebookLoginIn == true) {
+                                        facebooksuccess
+                                            ? Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HomePage(
+                                                          initialindexg: 1,
                                                         )),
-                                              (_) => false) : Navigator.pushNamed(
-                                          context, "/Login");
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-
-                          ],
-                        )
-                      ],
+                                                (_) => false)
+                                            : Navigator.pushNamed(
+                                                context, "/Login");
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
+                  )
+                : CircularProgressIndicator(
+                    strokeWidth: 5.0,
+                    semanticsLabel: 'loading...',
+                    semanticsValue: 'loading...',
+                    backgroundColor: Colors.deepPurpleAccent,
+                    valueColor:
+                        new AlwaysStoppedAnimation<Color>(Colors.deepPurple),
                   ),
-                ) : CircularProgressIndicator(
-                  strokeWidth: 5.0,
-                  semanticsLabel: 'loading...',
-                  semanticsValue: 'loading...',
-                  backgroundColor: Colors.deepPurpleAccent,
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                      Colors.deepPurple),
-                ),
-              ),
+          ),
         ),
       ),
     );
   }
 }
 
-_fieldFocusChange(BuildContext context, FocusNode currentFocus,
-    FocusNode nextFocus) {
+_fieldFocusChange(
+    BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
 }

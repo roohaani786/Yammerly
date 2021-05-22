@@ -129,9 +129,9 @@ class CameraScreenState extends State<CameraScreen>
           .collection("users")
           .document(currUser.uid)
           .get();
-      firstNameController.text = docSnap.data["fname"];
-      lastNameController.text = docSnap.data["surname"];
-      phoneNumberController.text = docSnap.data["phonenumber"];
+      firstNameController.text = docSnap.data()["fname"];
+      lastNameController.text = docSnap.data()["surname"];
+      phoneNumberController.text = docSnap.data().["phonenumber"];
       emailController.text = docSnap.data["email"];
       bioController.text = docSnap.data["bio"];
       genderController.text = docSnap.data["gender"];
@@ -233,9 +233,9 @@ class CameraScreenState extends State<CameraScreen>
       currentCityController,homeTownController,relationshipController,pincodeController ;
   bool upload = false;
   Future pickImage() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+    await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
       setState(() {
-        _image = image;
+        _image = File(image.path);
         upload = true;
       });
     });
@@ -274,13 +274,13 @@ class CameraScreenState extends State<CameraScreen>
     });
     Navigator.pop(context);
   }
-  final StorageReference storageReference =
+  final Reference storageReference =
   FirebaseStorage.instance.ref().child("Post Pictures");
 
   Future<String> uploadPhoto(mImageFile) async {
     StorageUploadTask mStorageUploadTask =
     storageReference.child("post_$postId.jpg").putFile(mImageFile);
-    StorageTaskSnapshot storageTaskSnapshot =
+    TaskSnapshot storageTaskSnapshot =
     await mStorageUploadTask.onComplete;
     String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
     return downloadUrl;
@@ -535,7 +535,7 @@ class CameraScreenState extends State<CameraScreen>
 
               ),
 
-              FlatButton(
+              MaterialButton(
                 color: Colors.transparent,
                 onPressed: () async => null,
                 child: CircleAvatar(

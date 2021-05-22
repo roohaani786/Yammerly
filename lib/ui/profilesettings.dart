@@ -16,9 +16,11 @@ class ProfileSettings extends StatefulWidget {
   final String phonenumber;
   final bool emailVerification;
   final String uid;
-  ProfileSettings(this.email,this.phonenumber,this.emailVerification,this.uid);
+  ProfileSettings(
+      this.email, this.phonenumber, this.emailVerification, this.uid);
   @override
-  _ProfileSettingsState createState() => _ProfileSettingsState(email,phonenumber,emailVerification,uid);
+  _ProfileSettingsState createState() =>
+      _ProfileSettingsState(email, phonenumber, emailVerification, uid);
 }
 
 class _ProfileSettingsState extends State<ProfileSettings> {
@@ -42,24 +44,34 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      bioController,genderController,linkController,photoUrlController,coverPhotoUrlController,
-      displayNameController,workController,educationController,
+      bioController,
+      genderController,
+      linkController,
+      photoUrlController,
+      coverPhotoUrlController,
+      displayNameController,
+      workController,
+      educationController,
       phonenumberController,
-      currentCityController,homeTownController,relationshipController,
-      followersController,followingController,pinCodeController,userPostsController,uidController;
+      currentCityController,
+      homeTownController,
+      relationshipController,
+      followersController,
+      followingController,
+      pinCodeController,
+      userPostsController,
+      uidController;
 
-
-  void sendVerificationEmail() async{
+  void sendVerificationEmail() async {
     print("andar aaya");
     FirebaseUser firebaseUser = await auth.currentUser();
     print("hogaya bhai");
 
     Fluttertoast.showToast(
-        timeInSecForIosWeb:100,
+        timeInSecForIosWeb: 100,
         msg: "email verificatin link has sent to you mail");
 
     await firebaseUser.sendEmailVerification();
-
   }
 
   fetchProfileData() async {
@@ -80,16 +92,16 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       emailVerify = docSnap.data["emailVerified"];
       bioController.text = docSnap.data["bio"];
       followers = docSnap.data["followers"];
-      following  = docSnap.data["following"];
-      posts  = docSnap.data["posts"];
+      following = docSnap.data["following"];
+      posts = docSnap.data["posts"];
       private = docSnap.data["private"];
       coverPhotoUrlController.text = docSnap.data['coverPhotoUrl'];
 
-      if(private){
+      if (private) {
         setState(() {
           valueP = true;
         });
-      }else{
+      } else {
         setState(() {
           valueP = false;
         });
@@ -102,7 +114,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
-
 
   // Future<String> emailVerify(String email) async {
   //
@@ -125,10 +136,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   //   return null;
   // }
 
-
-
   @override
-  void initState(){
+  void initState() {
     // user = auth.currentUser as FirebaseUser;
 //    user.sendEmailVerification();
 
@@ -164,7 +173,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   Future<void> checkEmailVerified() async {
-
     FirebaseUser firebaseUser = await auth.currentUser();
 
     await firebaseUser.reload();
@@ -179,7 +187,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   setprivate(bool private) async {
-
     print(private);
     print(uid);
     print("dekho");
@@ -190,7 +197,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         .updateData({'private': private});
 
     print("yaha aaya");
-
   }
 
   @override
@@ -199,110 +205,156 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     super.dispose();
   }
 
-  _ProfileSettingsState(this.email,this.phonenumber,this.emailVerification,this.uid);
+  _ProfileSettingsState(
+      this.email, this.phonenumber, this.emailVerification, this.uid);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text("Settings",style:
-        TextStyle(
-            color: Colors.deepPurple
-        )),
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple,), onPressed: (){
-          Navigator.pop(context);
-        }),
+        title: Text("Settings", style: TextStyle(color: Colors.deepPurple)),
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.deepPurple,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
       ),
       body: SettingsList(
         // backgroundColor: Colors.orange,
         sections: [
-
           SettingsSection(
-            title: 'Account',titleTextStyle: TextStyle(color: Colors.deepPurple,
-              fontWeight: FontWeight.bold),
+            title: 'Account',
+            titleTextStyle: TextStyle(
+                color: Colors.deepPurple, fontWeight: FontWeight.bold),
             tiles: [
-              SettingsTile(title: 'Phone number', leading: GestureDetector(
-                  onTap: (){
-
-                  },
-                  child: Icon(Icons.phone,color: Colors.grey,)),
-                trailing: Text(phonenumber,style: TextStyle(
-                  color: Colors.deepPurple,
-                ),),),
-              SettingsTile(title: 'Email', leading: Icon(Icons.email,color: Colors.grey,),
-                trailing: (email != null)?(emailVerification == true)?Text("Verified",style: TextStyle(
-                  color: Colors.deepPurple,
-                ),):FlatButton(
-                  onPressed: () {
-                    sendVerificationEmail();
-                  },
-                  child: Text("Verify your email",style: TextStyle(
-                    color: Colors.red,
-                  ),),
-                ):Text("No Email",style: TextStyle(
-                  color: Colors.red,
-                ),),),
               SettingsTile(
-                onTap: (){
+                title: 'Phone number',
+                leading: GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                      Icons.phone,
+                      color: Colors.grey,
+                    )),
+                trailing: Text(
+                  phonenumber,
+                  style: TextStyle(
+                    color: Colors.deepPurple,
+                  ),
+                ),
+              ),
+              SettingsTile(
+                title: 'Email',
+                leading: Icon(
+                  Icons.email,
+                  color: Colors.grey,
+                ),
+                trailing: (email != null)
+                    ? (emailVerification == true)
+                        ? Text(
+                            "Verified",
+                            style: TextStyle(
+                              color: Colors.deepPurple,
+                            ),
+                          )
+                        : MaterialButton(
+                            onPressed: () {
+                              sendVerificationEmail();
+                            },
+                            child: Text(
+                              "Verify your email",
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          )
+                    : Text(
+                        "No Email",
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+              ),
+              SettingsTile(
+                onTap: () {
                   FirebaseAuth.instance
                       .signOut()
-
-                      .then((result) =>
-                      Navigator.push(context, new MaterialPageRoute(
-                          builder: (context) =>
-                          new LoginScreen())
-                      ))
+                      .then((result) => Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => new LoginScreen())))
                       .catchError((err) => print(err));
                   print("loggedout");
                 },
-                title: 'Log out', leading: GestureDetector(
-                  child: new Icon(
-                    Icons.exit_to_app,
+                title: 'Log out',
+                leading: GestureDetector(
+                    child: new Icon(
+                      Icons.exit_to_app,
+                      color: Colors.grey,
+                    ),
+                    onTap: () {
+                      FirebaseAuth.instance
+                          .signOut()
+                          .then((result) => Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) => new LoginScreen())))
+                          .catchError((err) => print(err));
+                      print("loggedout");
+                    }),
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: 'Notification Settings',
+            titleTextStyle: TextStyle(
+                color: Colors.deepPurple, fontWeight: FontWeight.bold),
+            tiles: [
+              SettingsTile(
+                  title: 'Comments',
+                  leading: Icon(
+                    Icons.comment,
                     color: Colors.grey,
-                  ),
-                  onTap: () {
-
-                    FirebaseAuth.instance
-                        .signOut()
-                        .then((result) =>
-                        Navigator.push(context, new MaterialPageRoute(
-                            builder: (context) =>
-                            new LoginScreen())
-                        ))
-                        .catchError((err) => print(err));
-                    print("loggedout");
-                  }),),
-            ],
-          ),
-
-          SettingsSection(
-            title: 'Notification Settings',titleTextStyle: TextStyle(color: Colors.deepPurple,
-              fontWeight: FontWeight.bold),
-            tiles: [
-              SettingsTile(title: 'Comments', leading: Icon(Icons.comment,color: Colors.grey,)),
-              SettingsTile(title: 'Tags', leading: Icon(Icons.tag_faces,color: Colors.grey,)),
-              SettingsTile(title: 'Reminders', leading: Icon(Icons.calendar_today,color: Colors.grey,)),
+                  )),
+              SettingsTile(
+                  title: 'Tags',
+                  leading: Icon(
+                    Icons.tag_faces,
+                    color: Colors.grey,
+                  )),
+              SettingsTile(
+                  title: 'Reminders',
+                  leading: Icon(
+                    Icons.calendar_today,
+                    color: Colors.grey,
+                  )),
             ],
           ),
           SettingsSection(
-            title: 'Security',titleTextStyle: TextStyle(color: Colors.deepPurple,
-              fontWeight: FontWeight.bold),
+            title: 'Security',
+            titleTextStyle: TextStyle(
+                color: Colors.deepPurple, fontWeight: FontWeight.bold),
             tiles: [
-
               SettingsTile.switchTile(
-                title: (valueP)?'Private':'Public',
-                leading: Icon((valueP)?Icons.privacy_tip_outlined:Icons.person_outline_outlined,color: Colors.grey,),
+                title: (valueP) ? 'Private' : 'Public',
+                leading: Icon(
+                  (valueP)
+                      ? Icons.privacy_tip_outlined
+                      : Icons.person_outline_outlined,
+                  color: Colors.grey,
+                ),
                 switchValue: valueP,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {
-                  if(valueP == true){
+                  if (valueP == true) {
                     setState(() {
                       valueP = false;
                     });
                     setprivate(valueP);
-                  }
-                  else{
+                  } else {
                     setState(() {
                       valueP = true;
                     });
@@ -310,22 +362,20 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   }
                 },
               ),
-
               SettingsTile.switchTile(
                 title: 'Use fingerprint',
-                leading: Icon(Icons.fingerprint,color: Colors.grey,),
+                leading: Icon(
+                  Icons.fingerprint,
+                  color: Colors.grey,
+                ),
                 switchValue: false,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {
-                  if(valuef == true){
-
+                  if (valuef == true) {
                     setState(() {
                       valuef = false;
                     });
-
-                  }
-                  else{
-
+                  } else {
                     setState(() {
                       valuef = true;
                     });
@@ -333,19 +383,26 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 },
               ),
               SettingsTile(
-                onTap: (){
-                  Navigator.push(context, new MaterialPageRoute(
-                      builder: (context) =>
-                          ChangePasswordScreen()),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (context) => ChangePasswordScreen()),
                   );
                 },
                 title: 'Change password',
-                leading: Icon(Icons.lock,color: Colors.grey,),
+                leading: Icon(
+                  Icons.lock,
+                  color: Colors.grey,
+                ),
               ),
               SettingsTile.switchTile(
                 title: 'Enable Notifications',
 //                enabled: notificationsEnabled,
-                leading: Icon(Icons.notifications_active,color: Colors.grey,),
+                leading: Icon(
+                  Icons.notifications_active,
+                  color: Colors.grey,
+                ),
                 switchValue: false,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {},
@@ -353,14 +410,20 @@ class _ProfileSettingsState extends State<ProfileSettings> {
             ],
           ),
           SettingsSection(
-            title: 'Miscellaneous',titleTextStyle: TextStyle(color: Colors.deepPurple,
-              fontWeight: FontWeight.bold),
+            title: 'Miscellaneous',
+            titleTextStyle: TextStyle(
+                color: Colors.deepPurple, fontWeight: FontWeight.bold),
             tiles: [
               SettingsTile(
-                  title: 'Terms of Service', leading: Icon(Icons.description,color: Colors.grey,)),
+                  title: 'Terms of Service',
+                  leading: Icon(
+                    Icons.description,
+                    color: Colors.grey,
+                  )),
               SettingsTile(
                   title: 'Privacy Policy',
-                  leading: Icon(Icons.collections_bookmark,color: Colors.grey)),
+                  leading:
+                      Icon(Icons.collections_bookmark, color: Colors.grey)),
             ],
           ),
           CustomSection(
@@ -368,7 +431,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 22, bottom: 8),
-                  child: Icon(Icons.build,color: Colors.grey.shade600,),
+                  child: Icon(
+                    Icons.build,
+                    color: Colors.grey.shade600,
+                  ),
                 ),
                 Text(
                   'Version: 1.6.7',

@@ -6,7 +6,6 @@ class ConversationPage extends StatefulWidget {
 }
 
 class _ConversationPageState extends State<ConversationPage> {
-
 //  void _onHorizontalDrag(DragEndDetails details) {
 //    if (details.primaryVelocity == 0)
 //      // user have just tapped on screen (no dragging)
@@ -24,7 +23,6 @@ class _ConversationPageState extends State<ConversationPage> {
 //    }
 //  }
 
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -32,35 +30,43 @@ class _ConversationPageState extends State<ConversationPage> {
 //          _onHorizontalDrag(details),
       child: SafeArea(
           child: Scaffold(
-              backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
 //              appBar: ChatAppBar(), /
-              appBar: AppBar(title: Text("Coming soon...",style:
-                TextStyle(
-                  color: Colors.deepPurple,
-                  fontWeight: FontWeight.bold,
-                ),),
-              backgroundColor: Colors.white,),
-              body:
+        appBar: AppBar(
+          title: Text(
+            "Coming soon...",
+            style: TextStyle(
+              color: Colors.deepPurple,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.white,
+        ),
+        body:
 
 //              Stack(children: <Widget>[
 //                Column(
 //                  children: <Widget>[
 //                    ChatListWidget(), //Chat list
 //                    InputWidget() //
-                     Align(
-                       alignment: Alignment.center,
-                       child: FlatButton(onPressed: (){},
-                       child: Text("Messaging feature is coming soon....",style:
-                         TextStyle(
-                           color: Colors.purple,
-                           fontWeight: FontWeight.bold,
-                           fontSize: 15.0,
-                         ),)),),
+            Align(
+          alignment: Alignment.center,
+          child: MaterialButton(
+              onPressed: () {},
+              child: Text(
+                "Messaging feature is coming soon....",
+                style: TextStyle(
+                  color: Colors.purple,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15.0,
+                ),
+              )),
+        ),
 //                  ],
 //                ),
 //              ]
 //      )
-    )),
+      )),
     );
   }
 }

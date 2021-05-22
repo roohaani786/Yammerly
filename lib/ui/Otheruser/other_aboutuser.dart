@@ -22,7 +22,6 @@ class AboutOtherUser extends StatefulWidget {
 }
 
 class _AboutOtherUserState extends State<AboutOtherUser> {
-
   String uid;
   _AboutOtherUserState({this.uid});
 
@@ -33,10 +32,19 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      phoneNumberController,uidController,
-      bioController,genderController,linkController,photoUrlController,
-      displayNameController,workController,educationController,
-      currentCityController,homeTownController,relationshipController,pincodeController;
+      phoneNumberController,
+      uidController,
+      bioController,
+      genderController,
+      linkController,
+      photoUrlController,
+      displayNameController,
+      workController,
+      educationController,
+      currentCityController,
+      homeTownController,
+      relationshipController,
+      pincodeController;
 
   DocumentSnapshot docSnap;
   FirebaseUser currUser;
@@ -76,15 +84,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
-
-      docSnap = await Firestore.instance
-          .collection("users")
-          .document(uid)
-          .get();
+      docSnap =
+          await Firestore.instance.collection("users").document(uid).get();
       firstNameController.text = docSnap.data["fname"];
       lastNameController.text = docSnap.data["surname"];
       phoneNumberController.text = docSnap.data["phonenumber"];
@@ -116,8 +120,6 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   File _image;
   bool uploading = false;
 
-
-
   compressPhoto() async {
     setState(() {
       isChanged = true;
@@ -131,12 +133,11 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
       );
     setState(() {
       _image = compressedImage;
-
     });
   }
 
-  final StorageReference storageReference =
-  FirebaseStorage.instance.ref().child("Display Pictures");
+  final Reference storageReference =
+      FirebaseStorage.instance.ref().child("Display Pictures");
   final postReference = Firestore.instance.collection("users");
 
   bool isChanged = false;
@@ -156,7 +157,6 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   bool hometownE = false;
   String valueX = "Select Gender";
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,11 +164,13 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
         backgroundColor: Colors.white,
         title: Text(displayNameController.text),
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.arrow_back,
-            color: Colors.black,),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
         ),
       ),
       key: _scaffoldKey,
@@ -183,172 +185,195 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
         height: double.maxFinite,
         width: double.maxFinite,
         padding: EdgeInsets.all(12),
-
         child: isLoading
             ? Center(
-            child: Column(
-
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-
-                CircularProgressIndicator(),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(loadingMessage,
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                  ),)
-              ],
-            ))
-            : SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 4,vertical: 8),
-          child: Column(
-            children: [
-              Text(
-                "About" + " " + displayNameController.text,
-                style: TextStyle(
-                    fontFamily: "Cookie-Regular", fontSize: 25.0),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Container(
-                  decoration: BoxDecoration(
-                    //borderRadius: BorderRadius.circular(100),
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 5,
-                    ),
+                child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 8,
                   ),
-                  child: Container(
-                    height: 100,
-                    width: 100.0,
-                    child: Image(
-                      image: (isChanged == false) ? NetworkImage(
-                          photoUrlController.text) : AssetImage(
-                          "assets/images/loading.gif"),
-                      fit: BoxFit.cover,
+                  Text(
+                    loadingMessage,
+                    style: TextStyle(
+                      color: Colors.deepPurple,
                     ),
-                    //backgroundImage: NetworkImage(photoUrlController.text)
                   )
-              ),
-              SizedBox(
-                height: 16,
-              ),
-
-              Form(
-                autovalidate: true,
-                key: _formKey,
-                child: Column(children: <Widget>[
-
-                  (displayNameController.text=="")?Container():TextFormField(
-                    controller: displayNameController,
-                    enabled: false,
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                        contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                        labelText: "Username",labelStyle: TextStyle(
-                        color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                    ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-                  (displayNameController.text=="")?Container():SizedBox(
-                    height: 16.0,
-                  ),
-
-
-                  (firstNameController.text=="")?Container():TextFormField(
-                controller: firstNameController,
-                enabled: false,
-
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "First Name",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (firstNameController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
-                  (lastNameController.text=="")?Container():TextFormField(
-                controller: lastNameController,
-                enabled: false,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Last Name",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (lastNameController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
-
-                  (phoneNumberController.text=="")?Container():TextFormField(
-                controller: phoneNumberController,
-                enabled: false,
-                maxLength: 10,
-                inputFormatters: [
-                  WhitelistingTextInputFormatter.digitsOnly
                 ],
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Phone Number",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (phoneNumberController.text=="")?Container():SizedBox(
-                height: 0,
+              ))
+            : SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                child: Column(
+                  children: [
+                    Text(
+                      "About" + " " + displayNameController.text,
+                      style: TextStyle(
+                          fontFamily: "Cookie-Regular", fontSize: 25.0),
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                        decoration: BoxDecoration(
+                          //borderRadius: BorderRadius.circular(100),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 5,
+                          ),
+                        ),
+                        child: Container(
+                          height: 100,
+                          width: 100.0,
+                          child: Image(
+                            image: (isChanged == false)
+                                ? NetworkImage(photoUrlController.text)
+                                : AssetImage("assets/images/loading.gif"),
+                            fit: BoxFit.cover,
+                          ),
+                          //backgroundImage: NetworkImage(photoUrlController.text)
+                        )),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Form(
+                      autovalidateMode: AutovalidateMode.always,
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          (displayNameController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: displayNameController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.text,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Username",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
                                 ),
-
-                  (emailController.text=="")?Container():TextFormField(
-                controller: emailController,
-                enabled: false,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Email Id",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (emailController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
-
-
-                  (bioController.text=="")?Container():TextFormField(
-                controller: bioController,
-                enabled: false,
-                keyboardType: TextInputType.text,
-                maxLines: 2,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(
+                          (displayNameController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16.0,
+                                ),
+                          (firstNameController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: firstNameController,
+                                  enabled: false,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "First Name",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (firstNameController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16,
+                                ),
+                          (lastNameController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: lastNameController,
+                                  enabled: false,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Last Name",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (lastNameController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16,
+                                ),
+                          (phoneNumberController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: phoneNumberController,
+                                  enabled: false,
+                                  maxLength: 10,
+                                  inputFormatters: [
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Phone Number",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (phoneNumberController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 0,
+                                ),
+                          (emailController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: emailController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Email Id",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (emailController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16,
+                                ),
+                          (bioController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: bioController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.text,
+                                  maxLines: 2,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
                                           vertical: 10.0, horizontal: 10.0),
                                       labelText: "Bio",
                                       labelStyle: TextStyle(
@@ -359,181 +384,217 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                               BorderRadius.circular(12),
                                           borderSide: BorderSide(
                                               color: Colors.black, width: 1))),
-              ),
-
-                  (bioController.text=="")?Container():SizedBox(
-                height: 16.0,
-              ),
-
-                  (genderController.text=="")?Container():TextFormField(
-                controller: genderController,
-                enabled: false,
-                keyboardType: TextInputType.text,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Gender",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
+                                ),
+                          (bioController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16.0,
+                                ),
+                          (genderController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: genderController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.text,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Gender",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (genderController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16.0,
+                                ),
+                          (relationshipController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: relationshipController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.text,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Relationship",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (relationshipController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16,
+                                ),
+                          (linkController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: linkController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.text,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Website",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (linkController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16,
+                                ),
+                          (workController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: workController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Work",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (workController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16,
+                                ),
+                          (educationController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: educationController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Education",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (educationController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16,
+                                ),
+                          (currentCityController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: currentCityController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Current City",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (currentCityController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16,
+                                ),
+                          (pincodeController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: pincodeController,
+                                  enabled: false,
+                                  inputFormatters: [
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  keyboardType: TextInputType.number,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Pin Code",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                          (pincodeController.text == "")
+                              ? Container()
+                              : SizedBox(
+                                  height: 16,
+                                ),
+                          (homeTownController.text == "")
+                              ? Container()
+                              : TextFormField(
+                                  controller: homeTownController,
+                                  enabled: false,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 1,
+                                  decoration: InputDecoration(
+                                      contentPadding: new EdgeInsets.symmetric(
+                                          vertical: 5.0, horizontal: 10.0),
+                                      labelText: "Home Town",
+                                      labelStyle: TextStyle(
+                                          color: Colors.deepPurple[300],
+                                          fontWeight: FontWeight.bold),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                              color: Colors.black, width: 1))),
+                                ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
               ),
-
-
-
-                  (genderController.text=="")?Container():SizedBox(
-                height: 16.0,
-              ),
-
-                  (relationshipController.text=="")?Container():TextFormField(
-                controller: relationshipController,
-                enabled: false,
-                keyboardType: TextInputType.text,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Relationship",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (relationshipController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
-
-                  (linkController.text=="")?Container():TextFormField(
-                controller: linkController,
-                enabled: false,
-                keyboardType: TextInputType.text,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Website",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (linkController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
-
-                  (workController.text=="")?Container():TextFormField(
-                controller: workController,
-                enabled: false,
-                keyboardType: TextInputType.multiline,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Work",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (workController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
-
-                  (educationController.text=="")?Container():TextFormField(
-                controller: educationController,
-                enabled: false,
-                keyboardType: TextInputType.multiline,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Education",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (educationController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
-
-                  (currentCityController.text=="")?Container():TextFormField(
-                controller: currentCityController,
-                enabled: false,
-                keyboardType: TextInputType.multiline,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Current City",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (currentCityController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
-
-                  (pincodeController.text=="")?Container():TextFormField(
-                controller: pincodeController,
-                enabled: false,
-                inputFormatters: [
-                  WhitelistingTextInputFormatter.digitsOnly
-                ],
-                keyboardType: TextInputType.number,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Pin Code",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-                  (pincodeController.text=="")?Container():SizedBox(
-                height: 16,
-              ),
-
-                  (homeTownController.text=="")?Container():TextFormField(
-                controller: homeTownController,
-                enabled: false,
-                keyboardType: TextInputType.multiline,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    contentPadding: new EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                    labelText: "Home Town",labelStyle: TextStyle(
-                    color: Colors.deepPurple[300],fontWeight: FontWeight.bold
-                ),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                        BorderSide(color: Colors.black, width: 1))),
-              ),
-
-
-            ],
-          ),
-        ),
-        ],
       ),
-    ),
-    ),
     );
   }
 }
