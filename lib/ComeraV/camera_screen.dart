@@ -132,8 +132,8 @@ class CameraScreenState extends State<CameraScreen>
       firstNameController.text = docSnap.data["fname"];
       lastNameController.text = docSnap.data["surname"];
       phoneNumberController.text = docSnap.data["phonenumber"];
-      emailController.text = docSnap.data["email"];
-      bioController.text = docSnap.data["bio"];
+      emailController.text = docSnap.data()"[email]";
+      bioController.text = docSnap.data()"bio";
       genderController.text = docSnap.data["gender"];
       linkController.text = docSnap.data["link"];
       photoUrlController.text = docSnap.data["photoURL"];
@@ -221,7 +221,7 @@ class CameraScreenState extends State<CameraScreen>
 //   }
 
   bool flashOn=false;
-  File _image;
+  PickedFile _image;
   User currUser;
 
   TextEditingController firstNameController,
@@ -234,7 +234,7 @@ class CameraScreenState extends State<CameraScreen>
   bool upload = false;
   Future pickImage() async {
     // ignore: deprecated_member_use
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+    await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
       setState(() {
         _image = image;
         upload = true;
@@ -244,7 +244,7 @@ class CameraScreenState extends State<CameraScreen>
     if (_image != null){
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+          MaterialPageRoute(builder: (context) => UploadImage(file: File(_image.path)),));
     }else{
       Navigator.push(
           context,
@@ -275,14 +275,14 @@ class CameraScreenState extends State<CameraScreen>
     });
     Navigator.pop(context);
   }
-  final StorageReference storageReference =
+  final Reference storageReference =
   FirebaseStorage.instance.ref().child("Post Pictures");
 
   Future<String> uploadPhoto(mImageFile) async {
-    StorageUploadTask mStorageUploadTask =
+    UploadTask mStorageUploadTask =
     storageReference.child("post_$postId.jpg").putFile(mImageFile);
-    StorageTaskSnapshot storageTaskSnapshot =
-    await mStorageUploadTask.onComplete;
+    TaskSnapshot storageTaskSnapshot =
+    await mStorageUploadTask.whenComplete(() => null);
     String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
     return downloadUrl;
   }
@@ -314,13 +314,13 @@ class CameraScreenState extends State<CameraScreen>
   compressPhoto() async {
     final directory = await getTemporaryDirectory();
     final path = directory.path;
-    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
+    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytes());
     final compressedImage = File('$path/img_$uidController.jpg')
       ..writeAsBytesSync(
         ImD.encodeJpg(mImageFile, quality: 60),
       );
     setState(() {
-      _image = compressedImage;
+      _image = PickedFile(compressedImage.path);
     });
   }
 
@@ -522,7 +522,7 @@ class CameraScreenState extends State<CameraScreen>
                 if (upload == true){
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                      MaterialPageRoute(builder: (context) => UploadImage(file: File(_image.path),)));
                 }else{
                   Navigator.push(
                       context,

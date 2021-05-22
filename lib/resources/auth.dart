@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:techstagram/models/users.dart';
 
 class AuthService {
   // Dependencies
@@ -14,21 +15,21 @@ class AuthService {
 
 
   // Shared State for Widgets
-  Stream<FirebaseUser> user; // firebase user
+  Stream<User> user; // firebase user
   Stream<Map<String, dynamic>> profile; // custom user data in Firestore
   PublishSubject loading = PublishSubject();
 
 
   AuthService() {
-    user = _auth.onAuthStateChanges;
+    user = _auth.authStateChanges();
 
-    profile = user.switchMap((FirebaseUser u) {
+    profile = user.switchMap((User u) {
       if (u != null) {
         return _db
             .collection('users')
             .doc(u.uid)
             .snapshots()
-            .map((snap) => snap.data);
+            .map((snap) => snap.data());
       } else {
         return Stream.value(({}));
       }
@@ -38,7 +39,7 @@ class AuthService {
   Future<String> emailVerify() async {
 
 
-    FirebaseUser user;
+    User user;
 
     print("bahia bhia");
     //print(user.email);
@@ -60,7 +61,7 @@ class AuthService {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  Future<FirebaseUser> hellogoogleSignIn() async {
+  Future<User> hellogoogleSignIn() async {
     loading.add(true);
 
     // Step 1
@@ -70,16 +71,16 @@ class AuthService {
     final GoogleSignInAuthentication googleAuth =
     await googleUser.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    final FirebaseUser user =
+    final User user =
         (await _auth.signInWithCredential(credential)).user;
-
+    SingleUser singleUser;
 // Checking if email and name is null
-    checkuserexists(user.uid,user,user.displayName);
+    checkuserexists(user.uid,singleUser,user.displayName);
 
 //      updateUserData(user);
 
@@ -103,12 +104,11 @@ class AuthService {
   }
 
 
-  checkuserexists(String uid,FirebaseUser user,String displayName) async {
-    final snapShotX = await Firestore.instance
+  checkuserexists(String uid,SingleUser user,String displayName) async {
+    final snapShotX = await FirebaseFirestore.instance
         .collection('users')
-        .document(uid)
+        .doc(uid)
         .get();
-
 
     if (snapShotX.exists ) {
       updateUserData(user);
@@ -123,7 +123,7 @@ class AuthService {
   User userdatax;
 
 
-  void updateUserData(FirebaseUser user) async {
+  void updateUserData(SingleUser user) async {
     DocumentReference ref = _db.collection('users').doc(user.uid);
 
     return ref.set({
@@ -132,17 +132,17 @@ class AuthService {
       'photoURL': user.photoUrl,
       'displayName': user.displayName.toLowerCase(),
       'lastSeen': DateTime.now(),
-      'followers': userdatax.followers,
-      'following': userdatax.following,
-      'posts': userdatax.posts,
+      'followers': user.followers,
+      'following': user.following,
+      'posts': user.posts,
       'bio' : "Proud Hashtager",
       'emailVerified': false,
       'phoneVerified': false,
 
-    }, merge: true);
+    }, SetOptions(merge: true));
   }
 
-  void updatenewUserData(FirebaseUser user) async {
+  void updatenewUserData(SingleUser user) async {
     DocumentReference ref = _db.collection('users').doc(user.uid);
 
     return ref.set({
@@ -158,7 +158,7 @@ class AuthService {
       'emailVerified': false,
       'phoneVerified': false,
 
-    }, merge: true);
+    }, SetOptions(merge: true));
   }
 
   void signOut() {

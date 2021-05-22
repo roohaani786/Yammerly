@@ -119,7 +119,7 @@ class _LoginCheckState extends State<LoginCheck> {
     // TODO: implement build
     return FutureBuilder(
       future: _repository.getCurrentUser(),
-      builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+      builder: (context, AsyncSnapshot<User> snapshot) {
         if (snapshot.hasData) {
 
           print("Already Loggedin");

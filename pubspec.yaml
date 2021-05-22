@@ -41,7 +41,7 @@ dependencies:
   #A secure authentication system for signing in with a Google account on Android and iOS.
   #Plugin link:- https://pub.dev/packages/google_sign_in
 
-  firebase_auth:
+  firebase_auth: ^1.2.0
 #Flutter plugin for Firebase Auth, enabling Android and iOS authentication using passwords,
   #Phone numbers and identity providers like Google, Facebook and Twitter.
   #Plugin link:- https://pub.dev/packages/firebase_auth

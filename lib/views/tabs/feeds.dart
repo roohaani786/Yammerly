@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
-import 'chats.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:techstagram/Widget/Fab.dart';
 import 'package:techstagram/models/posts.dart';
-import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/services/database.dart';
@@ -22,7 +22,6 @@ import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/utils/utils.dart';
-import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -50,7 +49,7 @@ class _FeedsPageState extends State<FeedsPage> {
   Map<String, dynamic> _profile;
   bool _loading = false;
   DocumentSnapshot docSnap;
-  FirebaseUser currUser;
+  User currUser;
   ScrollController scrollController = new ScrollController();
   Posts currentpost;
   List<bool> likess = List.filled(10000, false);
@@ -72,7 +71,7 @@ class _FeedsPageState extends State<FeedsPage> {
   int Plength;
 
   Stream<QuerySnapshot> postsStream;
-  final timelineReference = Firestore.instance.collection('posts');
+  final timelineReference = FirebaseFirestore.instance.collection('posts');
   String postIdX;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -218,11 +217,11 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   getlikes(String displayNamecurrent, String postId, int index) async {
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('posts')
-        .document(postId)
+        .doc(postId)
         .collection('likes')
-        .document(uidController.text)
+        .doc(uidController.text)
         .get()
         .then((value) {
       if (value.exists) {
@@ -238,11 +237,11 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   fetchLikes() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = await FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("likes")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
@@ -250,11 +249,11 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = await FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
       emailController.text = docSnap.data["email"];
       likesController.text = docSnap.data["likes"];
@@ -266,14 +265,14 @@ class _FeedsPageState extends State<FeedsPage> {
     }
   }
 
-  List<String> cpurl = new List(10000);
-  var cdisplayName = new List(10000);
+  List<String> cpurl = new List<String>.filled(10000,false);
+  List<String> cdisplayName = new List<String>.filled(10000,false);
 
   //bool cloading = false;
   List<bool> cloading = List.filled(10000, false);
 
   Fetchprofile(String uid, int index) async {
-    docSnap = await Firestore.instance.collection("users").document(uid).get();
+    docSnap = await FirebaseFirestore.instance.collection("users").document(uid).get();
     cpurlController.text = docSnap.data['photoURL'];
     cdisplayNameController.text = docSnap.data['displayName'];
     setState(() {
@@ -447,12 +446,12 @@ class _FeedsPageState extends State<FeedsPage> {
                                 NotificationId = Uuid().v4();
                               });
 
-                              return await Firestore.instance
+                              return await FirebaseFirestore.instance
                                   .collection("users")
-                                  .document(uid)
+                                  .doc(uid)
                                   .collection("notification")
-                                  .document(NotificationId)
-                                  .setData({
+                                  .doc(NotificationId)
+                                  .set({
                                 "share": shares + 1,
                                 "notificationId": NotificationId,
                                 //"comment": commentTextEditingController.text,
@@ -464,9 +463,9 @@ class _FeedsPageState extends State<FeedsPage> {
                               });
                             }
 
-                            // return await Firestore.instance.collection("users")
-                            //     .document(uid).collection("notification")
-                            //     .document(NotificationId)
+                            // return await FirebaseFirestore.instance.collection("users")
+                            //     .doc(uid).collection("notification")
+                            //     .doc(NotificationId)
                             //     .setData({"share" : shares+1,
                             //   "notificationId" : NotificationId,
                             //   "username": displayNamecurrentUser,
@@ -496,12 +495,12 @@ class _FeedsPageState extends State<FeedsPage> {
                               print(uid);
                               print(uidController.text);
                               print("912");
-                              return await Firestore.instance
+                              return await FirebaseFirestore.instance
                                   .collection("users")
-                                  .document(uid)
+                                  .doc(uid)
                                   .collection("notification")
-                                  .document(NotificationId)
-                                  .setData({
+                                  .doc(NotificationId)
+                                  .set({
                                 "likes": likes + 1,
                                 "notificationId": NotificationId,
                                 //"comment": commentTextEditingController.text,
@@ -513,9 +512,9 @@ class _FeedsPageState extends State<FeedsPage> {
                               });
                             }
 
-                            // return await Firestore.instance.collection("users")
-                            //     .document(uid).collection("notification")
-                            //     .document(NotificationId)
+                            // return await FirebaseFirestore.instance.collection("users")
+                            //     .doc(uid).collection("notification")
+                            //     .doc(NotificationId)
                             //     .setData({"likes" : likes+1,
                             //   "notificationId" : NotificationId,
                             //   "username": displayNameCurrUser,
@@ -531,12 +530,12 @@ class _FeedsPageState extends State<FeedsPage> {
                           }
 
                           DeleteNotification(String displayName) {
-                            Firestore.instance
+                            FirebaseFirestore.instance
                                 .collection("users")
-                                .document(uid)
+                                .doc(uid)
                                 .collection('notification')
                                 //.where('displayName','==',displayName);
-                                .document(displayName)
+                                .doc(displayName)
                                 .delete();
                           }
 

@@ -192,7 +192,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
   TabController tabController;
   Map<String, dynamic> _profile;
   bool _loading = false;
-  FirebaseUser currentUser;
+  User currentUser;
   FirebaseProvider firebaseProvider;
 
 
@@ -202,10 +202,10 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
       bioController;
 
   DocumentSnapshot docSnap;
-  FirebaseUser currUser;
+  User currUser;
 
   void getCurrentUser() async {
-    currentUser = await FirebaseAuth.instance.currentUser();
+    currentUser = await FirebaseAuth.instance.currentUser;
     firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
     setState(() {});
     print(currentUser.displayName);
@@ -215,7 +215,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
 
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = await FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("users")

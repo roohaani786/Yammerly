@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math' as math;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as ImD;
 import 'package:path_provider/path_provider.dart';
-import 'package:techstagram/models/user.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
@@ -96,19 +94,19 @@ class _UploadImageState extends State<UploadImage>
   Map<String, dynamic> _profile;
   bool _loading = false;
   DocumentSnapshot docSnap;
-  FirebaseUser currUser;
+  User currUser;
   File file;
   bool uploading = false;
   final Reference storageReference =
       FirebaseStorage.instance.ref().child("Post Pictures");
-  final postReference = Firestore.instance.collection("posts");
+  final postReference = FirebaseFirestore.instance.collection("posts");
   String postId = Uuid().v4();
   VideoPlayerController _controller;
 
   compressPhoto() async {
     final directory = await getTemporaryDirectory();
     final path = directory.path;
-    ImD.Image mImageFile = ImD.decodeImage(file.readAsBytesSync());
+    ImD.Image mImageFile = ImD.decodeImage(file.readAsBytes());
     final compressedImage = File('$path/img_$postId.jpg')
       ..writeAsBytesSync(
         ImD.encodeJpg(mImageFile, quality: 50),
@@ -119,10 +117,10 @@ class _UploadImageState extends State<UploadImage>
   }
 
   Future<String> uploadPhoto(mImageFile) async {
-    StorageUploadTask mStorageUploadTask =
+    UploadTask mStorageUploadTask =
         storageReference.child("post_$postId.jpg").putFile(mImageFile);
-    StorageTaskSnapshot storageTaskSnapshot =
-        await mStorageUploadTask.onComplete;
+    TaskSnapshot storageTaskSnapshot =
+        await mStorageUploadTask;
     String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
     return downloadUrl;
   }
@@ -142,10 +140,10 @@ class _UploadImageState extends State<UploadImage>
           .child("video")
           .child(today)
           .child(storageId);
-      StorageUploadTask uploadTask =
-          ref.putFile(file, StorageMetadata(contentType: 'video/mp4'));
+      UploadTask uploadTask =
+          ref.putFile(file, SettableMetadata(contentType: 'video/mp4'));
 
-      StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+      TaskSnapshot storageTaskSnapshot = await uploadTask;
       String videodownloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
       return videodownloadUrl;
     } catch (error) {
@@ -158,7 +156,7 @@ class _UploadImageState extends State<UploadImage>
       uploading = true;
     });
 
-    savePostInfoToFirestoreShared(
+    saveSharedPostInfoToFirebaseFirestore(
         ownerUid,
         sharedurl,
         descriptionController.text,
@@ -196,8 +194,8 @@ class _UploadImageState extends State<UploadImage>
       //Store videourl in an initializer
       String videodownloadUrl = await uploadVideoToStorage(file);
 
-      //Save Post Video and Info to Firestore
-      savePostInfoToFirestore(
+      //Save Post Video and Info to FirebaseFirestore.instance
+      saveVideoPostInfoToFirebaseFirestore(
           videodownloadUrl, descriptionController.text, isVideo);
       savePostinfoToUser(videodownloadUrl, descriptionController.text, isVideo);
     } else {
@@ -205,8 +203,8 @@ class _UploadImageState extends State<UploadImage>
 
       String downloadUrl = await uploadPhoto(file);
 
-      //Save Post Photo and Info to Firestore
-      savePostInfoToFirestore(downloadUrl, descriptionController.text, isVideo);
+      //Save Post Photo and Info to FirebaseFirestore.instance
+      saveVideoPostInfoToFirebaseFirestore(downloadUrl, descriptionController.text, isVideo);
       savePostinfoToUser(downloadUrl, descriptionController.text, isVideo);
     }
 
@@ -222,29 +220,29 @@ class _UploadImageState extends State<UploadImage>
   }
 
   ShareIU() async {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uidController.text)
+        .doc(uidController.text)
         .collection("posts")
-        .document(ownerPostId)
-        .updateData({'shares': shares + 1});
+        .doc(ownerPostId)
+        .update({'shares': shares + 1});
   }
 
   ShareI() async {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("posts")
-        .document(ownerPostId)
-        .updateData({'shares': shares + 1});
+        .doc(ownerPostId)
+        .update({'shares': shares + 1});
   }
 
   PostI() async {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uidController.text)
-        .updateData({'posts': posts + 1});
+        .doc(uidController.text)
+        .update({'posts': posts + 1});
   }
 
-  savePostInfoToFirestoreShared(
+  saveSharedPostInfoToFirebaseFirestore(
       String ownerUid,
       String url,
       String description,
@@ -252,7 +250,7 @@ class _UploadImageState extends State<UploadImage>
       String ownerphotourl,
       String ownerdisplayname,
       bool shared) {
-    Firestore.instance.collection("posts").document(postId).setData({
+    FirebaseFirestore.instance.collection("posts").doc(postId).set({
       "OwnerPhotourl": ownerphotourl,
       "OwnerTimeStamp": ownerTimeStamp,
       "description": description,
@@ -282,12 +280,12 @@ class _UploadImageState extends State<UploadImage>
       String ownerphotourl,
       String ownerdisplayname,
       bool shared) {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uidController.text)
+        .doc(uidController.text)
         .collection('posts')
-        .document(postId)
-        .setData({
+        .doc(postId)
+        .set({
       "OwnerPhotourl": ownerphotourl,
       "OwnerTimeStamp": ownerTimeStamp,
       "OwnerUid": ownerUid,
@@ -311,12 +309,12 @@ class _UploadImageState extends State<UploadImage>
   }
 
   savePostinfoToUser(String url, String description, bool isVideo) {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uidController.text)
+        .doc(uidController.text)
         .collection('posts')
-        .document(postId)
-        .setData({
+        .doc(postId)
+        .set({
       "isVideo": isVideo,
       "postId": postId,
       "uid": uidController.text,
@@ -333,8 +331,8 @@ class _UploadImageState extends State<UploadImage>
     });
   }
 
-  savePostInfoToFirestore(String url, String description, bool isVideo) {
-    postReference.document(postId).setData({
+  saveVideoPostInfoToFirebaseFirestore(String url, String description, bool isVideo) {
+    postReference.doc(postId).set({
       "isVideo": isVideo,
       "postId": postId,
       "uid": uidController.text,
@@ -610,11 +608,11 @@ class _UploadImageState extends State<UploadImage>
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = await FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
       uidController.text = docSnap.data["uid"];
       emailController.text = docSnap.data["email"];

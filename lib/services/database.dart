@@ -145,7 +145,7 @@ class DatabaseService {
   }
 
   Future uploadCompatibiltyAnswers({
-    User user,
+    SingleUser user,
     Wiggle wiggle,
     String compatibilityRoomID,
     List<String> myAnswers,
@@ -160,7 +160,7 @@ class DatabaseService {
   }
 
   Future uploadFriendCompatibiltyAnswers({
-    User user,
+    SingleUser user,
     Wiggle wiggle,
     String compatibilityRoomID,
     List<String> myAnswers,
@@ -175,7 +175,7 @@ class DatabaseService {
   }
 
   Future uploadCompatibiltyQuestions({
-    User user,
+    SingleUser user,
     Wiggle wiggle,
     String compatibilityRoomID,
     List<String> questions,
@@ -228,7 +228,7 @@ class DatabaseService {
   }
 
   Future uploadBondData(
-      {User user,
+      {SingleUser user,
         bool myAnon,
         Wiggle wiggle,
         bool friendAnon,
@@ -605,9 +605,9 @@ class DatabaseService {
   }
 
   //userData from snapshot
-  User _userDataFromSnapshot(DocumentSnapshot snapshot) {
+  SingleUser _userDataFromSnapshot(DocumentSnapshot snapshot) {
 
-    return User(
+    return SingleUser(
         email: snapshot.data['email'],
         bio: snapshot.data['bio'],
         displayName: snapshot.data['name'],
@@ -621,7 +621,7 @@ class DatabaseService {
   }
 
   //get user doc stream
-  Stream<User> get userData {
+  Stream<SingleUser> get userData {
     return wiggleCollection
         .doc(uid)
         .snapshots()

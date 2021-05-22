@@ -2,10 +2,10 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class Users {
   final String uid;
 
-  User({this.uid});
+  Users({this.uid});
 }
 
 class UserData {
@@ -63,7 +63,7 @@ class UserData {
     await FirebaseFirestore.instance.collection("users").get();
     List<UserData> _profileList = [];
     snapshot.docs.forEach((doc) {
-      UserData data = UserData.fromMap(doc.data);
+      UserData data = UserData.fromMap(doc.data());
       _profileList.add(data);
     });
 

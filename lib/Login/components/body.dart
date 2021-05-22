@@ -14,6 +14,7 @@ import 'package:techstagram/Signup/components/social_icon.dart';
 import 'package:techstagram/Signup/signup_screen.dart';
 import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
@@ -275,19 +276,18 @@ class _BodyState extends State<Body> {
         try {
           FacebookAccessToken facebookAccessToken =
               facebookLoginResult.accessToken;
-          final AuthCredential credential = FacebookAuthProvider.Credential(
-              accessToken: facebookAccessToken.token);
+          final AuthCredential credential = FacebookAuthProvider.credential(facebookAccessToken.token);
           final User user = (await auth.signInWithCredential(
               credential))
               .user;
-          (await FirebaseAuth.instance.currentUser()).uid;
+          (await FirebaseAuth.instance.currentUser).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
 
-
-          AuthService().checkuserexists(user.uid, user, user.displayName);
+          SingleUser singleUser;
+          AuthService().checkuserexists(user.uid,singleUser,user.displayName);
           loading.add(false);
 
           print("signed in " + user.displayName);

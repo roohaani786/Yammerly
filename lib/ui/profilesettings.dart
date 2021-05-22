@@ -75,7 +75,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = await FirebaseAuth.instance.currentUser;
     try {
       docSnap = await Firestore.instance
           .collection("users")
@@ -173,7 +173,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   Future<void> checkEmailVerified() async {
-    FirebaseUser firebaseUser = await auth.currentUser();
+   User firebaseUser = await auth.currentUser;
 
     await firebaseUser.reload();
     if (firebaseUser.isEmailVerified) {
@@ -191,10 +191,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     print(uid);
     print("dekho");
 
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
-        .updateData({'private': private});
+        .doc(uid)
+        .update({'private': private});
 
     print("yaha aaya");
   }

@@ -4,16 +4,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'Otheruser/other_user.dart';
 
-class CloudFirestoreSearch extends StatefulWidget {
+class CloudFirebaseFirestoreSearch extends StatefulWidget {
   final String displayNamecurrentUser;
   final String uidX;
-  CloudFirestoreSearch({this.displayNamecurrentUser, this.uidX});
+  CloudFirebaseFirestoreSearch({this.displayNamecurrentUser, this.uidX});
   @override
-  _CloudFirestoreSearchState createState() => _CloudFirestoreSearchState(
+  _CloudFirebaseFirestoreSearchState createState() => _CloudFirebaseFirestoreSearchState(
       displayNamecurrentUser: displayNamecurrentUser, uidX: uidX);
 }
 
-class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
+class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSearch> {
   String fname = "";
   String lname = "";
   String searchKey;
@@ -21,9 +21,9 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
   final displayNamecurrentUser;
   final uidX;
 
-  _CloudFirestoreSearchState({this.displayNamecurrentUser, this.uidX});
+  _CloudFirebaseFirestoreSearchState({this.displayNamecurrentUser, this.uidX});
 
-  String uidf = CloudFirestoreSearch().uidX;
+  String uidf = CloudFirebaseFirestoreSearch().uidX;
   @override
   Widget build(BuildContext context) {
     print("cv");
@@ -55,7 +55,7 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
               setState(() {
 //                fname = val;
                 searchKey = val;
-                streamQuery = Firestore.instance
+                streamQuery = FirebaseFirestore.instance
                     .collection('users')
                     .where('displayName', isGreaterThanOrEqualTo: searchKey)
                     .where('displayName', isLessThan: searchKey + 'z')
@@ -69,13 +69,13 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
         stream: (searchKey != "" && searchKey != null)
             ? streamQuery
             :
-//        Firestore.instance.collection("users").snapshots(),
+//        FirebaseFirestore.instance.collection("users").snapshots(),
 //        (fname != "" && fname != null)
-            Firestore.instance
+            FirebaseFirestore.instance
                 .collection('users')
                 .where("searchKeywords", arrayContains: fname)
                 .snapshots(),
-//            : Firestore.instance.collection("users").snapshots(),
+//            : FirebaseFirestore.instance.collection("users").snapshots(),
         builder: (context, snapshot) {
           return (snapshot.connectionState == ConnectionState.waiting)
               ? Center(
@@ -89,15 +89,15 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
                       ),
                       child: CircularProgressIndicator()))
               : ListView.builder(
-                  itemCount: snapshot.data.documents.length,
+                  itemCount: snapshot.data.docs.length,
                   itemBuilder: (context, index) {
-//              DocumentSnapshot sd = snapshot.data.documents[index];
-                    searchKey = snapshot.data.documents[index]["displayName"];
+//              DocumentSnapshot sd = snapshot.data.docs[index];
+                    searchKey = snapshot.data.docs[index]["displayName"];
                     String photoUrl =
-                        snapshot.data.documents[index]["photoURL"];
-                    String uid = snapshot.data.documents[index]["uid"];
+                        snapshot.data.docs[index]["photoURL"];
+                    String uid = snapshot.data.docs[index]["uid"];
                     String displayName =
-                        snapshot.data.documents[index]["displayName"];
+                        snapshot.data.docs[index]["displayName"];
                     print(displayName);
                     return (searchKey != null)
                         ? Card(

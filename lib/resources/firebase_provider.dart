@@ -5,17 +5,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:techstagram/models/user.dart';
+import 'package:techstagram/models/users.dart';
 
 class FirebaseProvider {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  User user;
+  SingleUser user;
 //  Post post;
 //  Message _message;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  StorageReference _storageReference;
+  Reference _storageReference;
 
-  Future<void> addDataToDb(User currentUser) async {
+  Future<void> addDataToDb(SingleUser currentUser) async {
     print("Inside addDataToDb Method");
 
     _firestore
@@ -23,7 +24,7 @@ class FirebaseProvider {
         .doc(currentUser.displayName)
         .set({'displayName': currentUser.displayName});
 
-    user = User(
+    user = SingleUser(
         uid: currentUser.uid,
         email: currentUser.email,
         displayName: currentUser.displayName,
@@ -44,7 +45,7 @@ class FirebaseProvider {
         .set(user.toMap(user));
   }
 
-  Future<bool> authenticateUser(FirebaseUser user) async {
+  Future<bool> authenticateUser(User user) async {
     print("Inside authenticateUser");
     final QuerySnapshot result = await _firestore
         .collection("users")
@@ -60,9 +61,9 @@ class FirebaseProvider {
     }
   }
 
-  Future<FirebaseUser> getCurrentUser() async {
-    FirebaseUser currentUser;
-    currentUser = await _auth.currentUser();
+  Future<User> getCurrentUser() async {
+    User currentUser;
+    currentUser = await _auth.currentUser;
     print("EMAIL ID : ${currentUser.email}");
     return currentUser;
   }
@@ -73,23 +74,23 @@ class FirebaseProvider {
     return await _auth.signOut();
   }
 
-  Future<FirebaseUser> signIn() async {
+  Future<User> signIn() async {
     GoogleSignInAccount _signInAccount = await _googleSignIn.signIn();
     GoogleSignInAuthentication _signInAuthentication =
     await _signInAccount.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: _signInAuthentication.accessToken,
       idToken: _signInAuthentication.idToken,
     );
 
-    final AuthResult authResult = await _auth.signInWithCredential(credential);
-    final FirebaseUser user = authResult.user;
+    final UserCredential authResult = await _auth.signInWithCredential(credential);
+    final User user = authResult.user;
 
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
 
-    final FirebaseUser currentUser = await _auth.currentUser();
+    final User currentUser = await _auth.currentUser;
     assert(user.uid == currentUser.uid);
   }
 
@@ -97,16 +98,16 @@ class FirebaseProvider {
     _storageReference = FirebaseStorage.instance
         .ref()
         .child('${DateTime.now().millisecondsSinceEpoch}');
-    StorageUploadTask storageUploadTask = _storageReference.putFile(imageFile);
-    var url = await (await storageUploadTask.onComplete).ref.getDownloadURL();
+    UploadTask storageUploadTask = _storageReference.putFile(imageFile);
+    var url = await (await storageUploadTask).ref.getDownloadURL();
     return url;
   }
 
 
-  Future<User> retrieveUserDetails(FirebaseUser user) async {
+  Future<UserData> retrieveUserDetails(User user) async {
     DocumentSnapshot _documentSnapshot =
     await _firestore.collection("users").doc(user.uid).get();
-    return User.fromMap(_documentSnapshot.data);
+    return UserData.fromMap(_documentSnapshot.data());
   }
 
   Future<List<DocumentSnapshot>> retrieveUserPosts(String userId) async {
@@ -137,14 +138,14 @@ class FirebaseProvider {
     return snapshot.exists;
   }
 
-  Future<List<DocumentSnapshot>> retrievePosts(FirebaseUser user) async {
+  Future<List<DocumentSnapshot>> retrievePosts(User user) async {
     List<DocumentSnapshot> list = <DocumentSnapshot>[];
     List<DocumentSnapshot> updatedList = <DocumentSnapshot>[];
     QuerySnapshot querySnapshot;
     QuerySnapshot snapshot =
     await _firestore.collection("users").get();
     for (int i = 0; i < snapshot.docs.length; i++) {
-      if (snapshot.docs[i].documentID != user.uid) {
+      if (snapshot.docs[i].id != user.uid) {
         list.add(snapshot.docs[i]);
       }
     }
@@ -160,13 +161,13 @@ class FirebaseProvider {
     return updatedList;
   }
 
-  Future<List<String>> fetchAllUserNames(FirebaseUser user) async {
+  Future<List<String>> fetchAllUserNames(User user) async {
     List<String> userNameList = <String>[];
     QuerySnapshot querySnapshot =
     await _firestore.collection("users").get();
     for (var i = 0; i < querySnapshot.docs.length; i++) {
-      if (querySnapshot.docs[i].documentID != user.uid) {
-        userNameList.add(querySnapshot.docs[i].data['displayName']);
+      if (querySnapshot.docs[i].id != user.uid) {
+        userNameList.add(querySnapshot.docs[i].data()['displayName']);
       }
     }
     print("USERNAMES LIST : ${userNameList.length}");
@@ -186,18 +187,18 @@ class FirebaseProvider {
     print("UID LIST : ${uidList.length}");
 
     for (var i = 0; i < uidList.length; i++) {
-      if (uidList[i].data['displayName'] == name) {
-        uid = uidList[i].documentID;
+      if (uidList[i].data()['displayName'] == name) {
+        uid = uidList[i].id;
       }
     }
     print("UID DOC ID: $uid");
     return uid;
   }
 
-  Future<User> fetchUserDetailsById(String uid) async {
+  Future<UserData> fetchUserDetailsById(String uid) async {
     DocumentSnapshot documentSnapshot =
     await _firestore.collection("users").doc(uid).get();
-    return User.fromMap(documentSnapshot.data);
+    return UserData.fromMap(documentSnapshot.data());
   }
 
   Future<void> followUser({String currentUserId, String followingUserId}) async {
@@ -247,7 +248,7 @@ class FirebaseProvider {
         .get();
 
     for (var i = 0; i < querySnapshot.docs.length; i++) {
-      if (querySnapshot.docs[i].documentID == uid) {
+      if (querySnapshot.docs[i].id == uid) {
         isFollowing = true;
       }
     }
@@ -278,7 +279,7 @@ class FirebaseProvider {
     return _firestore.collection("users").doc(uid).update(map);
   }
 
-  Future<List<String>> fetchUserNames(FirebaseUser user) async {
+  Future<List<String>> fetchUserNames(User user) async {
     DocumentReference documentReference =
     _firestore.collection("messages").doc(user.uid);
     List<String> userNameList = <String>[];
@@ -286,9 +287,9 @@ class FirebaseProvider {
     QuerySnapshot querySnapshot =
     await _firestore.collection("users").get();
     for (var i = 0; i < querySnapshot.docs.length; i++) {
-      if (querySnapshot.docs[i].documentID != user.uid) {
-        print("USERNAMES : ${querySnapshot.docs[i].documentID}");
-        userNameList.add(querySnapshot.docs[i].documentID);
+      if (querySnapshot.docs[i].id != user.uid) {
+        print("USERNAMES : ${querySnapshot.docs[i].id}");
+        userNameList.add(querySnapshot.docs[i].id);
         //querySnapshot.documents[i].reference.collection("collectionPath");
         //userNameList.add(querySnapshot.documents[i].data['displayName']);
       }
@@ -312,13 +313,14 @@ class FirebaseProvider {
     // return userNameList;
   }
 
-  Future<List<User>> fetchAllUsers(FirebaseUser user) async {
-    List<User> userList = <User>[];
+  Future<List<UserData>> fetchAllUsers(User user) async {
+    List<UserData> userList = <UserData>[];
     QuerySnapshot querySnapshot =
     await _firestore.collection("users").get();
     for (var i = 0; i < querySnapshot.docs.length; i++) {
-      if (querySnapshot.docs[i].documentID != user.uid) {
-        userList.add(User.fromMap(querySnapshot.docs[i].data));
+      if (querySnapshot.docs[i].id
+          != user.uid) {
+        userList.add(UserData.fromMap(querySnapshot.docs[i].data()));
         //userList.add(querySnapshot.documents[i].data[User.fromMap(mapData)]);
       }
     }
@@ -327,18 +329,19 @@ class FirebaseProvider {
   }
 
 
-  Future<List<DocumentSnapshot>> fetchFeed(FirebaseUser user) async {
+  Future<List<DocumentSnapshot>> fetchFeed(User user) async {
     List<String> followingUIDs = <String>[];
     List<DocumentSnapshot> list =<DocumentSnapshot>[];
 
     QuerySnapshot querySnapshot = await _firestore
         .collection("users")
-        .document(user.uid)
+        .doc(user.uid)
         .collection("following")
-        .getDocuments();
+        .get();
 
     for (var i = 0; i < querySnapshot.docs.length; i++) {
-      followingUIDs.add(querySnapshot.docs[i].documentID);
+      followingUIDs.add(querySnapshot.docs[i].id
+      );
     }
 
     print("FOLLOWING UIDS : ${followingUIDs.length}");
@@ -356,7 +359,8 @@ class FirebaseProvider {
           .get();
       // postSnapshot.documents;
       for (var i = 0; i < postSnapshot.docs.length; i++) {
-        print("dad : ${postSnapshot.docs[i].documentID}");
+        print("dad : ${postSnapshot.docs[i].id
+        }");
         list.add(postSnapshot.docs[i]);
         print("ads : ${list.length}");
       }
@@ -365,7 +369,7 @@ class FirebaseProvider {
     return list;
   }
 
-  Future<List<String>> fetchFollowingUids(FirebaseUser user) async{
+  Future<List<String>> fetchFollowingUids(User user) async{
     List<String> followingUIDs = <String>[];
 
     QuerySnapshot querySnapshot = await _firestore
@@ -375,7 +379,8 @@ class FirebaseProvider {
         .get();
 
     for (var i = 0; i < querySnapshot.docs.length; i++) {
-      followingUIDs.add(querySnapshot.docs[i].documentID);
+      followingUIDs.add(querySnapshot.docs[i].id
+      );
     }
 
     for (var i = 0; i < followingUIDs.length; i++) {

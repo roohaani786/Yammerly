@@ -5,7 +5,7 @@ class Datauser{
   Datauser({this.uid});
 }
 
-class User {
+class SingleUser {
 
 
    String uid;
@@ -27,10 +27,10 @@ class User {
    String relationship;
 
 
-   User({this.uid, this.email, this.photoUrl, this.displayName, this.followers, this.following, this.bio, this.posts, this.phone,this.link, this.gender,
+   SingleUser({this.uid, this.email, this.photoUrl, this.displayName, this.followers, this.following, this.bio, this.posts, this.phone,this.link, this.gender,
    this.work,this.education,this.currentCity,this.homeTown,this.relationship});
 
-    Map toMap(User user) {
+    Map toMap(SingleUser user) {
     var data = Map<String, dynamic>();
     data['uid'] = user.uid;
     data['email'] = user.email;
@@ -52,7 +52,7 @@ class User {
     return data;
   }
 
-  User.fromMap(Map<String, dynamic> mapData) {
+  SingleUser.fromMap(Map<String, dynamic> mapData) {
     this.uid = mapData['uid'];
     this.email = mapData['email'];
     this.photoUrl = mapData['photoUrl'];

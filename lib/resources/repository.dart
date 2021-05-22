@@ -9,20 +9,20 @@ class Repository {
 
   final _firebaseProvider = FirebaseProvider();
 
-  Future<void> addDataToDb(FirebaseUser user) => _firebaseProvider.addDataToDb(user);
+  Future<void> addDataToDb(SingleUser user) => _firebaseProvider.addDataToDb(user);
 
-  Future<FirebaseUser> signIn() => _firebaseProvider.signIn();
+  Future<User> signIn() => _firebaseProvider.signIn();
 
-  Future<bool> authenticateUser(FirebaseUser user) => _firebaseProvider.authenticateUser(user);
+  Future<bool> authenticateUser(User user) => _firebaseProvider.authenticateUser(user);
 
-  Future<FirebaseUser> getCurrentUser() => _firebaseProvider.getCurrentUser();
+  Future<User> getCurrentUser() => _firebaseProvider.getCurrentUser();
 
   Future<void> signOut() => _firebaseProvider.signOut();
 
   Future<String> uploadImageToStorage(File imageFile) => _firebaseProvider.uploadImageToStorage(imageFile);
 
 
-  Future<User> retrieveUserDetails(FirebaseUser user) => _firebaseProvider.retrieveUserDetails(user);
+  Future<User> retrieveUserDetails(User user) => _firebaseProvider.retrieveUserDetails(user);
 
   Future<List<DocumentSnapshot>> retrieveUserPosts(String userId) => _firebaseProvider.retrieveUserPosts(userId);
 
@@ -32,9 +32,9 @@ class Repository {
 
   Future<bool> checkIfUserLikedOrNot(String userId, DocumentReference reference) => _firebaseProvider.checkIfUserLikedOrNot(userId, reference);
 
-   Future<List<DocumentSnapshot>> retrievePosts(FirebaseUser user) => _firebaseProvider.retrievePosts(user);
+   Future<List<DocumentSnapshot>> retrievePosts(User user) => _firebaseProvider.retrievePosts(user);
 
-  Future<List<String>> fetchAllUserNames(FirebaseUser user) => _firebaseProvider.fetchAllUserNames(user);
+  Future<List<String>> fetchAllUserNames(User user) => _firebaseProvider.fetchAllUserNames(user);
 
   Future<String> fetchUidBySearchedName(String name) => _firebaseProvider.fetchUidBySearchedName(name);
 
@@ -52,13 +52,13 @@ class Repository {
 
   Future<void> updateDetails(String uid, String name, String bio, String email, String phone) => _firebaseProvider.updateDetails(uid, name, bio, email, phone);
 
-  Future<List<String>> fetchUserNames(FirebaseUser user) => _firebaseProvider.fetchUserNames(user);
+  Future<List<String>> fetchUserNames(User user) => _firebaseProvider.fetchUserNames(user);
 
-  Future<List<User>> fetchAllUsers(FirebaseUser user) => _firebaseProvider.fetchAllUsers(user);
+  Future<List<User>> fetchAllUsers(User user) => _firebaseProvider.fetchAllUsers(user);
 
-  Future<List<DocumentSnapshot>> fetchFeed(FirebaseUser user) => _firebaseProvider.fetchFeed(user);
+  Future<List<DocumentSnapshot>> fetchFeed(User user) => _firebaseProvider.fetchFeed(user);
 
-  Future<List<String>> fetchFollowingUids(FirebaseUser user) => _firebaseProvider.fetchFollowingUids(user);
+  Future<List<String>> fetchFollowingUids(User user) => _firebaseProvider.fetchFollowingUids(user);
 
   //Future<List<DocumentSnapshot>> retrievePostByUID(String uid) => _firebaseProvider.retrievePostByUID(uid);
 

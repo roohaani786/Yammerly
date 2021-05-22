@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
@@ -14,6 +14,7 @@ import 'package:techstagram/Signup/components/social_icon.dart';
 import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/components/text_field_container.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:flutter/services.dart';
@@ -91,7 +92,7 @@ class _BodyState extends State<Body> {
             );
           });
     } else {
-      FirebaseUser user = await authService.hellogoogleSignIn();
+      User user = await authService.hellogoogleSignIn();
       print(user);
       var userSignedIn = await Navigator.pushAndRemoveUntil(
         context,
@@ -109,10 +110,10 @@ class _BodyState extends State<Body> {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  FirebaseUser user;
+  User user;
   PublishSubject loading = PublishSubject();
 
-  Future<FirebaseUser> facebookLogin(BuildContext context) async {
+  Future<User> facebookLogin(BuildContext context) async {
     loading.add(true);
 
     var facebookLogin = FacebookLogin();
@@ -134,16 +135,17 @@ class _BodyState extends State<Body> {
         try {
           FacebookAccessToken facebookAccessToken =
               facebookLoginResult.accessToken;
-          final AuthCredential credential = FacebookAuthProvider.getCredential(
-              accessToken: facebookAccessToken.token);
-          final FirebaseUser user =
+          final AuthCredential credential = FacebookAuthProvider.credential(
+             facebookAccessToken.token);
+          final User user =
               (await auth.signInWithCredential(credential)).user;
-          (await FirebaseAuth.instance.currentUser()).uid;
+          (await FirebaseAuth.instance.currentUser).uid;
+          SingleUser singleUser;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
-          AuthService().checkuserexists(user.uid, user, user.displayName);
+          AuthService().checkuserexists(user.uid, singleUser, user.displayName);
         } catch (e) {
           showDialog(
               context: context,
@@ -261,11 +263,11 @@ class _BodyState extends State<Body> {
   }
 
   Future<bool> usernameCheck(String displayName) async {
-    final result = await Firestore.instance
+    final result = await FirebaseFirestore.instance
         .collection('users')
         .where('displayName', isEqualTo: displayName)
-        .getDocuments();
-    return result.documents.isEmpty;
+        .get();
+    return result.docs.isEmpty;
   }
 
   Future<String> signup(String email, String password, String firstname,
@@ -326,10 +328,10 @@ class _BodyState extends State<Body> {
                 .createUserWithEmailAndPassword(
                     email: emailInputController.text,
                     password: pwdInputController.text)
-                .then((authResult) => Firestore.instance
+                .then((authResult) => FirebaseFirestore.instance
                     .collection("users")
-                    .document(authResult.user.uid)
-                    .setData({
+                    .doc(authResult.user.uid)
+                    .set({
                       "uid": authResult.user.uid,
                       "fname": firstNameInputController.text,
                       "surname": lastNameInputController.text,
@@ -931,7 +933,7 @@ class _BodyState extends State<Body> {
 //                            email: emailInputController.text,
 //                            password: pwdInputController.text)
 //                            .then((authResult) =>
-//                            Firestore.instance
+//                            FirebaseFirestore.instance
 //                                .collection("users")
 //                                .document(authResult.user.uid)
 //                                .setData({
