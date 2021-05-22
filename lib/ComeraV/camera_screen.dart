@@ -123,15 +123,15 @@ class CameraScreenState extends State<CameraScreen>
   DocumentSnapshot docSnap;
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = await FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
-          .get();
-      firstNameController.text = docSnap.data()["fname"];
-      lastNameController.text = docSnap.data()["surname"];
-      phoneNumberController.text = docSnap.data().["phonenumber"];
+          .doc(currUser.uid)
+          .get().then(photoUrlController.text = docSnap.data["photoURL"]);
+      firstNameController.text = docSnap.data["fname"];
+      lastNameController.text = docSnap.data["surname"];
+      phoneNumberController.text = docSnap.data["phonenumber"];
       emailController.text = docSnap.data["email"];
       bioController.text = docSnap.data["bio"];
       genderController.text = docSnap.data["gender"];
@@ -222,7 +222,7 @@ class CameraScreenState extends State<CameraScreen>
 
   bool flashOn=false;
   File _image;
-  FirebaseUser currUser;
+  User currUser;
 
   TextEditingController firstNameController,
       lastNameController,
@@ -233,9 +233,10 @@ class CameraScreenState extends State<CameraScreen>
       currentCityController,homeTownController,relationshipController,pincodeController ;
   bool upload = false;
   Future pickImage() async {
-    await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
+    // ignore: deprecated_member_use
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
-        _image = File(image.path);
+        _image = image;
         upload = true;
       });
     });
@@ -274,13 +275,13 @@ class CameraScreenState extends State<CameraScreen>
     });
     Navigator.pop(context);
   }
-  final Reference storageReference =
+  final StorageReference storageReference =
   FirebaseStorage.instance.ref().child("Post Pictures");
 
   Future<String> uploadPhoto(mImageFile) async {
     StorageUploadTask mStorageUploadTask =
     storageReference.child("post_$postId.jpg").putFile(mImageFile);
-    TaskSnapshot storageTaskSnapshot =
+    StorageTaskSnapshot storageTaskSnapshot =
     await mStorageUploadTask.onComplete;
     String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
     return downloadUrl;
@@ -288,10 +289,10 @@ class CameraScreenState extends State<CameraScreen>
 
   String postId = Uuid().v4();
 
-  final postReference = Firestore.instance.collection("posts");
+  final postReference = FirebaseFirestore.instance.collection("posts");
 
   savePostInfoToFirestore(String url) {
-    postReference.document(postId).setData({
+    postReference.doc(postId).set({
       "postId": postId,
       "uid" : uidController.text,
       "displayName": displayNameController.text,
@@ -535,7 +536,8 @@ class CameraScreenState extends State<CameraScreen>
 
               ),
 
-              MaterialButton(
+              // ignore: deprecated_member_use
+              FlatButton(
                 color: Colors.transparent,
                 onPressed: () async => null,
                 child: CircleAvatar(
@@ -761,6 +763,7 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   void showInSnackBar(String message) {
+    // ignore: deprecated_member_use
     _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 

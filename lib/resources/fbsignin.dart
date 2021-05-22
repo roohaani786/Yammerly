@@ -87,7 +87,7 @@ class _FbLoginPageState extends State<FbLoginPage> {
             facebookLoginResult.accessToken;
         final AuthCredential credential = FacebookAuthProvider.getCredential(
             accessToken: facebookAccessToken.token);
-        final AuthResult user = await auth.signInWithCredential(credential);
+        final UserCredential user = await auth.signInWithCredential(credential);
         assert(user.user.email != null);
         assert(user.user.displayName != null);
         assert(!user.user.isAnonymous);

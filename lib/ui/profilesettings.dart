@@ -39,7 +39,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   int following;
   int posts;
   bool private = false;
-  FirebaseUser currUser;
+  User currUser;
   DocumentSnapshot docSnap;
   TextEditingController firstNameController,
       lastNameController,
@@ -64,7 +64,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
   void sendVerificationEmail() async {
     print("andar aaya");
-    FirebaseUser firebaseUser = await auth.currentUser();
+    User firebaseUser = await auth.currentUser();
     print("hogaya bhai");
 
     Fluttertoast.showToast(

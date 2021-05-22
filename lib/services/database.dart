@@ -738,9 +738,9 @@ class DatabaseService {
       wiggle, userData, compatibilityRoomID) async {
     return await FirebaseFirestore.instance
         .collection("compatibility")
-        .document(compatibilityRoomID)
+        .doc(compatibilityRoomID)
         .collection("${wiggle.name} answers")
-        .getDocuments();
+        .get();
   }
 
   getWho(String gender) async {

@@ -52,7 +52,7 @@ class _ForgotScreen extends State<ForgotScreen> {
   }
 
   Future<String> resetPass(String email) async {
-    FirebaseUser user;
+    User user;
     String errorMessage;
     final valid = await useremailCheck(emailInputController.text);
 
