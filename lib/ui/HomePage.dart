@@ -69,9 +69,9 @@ class _HomePageState extends State<HomePage> {
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
       displayNameController.text = docSnap.data["displayName"];
       uidController.text = docSnap.data["uid"];
@@ -217,9 +217,9 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
   fetchProfileData() async {
     currUser = await FirebaseAuth.instance.currentUser();
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
       displayNameController.text = docSnap.data["displayName"];
       uidController.text = docSnap.data["uid"];

@@ -6,7 +6,7 @@ import 'package:techstagram/services/database.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
-final CommentsRefrence = Firestore.instance.collection("posts");
+final CommentsRefrence = FirebaseFirestore.instance.collection("posts");
 
 class CommentsPage extends StatefulWidget{
   final String postId;
@@ -55,7 +55,7 @@ class CommentsPageState extends State<CommentsPage> {
     print("user");
     print(displayNamecurrentUser);
     return  StreamBuilder(
-      stream: CommentsRefrence.document(postId)
+      stream: CommentsRefrence.doc(postId)
           .collection("comments")
           .orderBy("timestamp", descending: false)
           .snapshots(),
@@ -85,10 +85,10 @@ class CommentsPageState extends State<CommentsPage> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('commCount', commentCount);
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("posts")
-        .document(postId)
-        .updateData({'comments': comments + commentCount});
+        .doc(postId)
+        .update({'comments': comments + commentCount});
 
   }
 
@@ -122,10 +122,10 @@ class CommentsPageState extends State<CommentsPage> {
         NotificationId = Uuid().v4();
       });
 
-      return await Firestore.instance.collection("users")
-          .document(uid).collection("notification")
-          .document(currUser+postId+commentTextEditingController.text)
-          .setData({"commentId" : CommentId,
+      return await FirebaseFirestore.instance.collection("users")
+          .doc(uid).collection("notification")
+          .doc(currUser+postId+commentTextEditingController.text)
+          .set({"commentId" : CommentId,
         "notificationId" : NotificationId,
         //"comment": commentTextEditingController.text,
 
@@ -158,12 +158,12 @@ class CommentsPageState extends State<CommentsPage> {
   }
 
   SaveCommentIP() async {
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .collection("posts")
-        .document(postId)
-        .updateData({'comments': comments + commentCount});
+        .doc(postId)
+        .update({'comments': comments + commentCount});
   }
 
   saveComment() async {
@@ -177,8 +177,8 @@ class CommentsPageState extends State<CommentsPage> {
       errordikhaoC = false;
     });
 
-    await CommentsRefrence.document(postId).collection("comments").document(CommentId)
-        .setData({"commentId" : CommentId,
+    await CommentsRefrence.doc(postId).collection("comments").doc(CommentId)
+        .set({"commentId" : CommentId,
       "username": displayNamecurrentUser,
       "comment": commentTextEditingController.text,
 
@@ -189,7 +189,7 @@ class CommentsPageState extends State<CommentsPage> {
 
     bool isNotPostOwner = uid != uid;
     if(isNotPostOwner){
-      CommentsRefrence.document(postId).collection("feedItems").add({
+      CommentsRefrence.doc(postId).collection("feedItems").add({
         "type": "comment",
         "commentDate": timestamp,
         "postId": postId,
@@ -202,7 +202,7 @@ class CommentsPageState extends State<CommentsPage> {
 
     return StreamBuilder(
 
-        stream: CommentsRefrence.document(postId).snapshots(),
+        stream: CommentsRefrence.doc(postId).snapshots(),
         builder: (context, dataSnapshotX)
         {
           int commentscount = dataSnapshotX.data["comments"];
@@ -223,7 +223,7 @@ class CommentsPageState extends State<CommentsPage> {
     print("oichhh!!1");
     print(commentscount);
 
-    CommentsRefrence.document(postId).updateData({"comments": commentscount + 1});
+    CommentsRefrence.doc(postId).update({"comments": commentscount + 1});
 
   }
 
@@ -332,12 +332,12 @@ class Comment extends StatelessWidget {
     print(postId);
     print(comment);
     print("amios");
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(userId)
+        .doc(userId)
         .collection('notification')
     //.where('displayName','==',displayName);
-        .document(currUid+postId+comment)
+        .doc(currUid+postId+comment)
         .delete();
   }
 
@@ -360,8 +360,8 @@ class Comment extends StatelessWidget {
 
       DatabaseService().CommentD(postId,comments,commCount);
       print(displayNameCurrUser);
-      await Firestore.instance.collection('posts').document(postId)
-          .collection("comments").document(commentId).delete();
+      await FirebaseFirestore.instance.collection('posts').doc(postId)
+          .collection("comments").doc(commentId).delete();
 
     }
     else if(displayName == displayNameCurrUser){
@@ -372,8 +372,8 @@ class Comment extends StatelessWidget {
       print(displayName);
       print("halelula");
       print(displayNameCurrUser);
-      await Firestore.instance.collection('posts').document(postId)
-          .collection("comments").document(commentId).delete();
+      await FirebaseFirestore.instance.collection('posts').doc(postId)
+          .collection("comments").doc(commentId).delete();
     }
     else{
       print("aaya bhai ko");

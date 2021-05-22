@@ -27,7 +27,7 @@ class _FbLoginPageState extends State<FbLoginPage> {
           child: Column(
             children: [
               (!isFacebookLoginIn
-                  ? RaisedButton(
+                  ? ElevatedButton(
                 child: Text('Facebook Login'),
                 onPressed: () {
                   facebookLogin(context).then((user) {
@@ -57,7 +57,7 @@ class _FbLoginPageState extends State<FbLoginPage> {
                   });
                 },
               )
-                  : RaisedButton(
+                  : ElevatedButton(
                 child: Text('Facebook Logout'),
                 onPressed: () {
                   facebookLoginout().then((response) {

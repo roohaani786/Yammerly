@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +10,7 @@ import 'package:techstagram/ui/post.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
-final NotificationRefrence = Firestore.instance.collection("users");
+final NotificationRefrence = FirebaseFirestore.instance.collection("users");
 
 class NotificationsPage extends StatefulWidget{
   final String currUid;
@@ -44,7 +46,7 @@ class NotificationsPageState extends State<NotificationsPage> {
 
 
     return  StreamBuilder(
-      stream: NotificationRefrence.document(currUid)
+      stream: NotificationRefrence.doc(currUid)
           .collection("notification")
           .orderBy("timestamp", descending: true)
           .snapshots(),
@@ -69,7 +71,7 @@ class NotificationsPageState extends State<NotificationsPage> {
     print("bhujm");
     print(currUid);
     return  StreamBuilder(
-      stream: NotificationRefrence.document(currUid)
+      stream: NotificationRefrence.doc(currUid)
           .collection("notification")
           .orderBy("timestamp", descending: true)
           .snapshots(),
@@ -94,7 +96,7 @@ class NotificationsPageState extends State<NotificationsPage> {
     print("bhujm");
     print(currUid);
     return  StreamBuilder(
-      stream: NotificationRefrence.document(currUid)
+      stream: NotificationRefrence.doc(currUid)
           .collection("notification")
           .orderBy("timestamp", descending: true)
           .snapshots(),
@@ -119,7 +121,7 @@ class NotificationsPageState extends State<NotificationsPage> {
     print("bhujm");
     print(currUid);
     return  StreamBuilder(
-      stream: NotificationRefrence.document(currUid)
+      stream: NotificationRefrence.doc(currUid)
           .collection("notification")
           .orderBy("timestamp", descending: true)
           .snapshots(),
@@ -271,12 +273,12 @@ class _NotificationFollowState extends State<NotificationFollow> {
 
   Fetchprofile() async{
     print("pust");
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("users")
-        .document(widget.userId)
+        .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data['photoURL'];
-    userNameController.text = docSnap.data['displayName'];
+    photoUrlController.text = docSnap.data()['photoURL'];
+    userNameController.text = DocumentSnapshot.data()['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -285,9 +287,9 @@ class _NotificationFollowState extends State<NotificationFollow> {
   }
 
   Fetchpost() async{
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("posts")
-        .document(widget.postId)
+        .doc(widget.postId)
         .get();
     postUrlController.text = docSnap.data['url'];
     setState(() {
@@ -453,9 +455,9 @@ class _NotificationShareState extends State<NotificationShare> {
 
   Fetchprofile() async{
     print("pust");
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("users")
-        .document(widget.userId)
+        .doc(widget.userId)
         .get();
     photoUrlController.text = docSnap.data['photoURL'];
     userNameController.text = docSnap.data['displayName'];
@@ -467,9 +469,9 @@ class _NotificationShareState extends State<NotificationShare> {
   }
 
   Fetchpost() async{
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("posts")
-        .document(widget.postId)
+        .doc(widget.postId)
         .get();
     postUrlController.text = docSnap.data['url'];
     setState(() {
@@ -648,9 +650,9 @@ class _NotificationCommentState extends State<NotificationComment> {
 
   Fetchprofile() async{
     print("pust");
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("users")
-        .document(widget.userId)
+        .doc(widget.userId)
         .get();
     photoUrlController.text = docSnap.data['photoURL'];
     userNameController.text = docSnap.data['displayName'];
@@ -662,9 +664,9 @@ class _NotificationCommentState extends State<NotificationComment> {
   }
 
   Fetchpost() async{
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("posts")
-        .document(widget.postId)
+        .doc(widget.postId)
         .get();
     postUrlController.text = docSnap.data['url'];
     displayNamePostUserController.text = docSnap.data['displayName'];
@@ -859,9 +861,9 @@ class _NotificationLikeState extends State<NotificationLike> {
 
   Fetchprofile() async{
     print("pust");
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("users")
-        .document(widget.userId)
+        .doc(widget.userId)
         .get();
     photoUrlController.text = docSnap.data['photoURL'];
     userNameController.text = docSnap.data['displayName'];
@@ -873,9 +875,9 @@ class _NotificationLikeState extends State<NotificationLike> {
   }
 
   Fetchpost() async{
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("posts")
-        .document(widget.postId)
+        .doc(widget.postId)
         .get();
     postUrlController.text = docSnap.data['url'];
     displayNamePostUserController.text = docSnap['displayName'];

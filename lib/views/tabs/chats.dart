@@ -3,9 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/utils/utils.dart';
-//import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
-
+import 'package:better_player/better_player.dart';
 class ChatsPage extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
   final bool looping;
@@ -20,7 +19,7 @@ class ChatsPage extends StatefulWidget {
 //bool cameraon = true;
 
 class _ChatsPageState extends State<ChatsPage> {
-  //ChewieController _chewieController;
+  
 
   
 @override
@@ -113,7 +112,7 @@ class _ChatsPageState extends State<ChatsPage> {
 //      }
 
       child: Scaffold(
-        // resizeToAvoidBottomPadding: false,
+      //   resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.only(
@@ -137,21 +136,19 @@ class _ChatsPageState extends State<ChatsPage> {
                     image,
                     notificationHeader,
                     notificationText,
-                    ChatsPage(
-                        videoPlayerController: VideoPlayerController.network(
-                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4')),
-                    // AspectRatio(
-                    //     aspectRatio: 16 / 9,
-                    //     child: BetterPlayer.network(
-                    //         'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-                    //     )
-                    // ),
-                    // AspectRatio(
-                    //     aspectRatio: 16 / 9,
-                    //     child: BetterPlayer.network(
-                    //         'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-                    //     )
-                    // ),
+                    
+                    AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: BetterPlayer.network(
+                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                        )
+                    ),
+                    AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: BetterPlayer.network(
+                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                        )
+                    ),
                   ],
                 ),
               ],
