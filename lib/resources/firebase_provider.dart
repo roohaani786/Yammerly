@@ -21,7 +21,7 @@ class FirebaseProvider {
     _firestore
         .collection("display_names")
         .doc(currentUser.displayName)
-        .setData({'displayName': currentUser.displayName});
+        .set({'displayName': currentUser.displayName});
 
     user = User(
         uid: currentUser.uid,
@@ -40,8 +40,8 @@ class FirebaseProvider {
 
     return _firestore
         .collection("users")
-        .document(currentUser.uid)
-        .setData(user.toMap(user));
+        .doc(currentUser.uid)
+        .set(user.toMap(user));
   }
 
   Future<bool> authenticateUser(FirebaseUser user) async {
@@ -132,7 +132,7 @@ class FirebaseProvider {
 
   Future<bool> checkIfUserLikedOrNot(String userId, DocumentReference reference) async {
     DocumentSnapshot snapshot =
-    await reference.collection("likes").document(userId).get();
+    await reference.collection("likes").doc(userId).get();
     print('DOC ID : ${snapshot.reference.path}');
     return snapshot.exists;
   }
@@ -208,7 +208,7 @@ class FirebaseProvider {
         .doc(currentUserId)
         .collection("following")
         .doc(followingUserId)
-        .setData(followingMap);
+        .set(followingMap);
 
     var followersMap = Map<String, String>();
     followersMap['uid'] = currentUserId;
@@ -218,7 +218,7 @@ class FirebaseProvider {
         .doc(followingUserId)
         .collection("followers")
         .doc(currentUserId)
-        .setData(followersMap);
+        .set(followersMap);
   }
 
   Future<void> unFollowUser({String currentUserId, String followingUserId}) async {
@@ -266,7 +266,7 @@ class FirebaseProvider {
   Future<void> updatePhoto(String photoUrl, String uid) async {
     Map<String, dynamic> map = Map();
     map['photoUrl'] = photoUrl;
-    return _firestore.collection("users").doc(uid).updateData(map);
+    return _firestore.collection("users").doc(uid).update(map);
   }
 
   Future<void> updateDetails(String uid, String name, String bio, String email, String phone) async {
@@ -280,7 +280,7 @@ class FirebaseProvider {
 
   Future<List<String>> fetchUserNames(FirebaseUser user) async {
     DocumentReference documentReference =
-    _firestore.collection("messages").document(user.uid);
+    _firestore.collection("messages").doc(user.uid);
     List<String> userNameList = <String>[];
     List<String> chatUsersList = <String>[];
     QuerySnapshot querySnapshot =

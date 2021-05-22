@@ -278,7 +278,7 @@ class _NotificationFollowState extends State<NotificationFollow> {
         .doc(widget.userId)
         .get();
     photoUrlController.text = docSnap.data()['photoURL'];
-    userNameController.text = DocumentSnapshot.data()['displayName'];
+    userNameController.text = docSnap.data()['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;

@@ -128,7 +128,7 @@ class CameraScreenState extends State<CameraScreen>
       docSnap = await FirebaseFirestore.instance
           .collection("users")
           .doc(currUser.uid)
-          .get();
+          .get().then(photoUrlController.text = docSnap.data["photoURL"]);
       firstNameController.text = docSnap.data["fname"];
       lastNameController.text = docSnap.data["surname"];
       phoneNumberController.text = docSnap.data["phonenumber"];
@@ -275,7 +275,7 @@ class CameraScreenState extends State<CameraScreen>
     });
     Navigator.pop(context);
   }
-  final Reference storageReference =
+  final StorageReference storageReference =
   FirebaseStorage.instance.ref().child("Post Pictures");
 
   Future<String> uploadPhoto(mImageFile) async {

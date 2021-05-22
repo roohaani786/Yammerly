@@ -20,7 +20,7 @@ class AuthService {
 
 
   AuthService() {
-    user = _auth.onAuthStateChanged;
+    user = _auth.onAuthStateChanges;
 
     profile = user.switchMap((FirebaseUser u) {
       if (u != null) {
@@ -124,9 +124,9 @@ class AuthService {
 
 
   void updateUserData(FirebaseUser user) async {
-    DocumentReference ref = _db.collection('users').document(user.uid);
+    DocumentReference ref = _db.collection('users').doc(user.uid);
 
-    return ref.setData({
+    return ref.set({
       'uid': user.uid,
       'email': user.email,
       'photoURL': user.photoUrl,
@@ -143,9 +143,9 @@ class AuthService {
   }
 
   void updatenewUserData(FirebaseUser user) async {
-    DocumentReference ref = _db.collection('users').document(user.uid);
+    DocumentReference ref = _db.collection('users').doc(user.uid);
 
-    return ref.setData({
+    return ref.set({
       'uid': user.uid,
       'email': user.email,
       'photoURL': user.photoUrl,

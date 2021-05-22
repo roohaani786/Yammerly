@@ -100,7 +100,7 @@ class _BodyState extends State<Body> {
 //  }
 
   void onGoogleSignIn(BuildContext context) async {
-    FirebaseUser user = await authService.hellogoogleSignIn();
+    User user = await authService.hellogoogleSignIn();
     print(user);
     var userSignedIn = await Navigator.pushAndRemoveUntil(
       context,
@@ -174,7 +174,7 @@ class _BodyState extends State<Body> {
 //  }
 
   Future<String> signIn(String email, String password) async {
-    FirebaseUser user;
+    User user;
     String errorMessage;
 
     this.setState(() {
@@ -184,7 +184,7 @@ class _BodyState extends State<Body> {
     try {
       if (_loginFormKey.currentState.validate()) {
         print("bhaibhia");
-        AuthResult result = await FirebaseAuth.instance
+        UserCredential result = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
             email: emailInputController.text,
             password: pwdInputController.text);
@@ -251,7 +251,7 @@ class _BodyState extends State<Body> {
 
   PublishSubject loading = PublishSubject();
 
-  Future<FirebaseUser> facebookLogin(BuildContext context) async {
+  Future<User> facebookLogin(BuildContext context) async {
     loading.add(true);
 
 
@@ -277,7 +277,7 @@ class _BodyState extends State<Body> {
               facebookLoginResult.accessToken;
           final AuthCredential credential = FacebookAuthProvider.Credential(
               accessToken: facebookAccessToken.token);
-          final FirebaseUser user = (await auth.signInWithCredential(
+          final User user = (await auth.signInWithCredential(
               credential))
               .user;
           (await FirebaseAuth.instance.currentUser()).uid;
