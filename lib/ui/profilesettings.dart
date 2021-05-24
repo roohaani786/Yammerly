@@ -64,7 +64,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
   void sendVerificationEmail() async {
     print("andar aaya");
-    User firebaseUser = await auth.currentUser();
+    User firebaseUser = auth.currentUser;
     print("hogaya bhai");
 
     Fluttertoast.showToast(
@@ -75,27 +75,27 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser;
+    currUser = FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
 
-      displayNameController.text = docSnap.data["displayName"];
-      firstNameController.text = docSnap.data["fname"];
-      lastNameController.text = docSnap.data["surname"];
-      uidController.text = docSnap.data["uid"];
-      emailController.text = docSnap.data["email"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      phonenumberController.text = docSnap.data["phonenumber"];
-      emailVerify = docSnap.data["emailVerified"];
-      bioController.text = docSnap.data["bio"];
-      followers = docSnap.data["followers"];
-      following = docSnap.data["following"];
-      posts = docSnap.data["posts"];
-      private = docSnap.data["private"];
-      coverPhotoUrlController.text = docSnap.data['coverPhotoUrl'];
+      displayNameController.text = docSnap["displayName"];
+      firstNameController.text = docSnap["fname"];
+      lastNameController.text = docSnap["surname"];
+      uidController.text = docSnap["uid"];
+      emailController.text = docSnap["email"];
+      photoUrlController.text = docSnap["photoURL"];
+      phonenumberController.text = docSnap["phonenumber"];
+      emailVerify = docSnap["emailVerified"];
+      bioController.text = docSnap["bio"];
+      followers = docSnap["followers"];
+      following = docSnap["following"];
+      posts = docSnap["posts"];
+      private = docSnap["private"];
+      coverPhotoUrlController.text = docSnap['coverPhotoUrl'];
 
       if (private) {
         setState(() {
@@ -173,10 +173,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   Future<void> checkEmailVerified() async {
-   User firebaseUser = await auth.currentUser;
+   User firebaseUser = auth.currentUser;
 
     await firebaseUser.reload();
-    if (firebaseUser.isEmailVerified) {
+    if (firebaseUser.emailVerified) {
       timer.cancel();
       print(firebaseUser.email);
       DatabaseService().updateEmailVerification(uid);

@@ -608,17 +608,17 @@ class _UploadImageState extends State<UploadImage>
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser;
+    currUser =  FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("users")
           .doc(currUser.uid)
           .get();
-      uidController.text = docSnap.data["uid"];
-      emailController.text = docSnap.data["email"];
-      displayNameController.text = docSnap.data["displayName"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      posts = docSnap.data["posts"];
+      uidController.text = docSnap["uid"];
+      emailController.text = docSnap["email"];
+      displayNameController.text = docSnap["displayName"];
+      photoUrlController.text = docSnap["photoURL"];
+      posts = docSnap["posts"];
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }

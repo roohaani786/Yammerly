@@ -78,9 +78,8 @@ class AuthService {
 
     final User user =
         (await _auth.signInWithCredential(credential)).user;
-    SingleUser singleUser;
 // Checking if email and name is null
-    checkuserexists(user.uid,singleUser,user.displayName);
+    checkuserexists(user.uid,user,user.displayName);
 
 //      updateUserData(user);
 
@@ -104,7 +103,7 @@ class AuthService {
   }
 
 
-  checkuserexists(String uid,SingleUser user,String displayName) async {
+  checkuserexists(String uid,User user,String displayName) async {
     final snapShotX = await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -123,18 +122,18 @@ class AuthService {
   User userdatax;
 
 
-  void updateUserData(SingleUser user) async {
+  void updateUserData(User user) async {
     DocumentReference ref = _db.collection('users').doc(user.uid);
 
     return ref.set({
       'uid': user.uid,
       'email': user.email,
-      'photoURL': user.photoUrl,
+      'photoURL': user.photoURL,
       'displayName': user.displayName.toLowerCase(),
       'lastSeen': DateTime.now(),
-      'followers': user.followers,
-      'following': user.following,
-      'posts': user.posts,
+      //'followers': user.followers,
+      //'following': user.following,
+      //'posts': user.posts,
       'bio' : "Proud Hashtager",
       'emailVerified': false,
       'phoneVerified': false,
@@ -142,13 +141,13 @@ class AuthService {
     }, SetOptions(merge: true));
   }
 
-  void updatenewUserData(SingleUser user) async {
+  void updatenewUserData(User user) async {
     DocumentReference ref = _db.collection('users').doc(user.uid);
 
     return ref.set({
       'uid': user.uid,
       'email': user.email,
-      'photoURL': user.photoUrl,
+      'photoURL': user.photoURL,
       'displayName': user.displayName.toLowerCase(),
       'lastSeen': DateTime.now(),
       'followers': 0,

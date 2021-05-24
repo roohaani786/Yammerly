@@ -10,6 +10,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/Login/components/background.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/components/rounded_button.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import '../../constants.dart';
 import '../../forgotpassword.dart';
@@ -78,7 +79,7 @@ class _BodyState extends State<Body> {
    _changePassword(String password) async {
     print(password);
     //Create an instance of the current user.
-    User user = await FirebaseAuth.instance.currentUser;
+    User user = FirebaseAuth.instance.currentUser;
 
     //Pass in the password to updatePassword.
     user.updatePassword(password).then((_) {
@@ -243,12 +244,11 @@ class _BodyState extends State<Body> {
           final AuthCredential credential = FacebookAuthProvider.credential(facebookAccessToken.token);
           final User user =
               (await auth.signInWithCredential(credential)).user;
-          (await FirebaseAuth.instance.currentUser).uid;
+          (FirebaseAuth.instance.currentUser).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
-
           authService.updateUserData(user);
           loading.add(false);
 

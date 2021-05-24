@@ -18,6 +18,7 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
+import 'package:video_player/video_player.dart';
 import 'dart:async';
 import 'messagingsystem.dart';
 import 'searchlist.dart';
@@ -33,7 +34,7 @@ class HomePage extends StatefulWidget {
   final String uid;
   final int cam;
   int initialindexg;
-  FirebaseUser user;
+  User user;
 
   @override
   _HomePageState createState() => _HomePageState(initialindexg,cam);
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
 
   TextEditingController taskTitleInputController;
   TextEditingController taskDescripInputController;
-  FirebaseUser currentUser;
+  User currentUser;
   FirebaseProvider firebaseProvider;
   // Create the page controller in your widget
 
@@ -59,28 +60,27 @@ class _HomePageState extends State<HomePage> {
   int followers;
   int following;
   int posts;
-
   Map<String, dynamic> _profile;
   bool _loading = false;
 
   DocumentSnapshot docSnap;
-  FirebaseUser currUser;
+  User currUser;
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("users")
           .doc(currUser.uid)
           .get();
-      displayNameController.text = docSnap.data["displayName"];
-      uidController.text = docSnap.data["uid"];
-      emailController.text = docSnap.data["email"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      phonenumberController.text = docSnap.data["phonenumber"];
-      followers = docSnap.data["followers"];
-      following  = docSnap.data["following"];
-      posts  = docSnap.data["posts"];
+      displayNameController.text = docSnap["displayName"];
+      uidController.text = docSnap["uid"];
+      emailController.text = docSnap["email"];
+      photoUrlController.text = docSnap["photoURL"];
+      phonenumberController.text = docSnap["phonenumber"];
+      followers = docSnap["followers"];
+      following  = docSnap["following"];
+      posts  = docSnap["posts"];
       setState(() {
         displayNamecurrUser = displayNameController.text;
 
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getCurrentUser() async {
-    currentUser = await FirebaseAuth.instance.currentUser();
+    currentUser = FirebaseAuth.instance.currentUser;
     firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
     setState(() {});
     print(currentUser.displayName);
@@ -194,7 +194,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
   bool _loading = false;
   User currentUser;
   FirebaseProvider firebaseProvider;
-
+  VideoPlayerController vpController;
 
   final int initialindexg;
   TextEditingController emailController,urlController,descriptionController,
@@ -205,7 +205,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
   User currUser;
 
   void getCurrentUser() async {
-    currentUser = await FirebaseAuth.instance.currentUser;
+    currentUser = FirebaseAuth.instance.currentUser;
     firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
     setState(() {});
     print(currentUser.displayName);
@@ -215,20 +215,20 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
 
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser;
+    currUser =  FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("users")
           .doc(currUser.uid)
           .get();
-      displayNameController.text = docSnap.data["displayName"];
-      uidController.text = docSnap.data["uid"];
-      emailController.text = docSnap.data["email"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      phonenumberController.text = docSnap.data["phonenumber"];
-      int followers = docSnap.data["followers"];
-      int following  = docSnap.data["following"];
-      int posts  = docSnap.data["posts"];
+      displayNameController.text = docSnap["displayName"];
+      uidController.text = docSnap["uid"];
+      emailController.text = docSnap["email"];
+      photoUrlController.text = docSnap["photoURL"];
+      phonenumberController.text = docSnap["phonenumber"];
+      int followers = docSnap["followers"];
+      int following  = docSnap["following"];
+      int posts  = docSnap["posts"];
       setState(() {
         String displayNamecurrUser = displayNameController.text;
 
@@ -351,7 +351,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => CloudFirestoreSearch(
+                    builder: (context) => CloudFirebaseFirestoreSearch(
                           displayNamecurrentUser: displayNameController.text,
                           uidX: uidController.text,
                         )),
@@ -385,7 +385,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
               controller: tabController,
               children: [
                 new Container(
-                  child: ChatsPage(),
+                  child: ChatsPage(videoPlayerController: vpController),
                 ),
                 new Container(
                   child: FeedsPage(

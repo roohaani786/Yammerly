@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -277,8 +275,8 @@ class _NotificationFollowState extends State<NotificationFollow> {
         .collection("users")
         .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data()['photoURL'];
-    userNameController.text = docSnap.data()['displayName'];
+    photoUrlController.text = docSnap['photoURL'];
+    userNameController.text = docSnap['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -291,7 +289,7 @@ class _NotificationFollowState extends State<NotificationFollow> {
         .collection("posts")
         .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap.data['url'];
+    postUrlController.text = docSnap['url'];
     setState(() {
       postUrl = postUrlController.text;
       // cdisplayName[index] = cdisplayNameController.text;
@@ -459,8 +457,8 @@ class _NotificationShareState extends State<NotificationShare> {
         .collection("users")
         .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data['photoURL'];
-    userNameController.text = docSnap.data['displayName'];
+    photoUrlController.text = docSnap['photoURL'];
+    userNameController.text = docSnap['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -473,7 +471,7 @@ class _NotificationShareState extends State<NotificationShare> {
         .collection("posts")
         .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap.data['url'];
+    postUrlController.text = docSnap['url'];
     setState(() {
       postUrl = postUrlController.text;
       // cdisplayName[index] = cdisplayNameController.text;
@@ -654,8 +652,8 @@ class _NotificationCommentState extends State<NotificationComment> {
         .collection("users")
         .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data['photoURL'];
-    userNameController.text = docSnap.data['displayName'];
+    photoUrlController.text = docSnap['photoURL'];
+    userNameController.text = docSnap['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -668,8 +666,8 @@ class _NotificationCommentState extends State<NotificationComment> {
         .collection("posts")
         .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap.data['url'];
-    displayNamePostUserController.text = docSnap.data['displayName'];
+    postUrlController.text = docSnap['url'];
+    displayNamePostUserController.text = docSnap['displayName'];
     setState(() {
       postUrl = postUrlController.text;
       displayNamePostUser = displayNamePostUserController.text;
@@ -865,8 +863,8 @@ class _NotificationLikeState extends State<NotificationLike> {
         .collection("users")
         .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data['photoURL'];
-    userNameController.text = docSnap.data['displayName'];
+    photoUrlController.text = docSnap['photoURL'];
+    userNameController.text = docSnap['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -879,7 +877,7 @@ class _NotificationLikeState extends State<NotificationLike> {
         .collection("posts")
         .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap.data['url'];
+    postUrlController.text = docSnap['url'];
     displayNamePostUserController.text = docSnap['displayName'];
     setState(() {
       postUrl = postUrlController.text;

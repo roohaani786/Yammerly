@@ -92,7 +92,7 @@ class _FbLoginPageState extends State<FbLoginPage> {
         assert(user.user.displayName != null);
         assert(!user.user.isAnonymous);
         assert(await user.user.getIdToken() != null);
-        currentUser = await auth.currentUser;
+        currentUser = auth.currentUser;
         assert(user.user.uid == currentUser.uid);
         return currentUser;
       }

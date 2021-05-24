@@ -53,7 +53,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   DocumentSnapshot docSnap;
   User user;
-  FirebaseUser currUser;
+  User currUser;
   Timer timer;
 
   Map<String, dynamic> _profile;
@@ -101,9 +101,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
   getPostsUser(String uidX) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
-        .document(uidX)
+        .doc(uidX)
         .collection('posts')
         .orderBy("timestamp", descending: true)
         .snapshots();
@@ -141,16 +141,16 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   bool private;
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser =  FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
 
-      uidControllerX.text = docSnap.data["uid"];
-      followingX = docSnap.data["following"];
-      photoUrlX = docSnap.data["photoURL"];
+      uidControllerX.text = docSnap["uid"];
+      followingX = docSnap["following"];
+      photoUrlX = docSnap["photoURL"];
       print("fg");
       print(currUser.uid);
 
@@ -167,11 +167,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   checkPrivate() async {
     if (private == true) {
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('users')
-          .document(uid)
+          .doc(uid)
           .collection('followers')
-          .document(displayNamecurrentUser)
+          .doc(displayNamecurrentUser)
           .get()
           .then((value) {
         if (value.exists) {
@@ -200,12 +200,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
   fetchOProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser =FirebaseAuth.instance.currentUser;
     try {
       docSnap =
-          await Firestore.instance.collection("users").document(uid).get();
+          await FirebaseFirestore.instance.collection("users").doc(uid).get();
 
-      private = docSnap.data["private"];
+      private = docSnap["private"];
       print("fgd");
       print(private);
 
@@ -219,11 +219,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
   getFollowers() {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('users')
-        .document(uid)
+        .doc(uid)
         .collection('followers')
-        .document(displayNamecurrentUser)
+        .doc(displayNamecurrentUser)
         .get()
         .then((value) {
       if (value.exists) {
@@ -271,11 +271,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   bool liked = false;
 
   getfollowers(String displayNamecurrentUser, String uid) {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('users')
-        .document(uid)
+        .doc(uid)
         .collection('followers')
-        .document(displayNamecurrentUser)
+        .doc(displayNamecurrentUser)
         .get()
         .then((value) {
       if (value.exists) {
@@ -293,11 +293,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   getlikes(String displayName, String postId) {
     // print("postid");
     // print(postId);
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('posts')
-        .document(postId)
+        .doc(postId)
         .collection('likes')
-        .document(displayName)
+        .doc(displayName)
         .get()
         .then((value) {
       if (value.exists) {
@@ -311,12 +311,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   DeleteNotification() async {
     print("amios");
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .collection('notification')
         //.where('displayName','==',displayName);
-        .document(uidX)
+        .doc(uidX)
         .delete();
   }
 
@@ -331,12 +331,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       NotificationId = Uuid().v4();
     });
 
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .collection("notification")
-        .document(uidX)
-        .setData({
+        .doc(uidX)
+        .set({
       "followers": followers + 1,
       "notificationId": NotificationId,
       "username": displayNameCurrUser,
@@ -358,7 +358,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
     Stream userQuery;
 
-    userQuery = Firestore.instance
+    userQuery = FirebaseFirestore.instance
         .collection('users')
         .where('displayName', isEqualTo: displayName)
         .snapshots();

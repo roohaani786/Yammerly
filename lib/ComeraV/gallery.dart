@@ -352,8 +352,8 @@ class _GalleryState extends State<Gallery> {
                             borderRadius: BorderRadius.circular(20)),
                         child: Container(
                           width: 95.0,
-                          child: RaisedButton(
-                            color: Colors.grey.shade200,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(primary: Colors.grey.shade200),
                             onPressed: () =>
                                 getImage(File(currentFilePath.path)),
                             // Navigator.push(

@@ -71,7 +71,7 @@ class _postPageState extends State<postPage> {
   bool _loading = false;
 
   DocumentSnapshot docSnap;
-  FirebaseUser currUser;
+  User currUser;
 
   ScrollController scrollController = new ScrollController();
   Posts currentpost;
@@ -101,7 +101,7 @@ class _postPageState extends State<postPage> {
   }
 
   Stream<QuerySnapshot> postsStream;
-  final timelineReference = Firestore.instance.collection('posts');
+  final timelineReference = FirebaseFirestore.instance.collection('posts');
   String postIdX;
 
   fetchPosts() async {
@@ -125,12 +125,12 @@ class _postPageState extends State<postPage> {
       print(uidX);
       print("halelula");
       print(displayNamecurrentUser);
-      await Firestore.instance.collection('posts').document(postId).delete();
-      await Firestore.instance
+      await FirebaseFirestore.instance.collection('posts').doc(postId).delete();
+      await FirebaseFirestore.instance
           .collection('users')
-          .document(uidX)
+          .doc(uidX)
           .collection('posts')
-          .document(postId)
+          .doc(postId)
           .delete();
 
       Navigator.push(
@@ -153,7 +153,7 @@ class _postPageState extends State<postPage> {
 
   getPosts() async {
     print(PostUrl);
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("posts")
         .where('url', isEqualTo: PostUrl)
         .where("displayName", isEqualTo: displayNamecurrentUser)
@@ -162,11 +162,11 @@ class _postPageState extends State<postPage> {
   }
 
   getlikes(String displayNamecurrent, String postId, int index) async {
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('posts')
-        .document(postId)
+        .doc(postId)
         .collection('likes')
-        .document(uidController.text)
+        .doc(uidController.text)
         .get()
         .then((value) {
       if (value.exists) {
@@ -186,11 +186,11 @@ class _postPageState extends State<postPage> {
   }
 
   fetchLikes() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("likes")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
       setState(() {
         isLoading = false;
@@ -202,18 +202,18 @@ class _postPageState extends State<postPage> {
   }
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
-      emailController.text = docSnap.data["email"];
-      likesController.text = docSnap.data["likes"];
-      uidController.text = docSnap.data["uid"];
-      displayNameController.text = docSnap.data["displayName"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      posts = docSnap.data["posts"];
+      emailController.text = docSnap["email"];
+      likesController.text = docSnap["likes"];
+      uidController.text = docSnap["uid"];
+      displayNameController.text = docSnap["displayName"];
+      photoUrlController.text = docSnap["photoURL"];
+      posts = docSnap["posts"];
 
       setState(() {
         isLoading = false;
@@ -281,9 +281,9 @@ class _postPageState extends State<postPage> {
                     //     .document(url)
                     //     .delete();
 
-                    Firestore.instance
+                    FirebaseFirestore.instance
                         .collection("posts")
-                        .document(url)
+                        .doc(url)
                         .get()
                         .then((doc) {
                       if (doc.exists) {

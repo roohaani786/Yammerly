@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Users {
+
+  // THIS CLASS WAS PREVIOUSLY User{}, but due to the firebase new package update, which uses User class instead of FirebaseUser, this class has been renamed to Users
+
   final String uid;
 
   Users({this.uid});
+  UserData userData = UserData();
 }
 
 class UserData {

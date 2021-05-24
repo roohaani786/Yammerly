@@ -56,9 +56,9 @@ class _FollowingList extends State<FollowingList> {
               setState(() {
 //                fname = val;
                 searchKey = val;
-                streamQuery = Firestore.instance
+                streamQuery = FirebaseFirestore.instance
                     .collection('users')
-                    .document(uidX)
+                    .doc(uidX)
                     .collection('following')
                     .where('displayName', isGreaterThanOrEqualTo: searchKey)
                     .where('displayName', isLessThan: searchKey + 'z')
@@ -79,9 +79,9 @@ class _FollowingList extends State<FollowingList> {
       body: StreamBuilder<QuerySnapshot>(
         stream: (searchKey != "" && searchKey != null)
             ? streamQuery
-            : Firestore.instance
+            : FirebaseFirestore.instance
                 .collection("users")
-                .document(uidX)
+                .doc(uidX)
                 .collection('following')
                 .snapshots(),
 //        (fname != "" && fname != null)
@@ -103,16 +103,16 @@ class _FollowingList extends State<FollowingList> {
                       ),
                       child: CircularProgressIndicator()))
               : ListView.builder(
-                  itemCount: snapshot.data.documents.length,
+                  itemCount: snapshot.data.docs.length,
                   itemBuilder: (context, index) {
 //              DocumentSnapshot sd = snapshot.data.documents[index];
-                    searchKey = snapshot.data.documents[index]["followingname"];
+                    searchKey = snapshot.data.docs[index]["followingname"];
                     String photoUrl =
-                        snapshot.data.documents[index]["photoUrl"];
-                    String uid = snapshot.data.documents[index]["uid"];
+                        snapshot.data.docs[index]["photoUrl"];
+                    String uid = snapshot.data.docs[index]["uid"];
                     //bandekiuid = snapshot.data.documents[index]["uid"];
                     String displayName =
-                        snapshot.data.documents[index]["followingname"];
+                        snapshot.data.docs[index]["followingname"];
                     print(displayName);
                     return (searchKey != null)
                         ? Card(

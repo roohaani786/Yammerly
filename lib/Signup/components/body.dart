@@ -139,13 +139,12 @@ class _BodyState extends State<Body> {
              facebookAccessToken.token);
           final User user =
               (await auth.signInWithCredential(credential)).user;
-          (await FirebaseAuth.instance.currentUser).uid;
-          SingleUser singleUser;
+          (FirebaseAuth.instance.currentUser).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
-          AuthService().checkuserexists(user.uid, singleUser, user.displayName);
+          AuthService().checkuserexists(user.uid, user, user.displayName);
         } catch (e) {
           showDialog(
               context: context,

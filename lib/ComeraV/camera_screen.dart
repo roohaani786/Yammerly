@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
 import 'package:techstagram/main.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
@@ -71,7 +72,7 @@ class CameraScreenState extends State<CameraScreen>
 
     _focusModeControlRowAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
-     // vsync: this,
+     //vsync: this,
     );
 
     _focusModeControlRowAnimation = CurvedAnimation(
@@ -123,29 +124,30 @@ class CameraScreenState extends State<CameraScreen>
   DocumentSnapshot docSnap;
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser;
+    currUser =  FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("users")
           .doc(currUser.uid)
-          .get().then(photoUrlController.text = docSnap.data["photoURL"]);
-      firstNameController.text = docSnap.data["fname"];
-      lastNameController.text = docSnap.data["surname"];
-      phoneNumberController.text = docSnap.data["phonenumber"];
-      emailController.text = docSnap.data()"[email]";
-      bioController.text = docSnap.data()"bio";
-      genderController.text = docSnap.data["gender"];
-      linkController.text = docSnap.data["link"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      displayNameController.text = docSnap.data["displayName"];
-      workController.text = docSnap.data["work"];
-      educationController.text = docSnap.data["education"];
-      currentCityController.text = docSnap.data["currentCity"];
-      homeTownController.text = docSnap.data["homeTown"];
-      relationshipController.text = docSnap.data["relationship"];
-      pincodeController.text = docSnap.data["pincode"];
+          .get();
 
-      uidController.text = docSnap.data["uid"];
+      firstNameController.text = docSnap["fname"];
+      lastNameController.text = docSnap["surname"];
+      phoneNumberController.text = docSnap["phonenumber"];
+      emailController.text = docSnap["email"];
+      bioController.text = docSnap["bio"];
+      genderController.text = docSnap["gender"];
+      linkController.text = docSnap["link"];
+      photoUrlController.text = docSnap["photoURL"];
+      displayNameController.text = docSnap["displayName"];
+      workController.text = docSnap["work"];
+      educationController.text = docSnap["education"];
+      currentCityController.text = docSnap["currentCity"];
+      homeTownController.text = docSnap["homeTown"];
+      relationshipController.text = docSnap["relationship"];
+      pincodeController.text = docSnap["pincode"];
+
+      uidController.text = docSnap["uid"];
 
       setState(() {
 //        isLoading = false;

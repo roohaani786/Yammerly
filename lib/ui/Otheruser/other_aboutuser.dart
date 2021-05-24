@@ -47,7 +47,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
       pincodeController;
 
   DocumentSnapshot docSnap;
-  FirebaseUser currUser;
+  User currUser;
 
   Map<String, dynamic> _profile;
   bool _loading = false;
@@ -85,27 +85,27 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = FirebaseAuth.instance.currentUser;
     try {
       docSnap =
-          await Firestore.instance.collection("users").document(uid).get();
-      firstNameController.text = docSnap.data["fname"];
-      lastNameController.text = docSnap.data["surname"];
-      phoneNumberController.text = docSnap.data["phonenumber"];
-      emailController.text = docSnap.data["email"];
-      bioController.text = docSnap.data["bio"];
-      genderController.text = docSnap.data["gender"];
-      linkController.text = docSnap.data["link"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      displayNameController.text = docSnap.data["displayName"];
-      workController.text = docSnap.data["work"];
-      educationController.text = docSnap.data["education"];
-      currentCityController.text = docSnap.data["currentCity"];
-      homeTownController.text = docSnap.data["homeTown"];
-      relationshipController.text = docSnap.data["relationship"];
-      pincodeController.text = docSnap.data["pincode"];
+          await FirebaseFirestore.instance.collection("users").doc(uid).get();
+      firstNameController.text = docSnap["fname"];
+      lastNameController.text = docSnap["surname"];
+      phoneNumberController.text = docSnap["phonenumber"];
+      emailController.text = docSnap["email"];
+      bioController.text = docSnap["bio"];
+      genderController.text = docSnap["gender"];
+      linkController.text = docSnap["link"];
+      photoUrlController.text = docSnap["photoURL"];
+      displayNameController.text = docSnap["displayName"];
+      workController.text = docSnap["work"];
+      educationController.text = docSnap["education"];
+      currentCityController.text = docSnap["currentCity"];
+      homeTownController.text = docSnap["homeTown"];
+      relationshipController.text = docSnap["relationship"];
+      pincodeController.text = docSnap["pincode"];
 
-      uidController.text = docSnap.data["uid"];
+      uidController.text = docSnap["uid"];
 
       setState(() {
         isLoading = false;
@@ -126,7 +126,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
     });
     final directory = await getTemporaryDirectory();
     final path = directory.path;
-    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
+    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytes());
     final compressedImage = File('$path/img_$uidController.jpg')
       ..writeAsBytesSync(
         ImD.encodeJpg(mImageFile, quality: 30),
@@ -138,7 +138,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
 
   final Reference storageReference =
       FirebaseStorage.instance.ref().child("Display Pictures");
-  final postReference = Firestore.instance.collection("users");
+  final postReference = FirebaseFirestore.instance.collection("users");
 
   bool isChanged = false;
   String relationstring = "Select Relationship";
@@ -320,7 +320,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                   enabled: false,
                                   maxLength: 10,
                                   inputFormatters: [
-                                    WhitelistingTextInputFormatter.digitsOnly
+                                    FilteringTextInputFormatter.digitsOnly
                                   ],
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
@@ -546,7 +546,7 @@ class _AboutOtherUserState extends State<AboutOtherUser> {
                                   controller: pincodeController,
                                   enabled: false,
                                   inputFormatters: [
-                                    WhitelistingTextInputFormatter.digitsOnly
+                                    FilteringTextInputFormatter.digitsOnly
                                   ],
                                   keyboardType: TextInputType.number,
                                   maxLines: 1,

@@ -237,7 +237,7 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   fetchLikes() async {
-    currUser = await FirebaseAuth.instance.currentUser;
+    currUser = FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("likes")
@@ -249,32 +249,32 @@ class _FeedsPageState extends State<FeedsPage> {
   }
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser;
+    currUser =  FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("users")
           .doc(currUser.uid)
           .get();
-      emailController.text = docSnap.data["email"];
-      likesController.text = docSnap.data["likes"];
-      uidController.text = docSnap.data["uid"];
-      displayNameController.text = docSnap.data["displayName"];
-      photoUrlController.text = docSnap.data["photoURL"];
+      emailController.text = docSnap["email"];
+      likesController.text = docSnap["likes"];
+      uidController.text = docSnap["uid"];
+      displayNameController.text = docSnap["displayName"];
+      photoUrlController.text = docSnap["photoURL"];
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
   }
 
-  List<String> cpurl = new List<String>.filled(10000,false);
-  List<String> cdisplayName = new List<String>.filled(10000,false);
+  List<String> cpurl = new List<String>(10000);
+  List<String> cdisplayName = new List<String>(10000);
 
   //bool cloading = false;
   List<bool> cloading = List.filled(10000, false);
 
   Fetchprofile(String uid, int index) async {
-    docSnap = await FirebaseFirestore.instance.collection("users").document(uid).get();
-    cpurlController.text = docSnap.data['photoURL'];
-    cdisplayNameController.text = docSnap.data['displayName'];
+    docSnap = await FirebaseFirestore.instance.collection("users").doc(uid).get();
+    cpurlController.text = docSnap['photoURL'];
+    cdisplayNameController.text = docSnap['displayName'];
     setState(() {
       cpurl[index] = cpurlController.text;
       cdisplayName[index] = cdisplayNameController.text;

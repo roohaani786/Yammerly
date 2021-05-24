@@ -10,7 +10,8 @@ import 'package:techstagram/models/users.dart';
 class FirebaseProvider {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  SingleUser user;
+  UserData user;
+  SingleUser singleUser;
 //  Post post;
 //  Message _message;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -24,17 +25,17 @@ class FirebaseProvider {
         .doc(currentUser.displayName)
         .set({'displayName': currentUser.displayName});
 
-    user = SingleUser(
-        uid: currentUser.uid,
+    user = UserData(
+        //uid: currentUser.uid,
         email: currentUser.email,
         displayName: currentUser.displayName,
-        photoUrl: currentUser.photoUrl,
-        followers: 0,
-        following: 0,
+        //photoUrl: currentUser.photoUrl,
+        //followers: 0,
+        //following: 0,
         bio: '',
-        posts: 0,
-        phone: '');
-
+        //posts: 0,
+        //phone: '');
+    );
     //  Map<String, String> mapdata = Map<String, dynamic>();
 
     //  mapdata = user.toMap(user);
@@ -42,7 +43,7 @@ class FirebaseProvider {
     return _firestore
         .collection("users")
         .doc(currentUser.uid)
-        .set(user.toMap(user));
+        .set(singleUser.toMap(singleUser));
   }
 
   Future<bool> authenticateUser(User user) async {
@@ -63,7 +64,7 @@ class FirebaseProvider {
 
   Future<User> getCurrentUser() async {
     User currentUser;
-    currentUser = await _auth.currentUser;
+    currentUser =  _auth.currentUser;
     print("EMAIL ID : ${currentUser.email}");
     return currentUser;
   }
@@ -90,7 +91,7 @@ class FirebaseProvider {
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
 
-    final User currentUser = await _auth.currentUser;
+    final User currentUser = _auth.currentUser;
     assert(user.uid == currentUser.uid);
   }
 
@@ -167,7 +168,7 @@ class FirebaseProvider {
     await _firestore.collection("users").get();
     for (var i = 0; i < querySnapshot.docs.length; i++) {
       if (querySnapshot.docs[i].id != user.uid) {
-        userNameList.add(querySnapshot.docs[i].data()['displayName']);
+        userNameList.add(querySnapshot.docs[i]['displayName']);
       }
     }
     print("USERNAMES LIST : ${userNameList.length}");
@@ -187,7 +188,7 @@ class FirebaseProvider {
     print("UID LIST : ${uidList.length}");
 
     for (var i = 0; i < uidList.length; i++) {
-      if (uidList[i].data()['displayName'] == name) {
+      if (uidList[i]['displayName'] == name) {
         uid = uidList[i].id;
       }
     }

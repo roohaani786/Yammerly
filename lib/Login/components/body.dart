@@ -280,14 +280,13 @@ class _BodyState extends State<Body> {
           final User user = (await auth.signInWithCredential(
               credential))
               .user;
-          (await FirebaseAuth.instance.currentUser).uid;
+          (FirebaseAuth.instance.currentUser).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
 
-          SingleUser singleUser;
-          AuthService().checkuserexists(user.uid,singleUser,user.displayName);
+          AuthService().checkuserexists(user.uid,user,user.displayName);
           loading.add(false);
 
           print("signed in " + user.displayName);

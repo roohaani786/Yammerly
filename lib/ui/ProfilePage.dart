@@ -69,7 +69,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   DocumentSnapshot docSnap;
   DocumentSnapshot postSnap;
-  FirebaseUser currUser;
+  User currUser;
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -151,9 +151,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   }
 
   getPostsUser(String uidX) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
-        .document(uidX)
+        .doc(uidX)
         .collection('posts')
         .orderBy("timestamp", descending: true)
         .snapshots();
@@ -165,34 +165,34 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   //     postSnap = Firestore.instance.collection('posts')
   //         .where('uid', isEqualTo: uidController)
   //         .getDocuments() as DocumentSnapshot;
-  //     uidCurrUser = postSnap.data["url"];
+  //     uidCurrUser = postSnap["url"];
   //   }  on PlatformException catch (e) {
   //     print("PlatformException in fetching user profile. E  = " + e.message);
   //   }
   // }
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
 
-      displayNameController.text = docSnap.data["displayName"];
-      firstNameController.text = docSnap.data["fname"];
-      lastNameController.text = docSnap.data["surname"];
-      uidController.text = docSnap.data["uid"];
-      emailController.text = docSnap.data["email"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      phonenumberController.text = docSnap.data["phonenumber"];
-      emailVerify = docSnap.data["emailVerified"];
-      bioController.text = docSnap.data["bio"];
-      followers = docSnap.data["followers"];
-      following = docSnap.data["following"];
-      posts = docSnap.data["posts"];
-      private = docSnap.data["private"];
-      coverPhotoUrlController.text = docSnap.data['coverPhotoUrl'];
+      displayNameController.text = docSnap["displayName"];
+      firstNameController.text = docSnap["fname"];
+      lastNameController.text = docSnap["surname"];
+      uidController.text = docSnap["uid"];
+      emailController.text = docSnap["email"];
+      photoUrlController.text = docSnap["photoURL"];
+      phonenumberController.text = docSnap["phonenumber"];
+      emailVerify = docSnap["emailVerified"];
+      bioController.text = docSnap["bio"];
+      followers = docSnap["followers"];
+      following = docSnap["following"];
+      posts = docSnap["posts"];
+      private = docSnap["private"];
+      coverPhotoUrlController.text = docSnap['coverPhotoUrl'];
 
       setState(() {
         isLoading = false;
@@ -211,10 +211,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   Future deleteCoverPhoto() async {
     print(uidController.text);
     print("bababa");
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uidController.text)
-        .updateData({'coverPhotoUrl': FieldValue.delete()});
+        .doc(uidController.text)
+        .update({'coverPhotoUrl': FieldValue.delete()});
     setState(() {
       coverPhotoUrlController.text = null;
       cover = true;
@@ -270,8 +270,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     Reference storageReference = FirebaseStorage.instance
         .ref()
         .child('users/${randomno.nextInt(5000).toString()}.jpg');
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
-    await uploadTask.onComplete;
+    UploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask;
     print('File Uploaded');
     storageReference.getDownloadURL().then((fileURL) {
       setState(() {
@@ -286,7 +286,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     });
   }
 
-  final postReference = Firestore.instance.collection("users");
+  final postReference = FirebaseFirestore.instance.collection("users");
 
   savePostInfoToFirestore(String url, String uid) {
     // postReference.where('uid', isEqualTo: uid).getDocuments()
@@ -299,10 +299,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     print(url);
     print("babab");
 
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
-        .updateData({'coverPhotoUrl': url});
+        .doc(uid)
+        .update({'coverPhotoUrl': url});
 
     setState(() {
       isChanged = false;
@@ -350,11 +350,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   getlikes(String displayName, String postId) {
     // print("uid");
     //print(uidController.text);
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('posts')
-        .document(postId)
+        .doc(postId)
         .collection('likes')
-        .document(displayName)
+        .doc(displayName)
         .get()
         .then((value) {
       if (value.exists) {
@@ -750,7 +750,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         child: StreamBuilder(
                             stream: userPostsStream,
                             builder: (context, snapshot) {
-                              if (snapshot.data == null) {
+                              if (snapshot == null) {
                                 return Container();
                               }
                               itemCount = snapshot.data.documents.length;
@@ -768,24 +768,24 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                         crossAxisSpacing: 10.0,
                                                         mainAxisSpacing: 10.0),
                                                 itemBuilder: (context, index) {
-                                                  postIdX = snapshot
-                                                          .data.documents[index]
+                                                  postIdX = snapshot.data
+                                                          .documents[index]
                                                       ['postId'];
 
-                                                  String email = snapshot
-                                                          .data.documents[index]
+                                                  String email = snapshot.data
+                                                          .documents[index]
                                                       ['email'];
 
-                                                  String description = snapshot
-                                                          .data.documents[index]
+                                                  String description = snapshot.data
+                                                          .documents[index]
                                                       ['description'];
 
-                                                  String displayName = snapshot
-                                                          .data.documents[index]
+                                                  String displayName = snapshot.data
+                                                          .documents[index]
                                                       ['displayName'];
 
-                                                  String photoUrl = snapshot
-                                                          .data.documents[index]
+                                                  String photoUrl = snapshot.data
+                                                          .documents[index]
                                                       ['photoURL'];
 
                                                   String uid = snapshot.data
@@ -794,19 +794,19 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                   int cam = snapshot.data
                                                       .documents[index]['cam'];
 
-                                                  Timestamp timestamp = snapshot
-                                                          .data.documents[index]
+                                                  Timestamp timestamp = snapshot.data
+                                                          .documents[index]
                                                       ['timestamp'];
 
                                                   String url = snapshot.data
                                                       .documents[index]['url'];
 
-                                                  String postId = snapshot
-                                                          .data.documents[index]
+                                                  String postId = snapshot.data
+                                                          .documents[index]
                                                       ['postId'];
 
-                                                  int likes = snapshot
-                                                          .data.documents[index]
+                                                  int likes = snapshot.data
+                                                          .documents[index]
                                                       ['likes'];
 
                                                   readTimestamp(

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,12 +12,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:techstagram/constants.dart';
-import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 
 class ProfilePage extends StatefulWidget {
   static final String pageName = "/ProfilePage";
-  final FirebaseUser user;
+  final User user;
 
   const ProfilePage({this.user, Key key}) : super(key: key);
 
@@ -49,8 +47,8 @@ class _ProfilePageState extends State<ProfilePage> {
       pincodeController;
 
   DocumentSnapshot docSnap;
-  FirebaseUser currUser;
-
+  User currUser;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Map<String, dynamic> _profile;
   bool _loading = false;
 
@@ -88,28 +86,28 @@ class _ProfilePageState extends State<ProfilePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser;
+    currUser =  FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("users")
           .doc(currUser.uid)
           .get();
-      firstNameController.text = docSnap.data()['fname'];
-      lastNameController.text = docSnap.data()["surname"];
-      phoneNumberController.text = docSnap.data()["phonenumber"];
-      emailController.text = docSnap.data()["email"];
-      bioController.text = docSnap.data()["bio"];
-      genderController.text = docSnap.data()["gender"];
-      linkController.text = docSnap.data()["link"];
-      photoUrlController.text = docSnap.data()["photoURL"];
-      displayNameController.text = docSnap.data()["displayName"];
-      workController.text = docSnap.data()["work"];
-      educationController.text = docSnap.data()["education"];
-      currentCityController.text = docSnap.data()["currentCity"];
-      homeTownController.text = docSnap.data()["homeTown"];
-      relationshipController.text = docSnap.data()["relationship"];
-      pincodeController.text = docSnap.data()["pincode"];
-      uidController.text = docSnap.data()["uid"];
+      firstNameController.text = docSnap['fname'];
+      lastNameController.text = docSnap["surname"];
+      phoneNumberController.text = docSnap["phonenumber"];
+      emailController.text = docSnap["email"];
+      bioController.text = docSnap["bio"];
+      genderController.text = docSnap["gender"];
+      linkController.text = docSnap["link"];
+      photoUrlController.text = docSnap["photoURL"];
+      displayNameController.text = docSnap["displayName"];
+      workController.text = docSnap["work"];
+      educationController.text = docSnap["education"];
+      currentCityController.text = docSnap["currentCity"];
+      homeTownController.text = docSnap["homeTown"];
+      relationshipController.text = docSnap["relationship"];
+      pincodeController.text = docSnap["pincode"];
+      uidController.text = docSnap["uid"];
 
       setState(() {
         isLoading = false;
@@ -155,13 +153,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final Reference storageReference =
       FirebaseStorage.instance.ref().child("Display Pictures");
-  final postReference = FirebaseFireStore.instance.collection("users");
+  final postReference = FirebaseFirestore.instance.collection("users");
 
   savePostInfoToFirestore(String url, String uid) {
-    postReference.where('uid', isEqualTo: uid).getDocuments().then((docs) {
-      FirebaseFireStore.instance
-          .document(uid)
-          .updateData({'photoUrl': url}).then((val) {
+    postReference.where('uid', isEqualTo: uid).get().then((docs) {
+      _firestore.doc(uid)
+          .update({'photoUrl': url}).then((val) {
         print("update ho gaya");
       });
     });
@@ -187,8 +184,8 @@ class _ProfilePageState extends State<ProfilePage> {
     Reference storageReference = FirebaseStorage.instance
         .ref()
         .child('users/${randomno.nextInt(5000).toString()}.jpg');
-    StorageUploadTask uploadTask = storageReference.putFile(File(_image.path));
-    await uploadTask.onComplete;
+    UploadTask uploadTask = storageReference.putFile(File(_image.path));
+    await uploadTask;
     print('File Uploaded');
     storageReference.getDownloadURL().then((fileURL) {
       setState(() {
@@ -256,75 +253,75 @@ class _ProfilePageState extends State<ProfilePage> {
                   setState(() => isEditable = true);
                 } else {
                   bool isChanged = true;
-                  if (docSnap.data()["fname"].toString().trim() !=
+                  if (docSnap["fname"].toString().trim() !=
                       firstNameController.text.trim()) {
                     print("First Name Changed");
                     isChanged = true;
-                  } else if (docSnap.data["surname"].toString().trim() !=
+                  } else if (docSnap["surname"].toString().trim() !=
                       lastNameController.text.trim()) {
                     print("Last Name Changed");
                     isChanged = true;
-                  } else if (docSnap.data["email"].toString().trim() !=
+                  } else if (docSnap["email"].toString().trim() !=
                       emailController.text.trim()) {
                     print("Email Changed");
                     isChanged = true;
-                  } else if (docSnap.data["phonenumber"].toString().trim() !=
+                  } else if (docSnap["phonenumber"].toString().trim() !=
                       phoneNumberController.text.trim()) {
                     print("Phone Number Changed");
                     isChanged = true;
-                  } else if (docSnap.data["bio"].toString().trim() !=
+                  } else if (docSnap["bio"].toString().trim() !=
                       bioController.text.trim()) {
                     print("Bio Changed");
                     isChanged = true;
-                  } else if (docSnap.data["gender"].toString().trim() !=
+                  } else if (docSnap["gender"].toString().trim() !=
                       genderController.text.trim()) {
                     print("Gender Changed");
                     isChanged = true;
-                  } else if (docSnap.data["link"].toString().trim() !=
+                  } else if (docSnap["link"].toString().trim() !=
                       linkController.text.trim()) {
                     print("Link Changed");
                     isChanged = true;
-                  } else if (docSnap.data["displayName"].toString().trim() !=
+                  } else if (docSnap["displayName"].toString().trim() !=
                       displayNameController.text.trim()) {
                     print("displayName Changed");
                     isChanged = true;
-                  } else if (docSnap.data["photoURL"].toString().trim() !=
+                  } else if (docSnap["photoURL"].toString().trim() !=
                       photoUrlController.text.trim()) {
 //      DatabaseService().updatephotoURL(uidController.text,photoUrlController.text);
                     print("photoUrl Changed");
                     isChanged = true;
                   } //displayName
 
-                  else if (docSnap.data["work"].toString().trim() !=
+                  else if (docSnap["work"].toString().trim() !=
                       workController.text.trim()) {
                     print("work Changed");
                     isChanged = true;
                   } //work
 
-                  else if (docSnap.data["education"].toString().trim() !=
+                  else if (docSnap["education"].toString().trim() !=
                           educationController.text.trim() &&
                       educationController.text.length > 10.0) {
                     print("education Changed");
                     isChanged = true;
                   } //education
 
-                  else if (docSnap.data["currentCity"].toString().trim() !=
+                  else if (docSnap["currentCity"].toString().trim() !=
                       currentCityController.text.trim()) {
                     print("currentCity Changed");
                     isChanged = true;
                   } //currentCity
 
-                  else if (docSnap.data["homeTown"].toString().trim() !=
+                  else if (docSnap["homeTown"].toString().trim() !=
                       homeTownController.text.trim()) {
                     print("homeTown Changed");
                     isChanged = true;
                   } //homeTown
 
-                  else if (docSnap.data()["relationship"].toString().trim() !=
+                  else if (docSnap["relationship"].toString().trim() !=
                       relationshipController.text.trim()) {
                     print("relationship Changed");
                     isChanged = true;
-                  } else if (docSnap.data()["pincode"].toString().trim() !=
+                  } else if (docSnap["pincode"].toString().trim() !=
                       pincodeController.text.trim()) {
                     print("Pincode Changed");
                     isChanged = true;
@@ -399,10 +396,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           homeTownController.text.trim(); //hometown
                       data["relationship"] =
                           relationshipController.text.trim(); //relationship
-                      FirebaseFireStore.instance
+                      _firestore
                           .collection("users")
-                          .document(uidController.text)
-                          .setData(data, merge: true);
+                          .doc(uidController.text)
+                          .set(data, SetOptions(merge: true));
                       print(uidController.text);
                       print("babbu bhai bhai");
 //    DatabaseService().updatePostdisplayName(uidController.text,displayNameController.text);
@@ -728,7 +725,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             },
                             //maxLength: 10,
                             inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
+                              FilteringTextInputFormatter.digitsOnly
                             ],
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
@@ -1018,7 +1015,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               // }
                             },
                             inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
+                              FilteringTextInputFormatter.digitsOnly
                             ],
                             keyboardType: TextInputType.number,
                             maxLines: 1,

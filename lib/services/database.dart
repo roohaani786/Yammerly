@@ -583,24 +583,24 @@ class DatabaseService {
   List<Wiggle> _wiggleListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Wiggle(
-          id: doc.data['id'] ?? '',
-          email: doc.data['email'] ?? '',
-          dp: doc.data['dp'] ?? '',
-          name: doc.data['name'] ?? '',
-          bio: doc.data['bio'] ?? '',
-          community: doc.data['community'] ?? '',
-          gender: doc.data['gender'] ?? '',
-          block: doc.data['block'] ?? '',
-          nickname: doc.data['nickname'] ?? '',
-          isAnonymous: doc.data['isAnonymous'] ?? false,
-          anonBio: doc.data['anonBio'] ?? '',
-          anonInterest: doc.data['anonInterest'] ?? '',
-          anonDp: doc.data['anonDp'] ?? '',
-          fame: doc.data['fame'] ?? 0,
-          media: doc.data['media'] ?? '',
-          course: doc.data['course'] ?? '',
-          playlist: doc.data['playlist'] ?? '',
-          accoms: doc.data['accoms'] ?? '');
+          id: doc['id'] ?? '',
+          email: doc['email'] ?? '',
+          dp: doc['dp'] ?? '',
+          name: doc['name'] ?? '',
+          bio: doc['bio'] ?? '',
+          community: doc['community'] ?? '',
+          gender: doc['gender'] ?? '',
+          block: doc['block'] ?? '',
+          nickname: doc['nickname'] ?? '',
+          isAnonymous: doc['isAnonymous'] ?? false,
+          anonBio: doc['anonBio'] ?? '',
+          anonInterest: doc['anonInterest'] ?? '',
+          anonDp: doc['anonDp'] ?? '',
+          fame: doc['fame'] ?? 0,
+          media: doc['media'] ?? '',
+          course: doc['course'] ?? '',
+          playlist: doc['playlist'] ?? '',
+          accoms: doc['accoms'] ?? '');
     }).toList();
   }
 
@@ -608,11 +608,11 @@ class DatabaseService {
   SingleUser _userDataFromSnapshot(DocumentSnapshot snapshot) {
 
     return SingleUser(
-        email: snapshot.data['email'],
-        bio: snapshot.data['bio'],
-        displayName: snapshot.data['name'],
-        gender: snapshot.data['gender'],
-        photoUrl: snapshot.data['photoUrl'] ?? '');
+        email: snapshot['email'],
+        bio: snapshot['bio'],
+        displayName: snapshot['name'],
+        gender: snapshot['gender'],
+        photoUrl: snapshot['photoUrl'] ?? '');
   }
 
   //get wiggle stream

@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _getFirebaseUser() async {
-    this._firebaseUser = await FirebaseAuth.instance.currentUser;
+    this._firebaseUser =  FirebaseAuth.instance.currentUser;
     setState(() {
       _status =
       (_firebaseUser == null) ? 'Not Logged In\n' : 'Already LoggedIn\n';

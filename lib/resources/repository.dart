@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:techstagram/models/user.dart';
+import 'package:techstagram/models/users.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 
 class Repository {
@@ -22,7 +23,7 @@ class Repository {
   Future<String> uploadImageToStorage(File imageFile) => _firebaseProvider.uploadImageToStorage(imageFile);
 
 
-  Future<User> retrieveUserDetails(User user) => _firebaseProvider.retrieveUserDetails(user);
+  Future<UserData> retrieveUserDetails(User user) => _firebaseProvider.retrieveUserDetails(user);
 
   Future<List<DocumentSnapshot>> retrieveUserPosts(String userId) => _firebaseProvider.retrieveUserPosts(userId);
 
@@ -38,7 +39,7 @@ class Repository {
 
   Future<String> fetchUidBySearchedName(String name) => _firebaseProvider.fetchUidBySearchedName(name);
 
-  Future<User> fetchUserDetailsById(String uid) => _firebaseProvider.fetchUserDetailsById(uid);
+  Future<UserData> fetchUserDetailsById(String uid) => _firebaseProvider.fetchUserDetailsById(uid);
 
   Future<void> followUser({String currentUserId, String followingUserId}) => _firebaseProvider.followUser(currentUserId: currentUserId, followingUserId: followingUserId);
 
@@ -54,7 +55,7 @@ class Repository {
 
   Future<List<String>> fetchUserNames(User user) => _firebaseProvider.fetchUserNames(user);
 
-  Future<List<User>> fetchAllUsers(User user) => _firebaseProvider.fetchAllUsers(user);
+  Future<List<UserData>> fetchAllUsers(User user) => _firebaseProvider.fetchAllUsers(user);
 
   Future<List<DocumentSnapshot>> fetchFeed(User user) => _firebaseProvider.fetchFeed(user);
 

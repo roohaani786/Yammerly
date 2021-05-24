@@ -57,8 +57,8 @@ class _OtherFollowersList extends State<OtherFollowersList> {
               setState(() {
 //                fname = val;
                 searchKey = val;
-                streamQuery = Firestore.instance.collection('users')
-                    .document(uidX).collection('followers')
+                streamQuery = FirebaseFirestore.instance.collection('users')
+                    .doc(uidX).collection('followers')
                     .where('displayName', isGreaterThanOrEqualTo: searchKey)
                     .where('displayName', isLessThan: searchKey +'z')
                     .snapshots();
@@ -77,9 +77,9 @@ class _OtherFollowersList extends State<OtherFollowersList> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: (searchKey != "" && searchKey != null)?streamQuery
-            : Firestore.instance
+            : FirebaseFirestore.instance
             .collection("users")
-            .document(uid)
+            .doc(uid)
             .collection('followers')
             .snapshots(),
 //        (fname != "" && fname != null)
