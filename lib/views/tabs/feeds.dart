@@ -27,7 +27,7 @@ import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
-import 'package:cached_network_image/cached_network_image.dart';
+
 
 class FeedsPage extends StatefulWidget {
   final String displayNamecurrentUser;
@@ -849,8 +849,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                               : (!cloading[
                                                                       index])
                                                                   ? Container()
-                                                                  : CachedNetworkImage(
-                                                                      imageUrl:
+                                                                  : NetworkImage(
                                                                           url),
                                                           //image: NetworkImage("posts[i].postImage"),
                                                         )
@@ -858,8 +857,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                           ? Container()
                                                           : (!cloading[index])
                                                               ? Container()
-                                                              : CachedNetworkImage(
-                                                                  imageUrl:
+                                                              : NetworkImage(
                                                                       url),
                                                 ),
                                                 // GestureDetector(

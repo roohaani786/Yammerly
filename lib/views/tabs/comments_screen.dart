@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -456,7 +456,7 @@ class Comment extends StatelessWidget {
                 leading: (userName != null || comment != null)?Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: CircleAvatar(
-                    backgroundImage: CachedNetworkImageProvider(url),
+                    backgroundImage:NetworkImage(url),
                   ),
                 ):null,
                 subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),

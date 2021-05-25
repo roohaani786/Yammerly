@@ -83,7 +83,7 @@ dependencies:
 #Flutter plugin for reading and writing simple key-value pairs. Wraps NSUserDefaults on iOS and SharedPreferences on Android.
   #Plugin link:- https://pub.dev/packages/shared_preferences
 
-  cached_network_image:
+  #cached_network_image:
 #Flutter library to load and cache network images. Can also be used with placeholder and error widgets.
   #Plugin link:- https://pub.dev/packages/cached_network_image
 

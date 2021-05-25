@@ -17,7 +17,7 @@ import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/views/tabs/comments_screen.dart';
 import 'dart:math' as math;
-import 'package:cached_network_image/cached_network_image.dart';
+
 
 class postPage extends StatefulWidget {
   @override
@@ -683,15 +683,14 @@ class _postPageState extends State<postPage> {
                                                                   math.pi),
                                                           child: (url == null)
                                                               ? Container()
-                                                              : CachedNetworkImage(
-                                                                  imageUrl:
+                                                              :NetworkImage(
                                                                       url),
                                                           //image: NetworkImage("posts[i].postImage"),
                                                         )
                                                       : (url == null)
                                                           ? Container()
-                                                          : CachedNetworkImage(
-                                                              imageUrl: url),
+                                                          : NetworkImage(
+                                                              url),
                                                 ),
                                                 // GestureDetector(
                                                 //
