@@ -106,7 +106,7 @@ class _UploadImageState extends State<UploadImage>
   compressPhoto() async {
     final directory = await getTemporaryDirectory();
     final path = directory.path;
-    ImD.Image mImageFile = ImD.decodeImage(file.readAsBytes());
+    ImD.Image mImageFile = ImD.decodeImage(await file.readAsBytes());
     final compressedImage = File('$path/img_$postId.jpg')
       ..writeAsBytesSync(
         ImD.encodeJpg(mImageFile, quality: 50),

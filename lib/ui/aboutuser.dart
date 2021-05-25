@@ -127,7 +127,7 @@ class _AboutUserState extends State<AboutUser> {
     });
     final directory = await getTemporaryDirectory();
     final path = directory.path;
-    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytes());
+    ImD.Image mImageFile = ImD.decodeImage(await _image.readAsBytes());
     final compressedImage = File('$path/img_$uidController.jpg')
       ..writeAsBytesSync(
         ImD.encodeJpg(mImageFile, quality: 30),
