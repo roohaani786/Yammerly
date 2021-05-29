@@ -55,7 +55,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           );
         }
         List<NotificationLike> Notifications = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           Notifications.add(NotificationLike.fromDocument(document));
         });
         return ListView(
@@ -80,7 +80,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           );
         }
         List<NotificationComment> Notifications = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           Notifications.add(NotificationComment.fromDocument(document));
         });
         return ListView(
@@ -105,7 +105,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           );
         }
         List<NotificationShare> Notifications = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           Notifications.add(NotificationShare.fromDocument(document));
         });
         return ListView(
@@ -130,7 +130,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           );
         }
         List<NotificationFollow> Notifications = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           Notifications.add(NotificationFollow.fromDocument(document));
         });
         return ListView(
@@ -233,14 +233,14 @@ class NotificationFollow extends StatefulWidget {
 
   factory NotificationFollow.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationFollow(
-      userId: documentSnapshot["uid"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      status: documentSnapshot["status"],
-      commentId: documentSnapshot["commentId"],
-      notificationId: documentSnapshot["notificationId"],
-      likes: documentSnapshot["likes"],
-      postId: documentSnapshot["postId"],
+      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
+      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
+      status: (documentSnapshot.data() as Map<String,dynamic>)["status"],
+      commentId: (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
+      notificationId: (documentSnapshot.data() as Map<String,dynamic>)["notificationId"],
+      likes: (documentSnapshot.data() as Map<String,dynamic>)["likes"],
+      postId: (documentSnapshot.data() as Map<String,dynamic>)["postId"],
     );
   }
 
@@ -275,8 +275,8 @@ class _NotificationFollowState extends State<NotificationFollow> {
         .collection("users")
         .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap['photoURL'];
-    userNameController.text = docSnap['displayName'];
+    photoUrlController.text = (docSnap.data() as Map<String,dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -289,7 +289,7 @@ class _NotificationFollowState extends State<NotificationFollow> {
         .collection("posts")
         .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap['url'];
+    postUrlController.text = (docSnap.data() as Map<String,dynamic>)['url'];
     setState(() {
       postUrl = postUrlController.text;
       // cdisplayName[index] = cdisplayNameController.text;
@@ -403,14 +403,14 @@ class NotificationShare extends StatefulWidget {
 
   factory NotificationShare.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationShare(
-      userId: documentSnapshot["uid"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      status: documentSnapshot["status"],
-      commentId: documentSnapshot["commentId"],
-      notificationId: documentSnapshot["notificationId"],
-      likes: documentSnapshot["likes"],
-      postId: documentSnapshot["postId"],
+      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
+      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
+      status: (documentSnapshot.data() as Map<String,dynamic>)["status"],
+      commentId: (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
+      notificationId: (documentSnapshot.data() as Map<String,dynamic>)["notificationId"],
+      likes: (documentSnapshot.data() as Map<String,dynamic>)["likes"],
+      postId: (documentSnapshot.data() as Map<String,dynamic>)["postId"],
 
     );
   }
@@ -457,8 +457,8 @@ class _NotificationShareState extends State<NotificationShare> {
         .collection("users")
         .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap['photoURL'];
-    userNameController.text = docSnap['displayName'];
+    photoUrlController.text = (docSnap.data() as Map<String,dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -471,7 +471,7 @@ class _NotificationShareState extends State<NotificationShare> {
         .collection("posts")
         .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap['url'];
+    postUrlController.text = (docSnap.data() as Map<String,dynamic>)['url'];
     setState(() {
       postUrl = postUrlController.text;
       // cdisplayName[index] = cdisplayNameController.text;
@@ -597,14 +597,14 @@ class NotificationComment extends StatefulWidget {
 
   factory NotificationComment.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationComment(
-      userId: documentSnapshot["uid"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      status: documentSnapshot["status"],
-      commentId: documentSnapshot["commentId"],
-      notificationId: documentSnapshot["notificationId"],
-      likes: documentSnapshot["likes"],
-      postId: documentSnapshot["postId"],
+      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
+      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
+      status: (documentSnapshot.data() as Map<String,dynamic>)["status"],
+      commentId: (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
+      notificationId: (documentSnapshot.data() as Map<String,dynamic>)["notificationId"],
+      likes: (documentSnapshot.data() as Map<String,dynamic>)["likes"],
+      postId: (documentSnapshot.data() as Map<String,dynamic>)["postId"],
     );
   }
 
@@ -652,8 +652,8 @@ class _NotificationCommentState extends State<NotificationComment> {
         .collection("users")
         .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap['photoURL'];
-    userNameController.text = docSnap['displayName'];
+    photoUrlController.text = (docSnap.data() as Map<String,dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -666,8 +666,8 @@ class _NotificationCommentState extends State<NotificationComment> {
         .collection("posts")
         .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap['url'];
-    displayNamePostUserController.text = docSnap['displayName'];
+    postUrlController.text = (docSnap.data() as Map<String,dynamic>)['url'];
+    displayNamePostUserController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       postUrl = postUrlController.text;
       displayNamePostUser = displayNamePostUserController.text;
@@ -803,14 +803,14 @@ class NotificationLike extends StatefulWidget {
 
   factory NotificationLike.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationLike(
-      userId: documentSnapshot["uid"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      status: documentSnapshot["status"],
-      commentId: documentSnapshot["commentId"],
-      notificationId: documentSnapshot["notificationId"],
-      likes: documentSnapshot["likes"],
-      postId: documentSnapshot["postId"],
+      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
+      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
+      status: (documentSnapshot.data() as Map<String,dynamic>)["status"],
+      commentId: (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
+      notificationId: (documentSnapshot.data() as Map<String,dynamic>)["notificationId"],
+      likes: (documentSnapshot.data() as Map<String,dynamic>)["likes"],
+      postId: (documentSnapshot.data() as Map<String,dynamic>)["postId"],
     );
   }
 
@@ -863,8 +863,8 @@ class _NotificationLikeState extends State<NotificationLike> {
         .collection("users")
         .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap['photoURL'];
-    userNameController.text = docSnap['displayName'];
+    photoUrlController.text = (docSnap.data() as Map<String,dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -877,8 +877,8 @@ class _NotificationLikeState extends State<NotificationLike> {
         .collection("posts")
         .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap['url'];
-    displayNamePostUserController.text = docSnap['displayName'];
+    postUrlController.text = (docSnap.data() as Map<String,dynamic>)['url'];
+    displayNamePostUserController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       postUrl = postUrlController.text;
       displayNamePostUser = displayNamePostUserController.text;

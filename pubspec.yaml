@@ -56,7 +56,7 @@ dependencies:
   #Currently only available for IOS, Android and macOS
   #Plugin link:- https://pub.dev/packages/rename
 
-  cloud_firestore:
+  cloud_firestore: ^2.2.0
 #Flutter plugin for Cloud Firestore, a cloud-hosted, noSQL database with
   #live synchronization and offline support on Android and iOS.
   #Plugin link:- https://pub.dev/packages/cloud_firestore

@@ -214,6 +214,7 @@ class _FeedsPageState extends State<FeedsPage> {
         postsStream = val;
       });
     });
+
   }
 
   getlikes(String displayNamecurrent, String postId, int index) async {
@@ -255,11 +256,11 @@ class _FeedsPageState extends State<FeedsPage> {
           .collection("users")
           .doc(currUser.uid)
           .get();
-      emailController.text = docSnap["email"];
-      likesController.text = docSnap["likes"];
-      uidController.text = docSnap["uid"];
-      displayNameController.text = docSnap["displayName"];
-      photoUrlController.text = docSnap["photoURL"];
+      emailController.text = (docSnap.data()as Map<String,dynamic>)["email"];
+      likesController.text = (docSnap.data()as Map<String,dynamic>)["likes"];
+      uidController.text = (docSnap.data()as Map<String,dynamic>)["uid"];
+      displayNameController.text = (docSnap.data()as Map<String,dynamic>)["displayName"];
+      photoUrlController.text = (docSnap.data()as Map<String,dynamic>)["photoURL"];
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
     }
@@ -273,8 +274,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
   Fetchprofile(String uid, int index) async {
     docSnap = await FirebaseFirestore.instance.collection("users").doc(uid).get();
-    cpurlController.text = docSnap['photoURL'];
-    cdisplayNameController.text = docSnap['displayName'];
+    cpurlController.text = (docSnap.data()as Map<String,dynamic>)['photoURL'];
+    cdisplayNameController.text = (docSnap.data()as Map<String,dynamic>)['displayName'];
     setState(() {
       cpurl[index] = cpurlController.text;
       cdisplayName[index] = cdisplayNameController.text;
@@ -355,63 +356,66 @@ class _FeedsPageState extends State<FeedsPage> {
                     new Expanded(
                       child: ListView.builder(
                         controller: scrollController,
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) {
-                          int len = snapshot.data.documents.length;
+                        itemCount: snapshot.data.docs.length,
 
-                          postIdX = snapshot.data.documents[index]['postId'];
+                        itemBuilder: (context, index) {
+                          int len = snapshot.data.docs.length;
+                          print(len);
+                          print("length batar hai");
+                          //postIdX = snapshot.data.docs[index]['postId'];
+
+                          var aja = snapshot.data.docs[index];
 
                           String email =
-                              snapshot.data.documents[index]['email'];
+                              aja['email'];
 
                           String description =
-                              snapshot.data.documents[index]['description'];
+                              aja['description'];
+
 
                           String displayName =
-                              snapshot.data.documents[index]['displayName'];
+                              aja['displayName'];
 
                           String photoUrl =
-                              snapshot.data.documents[index]['photoURL'];
+                          aja['photoURL'];
 
-                          String OwnerDisplayName = snapshot
-                              .data.documents[index]['OwnerDisplayName'];
+                          String OwnerDisplayName = aja['OwnerDisplayName'];
 
                           String OwnerPhotourl =
-                              snapshot.data.documents[index]['OwnerPhotourl'];
+                          aja['OwnerPhotourl'];
 
-                          String OwnerDescription = snapshot
-                              .data.documents[index]['OwnerDescription'];
+                          String OwnerDescription = aja['OwnerDescription'];
 
                           bool shared =
-                              snapshot.data.documents[index]['shared'];
+                          aja['shared'];
 
-                          String uid = snapshot.data.documents[index]["uid"];
+                          String uid = aja["uid"];
 
-                          int shares = snapshot.data.documents[index]["shares"];
+                          int shares = aja["shares"];
 
                           Timestamp timestamp =
-                              snapshot.data.documents[index]['timestamp'];
+                          aja['timestamp'];
 
-                          String url = snapshot.data.documents[index]['url'];
+                          String url = aja['url'];
 
-                          int cam = snapshot.data.documents[index]['cam'];
+                          int cam = aja['cam'];
 
                           String postId =
-                              snapshot.data.documents[index]['postId'];
+                          aja['postId'];
 
-                          int likes = snapshot.data.documents[index]['likes'];
+                          int likes = aja['likes'];
 
                           int comments =
-                              snapshot.data.documents[index]['comments'];
+                          aja['comments'];
 
                           Timestamp OwnertimeStamp =
-                              snapshot.data.documents[index]['OwnerTimeStamp'];
+                          aja['OwnerTimeStamp'];
 
                           String OwnerUid =
-                              snapshot.data.documents[index]['OwnerUid'];
+                          aja['OwnerUid'];
 
                           bool isVideo =
-                              snapshot.data.documents[index]['isVideo'];
+                          aja['isVideo'];
 
                           if (isVideo == null) {
                             isVideo = false;

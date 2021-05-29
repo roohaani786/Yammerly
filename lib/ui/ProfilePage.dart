@@ -753,7 +753,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               if (snapshot == null) {
                                 return Container();
                               }
-                              itemCount = snapshot.data.documents.length;
+                              itemCount = snapshot.data.docs.length;
                               return (posts != 0)
                                   ? Column(
                                       children: [
@@ -768,45 +768,48 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                         crossAxisSpacing: 10.0,
                                                         mainAxisSpacing: 10.0),
                                                 itemBuilder: (context, index) {
+                                                  int len = snapshot.data.docs.length;
+                                                  print(len);
+                                                  print("length batar hai");
                                                   postIdX = snapshot.data
-                                                          .documents[index]
+                                                          .docs[index]
                                                       ['postId'];
 
                                                   String email = snapshot.data
-                                                          .documents[index]
+                                                          .docs[index]
                                                       ['email'];
 
                                                   String description = snapshot.data
-                                                          .documents[index]
+                                                          .docs[index]
                                                       ['description'];
 
                                                   String displayName = snapshot.data
-                                                          .documents[index]
+                                                          .docs[index]
                                                       ['displayName'];
 
                                                   String photoUrl = snapshot.data
-                                                          .documents[index]
+                                                          .docs[index]
                                                       ['photoURL'];
 
                                                   String uid = snapshot.data
-                                                      .documents[index]["uid"];
+                                                      .docs[index]["uid"];
 
                                                   int cam = snapshot.data
-                                                      .documents[index]['cam'];
+                                                      .docs[index]['cam'];
 
                                                   Timestamp timestamp = snapshot.data
-                                                          .documents[index]
+                                                          .docs[index]
                                                       ['timestamp'];
 
                                                   String url = snapshot.data
-                                                      .documents[index]['url'];
+                                                      .docs[index]['url'];
 
                                                   String postId = snapshot.data
-                                                          .documents[index]
+                                                          .docs[index]
                                                       ['postId'];
 
                                                   int likes = snapshot.data
-                                                          .documents[index]
+                                                          .docs[index]
                                                       ['likes'];
 
                                                   readTimestamp(
