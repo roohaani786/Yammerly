@@ -66,7 +66,7 @@ class CommentsPageState extends State<CommentsPage> {
           );
         }
         List<Comment> comments = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           comments.add(Comment.fromDocument(document));
         });
         return ListView(
@@ -310,12 +310,12 @@ class Comment extends StatelessWidget {
 
   factory Comment.fromDocument(DocumentSnapshot documentSnapshot){
     return Comment(
-      userName: documentSnapshot["username"],
-      userId: documentSnapshot["uid"],
-      url: documentSnapshot["url"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      commentId : documentSnapshot["commentId"],
+      userName: (documentSnapshot.data() as Map<String,dynamic>)["username"],
+      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
+      url: (documentSnapshot.data() as Map<String,dynamic>)["url"],
+      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
+      commentId : (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
 
     );
   }

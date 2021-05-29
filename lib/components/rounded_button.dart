@@ -18,7 +18,7 @@ class RoundedButtonX extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 6),
-      width: 200.0,
+      width: 212.0,
       height: 40.0,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(29),

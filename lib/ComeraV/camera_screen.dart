@@ -187,7 +187,7 @@ class CameraScreenState extends State<CameraScreen>
       DeviceOrientation.portraitDown,
     ]);
 
-    _controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -399,6 +399,7 @@ class CameraScreenState extends State<CameraScreen>
                     color: Colors.white,
                   ),
                   onPressed: () {
+                    dispose();
                     // Navigator.pop(context,
                     //   MaterialPageRoute(builder: (context) => HomePage()),);
                     Navigator.push(
