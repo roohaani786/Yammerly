@@ -917,7 +917,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                           }
                                           int itemCount = snapshot
                                               .data
-                                              .documents
+                                              .docs
                                               .length;
                                           return (posts != 0)
                                               ? Column(
@@ -931,38 +931,38 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                       itemBuilder: (context, index) {
                                                         String
                                                         postIdX =
-                                                        snapshot.data.documents[index]['email'];
+                                                        snapshot.data.docs[index]['email'];
                                                         String
                                                         email =
-                                                        snapshot.data.documents[index]['email'];
+                                                        snapshot.data.docs[index]['email'];
                                                         String
                                                         description =
-                                                        snapshot.data.documents[index]['description'];
+                                                        snapshot.data.docs[index]['description'];
                                                         String
                                                         displayName =
-                                                        snapshot.data.documents[index]['displayName'];
+                                                        snapshot.data.docs[index]['displayName'];
                                                         String
                                                         photoUrl =
-                                                        snapshot.data.documents[index]['photoURL'];
+                                                        snapshot.data.docs[index]['photoURL'];
                                                         String
                                                         uid =
-                                                        snapshot.data.documents[index]["uid"];
+                                                        snapshot.data.docs[index]["uid"];
 
                                                         Timestamp
                                                         timestamp =
-                                                        snapshot.data.documents[index]['timestamp'];
+                                                        snapshot.data.docs[index]['timestamp'];
                                                         String
                                                         url =
-                                                        snapshot.data.documents[index]['url'];
+                                                        snapshot.data.docs[index]['url'];
                                                         int cam = snapshot
                                                             .data
-                                                            .documents[index]['cam'];
+                                                            .docs[index]['cam'];
                                                         String
                                                         postId =
-                                                        snapshot.data.documents[index]['postId'];
+                                                        snapshot.data.docs[index]['postId'];
                                                         int likes = snapshot
                                                             .data
-                                                            .documents[index]['likes'];
+                                                            .docs[index]['likes'];
                                                         readTimestamp(
                                                             timestamp.seconds);
                                                         checkPrivate();

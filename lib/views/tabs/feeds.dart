@@ -350,7 +350,7 @@ class _FeedsPageState extends State<FeedsPage> {
       body: StreamBuilder(
         stream: postsStream,
         builder: (context, snapshot) {
-          return snapshot.hasData
+          return (snapshot.hasData)
               ? Column(
                   children: [
                     new Expanded(
@@ -366,8 +366,11 @@ class _FeedsPageState extends State<FeedsPage> {
 
                           var aja = snapshot.data.docs[index];
 
+
                           String email =
                               aja['email'];
+
+
 
                           String description =
                               aja['description'];
@@ -376,22 +379,49 @@ class _FeedsPageState extends State<FeedsPage> {
                           String displayName =
                               aja['displayName'];
 
+
+
                           String photoUrl =
                           aja['photoURL'];
 
-                          String OwnerDisplayName = aja['OwnerDisplayName'];
+                          String OwnerDisplayName;
 
-                          String OwnerPhotourl =
-                          aja['OwnerPhotourl'];
+                          String OwnerPhotourl;
 
-                          String OwnerDescription = aja['OwnerDescription'];
+                          String OwnerDescription;
 
-                          bool shared =
-                          aja['shared'];
+
+
+
+                          if(snapshot.data.docs[index].data().containsKey('OwnerDisplayName') == null){
+
+                            OwnerDisplayName = aja['OwnerDisplayName'];
+
+
+
+                            OwnerPhotourl =
+                            aja['OwnerPhotourl'];
+
+                            OwnerDescription = aja['OwnerDescription'];
+                          }
+
+
+
+                          bool shared;
+
+                          if(snapshot.data.docs[index].data().containsKey('shared') == null){
+                            shared =
+                            aja['shared'];
+                          }
+
+
 
                           String uid = aja["uid"];
 
+
                           int shares = aja["shares"];
+
+
 
                           Timestamp timestamp =
                           aja['timestamp'];
@@ -408,14 +438,25 @@ class _FeedsPageState extends State<FeedsPage> {
                           int comments =
                           aja['comments'];
 
-                          Timestamp OwnertimeStamp =
-                          aja['OwnerTimeStamp'];
 
-                          String OwnerUid =
-                          aja['OwnerUid'];
+                          Timestamp OwnertimeStamp;
+                          String OwnerUid;
+
+                          if(snapshot.data.docs[index].data().containsKey('OwnertimeStamp') == null){
+                            OwnertimeStamp =
+                            aja['OwnerTimeStamp'];
+
+                            OwnerUid =
+                            aja['OwnerUid'];
+                          }
+
 
                           bool isVideo =
                           aja['isVideo'];
+
+
+
+
 
                           if (isVideo == null) {
                             isVideo = false;
@@ -436,6 +477,8 @@ class _FeedsPageState extends State<FeedsPage> {
                             likess[index] == false;
                             likes = 0;
                           }
+
+
 
                           getlikes(displayNamecurrentUser, postId, index);
 

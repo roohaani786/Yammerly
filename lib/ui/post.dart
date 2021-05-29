@@ -393,61 +393,79 @@ class _postPageState extends State<postPage> {
                       new Expanded(
                         child: ListView.builder(
                           controller: scrollController,
-                          itemCount: snapshot.data.documents.length,
+                          itemCount: snapshot.data.docs.length,
                           itemBuilder: (context, index) {
-                            int len = snapshot.data.documents.length;
+                            int len = snapshot.data.docs.length;
 
-                            postIdX = snapshot.data.documents[index]['postId'];
+                            postIdX = snapshot.data.docs[index]['postId'];
 
                             String email =
-                                snapshot.data.documents[index]['email'];
+                                snapshot.data.docs[index]['email'];
 
                             String description =
-                                snapshot.data.documents[index]['description'];
+                                snapshot.data.docs[index]['description'];
 
                             String displayName =
-                                snapshot.data.documents[index]['displayName'];
+                                snapshot.data.docs[index]['displayName'];
 
                             String photoUrl =
-                                snapshot.data.documents[index]['photoURL'];
+                                snapshot.data.docs[index]['photoURL'];
 
-                            String OwnerDisplayName = snapshot
-                                .data.documents[index]['OwnerDisplayName'];
+                            String OwnerDisplayName;
+                            String OwnerPhotourl;
+                            String OwnerUid;
+                            bool shared;
 
-                            String OwnerPhotourl =
-                                snapshot.data.documents[index]['OwnerPhotourl'];
 
-                            String OwnerUid =
-                                snapshot.data.documents[index]['OwnerUid'];
+                            if(snapshot.data.docs[index].data().containsKey('OwnerDisplayName') == null){
+                              OwnerDisplayName = snapshot
+                                  .data.docs[index]['OwnerDisplayName'];
 
-                            bool shared =
-                                snapshot.data.documents[index]['shared'];
+                              OwnerPhotourl =
+                              snapshot.data.docs[index]['OwnerPhotourl'];
 
-                            String uid = snapshot.data.documents[index]["uid"];
+                              OwnerUid =
+                              snapshot.data.docs[index]['OwnerUid'];
+
+                              shared =
+                              snapshot.data.docs[index]['shared'];
+                            }
+
+
+                            String uid = snapshot.data.docs[index]["uid"];
 
                             int shares =
-                                snapshot.data.documents[index]["shares"];
+                                snapshot.data.docs[index]["shares"];
+
 
                             Timestamp timestamp =
-                                snapshot.data.documents[index]['timestamp'];
+                                snapshot.data.docs[index]['timestamp'];
 
-                            String url = snapshot.data.documents[index]['url'];
+                            String url = snapshot.data.docs[index]['url'];
 
-                            int cam = snapshot.data.documents[index]['cam'];
+                            int cam = snapshot.data.docs[index]['cam'];
 
                             String postId =
-                                snapshot.data.documents[index]['postId'];
+                                snapshot.data.docs[index]['postId'];
 
-                            int likes = snapshot.data.documents[index]['likes'];
+                            int likes = snapshot.data.docs[index]['likes'];
 
                             int comments =
-                                snapshot.data.documents[index]['comments'];
+                                snapshot.data.docs[index]['comments'];
 
-                            Timestamp OwnerTimeStamp = snapshot
-                                .data.documents[index]['OwnerTimeStamp'];
+                            print("yaha pe bhi nahi aara");
 
-                            String OwnerDescription = snapshot
-                                .data.documents[index]['OwnerDescription'];
+                            Timestamp OwnerTimeStamp;
+                            String OwnerDescription;
+
+
+                            if(snapshot.data.docs[index].data().containsKey('OwnerTimeStamp') == null){
+                              OwnerTimeStamp = snapshot
+                                  .data.docs[index]['OwnerTimeStamp'];
+
+                              OwnerDescription = snapshot
+                                  .data.docs[index]['OwnerDescription'];
+                            }
 
                             readTimestamp(timestamp.seconds);
 
