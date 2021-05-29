@@ -760,7 +760,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                         new Expanded(
                                             child: GridView.builder(
                                                 shrinkWrap: true,
-                                                //controller: ScrollController(),
+                                                controller: ScrollController(),
                                                 itemCount: itemCount,
                                                 gridDelegate:
                                                     SliverGridDelegateWithFixedCrossAxisCount(
@@ -825,7 +825,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                   }
 
                                                   return Container(
-                                                    color: Colors.grey.shade300,
+                                                    //color: Colors.grey.shade300,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment

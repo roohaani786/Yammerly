@@ -208,12 +208,14 @@ class _postPageState extends State<postPage> {
           .collection("users")
           .doc(currUser.uid)
           .get();
-      emailController.text = docSnap["email"];
-      likesController.text = docSnap["likes"];
-      uidController.text = docSnap["uid"];
-      displayNameController.text = docSnap["displayName"];
-      photoUrlController.text = docSnap["photoURL"];
-      posts = docSnap["posts"];
+      emailController.text = (docSnap.data() as Map<String, dynamic>)["email"];
+      likesController.text = (docSnap.data() as Map<String, dynamic>)["likes"];
+      uidController.text = (docSnap.data() as Map<String, dynamic>)["uid"];
+      displayNameController.text =
+          (docSnap.data() as Map<String, dynamic>)["displayName"];
+      photoUrlController.text =
+          (docSnap.data() as Map<String, dynamic>)["photoURL"];
+      posts = (docSnap.data() as Map<String, dynamic>)["posts"];
 
       setState(() {
         isLoading = false;
@@ -393,61 +395,47 @@ class _postPageState extends State<postPage> {
                       new Expanded(
                         child: ListView.builder(
                           controller: scrollController,
-                          itemCount: snapshot.data.documents.length,
+                          itemCount: snapshot.data.docs.length,
                           itemBuilder: (context, index) {
-                            int len = snapshot.data.documents.length;
+                            int len = snapshot.data.docs.length;
 
-                            postIdX = snapshot.data.documents[index]['postId'];
+                            postIdX = snapshot.data.docs[index]['postId'];
+                            var aja = snapshot.data.docs[index];
+                            String email = aja['email'];
 
-                            String email =
-                                snapshot.data.documents[index]['email'];
+                            String description = aja['description'];
 
-                            String description =
-                                snapshot.data.documents[index]['description'];
+                            String displayName = aja['displayName'];
 
-                            String displayName =
-                                snapshot.data.documents[index]['displayName'];
+                            String photoUrl = aja['photoURL'];
 
-                            String photoUrl =
-                                snapshot.data.documents[index]['photoURL'];
+                            String OwnerDisplayName = aja['OwnerDisplayName'];
 
-                            String OwnerDisplayName = snapshot
-                                .data.documents[index]['OwnerDisplayName'];
+                            String OwnerPhotourl = aja['OwnerPhotourl'];
 
-                            String OwnerPhotourl =
-                                snapshot.data.documents[index]['OwnerPhotourl'];
+                            String OwnerUid = aja['OwnerUid'];
 
-                            String OwnerUid =
-                                snapshot.data.documents[index]['OwnerUid'];
+                            bool shared = aja['shared'];
 
-                            bool shared =
-                                snapshot.data.documents[index]['shared'];
+                            String uid = aja["uid"];
 
-                            String uid = snapshot.data.documents[index]["uid"];
+                            int shares = aja["shares"];
 
-                            int shares =
-                                snapshot.data.documents[index]["shares"];
+                            Timestamp timestamp = aja['timestamp'];
 
-                            Timestamp timestamp =
-                                snapshot.data.documents[index]['timestamp'];
+                            String url = aja['url'];
 
-                            String url = snapshot.data.documents[index]['url'];
+                            int cam = aja['cam'];
 
-                            int cam = snapshot.data.documents[index]['cam'];
+                            String postId = aja['postId'];
 
-                            String postId =
-                                snapshot.data.documents[index]['postId'];
+                            int likes = aja['likes'];
 
-                            int likes = snapshot.data.documents[index]['likes'];
+                            int comments = aja['comments'];
 
-                            int comments =
-                                snapshot.data.documents[index]['comments'];
+                            Timestamp OwnerTimeStamp = aja['OwnerTimeStamp'];
 
-                            Timestamp OwnerTimeStamp = snapshot
-                                .data.documents[index]['OwnerTimeStamp'];
-
-                            String OwnerDescription = snapshot
-                                .data.documents[index]['OwnerDescription'];
+                            String OwnerDescription = aja['OwnerDescription'];
 
                             readTimestamp(timestamp.seconds);
 
