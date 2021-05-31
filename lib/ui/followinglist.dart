@@ -17,7 +17,7 @@ class _FollowingList extends State<FollowingList> {
   String fname = "";
   String lname = "";
   String searchKey;
-  Stream streamQuery;
+  Stream<QuerySnapshot> streamQuery;
   final String displayNamecurrentUser;
   final String uidX;
   //String bandekiuid;
@@ -105,15 +105,35 @@ class _FollowingList extends State<FollowingList> {
               : ListView.builder(
                   itemCount: snapshot.data.docs.length,
                   itemBuilder: (context, index) {
-//              DocumentSnapshot sd = snapshot.data.documents[index];
+                    DocumentSnapshot sd = snapshot.data.docs[index];
+                    print(sd);
+                    print("'are haoina");
                     searchKey = snapshot.data.docs[index]["followingname"];
-                    String photoUrl =
-                        snapshot.data.docs[index]["photoUrl"];
-                    String uid = snapshot.data.docs[index]["uid"];
+
+                    var aja = snapshot.data.docs[index];
+
+                    String photoUrl;
+                    String uid;
+                    String displayName;
+
+                    if (snapshot.data.docs[index].data().containsKey('photoUrl') == null) {
+                      photoUrl = aja['photoUrl'];
+                      print(photoUrl);
+
+                      String uid = aja["uid"];
+                      print(uid);
+
+                      String displayName = aja["followingname"];
+                      print(displayName);
+                      // OwnerPhotourl =
+                      // aja['OwnerPhotourl'];
+                      // OwnerDescription = aja['OwnerDescription'];
+                    }
+
+                    //snapshot.data.docs[index]["photoUrl"];
+
                     //bandekiuid = snapshot.data.documents[index]["uid"];
-                    String displayName =
-                        snapshot.data.docs[index]["followingname"];
-                    print(displayName);
+
                     return (searchKey != null)
                         ? Card(
                             child: Row(
