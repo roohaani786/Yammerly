@@ -76,7 +76,7 @@ class _FollowingList extends State<FollowingList> {
           ),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
+      body: StreamBuilder(
         stream: (searchKey != "" && searchKey != null)
             ? streamQuery
             : FirebaseFirestore.instance
@@ -116,19 +116,19 @@ class _FollowingList extends State<FollowingList> {
                     String uid;
                     String displayName;
 
-                    // if (snapshot.data.docs[index].data().containsKey('photoUrl') == null) {
-                    //   photoUrl = aja['photoUrl'];
-                    //   print(photoUrl);
-                    //
-                    //   String uid = aja["uid"];
-                    //   print(uid);
-                    //
-                    //   String displayName = aja["followingname"];
-                    //   print(displayName);
-                    //   // OwnerPhotourl =
-                    //   // aja['OwnerPhotourl'];
-                    //   // OwnerDescription = aja['OwnerDescription'];
-                    // }
+                    if (snapshot.data.docs[index].data().containsKey('photoUrl') == null) {
+                      photoUrl = aja['photoUrl'];
+                      print(photoUrl);
+
+                      String uid = aja["uid"];
+                      print(uid);
+
+                      String displayName = aja["followingname"];
+                      print(displayName);
+                      // OwnerPhotourl =
+                      // aja['OwnerPhotourl'];
+                      // OwnerDescription = aja['OwnerDescription'];
+                    }
 
                     //snapshot.data.docs[index]["photoUrl"];
 

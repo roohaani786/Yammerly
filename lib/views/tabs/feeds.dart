@@ -360,8 +360,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         itemBuilder: (context, index) {
                           int len = snapshot.data.docs.length;
-                          print(len);
-                          print("length batara hai");
+                          //print(len);
+                          //print("length batara hai");
                           //postIdX = snapshot.data.docs[index]['postId'];
 
                           var aja = snapshot.data.docs[index];
