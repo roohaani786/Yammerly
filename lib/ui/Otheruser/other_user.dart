@@ -163,6 +163,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     }
   }
 
+
   bool show;
 
   checkPrivate() async {
