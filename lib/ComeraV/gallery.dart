@@ -45,7 +45,7 @@ class _GalleryState extends State<Gallery> {
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
-            title: Text("Discard post ?"),
+            title: Text("Discard  ?"),
             content: Text("If you go back now, you will lose your post.",
                 style: TextStyle(color: Colors.deepPurple)),
             actions: <Widget>[
