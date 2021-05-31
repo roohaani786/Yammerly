@@ -753,15 +753,15 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               if (snapshot == null) {
                                 return Container();
                               }
-                              itemCount = snapshot.data.docs.length;
-                              return (posts != 0)
+                              //itemCount = snapshot.data.docs.length;
+                              return (snapshot == null)?Container():(posts != 0)
                                   ? Column(
                                       children: [
                                         new Expanded(
                                             child: GridView.builder(
                                                 shrinkWrap: true,
                                                 controller: ScrollController(),
-                                                itemCount: itemCount,
+                                                itemCount: snapshot.data.docs.length,
                                                 gridDelegate:
                                                     SliverGridDelegateWithFixedCrossAxisCount(
                                                         crossAxisCount: 3,

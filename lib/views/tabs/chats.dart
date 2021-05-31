@@ -4,7 +4,7 @@ import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/utils/utils.dart';
 import 'package:video_player/video_player.dart';
-import 'package:better_player/better_player.dart';
+//import 'package:better_player/better_player.dart';
 class ChatsPage extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
   final bool looping;
@@ -130,27 +130,27 @@ class _ChatsPageState extends State<ChatsPage> {
                 SizedBox(
                   height: deviceHeight * 0.1,
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    image,
-                    notificationHeader,
-                    notificationText,
-                    
-                    AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: BetterPlayer.network(
-                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-                        )
-                    ),
-                    AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: BetterPlayer.network(
-                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-                        )
-                    ),
-                  ],
-                ),
+                // Column(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: <Widget>[
+                //     image,
+                //     notificationHeader,
+                //     notificationText,
+                //
+                //     AspectRatio(
+                //         aspectRatio: 16 / 9,
+                //         child: BetterPlayer.network(
+                //             'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                //         )
+                //     ),
+                //     AspectRatio(
+                //         aspectRatio: 16 / 9,
+                //         child: BetterPlayer.network(
+                //             'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                //         )
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),

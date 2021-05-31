@@ -450,7 +450,7 @@ class _FeedsPageState extends State<FeedsPage> {
                             aja['OwnerUid'];
                           }
 
-
+print("push");
                           bool isVideo =
                           aja['isVideo'];
 
