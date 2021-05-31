@@ -20,7 +20,7 @@ import 'package:video_player/video_player.dart';
 class CameraExampleHome extends StatefulWidget {
   final int cam;
   final bool check;
-
+  
   const CameraExampleHome({Key key, this.cam, this.check}) : super(key: key);
   @override
   _CameraExampleHomeState createState() {
@@ -215,7 +215,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+bool timeronpress =false;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -272,6 +272,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                               },
                             ),
                           ),
+                          (timeronpress)
+                          ?Positioned( bottom: 80.0,
+                            right: 165.0, child:   TimerText(dependencies: dependencies),):Container(),
                           Column(
                             children: [
                               Padding(
@@ -781,14 +784,33 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                   backgroundColor: Colors.white,
                   radius: 28.0,
                   //camera button
-                  child: IconButton(
-                    icon: const Icon(Icons.camera_alt),
-                    color: Colors.black,
-                    onPressed: controller != null &&
-                            controller.value.isInitialized &&
-                            !controller.value.isRecordingVideo
-                        ? onTakePictureButtonPressed
-                        : null,
+                  child: GestureDetector(
+                    onLongPressStart: (details) async{
+                      onVideoRecordButtonPressed();
+                      setState(() {
+                        _isRecording = true;
+                        timeronpress =true;
+                           
+                      });
+                    },
+                    onLongPressEnd: (details)async {
+                      onStopButtonPressed();
+                      setState(() {
+                        _isRecording = false;
+                       timeronpress = false;
+                      });
+                    },
+                    child: IconButton(
+                      icon: _isRecording
+                          ? Icon(Icons.radio_button_on,color: Colors.red.shade400,)
+                          : Icon(Icons.camera_alt),
+                      color: Colors.black,
+                      onPressed: controller != null &&
+                              controller.value.isInitialized &&
+                              !controller.value.isRecordingVideo
+                          ? onTakePictureButtonPressed
+                          : null,
+                    ),
                   ),
                 )
               : Column(
@@ -866,19 +888,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             ),
             onPressed: () {
               setState(() {
-                //       _oneAtatime = !_oneAtatime;
-
                 _isRecordingMode = !_isRecordingMode;
               });
-
-// if(_oneAtatime){
-//   print("camera band ");
-
-// }
-//
-              // if(_isRecordingMode){
-              //  Icon(Icons.play_arrow);
-              // }
 
               if (_isRecordingMode) {
                 print("video");
