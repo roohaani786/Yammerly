@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:string_validator/string_validator.dart';
+import 'package:techstagram/ui/messagesearchlist.dart';
+import 'searchlist.dart';
 class ConversationPage extends StatefulWidget {
   @override
   _ConversationPageState createState() => _ConversationPageState();
@@ -34,38 +36,48 @@ class _ConversationPageState extends State<ConversationPage> {
 //              appBar: ChatAppBar(), /
         appBar: AppBar(
           title: Text(
-            "Coming soon...",
+            "Messaging",
             style: TextStyle(
               color: Colors.deepPurple,
               fontWeight: FontWeight.bold,
             ),
           ),
           backgroundColor: Colors.white,
+          leading: IconButton(
+          color: Colors.deepPurple,
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.deepPurple,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
         ),
         body:
 
-//              Stack(children: <Widget>[
-//                Column(
-//                  children: <Widget>[
-//                    ChatListWidget(), //Chat list
-//                    InputWidget() //
-            Align(
-          alignment: Alignment.center,
-          child: MaterialButton(
-              onPressed: () {},
-              child: Text(
-                "Messaging feature is coming soon....",
-                style: TextStyle(
-                  color: Colors.purple,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15.0,
-                ),
-              )),
-        ),
-//                  ],
-//                ),
-//              ]
-//      )
+             Stack(children: <Widget>[
+               Column(
+                 children: <Widget>[
+                  Expanded(child: SearchtoMessage()),
+                  
+        //     Align(
+        //   alignment: Alignment.center,
+        //   child: MaterialButton(
+        //       onPressed: () {},
+        //       child: Text(
+        //         "working on messaging",
+        //         style: TextStyle(
+        //           color: Colors.purple,
+        //           fontWeight: FontWeight.bold,
+        //           fontSize: 15.0,
+        //         ),
+        //       )),
+        // ),
+                 ],
+               ),
+             ]
+     )
       )),
     );
   }
