@@ -361,7 +361,7 @@ class _FeedsPageState extends State<FeedsPage> {
                         itemBuilder: (context, index) {
                           int len = snapshot.data.docs.length;
                           print(len);
-                          print("length batar hai");
+                          print("length batara hai");
                           //postIdX = snapshot.data.docs[index]['postId'];
 
                           var aja = snapshot.data.docs[index];
@@ -394,14 +394,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
 
                           if(snapshot.data.docs[index].data().containsKey('OwnerDisplayName') == null){
-
                             OwnerDisplayName = aja['OwnerDisplayName'];
-
-
-
-                            OwnerPhotourl =
-                            aja['OwnerPhotourl'];
-
+                            OwnerPhotourl = aja['OwnerPhotourl'];
                             OwnerDescription = aja['OwnerDescription'];
                           }
 
