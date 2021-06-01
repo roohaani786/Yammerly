@@ -135,17 +135,12 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
             return (snapshot.connectionState == ConnectionState.waiting)
                 ? Center(
                     child: Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/profileedit.png'),
-                            fit: BoxFit.cover,
-                          ),
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircularProgressIndicator()))
+
+                        child: CircularProgressIndicator())
+            )
                 : Column(
                   children: [
-            ListView.builder(
+                    (snapshot.data.docs.length ==  0 || snapshot.hasData != true)?ListView.builder(
               shrinkWrap: true,
             itemCount: allSearches.length,
               itemBuilder: (context, index) {
@@ -155,7 +150,7 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
                   //onTap: () => close(context, _oldFilters[index]),
                 ):Container();
               },
-            ),
+            ):
                     ListView.builder(
                       shrinkWrap: true,
                         itemCount: snapshot.data.docs.length,
@@ -187,6 +182,7 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
                                                     displayName: displayName,
                                                     uidX: uidX)),
                                       );
+                                      searchHistory(searchKey);
                                     },
                                     child: Row(
                                       children: [
