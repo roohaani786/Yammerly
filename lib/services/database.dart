@@ -46,6 +46,8 @@ class DatabaseService {
         .get();
   }
 
+
+
   //collection reference
   final CollectionReference wiggleCollection =
   FirebaseFirestore.instance.collection('users');
@@ -628,7 +630,7 @@ class DatabaseService {
         .map(_userDataFromSnapshot);
   }
 
-  createChatRoom(String chatRoomID, dynamic chatRoomMap) {
+    createChatRoom(String chatRoomID, dynamic chatRoomMap) {
     FirebaseFirestore.instance
         .collection("ChatRoom")
         .doc(chatRoomID)
@@ -658,17 +660,17 @@ class DatabaseService {
     });
   }
 
-  addConversationMessages(String chatRoomId, messageMap) async {
-    FirebaseFirestore.instance
+  getConversationMessages(String chatRoomID ) async {
+   return  await FirebaseFirestore.instance
         .collection("ChatRoom")
-        .doc(chatRoomId)
+        .doc(chatRoomID)
         .collection("chats")
-        .doc(messageMap['time'].toString())
-        .set(messageMap)
+        .orderBy("time")
+        .snapshots();
+        //.doc(messageMap['time'].toString())
+        //.set(messageMap)
     // .add(messageMap)
-        .catchError((e) {
-      print(e.toString());
-    });
+
   }
 
   addAnonymousConversationMessages(String chatRoomId, messageMap) async {
@@ -684,13 +686,14 @@ class DatabaseService {
     });
   }
 
-  getConversationMessages(String chatRoomId) async {
+  addConversationMessages(String chatRoomID,messageMap )  async {
     return FirebaseFirestore.instance
         .collection("ChatRoom")
-        .doc(chatRoomId)
+        .doc(chatRoomID)
         .collection("chats")
-        .orderBy("time", descending: false)
-        .snapshots();
+        .add(messageMap);
+        //.orderBy("time", descending: false)
+        //.snapshots();
   }
 
   getSusConversationMessages(String chatRoomId) async {
