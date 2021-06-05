@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:techstagram/services/database.dart';
+import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/ui/Otheruser/other_user.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:uuid/uuid.dart';
@@ -224,23 +226,37 @@ class NotificationFollow extends StatefulWidget {
   final String comment;
   final Timestamp timestamp;
   final String status;
+  final bool Request;
   final String commentId;
   final String notificationId;
   final int likes;
+  final int followers;
   final String postId;
 
-  NotificationFollow({this.postId,this.userId,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationFollow(
+      {this.Request,
+      this.postId,
+      this.userId,
+      this.comment,
+      this.timestamp,
+      this.status,
+      this.followers,
+      this.commentId,
+      this.notificationId,
+      this.likes});
 
-  factory NotificationFollow.fromDocument(DocumentSnapshot documentSnapshot){
+  factory NotificationFollow.fromDocument(DocumentSnapshot documentSnapshot) {
     return NotificationFollow(
-      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
-      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
-      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
-      status: (documentSnapshot.data() as Map<String,dynamic>)["status"],
-      commentId: (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
-      notificationId: (documentSnapshot.data() as Map<String,dynamic>)["notificationId"],
-      likes: (documentSnapshot.data() as Map<String,dynamic>)["likes"],
-      postId: (documentSnapshot.data() as Map<String,dynamic>)["postId"],
+      userId: (documentSnapshot.data() as Map<String, dynamic>)["uid"],
+      comment: (documentSnapshot.data() as Map<String, dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String, dynamic>)["timestamp"],
+      status: (documentSnapshot.data() as Map<String, dynamic>)["status"],
+      commentId: (documentSnapshot.data() as Map<String, dynamic>)["commentId"],
+      notificationId: (documentSnapshot.data() as Map<String, dynamic>)["notificationId"],
+      likes: (documentSnapshot.data() as Map<String, dynamic>)["likes"],
+      postId: (documentSnapshot.data() as Map<String, dynamic>)["postId"],
+      Request: (documentSnapshot.data() as Map<String, dynamic>)["Request"],
+      followers: (documentSnapshot.data() as Map<String, dynamic>)["followers"],
     );
   }
 
@@ -254,6 +270,7 @@ class _NotificationFollowState extends State<NotificationFollow> {
   String userName;
   String postUrl;
   String photoUrl;
+  String uid;
 
   TextEditingController userNameController,photoUrlController,postUrlController;
 
@@ -319,7 +336,75 @@ class _NotificationFollowState extends State<NotificationFollow> {
   Widget build(BuildContext) {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
-    return (widget.status == "Follow")?Column(
+    return
+      (widget.Request == false)?Column(
+          children: [
+            Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OtherUserProfile(displayName: userName, uid: widget.userId)),
+                    );
+                  },
+                child: Container(
+                  //width: 320.0,
+                  width: deviceWidth*1,
+                  child: ListTile(
+                    title: (userName != null || widget.comment != null)?Row(
+                      children: [
+                        Expanded(
+                          child: RichText(
+                            textAlign: TextAlign.start,
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: (userName == null)?"loading...":userName,
+                                  style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                                ),
+                                TextSpan(
+                                  text: " started following you ",
+                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                      fontSize: 15.0),
+                                ),
+                                TextSpan(
+                                  text: tAgo(widget.timestamp.toDate()),
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ],
+                            ),
+
+                          ),
+                        )
+                      ],
+                    ):Text(""),
+                    leading: (userName != null || widget.comment != null)?CircleAvatar(
+                      backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
+                    ):null,
+                    //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                  ),
+                ),
+                    ),
+                // Container(
+                //     child: Image.network(url)
+                // ),
+              ],
+            ),
+            // Divider(
+            //   thickness: 1,
+            //   color: Colors.grey,
+            //   indent: 15,
+            //   endIndent: 15,
+            // ),
+          ],
+        ):
+        (widget.Request == true)?
+        Container(
+            child: Column(
       children: [
         Stack(
           children: [
@@ -328,49 +413,109 @@ class _NotificationFollowState extends State<NotificationFollow> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => OtherUserProfile(displayName: userName, uid: widget.userId)),
+                      builder: (context) => OtherUserProfile(
+                          displayName: userName, uid: widget.userId)),
                 );
               },
-            child: Container(
-              //width: 320.0,
-              width: deviceWidth*1,
-              child: ListTile(
-                title: (userName != null || widget.comment != null)?Row(
-                  children: [
-                    Expanded(
-                      child: RichText(
-                        textAlign: TextAlign.start,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                        text: TextSpan(
+              child: Container(
+                //width: 320.0,
+                width: deviceWidth * 1,
+                child: ListTile(
+                  title: (userName != null || widget.comment != null)
+                      ? Row(
                           children: [
-                            TextSpan(
-                              text: (userName == null)?"loading...":userName,
-                              style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                            ),
-                            TextSpan(
-                              text: " started following you ",
-                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                  fontSize: 15.0),
-                            ),
-                            TextSpan(
-                              text: tAgo(widget.timestamp.toDate()),
-                              style: TextStyle(color: Colors.grey),
-                            ),
+                            Expanded(
+                              child: Row(
+                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  RichText(
+                                    textAlign: TextAlign.start,
+                                    softWrap: true,
+                                    overflow: TextOverflow.visible,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: (userName == null)
+                                              ? "loading..."
+                                              : userName,
+                                          style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: " wants to follow you ",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 15.0),
+                                        ),
+                                        TextSpan(
+                                          text: tAgo(widget.timestamp.toDate()),
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      FirebaseFirestore.instance
+                                          .collection("users")
+                                          .doc(OtherUserProfile.UID).collection("request")
+                                          .doc(OtherUserProfile.accha)
+                                          .update({'Request': false});
+                                      DatabaseService().followUser(
+                                          OtherUserProfile.FOLLOWERS,
+                                          OtherUserProfile.UID,
+                                          HomePage.dnu,
+                                          OtherUserProfile.UIDCON,
+                                          OtherUserProfile.PURLX);
+                                      DatabaseService().increaseFollowing(
+                                          OtherUserProfile.UIDX,
+                                          OtherUserProfile.FOLLOWINGX,
+                                          HomePage.dnu,
+                                          OtherUserProfile.DISNX,
+                                          OtherUserProfile.UID,
+                                          OtherUserProfile.PURL);
+                                    },
+                                    icon: Icon(Icons.check),
+                                    color: Colors.green,
+                                  ),
+                                  //MaterialButton(onPressed: (){},child: Text("Accept",style: TextStyle(color: Colors.white),),color: Colors.deepPurple,),
+                                  SizedBox(
+                                    width: 0,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {FirebaseFirestore.instance
+                                        .collection("users")
+                                        .doc(OtherUserProfile.UID)
+                                        .collection('request')
+                                        .doc(OtherUserProfile.accha)
+                                        .delete();
+                                      //delete request
+                                    },
+                                    icon: Icon(Icons.close),
+                                    color: Colors.red,
+                                  )
+                                ],
+                              ),
+                            )
                           ],
-                        ),
-
-                      ),
-                    )
-                  ],
-                ):Text(""),
-                leading: (userName != null || widget.comment != null)?CircleAvatar(
-                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
-                ):null,
-                //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                        )
+                      : Text("koi na",style: TextStyle(color: Colors.black),),
+                  leading: (userName != null || widget.comment != null)
+                      ? CircleAvatar(
+                          backgroundImage: (photoUrl == null)
+                              ? NetworkImage(
+                                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC")
+                              : CachedNetworkImageProvider(photoUrl),
+                        )
+                      : null,
+                  //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                ),
               ),
             ),
-                ),
             // Container(
             //     child: Image.network(url)
             // ),
@@ -383,7 +528,8 @@ class _NotificationFollowState extends State<NotificationFollow> {
         //   endIndent: 15,
         // ),
       ],
-    ):Container();
+    ))
+    :Container();
   }
 }
 

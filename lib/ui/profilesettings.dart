@@ -21,13 +21,14 @@ class ProfileSettings extends StatefulWidget {
   @override
   _ProfileSettingsState createState() =>
       _ProfileSettingsState(email, phonenumber, emailVerification, uid);
+  static bool valueP = false;
 }
 
 class _ProfileSettingsState extends State<ProfileSettings> {
   bool lockInBackground = true;
   bool notificationsEnabled = true;
   bool valuef = true;
-  bool valueP = false;
+
   final String email;
   final String phonenumber;
   bool emailVerification;
@@ -99,11 +100,11 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
       if (private) {
         setState(() {
-          valueP = true;
+          ProfileSettings.valueP = true;
         });
       } else {
         setState(() {
-          valueP = false;
+          ProfileSettings.valueP = false;
         });
       }
       // setState(() {
@@ -339,26 +340,31 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 color: Colors.deepPurple, fontWeight: FontWeight.bold),
             tiles: [
               SettingsTile.switchTile(
-                title: (valueP) ? 'Private' : 'Public',
+                title: (ProfileSettings.valueP) ? 'Private' : 'Public',
                 leading: Icon(
-                  (valueP)
+                  (ProfileSettings.valueP)
                       ? Icons.privacy_tip_outlined
                       : Icons.person_outline_outlined,
                   color: Colors.grey,
                 ),
-                switchValue: valueP,
+                switchValue: ProfileSettings.valueP,
                 switchActiveColor: Colors.deepPurple,
                 onToggle: (value) {
-                  if (valueP == true) {
+                  if (ProfileSettings.valueP == true) {
                     setState(() {
-                      valueP = false;
+                      ProfileSettings.valueP = false;
                     });
-                    setprivate(valueP);
+                    setState(() {
+                      setprivate(ProfileSettings.valueP);
+                    });
+
                   } else {
                     setState(() {
-                      valueP = true;
+                      ProfileSettings.valueP = true;
                     });
-                    setprivate(valueP);
+                    setState(() {
+                      setprivate(ProfileSettings.valueP);
+                    });
                   }
                 },
               ),

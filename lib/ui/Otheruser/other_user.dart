@@ -18,15 +18,26 @@ import 'package:techstagram/utils/utils.dart';
 
 import '../HomePage.dart';
 import '../aboutuser.dart';
+import '../profilesettings.dart';
 
 class OtherUserProfile extends StatefulWidget {
   final String uid;
   final String uidX;
   final String displayNamecurrentUser;
   final String displayName;
-
+  static String accha;
+  static var FOLLOWERS;
+  static var UID;
+  static var UIDCON;
+  static var PURL;
+  static var PURLX;
+  static var UIDX;
+  static var FOLLOWINGX;
+  static var DISNX;
   OtherUserProfile(
       {this.uid, this.displayNamecurrentUser, this.displayName, this.uidX});
+
+
 
   @override
   _OtherUserProfileState createState() => _OtherUserProfileState(
@@ -39,11 +50,16 @@ class OtherUserProfile extends StatefulWidget {
 class _OtherUserProfileState extends State<OtherUserProfile> {
   final String uid;
   final String uidX;
+  final String uidY;
   final String displayNamecurrentUser;
   final String displayName;
 
   _OtherUserProfileState(
-      {this.uid, this.displayNamecurrentUser, this.displayName, this.uidX});
+      {this.uid,
+      this.displayNamecurrentUser,
+      this.displayName,
+      this.uidX,
+      this.uidY});
 
   bool followed = false;
 
@@ -341,13 +357,41 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       "notificationId": NotificationId,
       "username": displayNameCurrUser,
       //"comment": commentTextEditingController.text,
-
       "timestamp": DateTime.now(),
       "url": photoUrlX,
       "uid": uidX,
       "status": "Follow",
+      "Request": false,
     });
   }
+
+  // ignore: non_constant_identifier_names
+  static String RequestId2;
+bool req=true;
+  Request(String displayNameCurrUser) async {
+    setState(() {
+      // file = null;
+      RequestId2 = Uuid().v4();
+      OtherUserProfile.accha = RequestId2;
+    });
+    print("kyu chownk gye na?");
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("request")
+        .doc(RequestId2)
+        .set({
+      "RequestId": RequestId2,
+      "username": displayNameCurrUser,
+      //"comment": commentTextEditingController.text,
+      "timestamp": DateTime.now(),
+      "url": photoUrlX,
+      "uid": uidX,
+      "Request": req,
+    });
+
+  }
+
 
   List<DocumentSnapshot> list;
 
@@ -843,224 +887,286 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                           ),
                                                           onPressed:
                                                               () {
-                                                            if (followed ==
-                                                                false) {
-                                                              if (timer?.isActive ?? false)
-                                                                timer.cancel(); //cancel if [timer] is null or running
-                                                              timer = Timer(const Duration(milliseconds: 1500), () {
-                                                                setState(() {
-                                                                  //getFollowers();
-                                                                  followed = true;
-                                                                });
+                                                                            if (followed == false &&
+                                                                                private == false) {
+                                                                              print("a");
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = true;
+                                                                                });
 
-                                                                DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
-                                                                Notification(displayNamecurrentUser, followers);
-                                                                // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
-                                                                DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
-                                                              });
-                                                            } else {
-                                                              if (timer?.isActive ?? false)
-                                                                timer.cancel(); //cancel if [timer] is null or running
-                                                              timer = Timer(const Duration(milliseconds: 1500), () {
-                                                                DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
+                                                                                DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
+                                                                                Notification(displayNamecurrentUser, followers);
+                                                                                // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
+                                                                                DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
+                                                                              });
+                                                                            } else if (followed == false &&
+                                                                                private == true) {print("b");
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
 
-                                                                DeleteNotification();
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = true;
+                                                                                });
 
-                                                                DatabaseService().decreaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid);
-                                                                setState(() {
-                                                                  //getFollowers();
-                                                                  followed = false;
-                                                                });
-                                                              });
-                                                            }
-                                                          },
-                                                          shape:
-                                                          RoundedRectangleBorder(
-                                                            side:
-                                                            BorderSide(color: (followed == false) ? Colors.purple : Colors.red, width: 2),
-                                                            borderRadius:
-                                                            BorderRadius.circular(30.0),
-                                                          )),
-                                                    ),
+                                                                                //DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
+                                                                                OtherUserProfile.FOLLOWERS=followers;
+                                                                                OtherUserProfile.UID = uid;
+                                                                                OtherUserProfile.UIDCON = uidControllerX.text;
+                                                                                OtherUserProfile.PURLX = photoUrlX;
+
+                                                                                //Notification(displayNamecurrentUser, followers);
+                                                                                // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
+                                                                                //DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
+                                                                                OtherUserProfile.UIDX = uidX;
+                                                                                OtherUserProfile.FOLLOWINGX=followingX;
+                                                                                OtherUserProfile.DISNX=displayNameX;
+                                                                                OtherUserProfile.PURL=photoUrl;
+                                                                                Request(displayNamecurrentUser);
+                                                                              });
+                                                                              // ignore: unnecessary_statements
+                                                                            } else {
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
+                                                                                DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
+
+                                                                                DeleteNotification();
+
+                                                                                DatabaseService().decreaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid);
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = false;
+                                                                                });
+
+                                                                              });
+                                                                            }
+                                                                          },
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            side:
+                                                                                BorderSide(color: (followed == false) ? Colors.purple : Colors.red, width: 2),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(30.0),
+                                                                          )),
+                                                                ),
 
 //
-                                                  ]),
-                                              SizedBox(
-                                                height: 10,
-                                                width: deviceWidth,
-                                                child: Divider(
-                                                  thickness: 2.0,
-                                                  color: Colors.teal
-                                                      .shade700,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    height: MediaQuery.of(context)
-                                        .size
-                                        .height -
-                                        300,
-                                    width: 340.0,
-
-                                    child: StreamBuilder(
-                                        stream: userPostsStream,
-                                        builder:
-                                            (context, snapshot) {
-                                          if (snapshot.data ==
-                                              null) {
-                                            return Container();
-                                          }
-                                          int itemCount = snapshot
-                                              .data
-                                              .docs
-                                              .length;
-                                          return (posts != 0)
-                                              ? Column(
-                                            children: [
-                                              new Expanded(
-                                                  child: GridView.builder(
-                                                      shrinkWrap: true,
-                                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
-                                                      controller: ScrollController(),
-                                                      itemCount: itemCount,
-                                                      itemBuilder: (context, index) {
-                                                        String
-                                                        postIdX =
-                                                        snapshot.data.docs[index]['email'];
-                                                        String
-                                                        email =
-                                                        snapshot.data.docs[index]['email'];
-                                                        String
-                                                        description =
-                                                        snapshot.data.docs[index]['description'];
-                                                        String
-                                                        displayName =
-                                                        snapshot.data.docs[index]['displayName'];
-                                                        String
-                                                        photoUrl =
-                                                        snapshot.data.docs[index]['photoURL'];
-                                                        String
-                                                        uid =
-                                                        snapshot.data.docs[index]["uid"];
-
-                                                        Timestamp
-                                                        timestamp =
-                                                        snapshot.data.docs[index]['timestamp'];
-                                                        String
-                                                        url =
-                                                        snapshot.data.docs[index]['url'];
-                                                        int cam = snapshot
-                                                            .data
-                                                            .docs[index]['cam'];
-                                                        String
-                                                        postId =
-                                                        snapshot.data.docs[index]['postId'];
-                                                        int likes = snapshot
-                                                            .data
-                                                            .docs[index]['likes'];
-                                                        readTimestamp(
-                                                            timestamp.seconds);
-                                                        checkPrivate();
-
-                                                        getlikes(
-                                                            displayName,
-                                                            postId);
-                                                        if (likes < 0 ||
-                                                            likes == 0) {
-                                                          liked =
-                                                          false;
-                                                        }
-                                                        return (show == null)
-                                                            ? Container()
-                                                            : (show)
-                                                            ? Container(
-                                                          child: Container(
-                                                            color: Colors.white,
-                                                            child: Column(
-                                                              children: <Widget>[
-                                                                Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                                  children: [
-                                                                    GestureDetector(
-                                                                      onTap: () {
-                                                                        Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                              builder: (context) => postPage(
-                                                                                displayNamecurrentUser: displayName,
-                                                                                PostUrl: url,
-                                                                                uidX: uid,
-                                                                                delete: false,
-                                                                              )),
-                                                                        );
-                                                                      },
-                                                                      child: ClipRRect(
-                                                                        borderRadius: BorderRadius.only(
-                                                                          topLeft: Radius.circular(8.0),
-                                                                          topRight: Radius.circular(8.0),
-                                                                          bottomLeft: Radius.circular(8.0),
-                                                                          bottomRight: Radius.circular(8.0),
-                                                                        ),
-                                                                        child: (cam == 1)
-                                                                            ? Transform(
-                                                                          alignment: Alignment.center,
-                                                                          transform: Matrix4.rotationY(math.pi),
-                                                                          child: Image.network(
-                                                                            url,
-                                                                            // width: 300,
-                                                                            height: 104,
-                                                                            fit: BoxFit.cover,
-                                                                          ),
-                                                                        )
-                                                                            : Image.network(
-                                                                          url,
-                                                                          // width: 300,
-                                                                          height: 104,
-                                                                          fit: BoxFit.cover,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
+                                                              ]),
+                                                          SizedBox(
+                                                            height: 10,
+                                                            width: deviceWidth,
+                                                            child: Divider(
+                                                              thickness: 2.0,
+                                                              color: Colors.teal
+                                                                  .shade700,
                                                             ),
                                                           ),
-                                                          // height: 150.0,
-                                                          // width: 150.0,
-                                                          //child: Image.network(url),
-                                                        )
-                                                            : Container();
-                                                      })),
-                                            ],
-                                          )
-                                              : Container(
-                                            padding:
-                                            EdgeInsets
-                                                .only(
-                                              top: 5.0,
-                                              left: 30.0,
-                                              right: 30.0,
-                                              bottom: 5.0,
-                                            ),
-                                            //height: 200,
-                                            height: MediaQuery.of(
-                                                context)
-                                                .size
-                                                .height *
-                                                0.20,
-                                            width: MediaQuery.of(
-                                                context)
-                                                .size
-                                                .width *
-                                                0.20,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              if (private == true)
+                                                Container(
+                                                    child: Center(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .lock_outline_rounded,
+                                                        size: 50,
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            "This Account is Private",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 18),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 05,
+                                                          ),
+                                                          Text(
+                                                            "Follow this account to see their activities",
+                                                            style: TextStyle(
+                                                                fontSize: 14),
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ))
+                                              else
+                                                Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height -
+                                                      300,
+                                                  width: 340.0,
+
+                                                  child: StreamBuilder(
+                                                      stream: userPostsStream,
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot.data ==
+                                                            null) {
+                                                          return Container();
+                                                        }
+                                                        int itemCount = snapshot
+                                                            .data.docs.length;
+                                                        return (posts != 0)
+                                                            ? Column(
+                                                                children: [
+                                                                  new Expanded(
+                                                                      child: GridView.builder(
+                                                                          shrinkWrap: true,
+                                                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 10.0, mainAxisSpacing: 10.0),
+                                                                          controller: ScrollController(),
+                                                                          itemCount: itemCount,
+                                                                          itemBuilder: (context, index) {
+                                                                            String
+                                                                                postIdX =
+                                                                                snapshot.data.docs[index]['email'];
+                                                                            String
+                                                                                email =
+                                                                                snapshot.data.docs[index]['email'];
+                                                                            String
+                                                                                description =
+                                                                                snapshot.data.docs[index]['description'];
+                                                                            String
+                                                                                displayName =
+                                                                                snapshot.data.docs[index]['displayName'];
+                                                                            String
+                                                                                photoUrl =
+                                                                                snapshot.data.docs[index]['photoURL'];
+                                                                            String
+                                                                                uid =
+                                                                                snapshot.data.docs[index]["uid"];
+
+                                                                            Timestamp
+                                                                                timestamp =
+                                                                                snapshot.data.docs[index]['timestamp'];
+                                                                            String
+                                                                                url =
+                                                                                snapshot.data.docs[index]['url'];
+                                                                            int cam =
+                                                                                snapshot.data.docs[index]['cam'];
+                                                                            String
+                                                                                postId =
+                                                                                snapshot.data.docs[index]['postId'];
+                                                                            int likes =
+                                                                                snapshot.data.docs[index]['likes'];
+                                                                            readTimestamp(timestamp.seconds);
+                                                                            checkPrivate();
+
+                                                                            getlikes(displayName,
+                                                                                postId);
+                                                                            if (likes < 0 ||
+                                                                                likes == 0) {
+                                                                              liked = false;
+                                                                            }
+                                                                            return (show == null)
+                                                                                ? Container()
+                                                                                : (show)
+                                                                                    ? Container(
+                                                                                        child: Container(
+                                                                                          color: Colors.white,
+                                                                                          child: Column(
+                                                                                            children: <Widget>[
+                                                                                              Column(
+                                                                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                                                children: [
+                                                                                                  GestureDetector(
+                                                                                                    onTap: () {
+                                                                                                      Navigator.push(
+                                                                                                        context,
+                                                                                                        MaterialPageRoute(
+                                                                                                            builder: (context) => postPage(
+                                                                                                                  displayNamecurrentUser: displayName,
+                                                                                                                  PostUrl: url,
+                                                                                                                  uidX: uid,
+                                                                                                                  delete: false,
+                                                                                                                )),
+                                                                                                      );
+                                                                                                    },
+                                                                                                    child: ClipRRect(
+                                                                                                      borderRadius: BorderRadius.only(
+                                                                                                        topLeft: Radius.circular(8.0),
+                                                                                                        topRight: Radius.circular(8.0),
+                                                                                                        bottomLeft: Radius.circular(8.0),
+                                                                                                        bottomRight: Radius.circular(8.0),
+                                                                                                      ),
+                                                                                                      child: (cam == 1)
+                                                                                                          ? Transform(
+                                                                                                              alignment: Alignment.center,
+                                                                                                              transform: Matrix4.rotationY(math.pi),
+                                                                                                              child: Image.network(
+                                                                                                                url,
+                                                                                                                // width: 300,
+                                                                                                                height: 104,
+                                                                                                                fit: BoxFit.cover,
+                                                                                                              ),
+                                                                                                            )
+                                                                                                          : Image.network(
+                                                                                                              url,
+                                                                                                              // width: 300,
+                                                                                                              height: 104,
+                                                                                                              fit: BoxFit.cover,
+                                                                                                            ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ],
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                        // height: 150.0,
+                                                                                        // width: 150.0,
+                                                                                        //child: Image.network(url),
+                                                                                      )
+                                                                                    : Container();
+                                                                          })),
+                                                                ],
+                                                              )
+                                                            : Container(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .only(
+                                                                  top: 5.0,
+                                                                  left: 30.0,
+                                                                  right: 30.0,
+                                                                  bottom: 5.0,
+                                                                ),
+                                                                //height: 200,
+                                                                height: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .height *
+                                                                    0.20,
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.20,
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
                                                   .start,
                                               children: <
                                                   Widget>[

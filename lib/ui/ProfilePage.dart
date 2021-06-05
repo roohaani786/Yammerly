@@ -769,6 +769,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                         mainAxisSpacing: 10.0),
                                                 itemBuilder: (context, index) {
                                                   int len = snapshot.data.docs.length;
+                                                 // print(len);
+                                                  //print("length batar hai");
                                                   postIdX = snapshot.data
                                                           .docs[index]
                                                       ['postId'];
