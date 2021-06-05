@@ -142,30 +142,30 @@ class NotificationsPageState extends State<NotificationsPage> {
     );
   }
 
-  retrieveNotificationsRequest(){
-    print("bhujm");
-    print(currUid);
-    return  StreamBuilder(
-      stream: NotificationRefrence.doc(currUid)
-          .collection("request")
-          .orderBy("timestamp", descending: true)
-          .snapshots(),
-      builder: (context, dataSnapshot){
-        if (!dataSnapshot.hasData){
-          return Container(
-            color: Colors.white,
-          );
-        }
-        List<NotificationRequest> Requests = [];
-        dataSnapshot.data.docs.forEach((document){
-          Requests.add(NotificationRequest.fromDocument(document));
-        });
-        return ListView(
-          children: Requests,
-        );
-      },
-    );
-  }
+  // retrieveNotificationsRequest(){
+  //   print("bhujm");
+  //   print(currUid);
+  //   return  StreamBuilder(
+  //     stream: NotificationRefrence.doc(currUid)
+  //         .collection("request")
+  //         .orderBy("timestamp", descending: true)
+  //         .snapshots(),
+  //     builder: (context, dataSnapshot){
+  //       if (!dataSnapshot.hasData){
+  //         return Container(
+  //           color: Colors.white,
+  //         );
+  //       }
+  //       List<NotificationRequest> Requests = [];
+  //       dataSnapshot.data.docs.forEach((document){
+  //         Requests.add(NotificationRequest.fromDocument(document));
+  //       });
+  //       return ListView(
+  //         children: Requests,
+  //       );
+  //     },
+  //   );
+  // }
 
   bool errordikhaoC = false;
 
