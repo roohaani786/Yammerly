@@ -368,7 +368,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ConversationPage()),
+                MaterialPageRoute(builder: (context) => ConversationPage(displayNameController.text)),
               );
             },
           ),

@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'Otheruser/other_user.dart';
+import 'package:techstagram/services/database.dart';
+import 'conversation.dart';
 
 class SearchtoMessage extends StatefulWidget {
+  DatabaseService databaseService = new DatabaseService();
   final String displayNamecurrentUser;
   final String uidX;
+
   SearchtoMessage({this.displayNamecurrentUser, this.uidX});
+
   @override
   _searchtomessageState createState() => _searchtomessageState(
       displayNamecurrentUser: displayNamecurrentUser, uidX: uidX);
@@ -24,6 +27,59 @@ class _searchtomessageState extends State<SearchtoMessage> {
   _searchtomessageState({this.displayNamecurrentUser, this.uidX});
 
   String uidf = SearchtoMessage().uidX;
+
+  createChatRoombySearch(String searchKey) {
+    print("create chatroom me aaaya");
+    String chatRoomID = getChatRoomId(searchKey, displayNamecurrentUser);
+
+    List<String> users = [searchKey, displayNamecurrentUser];
+    Map<String, dynamic> chatRoomMap = {
+      "users": users,
+      "chatRoomID": chatRoomID
+    };
+    DatabaseService().createChatRoom(chatRoomID, chatRoomMap);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ConversationScreen(
+                chatRoomID: chatRoomID,
+                displayName: displayNamecurrentUser,
+                enduser: searchKey)));
+  }
+
+  Stream ChatRoomStream;
+
+  Widget chatRoomList() {
+    return StreamBuilder(
+        stream: ChatRoomStream,
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) {
+                    return ChatRoomsTile(
+                        snapshot.data.documents[index]
+                            .data()["chatroomID"]
+                            .toString()
+                            .replaceAll("_", "")
+                            .replaceAll(displayNamecurrentUser, ""),
+                        snapshot.data.documents[index].data()["chatroomID"]);
+                  })
+              : Container();
+        });
+  }
+
+  @override
+  void initState() {
+    DatabaseService().getChatRooms(displayNamecurrentUser).then((value) {
+      setState(() {
+        ChatRoomStream = value;
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     print("cv");
@@ -38,6 +94,7 @@ class _searchtomessageState extends State<SearchtoMessage> {
             decoration: InputDecoration(
 //                prefixIcon: Icon(Icons.search,color: Colors.white,),
                 hintText: ' Search...',
+                border: InputBorder.none,
                 hintStyle: TextStyle(
                   color: Colors.black,
                 )),
@@ -83,8 +140,7 @@ class _searchtomessageState extends State<SearchtoMessage> {
                   itemBuilder: (context, index) {
 //              DocumentSnapshot sd = snapshot.data.docs[index];
                     searchKey = snapshot.data.docs[index]["displayName"];
-                    String photoUrl =
-                        snapshot.data.docs[index]["photoURL"];
+                    String photoUrl = snapshot.data.docs[index]["photoURL"];
                     String uid = snapshot.data.docs[index]["uid"];
                     String displayName =
                         snapshot.data.docs[index]["displayName"];
@@ -98,17 +154,9 @@ class _searchtomessageState extends State<SearchtoMessage> {
                                 ),
                                 MaterialButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              OtherUserProfile(
-                                                  uid: uid,
-                                                  displayNamecurrentUser:
-                                                      displayNamecurrentUser,
-                                                  displayName: displayName,
-                                                  uidX: uidX)),
-                                    );
+                                    print("user pe click kiya");
+                                    createChatRoombySearch(searchKey);
+                                    // print(searchKey);
                                   },
                                   child: Row(
                                     children: [
@@ -153,6 +201,60 @@ class _searchtomessageState extends State<SearchtoMessage> {
                 );
         },
       ),
+
+    );
+  }
+}
+
+getChatRoomId(String a, String b) {
+  print(a);
+  print(b);
+  print("get chat");
+  if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+    print(a);
+    return "$b\_$a";
+  } else {
+    return "$a\_$b";
+  }
+}
+
+class ChatRoomsTile extends StatelessWidget {
+  final String userName;
+  final String chatRoomID;
+
+  ChatRoomsTile(this.userName, this.chatRoomID);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ConversationScreen(
+                      chatRoomID: chatRoomID,
+                    )));
+      },
+      child: Container(
+          color: Colors.black26,
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Row(
+            children: [
+              Container(
+                  height: 40,
+                  width: 40,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(40)),
+                  child: Text("${userName.substring(0).toUpperCase()}")),
+              SizedBox(width: 8),
+              Text(
+                userName,
+                style: TextStyle(color: Colors.white),
+              )
+            ],
+          )),
     );
   }
 }
