@@ -360,8 +360,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
                         itemBuilder: (context, index) {
                           int len = snapshot.data.docs.length;
-                          print(len);
-                          print("length batar hai");
+                          //print(len);
+                         // print("length batar hai");
                           //postIdX = snapshot.data.docs[index]['postId'];
 
                           var aja = snapshot.data.docs[index];
@@ -450,7 +450,7 @@ class _FeedsPageState extends State<FeedsPage> {
                             aja['OwnerUid'];
                           }
 
-print("push");
+//print("push");
                           bool isVideo =
                           aja['isVideo'];
 
@@ -539,7 +539,7 @@ print("push");
                                 NotificationId = Uuid().v4();
                               });
 
-                              print(uid);
+                              //print(uid);
                               print(uidController.text);
                               print("912");
                               return await FirebaseFirestore.instance

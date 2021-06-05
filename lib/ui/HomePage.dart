@@ -35,6 +35,7 @@ class HomePage extends StatefulWidget {
   final int cam;
   int initialindexg;
   User user;
+  static String dnu;
 
   @override
   _HomePageState createState() => _HomePageState(initialindexg,cam);
@@ -83,6 +84,7 @@ class _HomePageState extends State<HomePage> {
       posts  = docSnap["posts"];
       setState(() {
         displayNamecurrUser = displayNameController.text;
+        HomePage.dnu = displayNamecurrUser;
 
       });
     } on PlatformException catch (e) {
