@@ -1937,7 +1937,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                                                                 Timer(
                                                                               const Duration(
                                                                                   milliseconds:
-                                                                                      340),
+                                                                                      3000),
                                                                               () {
                                                                                 setState(
                                                                                     () {

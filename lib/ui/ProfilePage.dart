@@ -127,6 +127,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     authService.loading.listen((state) => setState(() => _loading = state));
 
     fetchProfileData();
+
   }
 
 //  String displayName;
@@ -504,7 +505,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                 cover == true)
                             ? AssetImage('assets/images/gogo.png')
                             : NetworkImage(coverPhotoUrlController.text),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
                     //color: Colors.lightBlueAccent,
@@ -578,8 +579,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
                                       children: <Widget>[
-                                        _buildStatItem(
-                                            "POSTS", posts.toString()),
+                                        (posts != null)?_buildStatItem(
+                                            "POSTS", posts.toString()):
+                                        Center(child: CircularProgressIndicator()),
                                         GestureDetector(
                                             onTap: () => Navigator.push(
                                                   context,
@@ -593,8 +595,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                                 .text,
                                                           )),
                                                 ),
-                                            child: _buildStatItem("FOLLOWERS",
-                                                followers.toString())),
+                                            child: (followers != null)?
+                                            _buildStatItem("FOLLOWERS",
+                                               followers.toString()):
+                                                Center(child: CircularProgressIndicator())
+                                        ),
                                         GestureDetector(
                                             onTap: () => Navigator.push(
                                                   context,
@@ -608,8 +613,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                                 .text,
                                                           )),
                                                 ),
-                                            child: _buildStatItem("FOLLOWING",
-                                                following.toString())),
+                                            child: (following != null)
+                                            ?_buildStatItem("FOLLOWING",
+                                                following.toString()):
+                                            Center(child: CircularProgressIndicator())
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -751,10 +759,12 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             stream: userPostsStream,
                             builder: (context, snapshot) {
                               if (snapshot == null) {
-                                return Container();
+                                return Container(child:
+                                  Center(child: CircularProgressIndicator())
+                                );
                               }
                               //itemCount = snapshot.data.docs.length;
-                              return (snapshot == null)?Container():(posts != 0)
+                              return (!snapshot.hasData)?Container(child: Center(child: CircularProgressIndicator())):(posts != 0)
                                   ? Column(
                                       children: [
                                         new Expanded(
@@ -957,7 +967,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                 child: Container(
                                   height: 100,
                                   width: 100.0,
-                                  child: Image(
+                                  child: (photoUrlController.text == null)
+                                      ?Center(child: CircularProgressIndicator())
+                                  :Image(
                                     image:
                                         NetworkImage(photoUrlController.text),
                                     fit: BoxFit.cover,

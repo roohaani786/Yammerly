@@ -62,6 +62,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       this.uidY});
 
   bool followed = false;
+  bool requested = false;
 
   ScrollController scrollController = new ScrollController();
 
@@ -852,7 +853,7 @@ bool req=true;
                                                             "About me",
                                                             style:
                                                             TextStyle(
-                                                              color: Colors.white,
+                                                              color: Colors.black,
                                                             ),
                                                           ),
                                                           onPressed:
@@ -879,10 +880,13 @@ bool req=true;
                                                           new Text(
                                                             (followed == false)
                                                                 ? "Follow"
+                                                                :(private == true)? "Request"
                                                                 : "Unfollow",
                                                             style:
                                                             TextStyle(
-                                                              color: (followed == false) ? Colors.purple : Colors.red,
+                                                              color: (followed == false) ? Colors.purple :(private == true)
+                                                                  ?Color(0xffFFE3C040)
+                                                              :Colors.red,
                                                             ),
                                                           ),
                                                           onPressed:
@@ -911,7 +915,7 @@ bool req=true;
 
                                                                                 setState(() {
                                                                                   //getFollowers();
-                                                                                  followed = true;
+                                                                                  requested = true;
                                                                                 });
 
                                                                                 //DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
@@ -950,7 +954,7 @@ bool req=true;
                                                                           shape:
                                                                               RoundedRectangleBorder(
                                                                             side:
-                                                                                BorderSide(color: (followed == false) ? Colors.purple : Colors.red, width: 2),
+                                                                                BorderSide(color: (followed == false) ? Colors.purple :(private == true)? Color(0XFFFFE3C040): Colors.red, width: 2),
                                                                             borderRadius:
                                                                                 BorderRadius.circular(30.0),
                                                                           )),
