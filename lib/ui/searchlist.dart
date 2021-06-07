@@ -149,7 +149,7 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
                       leading: Icon(Icons.restore),
                       title: Text("${allSearches[index]}"),
                       //onTap: () => close(context, _oldFilters[index]),
-                    ):Container();
+                    ):Container(child: Text("search history"));
                   },
                 ):
                 ListView.builder(
@@ -233,4 +233,3 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
     );
   }
 }
-
