@@ -3,7 +3,9 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
+import 'package:chewie/chewie.dart';
+import 'package:techstagram/views/tabs/video_items.dart';
+import 'package:video_player/video_player.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -118,6 +120,8 @@ class _FeedsPageState extends State<FeedsPage> {
     fetchLikes();
     //getPostCount();
   }
+
+
 
   File crop;
   Timer timer; //declare timer variable
@@ -1443,71 +1447,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                                               ? Container()
                                                               : (!cloading[index])
                                                                   ? Container()
-                                                                  : AspectRatio(
-                                                                      aspectRatio:
-                                                                          16 / 9,
-                                                                      //
-                                                                      //
-
-                                                                      child: Text(
-                                                                          "hello"),
-                                                                      // BetterPlayerListVideoPlayer(
-                                                                      //   BetterPlayerDataSource(
-                                                                      //     BetterPlayerDataSourceType.NETWORK,
-                                                                      //     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                                                                      //   ),
-                                                                      //   key: Key('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'.hashCode.toString()),
-                                                                      //   playFraction: 1,
-                                                                      //   autoPause: true,
-                                                                      //   autoPlay: true,
-                                                                      //   configuration: BetterPlayerConfiguration(
-                                                                      //     fit: BoxFit.cover,
-                                                                      //     aspectRatio: 0.5,
-                                                                      //     looping: true,
-                                                                      //     autoPlay: true,
-                                                                      //     showPlaceholderUntilPlay: true,
-                                                                      //     // placeholder: Container(
-                                                                      //     //   height: 500,
-                                                                      //     //   width: double.infinity,
-                                                                      //     //   decoration: BoxDecoration(
-                                                                      //     //     // gradient: LinearGradient(
-                                                                      //     //     //   colors: [
-                                                                      //     //     //     Colors.blue,
-                                                                      //     //     //     Colors.red,
-                                                                      //     //     //   ],
-                                                                      //     //     //   begin: Alignment.topLeft,
-                                                                      //     //     //   end: Alignment.bottomRight,
-                                                                      //     //     // ),
-                                                                      //     //     color : Colors.purple,
-                                                                      //     //   ),
-                                                                      //     // ),
-                                                                      //     controlsConfiguration: BetterPlayerControlsConfiguration(
-                                                                      //       enableProgressBar: false,
-                                                                      //       controlBarColor: Colors.white54,
-                                                                      //       enableFullscreen: false,
-                                                                      //       enableOverflowMenu: false,
-                                                                      //       enablePlayPause: true,
-                                                                      //     ),
-                                                                      //     errorBuilder: (context, errorMessage) {
-                                                                      //       return Center(
-                                                                      //         child: Column(
-                                                                      //           children: [
-                                                                      //             Icon(
-                                                                      //               Icons.error,
-                                                                      //               color: Colors.white,
-                                                                      //               size: 60,
-                                                                      //             ),
-                                                                      //             Text(
-                                                                      //               errorMessage,
-                                                                      //               style: TextStyle(color: Colors.white54),
-                                                                      //             ),
-                                                                      //           ],
-                                                                      //         ),
-                                                                      //       );
-                                                                      //     },
-                                                                      //   ),
-                                                                      // ),
+                                                                  : ChewieListItem(
+                                                                    videoPlayerController: VideoPlayerController.network(
+                                                                      url,
                                                                     ),
+                                                                    looping: true,
+
+                                                                  ),
                                                     ),
                                                   ),
                                                 ),

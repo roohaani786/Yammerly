@@ -190,6 +190,7 @@ class _UploadImageState extends State<UploadImage>
 
     //Compress Photo
     if (isVideo) {
+      print(isVideo);
       print("iime aa ya");
       //Store videourl in an initializer
       String videodownloadUrl = await uploadVideoToStorage(file);
@@ -540,6 +541,7 @@ class _UploadImageState extends State<UploadImage>
                                 ShareIU();
                               } else {
                                 if (_formKey.currentState.validate()) {
+                                  print("printya");
                                   controlUploadAndSave(shared, isVideo);
                                   PostI();
                                 }
