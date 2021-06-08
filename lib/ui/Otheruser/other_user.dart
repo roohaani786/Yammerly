@@ -336,6 +336,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
         .delete();
   }
 
+
   String NotificationId;
   Notification(String displayNameCurrUser, int followers) async {
     print(displayNameCurrUser);
@@ -390,6 +391,16 @@ bool req=true;
       "Request": req,
     });
 
+  }
+  DeleteRequest() async {
+    print("amios");
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection('request')
+    //.where('displayName','==',displayName);
+        .doc(RequestId2)
+        .delete();
   }
 
 
@@ -887,8 +898,7 @@ bool req=true;
                                                           ),
                                                           onPressed:
                                                               () {
-                                                                            if (followed == false &&
-                                                                                private == false) {
+                                                                            if (followed == false && private == false) {
                                                                               print("a");
                                                                               if (timer?.isActive ?? false)
                                                                                 timer.cancel(); //cancel if [timer] is null or running
@@ -903,8 +913,8 @@ bool req=true;
                                                                                 // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
                                                                                 DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
                                                                               });
-                                                                            } else if (followed == false &&
-                                                                                private == true) {print("b");
+                                                                            }
+                                                                            else if (followed == false && private == true) {print("b");
                                                                               if (timer?.isActive ?? false)
                                                                                 timer.cancel(); //cancel if [timer] is null or running
                                                                               timer = Timer(const Duration(milliseconds: 1500), () {
@@ -920,6 +930,7 @@ bool req=true;
                                                                                 OtherUserProfile.UIDCON = uidControllerX.text;
                                                                                 OtherUserProfile.PURLX = photoUrlX;
 
+
                                                                                 //Notification(displayNamecurrentUser, followers);
                                                                                 // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
                                                                                 //DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
@@ -930,7 +941,25 @@ bool req=true;
                                                                                 Request(displayNamecurrentUser);
                                                                               });
                                                                               // ignore: unnecessary_statements
-                                                                            } else {
+                                                                            }
+                                                                            else if(followed == true && private == true) {
+                                                                              print ("req wala");
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
+                                                                                //DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
+
+                                                                                DeleteRequest();
+
+                                                                                //DatabaseService().decreaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid);
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = false;
+                                                                                });
+
+                                                                              });
+                                                                            }
+                                                                            else if(followed == true && private == false){
                                                                               if (timer?.isActive ?? false)
                                                                                 timer.cancel(); //cancel if [timer] is null or running
                                                                               timer = Timer(const Duration(milliseconds: 1500), () {
