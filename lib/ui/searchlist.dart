@@ -141,7 +141,8 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
             )
                 : Column(
               children: [
-                (snapshot.data.docs.length ==  0 || snapshot.hasData != true)?ListView.builder(
+                  (snapshot.data.docs.length ==  0 || !snapshot.hasData)
+                      ?ListView.builder(
                   shrinkWrap: true,
                   itemCount: allSearches.length,
                   itemBuilder: (context, index) {
@@ -176,12 +177,12 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      OtherUserProfile(
+                                  OtherUserProfile(
                                           uid: uid,
                                           displayNamecurrentUser:
                                           displayNamecurrentUser,
                                           displayName: displayName,
-                                          uidX: uidX)),
+                                          uidX: uidX,)),
                             );
                             searchHistory(searchKey);
                           },

@@ -2163,12 +2163,12 @@ class _FeedsPageState extends State<FeedsPage> {
                         ],
                       )
                     : Container(
-                        padding: EdgeInsets.only(
-                          top: 40.0,
-                          left: 30.0,
-                          right: 30.0,
-                          bottom: 30.0,
-                        ),
+                        // padding: EdgeInsets.only(
+                        //   top: 40.0,
+                        //   left: 30.0,
+                        //   right: 30.0,
+                        //   bottom: 30.0,
+                        // ),
                         height: deviceHeight,
                         width: deviceWidth,
                         child: Column(

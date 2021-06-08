@@ -559,7 +559,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                         height: deviceHeight * 0.15,
                       ),
                       Container(
-                        height: 270.0,
+                        height: MediaQuery.of(context).size.height * 0.4,
                         width: width,
 
                         // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
@@ -569,7 +569,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Container(
-                                  height: height * 0.3,
+                                  height: height * 0.33,
                                   width: width,
                                   margin: EdgeInsets.only(top: 8.0),
                                   decoration: BoxDecoration(),
@@ -614,8 +614,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                           )),
                                                 ),
                                             child: (following != null)
-                                            ?_buildStatItem("FOLLOWING",
-                                                following.toString()):
+                                            ?Flexible(
+                                              child: _buildStatItem("FOLLOWING",
+                                                  following.toString()),
+                                            ):
                                             Center(child: CircularProgressIndicator())
                                         ),
                                       ],
