@@ -486,7 +486,7 @@ bool flash = true;
 
   Widget   _flashModeControlRowWidget() {
 
-    if (flash) {
+    {
       return SizeTransition(
       sizeFactor: _flashModeControlRowAnimation,
       child: ClipRect(
@@ -534,39 +534,6 @@ bool flash = true;
         ),
       ),
     );
-    } else {
-      return SizeTransition(
-        sizeFactor: _flashModeControlRowAnimation,
-        child: ClipRect(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              IconButton(
-                icon: Icon(Icons.flash_off),
-                color: controller?.value?.flashMode == FlashMode.off
-                    ? Colors.orange
-                    : Colors.white,
-                onPressed: controller != null
-                    ? () => onSetFlashModeButtonPressed(FlashMode.off)
-                    : null,
-              ),
-
-              IconButton(
-                //this should be automatic not torch
-                icon: Icon(Icons.flash_on),
-                color: controller?.value?.flashMode == FlashMode.always
-                    ? Colors.orange
-                    : Colors.white,
-                onPressed: controller != null
-                    ? () => onSetFlashModeButtonPressed(FlashMode.always)
-                    : null,
-              ),
-
-            ],
-    ),
-        ),
-      );
     }
   }
 
@@ -827,7 +794,11 @@ bool flash = true;
                       setState(() {
                         _isRecording = true;
                         timeronpress =true;
-                        onSetFlashModeButtonPressed(FlashMode.torch);
+                        (controller?.value?.flashMode == FlashMode.auto)
+                            ?onSetFlashModeButtonPressed(FlashMode.auto)
+                            :(controller?.value?.flashMode == FlashMode.torch)
+                            ?onSetFlashModeButtonPressed(FlashMode.torch)
+                            :onSetFlashModeButtonPressed(FlashMode.off);
                       });
                     },
                     onLongPressEnd: (details)async {
@@ -929,7 +900,6 @@ bool flash = true;
             onPressed: () {
               setState(() {
                 _isRecordingMode = !_isRecordingMode;
-                flash = false;
               });
 
               if (_isRecordingMode) {
