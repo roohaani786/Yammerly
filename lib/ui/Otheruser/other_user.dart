@@ -909,6 +909,8 @@ bool req=true;
                                                                                 });
 
                                                                                 DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
+                                                                                print("mai hu $displayNamecurrentUser");
+                                                                                print("mai firse hu $displayNameX");
                                                                                 Notification(displayNamecurrentUser, followers);
                                                                                 // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
                                                                                 DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);

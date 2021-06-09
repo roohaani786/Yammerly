@@ -506,9 +506,7 @@ class DatabaseService {
         .collection('following')
         .doc(displayName)
         .set({'followingname' : displayName,'followinguid' : uidX,'photoUrl' : photoUrlX});
-
         //.update({'followingname': uid,});
-
     return await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
@@ -517,12 +515,10 @@ class DatabaseService {
   
 
   Future followUser(int followers, String uid, String displayName, String uidX,String photoUrlX) {
-
     FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
         .update({'followers': followers + 1});
-
     FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
