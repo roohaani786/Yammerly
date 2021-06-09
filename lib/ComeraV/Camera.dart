@@ -216,6 +216,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 bool timeronpress =false;
+bool flash = true;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -483,8 +484,10 @@ bool timeronpress =false;
     );
   }
 
-  Widget _flashModeControlRowWidget() {
-    return SizeTransition(
+  Widget   _flashModeControlRowWidget() {
+
+    if (flash) {
+      return SizeTransition(
       sizeFactor: _flashModeControlRowAnimation,
       child: ClipRect(
         child: Row(
@@ -531,7 +534,42 @@ bool timeronpress =false;
         ),
       ),
     );
+    } else {
+      return SizeTransition(
+        sizeFactor: _flashModeControlRowAnimation,
+        child: ClipRect(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              IconButton(
+                icon: Icon(Icons.flash_off),
+                color: controller?.value?.flashMode == FlashMode.off
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.off)
+                    : null,
+              ),
+
+              IconButton(
+                //this should be automatic not torch
+                icon: Icon(Icons.flash_on),
+                color: controller?.value?.flashMode == FlashMode.always
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.always)
+                    : null,
+              ),
+
+            ],
+    ),
+        ),
+      );
+    }
   }
+
 
   Widget _exposureModeControlRowWidget() {
     final ButtonStyle styleAuto = TextButton.styleFrom(
@@ -697,7 +735,6 @@ bool timeronpress =false;
 
   bool _isRecordingMode = false;
   bool _isRecording = false;
-
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
     return Container(
@@ -790,12 +827,13 @@ bool timeronpress =false;
                       setState(() {
                         _isRecording = true;
                         timeronpress =true;
-                           
+                        onSetFlashModeButtonPressed(FlashMode.torch);
                       });
                     },
                     onLongPressEnd: (details)async {
                       onStopButtonPressed();
                       setState(() {
+
                         _isRecording = false;
                        timeronpress = false;
                       });
@@ -821,7 +859,7 @@ bool timeronpress =false;
                     Row(
                       children: [
                         //when recording button pressed this single button appears when clicked recording starts
-                        //the comment code is button for video playing
+
 
                         IconButton(
                           icon: const Icon(Icons.videocam),
@@ -837,6 +875,8 @@ bool timeronpress =false;
                           onTap: () {
                             // rightButtonPressed();
                             //   dependencies.stopwatch.stop();
+
+
                             setState(() {
                               dependencies.stopwatch.stop();
                             });
@@ -889,6 +929,7 @@ bool timeronpress =false;
             onPressed: () {
               setState(() {
                 _isRecordingMode = !_isRecordingMode;
+                flash = false;
               });
 
               if (_isRecordingMode) {
@@ -900,16 +941,7 @@ bool timeronpress =false;
                     ? print("recording abhi chalu nhi hui hai")
                     //  ? onVideoRecordButtonPressed()
                     : print("nahi gaya");
-                // rightButtonPressed();
 
-                // Timer(Duration(seconds: 30), () {
-                //   print("Yeah, this line is printed after 3 second");
-                //   controller != null &&
-                //       controller.value.isInitialized &&
-                //       controller.value.isRecordingVideo
-                //       ? onStopButtonPressed()
-                //       : null;
-                // });
               } else {
                 stopVideoRecording();
                 dependencies.stopwatch.reset();
@@ -1111,14 +1143,6 @@ bool timeronpress =false;
         rightButtonPressed();
       });
     });
-
-    //  if(dependencies.stopwatch.elapsedMilliseconds==30000)
-    //  {
-    //    print("timer stop me aaya");
-    //    dependencies.stopwatch.stop();
-    //    onStopButtonPressed();
-
-    //  }
     print("videoo");
     startVideoRecording().then((_) {
       maxVideoDuration = Duration(seconds: 31);
