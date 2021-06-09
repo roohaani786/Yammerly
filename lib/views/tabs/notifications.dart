@@ -510,7 +510,6 @@ class _NotificationRequestState extends State<NotificationRequest> {
                                           IconButton(
                                             onPressed: () {
                                               DatabaseService().followUser(followers1, uid1, userNameController.text, widget.userId, photoUrlController.text);
-
                                               DatabaseService().increaseFollowing(widget.userId, following, userNameController.text, displayName1, uid1, photoUrl1);
                                               FirebaseFirestore.instance
                                                   .collection("users")
