@@ -62,7 +62,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       this.uidY});
 
   bool followed = false;
-  bool requested = false;
 
   ScrollController scrollController = new ScrollController();
 
@@ -337,6 +336,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
         .delete();
   }
 
+
   String NotificationId;
   Notification(String displayNameCurrUser, int followers) async {
     print(displayNameCurrUser);
@@ -391,6 +391,16 @@ bool req=true;
       "Request": req,
     });
 
+  }
+  DeleteRequest() async {
+    print("amios");
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection('request')
+    //.where('displayName','==',displayName);
+        .doc(RequestId2)
+        .delete();
   }
 
 
@@ -834,147 +844,162 @@ bool req=true;
                                               .size
                                               .height *
                                               0.1,
-                                          child: Flexible(
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                    children: [
-                                                      SizedBox(
-                                                        width: 120,
-                                                        child: (displayName ==
-                                                            displayNamecurrentUser)
-                                                            ? MaterialButton(
-                                                            color: Colors
-                                                                .purple,
-                                                            child:
-                                                            new Text(
-                                                              "About me",
-                                                              style:
-                                                              TextStyle(
-                                                                color: Colors.black,
-                                                              ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceAround,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 120,
+                                                      child: (displayName ==
+                                                          displayNamecurrentUser)
+                                                          ? MaterialButton(
+                                                          color: Colors
+                                                              .purple,
+                                                          child:
+                                                          new Text(
+                                                            "About me",
+                                                            style:
+                                                            TextStyle(
+                                                              color: Colors.white,
                                                             ),
-                                                            onPressed:
-                                                                () {
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder: (context) => AboutUser(
-                                                                      uid: uidX,
-                                                                    )),
-                                                              );
-                                                            },
-                                                            shape:
-                                                            RoundedRectangleBorder(
-                                                              side:
-                                                              BorderSide(color: Colors.purple, width: 2.5),
-                                                              borderRadius:
-                                                              BorderRadius.circular(30.0),
-                                                            ))
-                                                            : MaterialButton(
-                                                            color: Colors
-                                                                .white,
-                                                            child:
-                                                            new Text(
-                                                              (followed == false)
-                                                                  ? "Follow"
-                                                                  :(private == true)? "Request"
-                                                                  : "Unfollow",
-                                                              style:
-                                                              TextStyle(
-                                                                color: (followed == false) ? Colors.purple :(private == true)
-                                                                    ?Color(0xffFFE3C040)
-                                                                :Colors.red,
-                                                              ),
+                                                          ),
+                                                          onPressed:
+                                                              () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) => AboutUser(
+                                                                    uid: uidX,
+                                                                  )),
+                                                            );
+                                                          },
+                                                          shape:
+                                                          RoundedRectangleBorder(
+                                                            side:
+                                                            BorderSide(color: Colors.purple, width: 2.5),
+                                                            borderRadius:
+                                                            BorderRadius.circular(30.0),
+                                                          ))
+                                                          : MaterialButton(
+                                                          color: Colors
+                                                              .white,
+                                                          child:
+                                                          new Text(
+                                                            (followed == false)
+                                                                ? "Follow"
+                                                                : "Unfollow",
+                                                            style:
+                                                            TextStyle(
+                                                              color: (followed == false) ? Colors.purple : Colors.red,
                                                             ),
-                                                            onPressed:
-                                                                () {
-                                                                              if (followed == false &&
-                                                                                  private == false) {
-                                                                                print("a");
-                                                                                if (timer?.isActive ?? false)
-                                                                                  timer.cancel(); //cancel if [timer] is null or running
-                                                                                timer = Timer(const Duration(milliseconds: 1500), () {
-                                                                                  setState(() {
-                                                                                    //getFollowers();
-                                                                                    followed = true;
-                                                                                  });
-
-                                                                                  DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
-                                                                                  Notification(displayNamecurrentUser, followers);
-                                                                                  // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
-                                                                                  DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
+                                                          ),
+                                                          onPressed:
+                                                              () {
+                                                                            if (followed == false && private == false) {
+                                                                              print("a");
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = true;
                                                                                 });
-                                                                              } else if (followed == false &&
-                                                                                  private == true) {print("b");
-                                                                                if (timer?.isActive ?? false)
-                                                                                  timer.cancel(); //cancel if [timer] is null or running
-                                                                                timer = Timer(const Duration(milliseconds: 1500), () {
 
-                                                                                  setState(() {
-                                                                                    //getFollowers();
-                                                                                    requested = true;
-                                                                                  });
+                                                                                DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
+                                                                                print("mai hu $displayNamecurrentUser");
+                                                                                print("mai firse hu $displayNameX");
+                                                                                Notification(displayNamecurrentUser, followers);
+                                                                                // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
+                                                                                DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
+                                                                              });
+                                                                            }
+                                                                            else if (followed == false && private == true) {print("b");
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
 
-                                                                                  //DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
-                                                                                  OtherUserProfile.FOLLOWERS=followers;
-                                                                                  OtherUserProfile.UID = uid;
-                                                                                  OtherUserProfile.UIDCON = uidControllerX.text;
-                                                                                  OtherUserProfile.PURLX = photoUrlX;
-
-                                                                                  //Notification(displayNamecurrentUser, followers);
-                                                                                  // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
-                                                                                  //DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
-                                                                                  OtherUserProfile.UIDX = uidX;
-                                                                                  OtherUserProfile.FOLLOWINGX=followingX;
-                                                                                  OtherUserProfile.DISNX=displayNameX;
-                                                                                  OtherUserProfile.PURL=photoUrl;
-                                                                                  Request(displayNamecurrentUser);
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = true;
                                                                                 });
-                                                                                // ignore: unnecessary_statements
-                                                                              } else {
-                                                                                if (timer?.isActive ?? false)
-                                                                                  timer.cancel(); //cancel if [timer] is null or running
-                                                                                timer = Timer(const Duration(milliseconds: 1500), () {
-                                                                                  DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
 
-                                                                                  DeleteNotification();
+                                                                                //DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
+                                                                                OtherUserProfile.FOLLOWERS=followers;
+                                                                                OtherUserProfile.UID = uid;
+                                                                                OtherUserProfile.UIDCON = uidControllerX.text;
+                                                                                OtherUserProfile.PURLX = photoUrlX;
 
-                                                                                  DatabaseService().decreaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid);
-                                                                                  setState(() {
-                                                                                    //getFollowers();
-                                                                                    followed = false;
-                                                                                  });
 
+                                                                                //Notification(displayNamecurrentUser, followers);
+                                                                                // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
+                                                                                //DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
+                                                                                OtherUserProfile.UIDX = uidX;
+                                                                                OtherUserProfile.FOLLOWINGX=followingX;
+                                                                                OtherUserProfile.DISNX=displayNameX;
+                                                                                OtherUserProfile.PURL=photoUrl;
+                                                                                Request(displayNamecurrentUser);
+                                                                              });
+                                                                              // ignore: unnecessary_statements
+                                                                            }
+                                                                            else if(followed == true && private == true) {
+                                                                              print ("req wala");
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
+                                                                                //DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
+
+                                                                                DeleteRequest();
+
+                                                                                //DatabaseService().decreaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid);
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = false;
                                                                                 });
-                                                                              }
-                                                                            },
-                                                                            shape:
-                                                                                RoundedRectangleBorder(
-                                                                              side:
-                                                                                  BorderSide(color: (followed == false) ? Colors.purple :(private == true)? Color(0XFFFFE3C040): Colors.red, width: 2),
-                                                                              borderRadius:
-                                                                                  BorderRadius.circular(30.0),
-                                                                            )),
-                                                                  ),
+
+                                                                              });
+                                                                            }
+                                                                            else if(followed == true && private == false){
+                                                                              if (timer?.isActive ?? false)
+                                                                                timer.cancel(); //cancel if [timer] is null or running
+                                                                              timer = Timer(const Duration(milliseconds: 1500), () {
+                                                                                DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
+
+                                                                                DeleteNotification();
+
+                                                                                DatabaseService().decreaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid);
+                                                                                setState(() {
+                                                                                  //getFollowers();
+                                                                                  followed = false;
+                                                                                });
+
+                                                                              });
+                                                                            }
+                                                                          },
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            side:
+                                                                                BorderSide(color: (followed == false) ? Colors.purple : Colors.red, width: 2),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(30.0),
+                                                                          )),
+                                                                ),
 
 //
-                                                                ]),
-                                                            SizedBox(
-                                                              height: 10,
-                                                              width: deviceWidth,
-                                                              child: Divider(
-                                                                thickness: 2.0,
-                                                                color: Colors.teal
-                                                                    .shade700,
-                                                              ),
+                                                              ]),
+                                                          SizedBox(
+                                                            height: 10,
+                                                            width: deviceWidth,
+                                                            child: Divider(
+                                                              thickness: 2.0,
+                                                              color: Colors.teal
+                                                                  .shade700,
                                                             ),
-                                                          ],
-                                                        ),
-                                          ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     )
                                                   ],
                                                 ),

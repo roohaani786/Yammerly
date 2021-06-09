@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techstagram/services/database.dart';
@@ -14,6 +15,7 @@ final NotificationRefrence = FirebaseFirestore.instance.collection("users");
 
 class NotificationsPage extends StatefulWidget{
   final String currUid;
+  static String cuid;
   final String displayNameCurrUser;
 
 
@@ -120,6 +122,7 @@ class NotificationsPageState extends State<NotificationsPage> {
   retrieveNotificationsFollow(){
     print("bhujm");
     print(currUid);
+    NotificationsPage.cuid = currUid;
     return  StreamBuilder(
       stream: NotificationRefrence.doc(currUid)
           .collection("notification")
@@ -142,30 +145,55 @@ class NotificationsPageState extends State<NotificationsPage> {
     );
   }
 
-  // retrieveNotificationsRequest(){
-  //   print("bhujm");
-  //   print(currUid);
-  //   return  StreamBuilder(
-  //     stream: NotificationRefrence.doc(currUid)
-  //         .collection("request")
-  //         .orderBy("timestamp", descending: true)
-  //         .snapshots(),
-  //     builder: (context, dataSnapshot){
-  //       if (!dataSnapshot.hasData){
-  //         return Container(
-  //           color: Colors.white,
-  //         );
-  //       }
-  //       List<NotificationRequest> Requests = [];
-  //       dataSnapshot.data.docs.forEach((document){
-  //         Requests.add(NotificationRequest.fromDocument(document));
-  //       });
-  //       return ListView(
-  //         children: Requests,
-  //       );
-  //     },
-  //   );
-  // }
+  retrieveNotificationsRequest(){
+    print("bhujm");
+    print(currUid);
+    return  StreamBuilder(
+      stream: NotificationRefrence.doc(currUid)
+          .collection("request")
+          .orderBy("timestamp", descending: true)
+          .snapshots(),
+      builder: (context, dataSnapshot){
+        if (!dataSnapshot.hasData){
+          return Container(
+            color: Colors.white,
+          );
+        }
+        List<NotificationRequest> Requests = [];
+        dataSnapshot.data.docs.forEach((document){
+          Requests.add(NotificationRequest.fromDocument(document));
+        });
+        return ListView(
+          children: Requests,
+        );
+      },
+    );
+  }
+
+//   fetchCurrentProfileData() async {
+//     //currUser =  FirebaseAuth.instance.currentUser;
+//     try {
+//       DocumentSnapshot docSnap;
+//       docSnap = await FirebaseFirestore.instance
+//           .collection("users")
+//           .doc(currUid)
+//           .get();
+//
+//       //uidControllerX.text = docSnap["uid"];
+//       followingX = docSnap["following"];
+//       photoUrlX = docSnap["photoURL"];
+//       print("fg");
+//       print(currUser.uid);
+//
+//       setState(() {
+// //        isLoading = false;
+// //        isEditable = true;
+//       });
+//     } on PlatformException catch (e) {
+//       print("PlatformException in fetching user profile. E  = " + e.message);
+//     }
+//   }
+
 
   bool errordikhaoC = false;
 
@@ -205,7 +233,7 @@ class NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext) {
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
           backgroundColor: Colors.white,
 
@@ -218,8 +246,7 @@ class NotificationsPageState extends State<NotificationsPage> {
               retrieveNotificationsComment(),
               retrieveNotificationsShare(),
               retrieveNotificationsFollow(),
-
-              //retrieveNotificationsRequest(),
+              retrieveNotificationsRequest(),
 
               // Container(
               //     //color: Colors.blue,
@@ -249,251 +276,305 @@ class NotificationsPageState extends State<NotificationsPage> {
 
 //notfication for follow tab
 
-// class NotificationRequest extends StatefulWidget {
-//   final String userId;
-//   final String comment;
-//   final Timestamp timestamp;
-//   final String status;
-//   final bool Request;
-//   final String RequestId;
-//   final String commentId;
-//   final String notificationId;
-//   final int likes;
-//   final int followers;
-//   final String postId;
-//
-//   NotificationRequest(
-//       {this.Request,
-//       this.RequestId,
-//         this.postId,
-//         this.userId,
-//         this.comment,
-//         this.timestamp,
-//         this.status,
-//         this.followers,
-//         this.commentId,
-//         this.notificationId,
-//         this.likes});
-//
-//   factory NotificationRequest.fromDocument(DocumentSnapshot documentSnapshot) {
-//     return NotificationRequest(
-//
-//       Request: (documentSnapshot.data() as Map<String, dynamic>)["Request"],
-//       RequestId: (documentSnapshot.data() as Map<String, dynamic>)["RequestId"],
-//       timestamp: (documentSnapshot.data() as Map<String, dynamic>)["timestamp"],
-//       userId: (documentSnapshot.data() as Map<String, dynamic>)["uid"],
-//
-//
-//     );
-//   }
-//
-//   @override
-//   _NotificationRequestState createState() => _NotificationRequestState();
-// }
-//
-// class _NotificationRequestState extends State<NotificationFollow> {
-//
-//   DocumentSnapshot docSnap;
-//   String userName;
-//   String postUrl;
-//   String photoUrl;
-//   String uid;
-//
-//   TextEditingController userNameController,photoUrlController,postUrlController;
-//
-//   void initState() {
-//     userNameController = TextEditingController();
-//     photoUrlController = TextEditingController();
-//     postUrlController = TextEditingController();
-//
-//     super.initState();
-//
-//     Fetchprofile();
-//     Fetchpost();
-//
-//   }
-//
-//   Fetchprofile() async{
-//     print("pust");
-//     docSnap = await FirebaseFirestore.instance
-//         .collection("users")
-//         .doc(widget.userId)
-//         .get();
-//     photoUrlController.text = (docSnap.data() as Map<String,dynamic>)['photoURL'];
-//     userNameController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
-//     setState(() {
-//       userName = userNameController.text;
-//       photoUrl = photoUrlController.text;
-//       //cloading[index] = true;
-//     });
-//   }
-//
-//   Fetchpost() async{
-//     docSnap = await FirebaseFirestore.instance
-//         .collection("posts")
-//         .doc(widget.postId)
-//         .get();
-//     postUrlController.text = (docSnap.data() as Map<String,dynamic>)['url'];
-//     setState(() {
-//       postUrl = postUrlController.text;
-//       // cdisplayName[index] = cdisplayNameController.text;
-//       // cloading[index] = true;
-//     });
-//   }
-//
-//
-//   String tAgo(DateTime d) {
-//     Duration diff = DateTime.now().difference(d);
-//     if (diff.inDays > 365)
-//       return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1 ? "y" : "y"}";
-//     if (diff.inDays > 30)
-//       return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1 ? "m" : "m"}";
-//     if (diff.inDays > 7)
-//       return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1 ? "w" : "w"}";
-//     if (diff.inDays > 0)
-//       return "${diff.inDays} ${diff.inDays == 1 ? "d" : "d"} ";
-//     if (diff.inHours > 0)
-//       return "${diff.inHours} ${diff.inHours == 1 ? "h" : "h"} ";
-//     if (diff.inMinutes > 0)
-//       return "${diff.inMinutes} ${diff.inMinutes == 1 ? "m" : "m"} ";
-//     return "just now";
-//   }
-//
-//   @override
-//   Widget build(BuildContext) {
-//     final deviceHeight = MediaQuery.of(context).size.height;
-//     final deviceWidth = MediaQuery.of(context).size.width;
-//     return
-//       (widget.Request == true)?
-//       Container(
-//           child: Column(
-//             children: [
-//               Stack(
-//                 children: [
-//                   GestureDetector(
-//                     onTap: () {
-//                       Navigator.push(
-//                         context,
-//                         MaterialPageRoute(
-//                             builder: (context) => OtherUserProfile(
-//                                 displayName: userName, uid: widget.userId)),
-//                       );
-//                     },
-//                     child: Container(
-//                       //width: 320.0,
-//                       width: deviceWidth * 1,
-//                       child: ListTile(
-//                         title: (userName != null || widget.comment != null)
-//                             ? Row(
-//                           children: [
-//                             Expanded(
-//                               child: Row(
-//                                 // crossAxisAlignment: CrossAxisAlignment.start,
-//                                 children: [
-//                                   RichText(
-//                                     textAlign: TextAlign.start,
-//                                     softWrap: true,
-//                                     overflow: TextOverflow.visible,
-//                                     text: TextSpan(
-//                                       children: [
-//                                         TextSpan(
-//                                           text: (userName == null)
-//                                               ? "loading..."
-//                                               : userName,
-//                                           style: TextStyle(
-//                                             fontSize: 15.0,
-//                                             color: Colors.black,
-//                                             fontWeight: FontWeight.bold,
-//                                           ),
-//                                         ),
-//                                         TextSpan(
-//                                           text: " wants to follow you ",
-//                                           style: TextStyle(
-//                                               color: Colors.black,
-//                                               fontWeight: FontWeight.normal,
-//                                               fontSize: 15.0),
-//                                         ),
-//                                         TextSpan(
-//                                           text: tAgo(widget.timestamp.toDate()),
-//                                           style: TextStyle(color: Colors.grey),
-//                                         ),
-//                                       ],
-//                                     ),
-//                                   ),
-//                                   IconButton(
-//                                     onPressed: () {
-//                                       FirebaseFirestore.instance
-//                                           .collection("users")
-//                                           .doc(OtherUserProfile.UID).collection("request")
-//                                           .doc(OtherUserProfile.accha)
-//                                           .update({'Request': false});
-//                                       DatabaseService().followUser(
-//                                           OtherUserProfile.FOLLOWERS,
-//                                           OtherUserProfile.UID,
-//                                           HomePage.dnu,
-//                                           OtherUserProfile.UIDCON,
-//                                           OtherUserProfile.PURLX);
-//                                       DatabaseService().increaseFollowing(
-//                                           OtherUserProfile.UIDX,
-//                                           OtherUserProfile.FOLLOWINGX,
-//                                           HomePage.dnu,
-//                                           OtherUserProfile.DISNX,
-//                                           OtherUserProfile.UID,
-//                                           OtherUserProfile.PURL);
-//                                     },
-//                                     icon: Icon(Icons.check),
-//                                     color: Colors.green,
-//                                   ),
-//                                   //MaterialButton(onPressed: (){},child: Text("Accept",style: TextStyle(color: Colors.white),),color: Colors.deepPurple,),
-//                                   SizedBox(
-//                                     width: 0,
-//                                   ),
-//                                   IconButton(
-//                                     onPressed: () {FirebaseFirestore.instance
-//                                         .collection("users")
-//                                         .doc(OtherUserProfile.UID)
-//                                         .collection('request')
-//                                         .doc(OtherUserProfile.accha)
-//                                         .delete();
-//                                       //delete request
-//                                     },
-//                                     icon: Icon(Icons.close),
-//                                     color: Colors.red,
-//                                   )
-//                                 ],
-//                               ),
-//                             )
-//                           ],
-//                         )
-//                             : Text("koi na",style: TextStyle(color: Colors.black),),
-//                         leading: (userName != null || widget.comment != null)
-//                             ? CircleAvatar(
-//                           backgroundImage: (photoUrl == null)
-//                               ? NetworkImage(
-//                               "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC")
-//                               : CachedNetworkImageProvider(photoUrl),
-//                         )
-//                             : null,
-//                         //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
-//                       ),
-//                     ),
-//                   ),
-//                   // Container(
-//                   //     child: Image.network(url)
-//                   // ),
-//                 ],
-//               ),
-//               // Divider(
-//               //   thickness: 1,
-//               //   color: Colors.grey,
-//               //   indent: 15,
-//               //   endIndent: 15,
-//               // ),
-//             ],
-//           ))
-//           :Container();
-//   }
-// }
+class NotificationRequest extends StatefulWidget {
+  final String userId;
+  final String comment;
+  final Timestamp timestampR;
+  final String status;
+  final bool Request;
+  final String RequestId;
+  final String commentId;
+  final String notificationId;
+  final int likes;
+  final int followers;
+  final String postId;
+
+  NotificationRequest(
+      {this.Request,
+      this.RequestId,
+        this.postId,
+        this.userId,
+        this.comment,
+        this.timestampR,
+        this.status,
+        this.followers,
+        this.commentId,
+        this.notificationId,
+        this.likes});
+
+  factory NotificationRequest.fromDocument(DocumentSnapshot documentSnapshot) {
+    return NotificationRequest(
+
+      Request: (documentSnapshot.data() as Map<String, dynamic>)["Request"],
+      RequestId: (documentSnapshot.data() as Map<String, dynamic>)["RequestId"],
+      timestampR: (documentSnapshot.data() as Map<String, dynamic>)["timestamp"],
+      userId: (documentSnapshot.data() as Map<String, dynamic>)["uid"],
+
+
+    );
+  }
+
+  @override
+  _NotificationRequestState createState() => _NotificationRequestState();
+}
+
+class _NotificationRequestState extends State<NotificationRequest> {
+
+  DocumentSnapshot docSnap;
+  String userName;
+  String postUrl;
+  String photoUrl;
+  String uid;
+  int following;
+  String uid1;
+  int followers1;
+  String displayName1;
+  String photoUrl1;
+
+  TextEditingController userNameController, photoUrlController,
+      postUrlController,followingController;
+
+  void initState() {
+    userNameController = TextEditingController();
+    photoUrlController = TextEditingController();
+    postUrlController = TextEditingController();
+
+
+    super.initState();
+
+    Fetchprofile();
+    Fetchpost();
+    fetchProfileData();
+  }
+//hrith profile fetched
+  Fetchprofile() async {
+    print("pust");
+    docSnap = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.userId)
+        .get();
+    photoUrlController.text = (docSnap.data() as Map<String, dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String, dynamic>)['displayName'];
+    following = docSnap["following"];
+    setState(() {
+      userName = userNameController.text;
+      photoUrl = photoUrlController.text;
+      //cloading[index] = true;
+    });
+  }
+
+  Fetchpost() async {
+    docSnap = await FirebaseFirestore.instance
+        .collection("posts")
+        .doc(widget.postId)
+        .get();
+    postUrlController.text = (docSnap.data() as Map<String, dynamic>)['url'];
+    setState(() {
+      postUrl = postUrlController.text;
+      // cdisplayName[index] = cdisplayNameController.text;
+      // cloading[index] = true;
+    });
+  }
+
+
+  String tAgo(DateTime d) {
+    Duration diff = DateTime.now().difference(d);
+    if (diff.inDays > 365)
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1
+          ? "y"
+          : "y"}";
+    if (diff.inDays > 30)
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1
+          ? "m"
+          : "m"}";
+    if (diff.inDays > 7)
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1
+          ? "w"
+          : "w"}";
+    if (diff.inDays > 0)
+      return "${diff.inDays} ${diff.inDays == 1 ? "d" : "d"} ";
+    if (diff.inHours > 0)
+      return "${diff.inHours} ${diff.inHours == 1 ? "h" : "h"} ";
+    if (diff.inMinutes > 0)
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "m" : "m"} ";
+    return "just now";
+  }
+  fetchProfileData() async {
+    //currUser =  FirebaseAuth.instance.currentUser;
+   // DocumentSnapshot docSnap;
+    try {
+      docSnap = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(NotificationsPage.cuid)
+          .get();
+
+      uid1 = docSnap["uid"];
+      followers1 = docSnap["followers"];
+      photoUrl1 = docSnap["photoURL"];
+      displayName1 = docSnap["displayName"];
+      print("fg");
+      //print(currUser.uid);
+
+      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
+  @override
+  Widget build(BuildContext) {
+    final deviceHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    final deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+
+    // Stream userQuery;
+    //
+    // userQuery = FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(NotificationsPage.cuid)
+    //     .snapshots();
+
+    return
+      (widget.Request == true) ?
+
+
+          Container(
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    OtherUserProfile(
+                                        displayName: userName,
+                                        uid: widget.userId)),
+                          );
+                        },
+                        child: Container(
+                          //width: 320.0,
+                          //width: deviceWidth * 1,
+                          child: ListTile(
+                            title: (userName != null)
+                                ? Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      RichText(
+                                        textAlign: TextAlign.start,
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: (userName == null)
+                                                  ? "loading..."
+                                                  : userName,
+                                              style: TextStyle(
+                                                fontSize: 15.0,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: " wants to follow you ",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 15.0),
+                                            ),
+                                            TextSpan(
+                                              text: tAgo(
+                                                  widget.timestampR.toDate()),
+                                              style: TextStyle(
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              DatabaseService().followUser(followers1, uid1, userNameController.text, widget.userId, photoUrlController.text);
+                                              DatabaseService().increaseFollowing(widget.userId, following, userNameController.text, displayName1, uid1, photoUrl1);
+                                              FirebaseFirestore.instance
+                                                  .collection("users")
+                                                  .doc(NotificationsPage.cuid)
+                                                  .collection('request')
+                                                  .doc(widget.RequestId)
+                                                  .delete();
+                                            },
+                                            icon: Icon(Icons.check),
+                                            color: Colors.green,
+                                          ),
+                                          //MaterialButton(onPressed: (){},child: Text("Accept",style: TextStyle(color: Colors.white),),color: Colors.deepPurple,),
+
+                                          IconButton(
+                                            onPressed: () {
+                                              FirebaseFirestore.instance
+                                                  .collection("users")
+                                                  .doc(NotificationsPage.cuid)
+                                                  .collection('request')
+                                                  .doc(widget.RequestId)
+                                                  .delete();
+                                              //delete request
+                                            },
+                                            icon: Icon(Icons.close),
+                                            color: Colors.red,
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )
+                                : Text("loading....",
+                              style: TextStyle(color: Colors.black),),
+                            leading: (userName != null || widget.comment !=
+                                null)
+                                ? CircleAvatar(
+                              backgroundImage: (photoUrl == null)
+                                  ? NetworkImage(
+                                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC")
+                                  : CachedNetworkImageProvider(photoUrl),
+                            )
+                                : null,
+                            //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                          ),
+                        ),
+                      ),
+                      // Container(
+                      //     child: Image.network(url)
+                      // ),
+                    ],
+                  ),
+                  // Divider(
+                  //   thickness: 1,
+                  //   color: Colors.grey,
+                  //   indent: 15,
+                  //   endIndent: 15,
+                  // ),
+                ],
+              )) : Container();
+
+
+  }
+}
 
 class NotificationFollow extends StatefulWidget {
   final String userId;
@@ -1345,14 +1426,14 @@ class TBar extends StatelessWidget implements PreferredSizeWidget {
               semanticLabel: 'Text to announce in accessibility modes',
             ),
           ),
-          // Tab(
-          //   icon: Icon(
-          //     FontAwesomeIcons.userPlus,
-          //     color: Colors.deepPurple,
-          //     size: 24.0,
-          //     semanticLabel: 'Text to announce in accessibility modes',
-          //   ),
-          // )
+          Tab(
+            icon: Icon(
+              FontAwesomeIcons.userPlus,
+              color: Colors.deepPurple,
+              size: 24.0,
+              semanticLabel: 'Text to announce in accessibility modes',
+            ),
+          )
         ],
       ),
     );
