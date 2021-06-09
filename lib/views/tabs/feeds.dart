@@ -444,13 +444,17 @@ class _FeedsPageState extends State<FeedsPage> {
                                         .data()
                                         .containsKey('OwnerDisplayName') ==
                                     null) {
-                                  OwnerDisplayName = aja['OwnerDisplayName'];
-
-                                  OwnerPhotourl = aja['OwnerPhotourl'];
-
-                                  OwnerDescription = aja['OwnerDescription'];
-                                }
-
+                                  OwnerDisplayName = aja['OwnerDisplayName'];}
+    if (snapshot.data.docs[index]
+        .data()
+        .containsKey('OwnerPhotourl') ==
+    null) {
+                                  OwnerPhotourl = aja['OwnerPhotourl'];}
+    if (snapshot.data.docs[index]
+        .data()
+        .containsKey('OwnerDescription') ==
+    null) {
+                                  OwnerDescription = aja['OwnerDescription'];}
                                 bool shared;
 
                                 if (snapshot.data.docs[index]
@@ -461,10 +465,15 @@ class _FeedsPageState extends State<FeedsPage> {
                                 }
 
                                 String uid = aja["uid"];
-
-                                int shares = aja["shares"];
+                                int shares;
+    if (snapshot.data.docs[index]
+        .data()
+        .containsKey('shares') ==
+    null) {
+                                shares = aja["shares"];}
 
                                 String url;
+
 
                                 Timestamp timestamp = aja['timestamp'];
 
@@ -474,10 +483,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                 int cam = aja['cam'];
 
                                 String postId = aja['postId'];
+                                int likes;
 
-                                int likes = aja['likes'];
+      likes = aja['likes'];
+                                int comments;
 
-                                int comments = aja['comments'];
+                                comments = aja['comments'];
+
 
                                 Timestamp OwnertimeStamp;
                                 String OwnerUid;
@@ -486,10 +498,13 @@ class _FeedsPageState extends State<FeedsPage> {
                                         .data()
                                         .containsKey('OwnertimeStamp') ==
                                     null) {
-                                  OwnertimeStamp = aja['OwnerTimeStamp'];
+                                  OwnertimeStamp = aja['OwnerTimeStamp'];}
+                                  if (snapshot.data.docs[index]
+                                      .data()
+                                      .containsKey('OwnerUid') ==
+                                  null) {
+                                  OwnerUid = aja['OwnerUid'];}
 
-                                  OwnerUid = aja['OwnerUid'];
-                                }
 
 //print("push");
                                 bool isVideo = aja['isVideo'];

@@ -155,7 +155,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   // }
 
   bool private;
-
+  bool tempPrivate = false;
   fetchProfileData() async {
     currUser =  FirebaseAuth.instance.currentUser;
     try {
@@ -447,7 +447,12 @@ bool req=true;
 //                DocumentSnapshot sd = snapshot.data.documents[index];
                       var aja = snapshot.data.docs[index];
                       String photoUrl = aja["photoURL"];
-                      String coverPhotoUrl = aja["coverPhotoUrl"];
+                      String coverPhotoUrl;
+                      if (snapshot.data.docs[index]
+                          .data()
+                          .containsKey('coverPhotoUrl') ==
+                          null){
+                        coverPhotoUrl = aja["coverPhotoUrl"];}
                       String uid = aja["uid"];
                       String displayName = aja["displayName"];
                       String bio = aja["bio"];
@@ -889,11 +894,11 @@ bool req=true;
                                                           child:
                                                           new Text(
                                                             (followed == false)
-                                                                ? "Follow"
+                                                                ? "Follow":(private == true)?"Requested"
                                                                 : "Unfollow",
                                                             style:
                                                             TextStyle(
-                                                              color: (followed == false) ? Colors.purple : Colors.red,
+                                                              color: (followed == false) ? Colors.purple :(private == true)?Colors.amber:  Colors.red,
                                                             ),
                                                           ),
                                                           onPressed:
@@ -926,14 +931,14 @@ bool req=true;
                                                                                   followed = true;
                                                                                 });
 
-                                                                                //DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
+                                                                                DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
                                                                                 OtherUserProfile.FOLLOWERS=followers;
                                                                                 OtherUserProfile.UID = uid;
                                                                                 OtherUserProfile.UIDCON = uidControllerX.text;
                                                                                 OtherUserProfile.PURLX = photoUrlX;
 
 
-                                                                                //Notification(displayNamecurrentUser, followers);
+                                                                                Notification(displayNamecurrentUser, followers);
                                                                                 // DatabaseService().followingUser(following,uid, displayNamecurrentUser);
                                                                                 //DatabaseService().increaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid, photoUrl);
                                                                                 OtherUserProfile.UIDX = uidX;
@@ -949,7 +954,7 @@ bool req=true;
                                                                               if (timer?.isActive ?? false)
                                                                                 timer.cancel(); //cancel if [timer] is null or running
                                                                               timer = Timer(const Duration(milliseconds: 1500), () {
-                                                                                //DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
+                                                                                DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
 
                                                                                 DeleteRequest();
 
@@ -1003,8 +1008,8 @@ bool req=true;
                                                     )
                                                   ],
                                                 ),
-                                              ),
-                                              if (private == true)
+                                              ),//temporary change, use private bool for permanent
+                                              if (private ==  true && followed ==  false)
                                                 Container(
                                                     child: Center(
                                                   child: Row(
