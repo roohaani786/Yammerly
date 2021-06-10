@@ -954,11 +954,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               if (timer?.isActive ?? false)
                                                                 timer.cancel(); //cancel if [timer] is null or running
                                                               timer = Timer(const Duration(milliseconds: 1500), () {
-                                                                //DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
+                                                                DatabaseService().unfollowUser(followers, uid, displayNamecurrentUser);
 
-                                                                DeleteRequest();
+                                                               // DeleteRequest();
 
-                                                                //DatabaseService().decreaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid);
+                                                                DatabaseService().decreaseFollowing(uidX, followingX, displayNamecurrentUser, displayNameX, uid);
                                                                 setState(() {
                                                                   //getFollowers();
                                                                   followed = false;
