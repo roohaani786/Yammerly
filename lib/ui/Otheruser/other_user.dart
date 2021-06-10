@@ -15,6 +15,7 @@ import 'package:techstagram/ui/Otheruser/otherfollowerlist.dart';
 import 'package:techstagram/ui/ProfileEdit.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/utils/utils.dart';
+import 'package:techstagram/views/tabs/notifications.dart';
 
 import '../HomePage.dart';
 import '../aboutuser.dart';
@@ -34,6 +35,14 @@ class OtherUserProfile extends StatefulWidget {
   static var UIDX;
   static var FOLLOWINGX;
   static var DISNX;
+
+  static bool pruvi;
+
+  // static arebhayya(){
+  //   fullo=true;
+  //   print(fullo);
+  //   print("haona to ky akaru mai");
+  // }
   OtherUserProfile(
       {this.uid, this.displayNamecurrentUser, this.displayName, this.uidX});
 
@@ -63,6 +72,8 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   bool followed = false;
 
+
+
   ScrollController scrollController = new ScrollController();
 
   TextEditingController uidControllerX, followingControllerX;
@@ -91,7 +102,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     fetchProfileData();
     getUserPosts(uid);
     fetchOProfileData();
-    checkPrivate();
+    //checkPrivate();
   }
 
   int followingX;
@@ -155,6 +166,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   // }
 
   bool private;
+  //=OtherUserProfile.pruvi;
 
   fetchProfileData() async {
     currUser =  FirebaseAuth.instance.currentUser;
@@ -181,39 +193,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 
   bool show;
 
-  checkPrivate() async {
-    if (private == true) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('followers')
-          .doc(displayNamecurrentUser)
-          .get()
-          .then((value) {
-        if (value.exists) {
-          print(uidX);
-          print("if me aaya");
-          setState(() {
-            show = true;
-          });
-        } else {
-          print("else me aaya");
-          setState(() {
-            show = false;
-          });
-        }
-      });
-    } else if (private == false) {
-      print("private nahi hai");
-      setState(() {
-        show = true;
-      });
-    } else {
-      setState(() {
-        show = true;
-      });
-    }
-  }
 
   fetchOProfileData() async {
     currUser =FirebaseAuth.instance.currentUser;
@@ -412,7 +391,6 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     final deviceWidth = MediaQuery.of(context).size.width;
 
     Stream userQuery;
-
     userQuery = FirebaseFirestore.instance
         .collection('users')
         .where('displayName', isEqualTo: displayName)
@@ -423,7 +401,11 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
     print("cv");
     print(displayNameX);
     print("434");
-
+    // if(followed == true){
+    //   setState(() {
+    //
+    //   });
+    // }
     // TODO: implement build
     return WillPopScope(
       onWillPop: () => _onWillPop(),
@@ -440,6 +422,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
         body: StreamBuilder(
           stream: userQuery,
           builder: (context, snapshot) {
+
             return snapshot.hasData
                 ? ListView.builder(
               itemCount: snapshot.data.docs.length,
@@ -472,6 +455,50 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                 }
 
                 getfollowers(displayNamecurrentUser, uid);
+                checkPrivate() async {
+                  if (private == true) {
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(uidX)
+                        .collection('following')
+                        .doc(displayNameX)
+                        .get()
+                        .then((value) {
+                      if (value.exists) {
+                        print(uidX);
+                        print("if me aaya");
+                        setState(() {
+                          show = true;
+                        });
+                      } else {
+                        print("else me aaya");
+                        setState(() {
+                          show = false;
+                        });
+                      }
+                    });
+                  } else if (private == false) {
+                    print("private nahi hai");
+                    setState(() {
+                      show = true;
+                    });
+                  } else {
+                    setState(() {
+                      show = true;
+                    });
+                  }
+                }
+                checkPrivate();
+
+                cheking(){
+                  FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(uidX)
+                      .collection('following')
+                      .where('followinguid',isEqualTo: uid);
+
+                }
+
                 return (uid != null)
                     ? SingleChildScrollView(
                   child: SafeArea(
@@ -926,10 +953,10 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               timer.cancel(); //cancel if [timer] is null or running
                                                             timer = Timer(const Duration(milliseconds: 1500), () {
 
-                                                              setState(() {
-                                                                //getFollowers();
-                                                                followed = true;
-                                                              });
+                                                              // setState(() {
+                                                              //   //getFollowers();
+                                                              //   followed = true;
+                                                              // });
 
                                                               //DatabaseService().followUser(followers, uid, displayNamecurrentUser, uidControllerX.text, photoUrlX);
                                                               OtherUserProfile.FOLLOWERS=followers;
@@ -1009,7 +1036,9 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                       ],
                                     ),
                                   ),
-                                  if (private == true)
+                                  //checkPrivate(),
+                                  if (show == false)
+                                  //if (OtherUserProfile == true)
                                     Container(
                                         child: Center(
                                           child: Row(
@@ -1049,6 +1078,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                           ),
                                         ))
                                   else
+                                    //if(private == false)
                                     Container(
                                       height: MediaQuery.of(context)
                                           .size

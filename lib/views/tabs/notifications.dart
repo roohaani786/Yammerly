@@ -517,6 +517,11 @@ class _NotificationRequestState extends State<NotificationRequest> {
                                                   .collection('request')
                                                   .doc(widget.RequestId)
                                                   .delete();
+
+                                              //OtherUserProfile.pruvi==false;
+
+                                              setState(() {
+                                              });
                                             },
                                             icon: Icon(Icons.check),
                                             color: Colors.green,
