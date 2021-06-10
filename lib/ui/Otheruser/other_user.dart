@@ -447,7 +447,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
 //                DocumentSnapshot sd = snapshot.data.documents[index];
                 var aja = snapshot.data.docs[index];
                 String photoUrl = aja["photoURL"];
-                String coverPhotoUrl = aja["coverPhotoUrl"];
+                String coverPhotoUrl;
+                if (snapshot.data.docs[index]
+                    .data()
+                    .containsKey('coverPhotoUrl') ==
+                    null) {
+                  coverPhotoUrl = aja["coverPhotoUrl"];}
                 String uid = aja["uid"];
                 String displayName = aja["displayName"];
                 String bio = aja["bio"];
