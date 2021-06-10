@@ -20,8 +20,9 @@ import 'package:video_player/video_player.dart';
 class CameraExampleHome extends StatefulWidget {
   final int cam;
   final bool check;
-  
+
   const CameraExampleHome({Key key, this.cam, this.check}) : super(key: key);
+
   @override
   _CameraExampleHomeState createState() {
     return _CameraExampleHomeState(cam: cam, check: check);
@@ -47,6 +48,7 @@ void logError(String code, String message) =>
 class _CameraExampleHomeState extends State<CameraExampleHome>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   _CameraExampleHomeState({this.cam, this.check});
+
   CameraController controller;
   bool check = false;
   XFile imageFile;
@@ -130,6 +132,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   int cam = 0;
+
   Future<void> _onCameraSwitch() async {
     //final CameraDescription cameraDescription =
     //switching camera
@@ -215,8 +218,10 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-bool timeronpress =false;
-bool flash = true;
+  bool timeronpress = false;
+
+  // bool flash = true;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -274,8 +279,12 @@ bool flash = true;
                             ),
                           ),
                           (timeronpress)
-                          ?Positioned( bottom: 80.0,
-                            right: 165.0, child:   TimerText(dependencies: dependencies),):Container(),
+                              ? Positioned(
+                                  bottom: 80.0,
+                                  right: 165.0,
+                                  child: TimerText(dependencies: dependencies),
+                                )
+                              : Container(),
                           Column(
                             children: [
                               Padding(
@@ -484,10 +493,8 @@ bool flash = true;
     );
   }
 
-  Widget   _flashModeControlRowWidget() {
-
-    {
-      return SizeTransition(
+  Widget _flashModeControlRowWidget() {
+    return SizeTransition(
       sizeFactor: _flashModeControlRowAnimation,
       child: ClipRect(
         child: Row(
@@ -534,9 +541,40 @@ bool flash = true;
         ),
       ),
     );
-    }
   }
 
+  // return SizeTransition(
+  //   sizeFactor: _flashModeControlRowAnimation,
+  //   child: ClipRect(
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //       mainAxisSize: MainAxisSize.max,
+  //       children: [
+  //         IconButton(
+  //           icon: Icon(Icons.flash_off),
+  //           color: controller?.value?.flashMode == FlashMode.off
+  //               ? Colors.orange
+  //               : Colors.white,
+  //           onPressed: controller != null
+  //               ? () => onSetFlashModeButtonPressed(FlashMode.off)
+  //               : null,
+  //         ),
+  //
+  //         IconButton(
+  //           //this should be automatic not torch
+  //           icon: Icon(Icons.flash_on),
+  //           color: controller?.value?.flashMode == FlashMode.always
+  //               ? Colors.orange
+  //               : Colors.white,
+  //           onPressed: controller != null
+  //               ? () => onSetFlashModeButtonPressed(FlashMode.always)
+  //               : null,
+  //         ),
+  //
+  //       ],
+  //     ),
+  //   ),
+  // );
 
   Widget _exposureModeControlRowWidget() {
     final ButtonStyle styleAuto = TextButton.styleFrom(
@@ -669,6 +707,7 @@ bool flash = true;
 
   File _image;
   bool upload = false;
+
   Future pickImage() async {
     await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
       setState(() {
@@ -702,6 +741,7 @@ bool flash = true;
 
   bool _isRecordingMode = false;
   bool _isRecording = false;
+
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
     return Container(
@@ -783,148 +823,143 @@ bool flash = true;
           //   ),
           // ),
 
-          (!_isRecordingMode)
-              ? CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 28.0,
-                  //camera button
-                  child: GestureDetector(
-                    onLongPressStart: (details) async{
-                      onVideoRecordButtonPressed();
-                      setState(() {
-                        _isRecording = true;
-                        timeronpress =true;
-                        (controller?.value?.flashMode == FlashMode.auto)
-                            ?onSetFlashModeButtonPressed(FlashMode.auto)
-                            :(controller?.value?.flashMode == FlashMode.torch)
-                            ?onSetFlashModeButtonPressed(FlashMode.torch)
-                            :onSetFlashModeButtonPressed(FlashMode.off);
-                      });
-                    },
-                    onLongPressEnd: (details)async {
-                      onStopButtonPressed();
-                      setState(() {
-
-                        _isRecording = false;
-                       timeronpress = false;
-                      });
-                    },
-                    child: IconButton(
-                      icon: _isRecording
-                          ? Icon(Icons.radio_button_on,color: Colors.red.shade400,)
-                          : Icon(Icons.camera_alt),
-                      color: Colors.black,
-                      onPressed: controller != null &&
-                              controller.value.isInitialized &&
-                              !controller.value.isRecordingVideo
-                          ? onTakePictureButtonPressed
-                          : null,
-                    ),
-                  ),
-                )
-              : Column(
-                  children: [
-                    Container(
-                        height: 20.0,
-                        child: TimerText(dependencies: dependencies)),
-                    Row(
-                      children: [
-                        //when recording button pressed this single button appears when clicked recording starts
-
-
-                        IconButton(
-                          icon: const Icon(Icons.videocam),
-                          color: Colors.white,
-                          onPressed: controller != null &&
-                                  controller.value.isInitialized &&
-                                  !controller.value.isRecordingVideo
-                              ? onVideoRecordButtonPressed
-                              : null,
-                        ),
-
-                        GestureDetector(
-                          onTap: () {
-                            // rightButtonPressed();
-                            //   dependencies.stopwatch.stop();
-
-
-                            setState(() {
-                              dependencies.stopwatch.stop();
-                            });
-                          },
-                          child: IconButton(
-                            icon: controller != null &&
-                                    controller.value.isRecordingPaused
-                                ? Icon(Icons.play_arrow)
-                                : Icon(Icons.pause),
-                            color: Colors.white,
-                            onPressed: controller != null &&
-                                    controller.value.isInitialized &&
-                                    controller.value.isRecordingVideo
-                                ? (controller != null &&
-                                        controller.value.isRecordingPaused
-                                    ? onResumeButtonPressed
-                                    : onPauseButtonPressed)
-                                : null,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            dependencies.stopwatch.stop();
-                          },
-                          child: IconButton(
-                            icon: const Icon(Icons.stop),
-                            color: Colors.red,
-                            onPressed: controller != null &&
-                                    controller.value.isInitialized &&
-                                    controller.value.isRecordingVideo
-                                ? onStopButtonPressed
-                                : null,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+          if (!_isRecordingMode)
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 28.0,
+              //camera button
+              child: GestureDetector(
+                onLongPressStart: (details) async {
+                  onVideoRecordButtonPressed();
+                  setState(() {
+                    _isRecording = true;
+                    timeronpress = true;
+                  });
+                },
+                onLongPressEnd: (details) async {
+                  onStopButtonPressed();
+                  setState(() {
+                    _isRecording = false;
+                    timeronpress = false;
+                  });
+                },
+                child: IconButton(
+                  icon: _isRecording
+                      ? Icon(
+                          Icons.radio_button_on,
+                          color: Colors.red.shade400,
+                        )
+                      : Icon(Icons.camera_alt),
+                  color: Colors.black,
+                  onPressed: controller != null &&
+                          controller.value.isInitialized &&
+                          !controller.value.isRecordingVideo
+                      ? onTakePictureButtonPressed
+                      : null,
                 ),
-
-          IconButton(
-            // icon: Icon(
-            //   Icons.camera_alt,color: Colors.transparent,
+              ),
+            )
+          else Container(),
+            // Column(
+            //   children: [
+            //     Container(
+            //         height: 20.0, child: TimerText(dependencies: dependencies)),
+            //     Row(
+            //       children: [
+            //         //when recording button pressed this single button appears when clicked recording starts
+            //
+            //         // IconButton(
+            //         //   icon: const Icon(Icons.videocam),
+            //         //   color: Colors.white,
+            //         //   onPressed: controller != null &&
+            //         //       controller.value.isInitialized &&
+            //         //       !controller.value.isRecordingVideo
+            //         //       ? onVideoRecordButtonPressed
+            //         //       : null,
+            //         // ),
+            //
+            //         GestureDetector(
+            //           onTap: () {
+            //             // rightButtonPressed();
+            //             //   dependencies.stopwatch.stop();
+            //
+            //             setState(() {
+            //               dependencies.stopwatch.stop();
+            //             });
+            //           },
+            //           child: IconButton(
+            //             icon: controller != null &&
+            //                     controller.value.isRecordingPaused
+            //                 ? Icon(Icons.play_arrow)
+            //                 : Icon(Icons.pause),
+            //             color: Colors.white,
+            //             onPressed: controller != null &&
+            //                     controller.value.isInitialized &&
+            //                     controller.value.isRecordingVideo
+            //                 ? (controller != null &&
+            //                         controller.value.isRecordingPaused
+            //                     ? onResumeButtonPressed
+            //                     : onPauseButtonPressed)
+            //                 : null,
+            //           ),
+            //         ),
+            //         GestureDetector(
+            //           onTap: () {
+            //             dependencies.stopwatch.stop();
+            //           },
+            //           child: IconButton(
+            //             icon: const Icon(Icons.stop),
+            //             color: Colors.red,
+            //             onPressed: controller != null &&
+            //                     controller.value.isInitialized &&
+            //                     controller.value.isRecordingVideo
+            //                 ? onStopButtonPressed
+            //                 : null,
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ],
             // ),
-            // onPressed: (){},
-            icon: Icon(
-              (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-              color: Colors.white,
-              size: 30,
-            ),
-            onPressed: () {
-              setState(() {
-                _isRecordingMode = !_isRecordingMode;
-              });
-
-              if (_isRecordingMode) {
-                print("video");
-                controller != null &&
-                        controller.value.isInitialized &&
-                        !controller.value.isRecordingVideo
-                    //camera or video one at a time
-                    ? print("recording abhi chalu nhi hui hai")
-                    //  ? onVideoRecordButtonPressed()
-                    : print("nahi gaya");
-
-              } else {
-                stopVideoRecording();
-                dependencies.stopwatch.reset();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CameraExampleHome(
-                            cam: cam,
-                          )),
-                );
-              }
-            },
-          ),
+SizedBox(width: 45,)
+          // IconButton(
+          //   // icon: Icon(
+          //   //   Icons.camera_alt,color: Colors.transparent,
+          //   // ),
+          //   // onPressed: (){},
+          //   icon: Icon(
+          //     (_isRecordingMode) ? Icons. : Icons.videocam,
+          //     color: Colors.white,
+          //     size: 30,
+          //   ),
+          //   onPressed: () {
+          //     setState(() {
+          //       _isRecordingMode = !_isRecordingMode;
+          //       //    flash = false;
+          //     });
+          //
+          //     if (_isRecordingMode) {
+          //       print("video");
+          //       controller != null &&
+          //               controller.value.isInitialized &&
+          //               !controller.value.isRecordingVideo
+          //           //camera or video one at a time
+          //           // ? print("recording abhi chalu nhi hui hai")
+          //           ? onVideoRecordButtonPressed()
+          //           : print("nahi gaya");
+          //     } else {
+          //       stopVideoRecording();
+          //       dependencies.stopwatch.reset();
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => CameraExampleHome(
+          //                   cam: cam,
+          //                 )),
+          //       );
+          //     }
+          //   },
+          // ),
         ],
       ),
     );
@@ -1108,6 +1143,9 @@ bool flash = true;
   }
 
   void onVideoRecordButtonPressed() {
+    (controller?.value?.flashMode == FlashMode.off)
+        ? onSetFlashModeButtonPressed(FlashMode.off)
+        : onSetFlashModeButtonPressed(FlashMode.torch);
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
         rightButtonPressed();
@@ -1117,7 +1155,6 @@ bool flash = true;
     startVideoRecording().then((_) {
       maxVideoDuration = Duration(seconds: 31);
       Timer(maxVideoDuration, () {
-        print("timer chalu");
         (controller != null &&
                 controller.value.isInitialized &&
                 controller.value.isRecordingVideo &&
@@ -1130,11 +1167,13 @@ bool flash = true;
   }
 
   void onStopButtonPressed() {
+    onSetFlashModeButtonPressed(FlashMode.off);
     print("recording band hogyi ");
     stopVideoRecording().then((file) {
       if (mounted && file != null)
         setState(() {
           videoFile = file;
+          videoController?.dispose();
           String vf = file.path;
           Navigator.push(
             context,
@@ -1167,7 +1206,6 @@ bool flash = true;
           dependencies.stopwatch.start();
           maxVideoDuration -= pausedVideoDuration;
           Timer(maxVideoDuration, () {
-            print("timer chalu");
             (controller != null &&
                     controller.value.isInitialized &&
                     controller.value.isRecordingVideo &&
@@ -1331,7 +1369,9 @@ bool flash = true;
 class CameraApp extends StatelessWidget {
   final int cam;
   final bool check;
+
   const CameraApp({Key key, this.cam, this.check}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -1378,6 +1418,7 @@ class Dependencies {
 
 class TimerText extends StatefulWidget {
   TimerText({this.dependencies});
+
   final Dependencies dependencies;
 
   TimerTextState createState() =>
@@ -1386,6 +1427,7 @@ class TimerText extends StatefulWidget {
 
 class TimerTextState extends State<TimerText> {
   TimerTextState({this.dependencies});
+
   final Dependencies dependencies;
   Timer timer;
   int milliseconds;
@@ -1446,6 +1488,7 @@ class TimerTextState extends State<TimerText> {
 
 class MinutesAndSeconds extends StatefulWidget {
   MinutesAndSeconds({this.dependencies});
+
   final Dependencies dependencies;
 
   MinutesAndSecondsState createState() =>
@@ -1454,6 +1497,7 @@ class MinutesAndSeconds extends StatefulWidget {
 
 class MinutesAndSecondsState extends State<MinutesAndSeconds> {
   MinutesAndSecondsState({this.dependencies});
+
   final Dependencies dependencies;
 
   int minutes = 0;
@@ -1484,6 +1528,7 @@ class MinutesAndSecondsState extends State<MinutesAndSeconds> {
 
 class Hundreds extends StatefulWidget {
   Hundreds({this.dependencies});
+
   final Dependencies dependencies;
 
   HundredsState createState() => new HundredsState(dependencies: dependencies);
@@ -1491,6 +1536,7 @@ class Hundreds extends StatefulWidget {
 
 class HundredsState extends State<Hundreds> {
   HundredsState({this.dependencies});
+
   final Dependencies dependencies;
 
   int hundreds = 0;
