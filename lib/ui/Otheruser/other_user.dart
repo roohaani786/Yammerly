@@ -285,6 +285,31 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
   }
 
   bool liked = false;
+  bool request = false;
+
+  getRequest(String displayname, String uid){
+    print("request");
+    print(displayname);
+    print(uid);
+    print(displayNamecurrentUser);
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('request')
+        .doc(displayNamecurrentUser)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        setState(() {
+          request = true;
+        });
+      }else{
+        setState(() {
+          request = false;
+        });
+      }
+    });
+  }
 
   getfollowers(String displayNamecurrentUser, String uid) {
     FirebaseFirestore.instance
@@ -380,7 +405,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
         .collection("users")
         .doc(uid)
         .collection("request")
-        .doc(RequestId2)
+        .doc(displayNameCurrUser)
         .set({
       "RequestId": RequestId2,
       "username": displayNameCurrUser,
@@ -399,7 +424,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
         .doc(uid)
         .collection('request')
     //.where('displayName','==',displayName);
-        .doc(RequestId2)
+        .doc(displayNamecurrentUser)
         .delete();
   }
 
@@ -471,6 +496,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                   followed = false;
                 }
 
+                getRequest(displayName,uid);
                 getfollowers(displayNamecurrentUser, uid);
                 return (uid != null)
                     ? SingleChildScrollView(
@@ -893,12 +919,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                               .white,
                                                           child:
                                                           new Text(
-                                                            (followed == false)
+                                                            (followed == false&& request == false)
                                                                 ? "Follow"
-                                                                : "Unfollow",
+                                                                : (followed==true && request == false)?"Unfollow":"Request",
                                                             style:
                                                             TextStyle(
-                                                              color: (followed == false) ? Colors.purple : Colors.red,
+                                                              color: (followed == false&& request == false) ? Colors.purple : (followed == true && request == false)?Colors.red:Colors.grey,
                                                             ),
                                                           ),
                                                           onPressed:
@@ -986,7 +1012,7 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
                                                           shape:
                                                           RoundedRectangleBorder(
                                                             side:
-                                                            BorderSide(color: (followed == false) ? Colors.purple : Colors.red, width: 2),
+                                                            BorderSide(color: (followed == false && request == false) ? Colors.purple : (followed == true && request == false)?Colors.red:Colors.grey, width: 2),
                                                             borderRadius:
                                                             BorderRadius.circular(30.0),
                                                           )),

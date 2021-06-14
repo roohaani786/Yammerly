@@ -172,7 +172,7 @@ class _VideoPreviewState extends State<VideoPreview>
                                               //     return CameraScreen(cam: cam,);
                                               //   }
                                               // ));
-                                              //  _pauseVideo();
+                                              _pauseVideo();
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

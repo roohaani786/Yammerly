@@ -121,8 +121,10 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
         ),
       ),
       body: SingleChildScrollView(
-        child: StreamBuilder<QuerySnapshot>(
-          stream: (searchKey != "" && searchKey != null && allSearches.length != null)
+        child: (allSearches == [])?Container(
+          child: Text("history"),
+        ):StreamBuilder<QuerySnapshot>(
+          stream: (searchKey != "" && searchKey != null && allSearches != [])//&& allSearches.length != null)
               ? streamQuery
               :
 //        FirebaseFirestore.instance.collection("users").snapshots(),

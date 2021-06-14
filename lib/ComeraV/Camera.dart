@@ -710,30 +710,30 @@ bool flash = true;
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         //mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          IconButton(
-              icon: Icon(
-                FontAwesomeIcons.photoVideo,
-                color: Colors.white60,
-              ),
-              onPressed: () {
-                pickImage();
-                if (upload == true) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UploadImage(
-                            file: _image, shared: false, isVideo: false),
-                      ));
-                } else {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CameraExampleHome(
-                          cam: 0,
-                        ),
-                      ));
-                }
-              }),
+          // IconButton(
+          //     icon: Icon(
+          //       FontAwesomeIcons.photoVideo,
+          //       color: Colors.white60,
+          //     ),
+          //     onPressed: () {
+          //       pickImage();
+          //       if (upload == true) {
+          //         Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //               builder: (context) => UploadImage(
+          //                   file: _image, shared: false, isVideo: false),
+          //             ));
+          //       } else {
+          //         Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //               builder: (context) => CameraExampleHome(
+          //                 cam: 0,
+          //               ),
+          //             ));
+          //       }
+          //     }),
 
           // FlatButton(
           //   color: Colors.transparent,
@@ -887,44 +887,44 @@ bool flash = true;
                   ],
                 ),
 
-          IconButton(
-            // icon: Icon(
-            //   Icons.camera_alt,color: Colors.transparent,
-            // ),
-            // onPressed: (){},
-            icon: Icon(
-              (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-              color: Colors.white,
-              size: 30,
-            ),
-            onPressed: () {
-              setState(() {
-                _isRecordingMode = !_isRecordingMode;
-              });
-
-              if (_isRecordingMode) {
-                print("video");
-                controller != null &&
-                        controller.value.isInitialized &&
-                        !controller.value.isRecordingVideo
-                    //camera or video one at a time
-                    ? print("recording abhi chalu nhi hui hai")
-                    //  ? onVideoRecordButtonPressed()
-                    : print("nahi gaya");
-
-              } else {
-                stopVideoRecording();
-                dependencies.stopwatch.reset();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CameraExampleHome(
-                            cam: cam,
-                          )),
-                );
-              }
-            },
-          ),
+          // IconButton(
+          //   // icon: Icon(
+          //   //   Icons.camera_alt,color: Colors.transparent,
+          //   // ),
+          //   // onPressed: (){},
+          //   icon: Icon(
+          //     (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
+          //     color: Colors.white,
+          //     size: 30,
+          //   ),
+          //   onPressed: () {
+          //     setState(() {
+          //       _isRecordingMode = !_isRecordingMode;
+          //     });
+          //
+          //     if (_isRecordingMode) {
+          //       print("video");
+          //       controller != null &&
+          //               controller.value.isInitialized &&
+          //               !controller.value.isRecordingVideo
+          //           //camera or video one at a time
+          //           ? print("recording abhi chalu nhi hui hai")
+          //           //  ? onVideoRecordButtonPressed()
+          //           : print("nahi gaya");
+          //
+          //     } else {
+          //       stopVideoRecording();
+          //       dependencies.stopwatch.reset();
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => CameraExampleHome(
+          //                   cam: cam,
+          //                 )),
+          //       );
+          //     }
+          //   },
+          // ),
         ],
       ),
     );
