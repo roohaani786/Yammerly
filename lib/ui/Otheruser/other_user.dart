@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/services/database.dart';
 import 'package:techstagram/ui/Otheruser/other_aboutuser.dart';
@@ -16,9 +15,7 @@ import 'package:techstagram/ui/ProfileEdit.dart';
 import 'package:techstagram/ui/post.dart';
 import 'package:techstagram/utils/utils.dart';
 
-import '../HomePage.dart';
 import '../aboutuser.dart';
-import '../profilesettings.dart';
 
 class OtherUserProfile extends StatefulWidget {
   final String uid;
