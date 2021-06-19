@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '22'
+    flutterVersionCode = '27'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.6'
+    flutterVersionName = '1.7.5'
 }
 
 apply plugin: 'com.android.application'
@@ -48,8 +48,8 @@ android {
         applicationId "com.affletus.techstagram"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 22
-        versionName "1.7"
+        versionCode 27
+        versionName "1.7.5"
     }
 
     signingConfigs {

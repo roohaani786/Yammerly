@@ -96,6 +96,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 
   ScrollController scrollController = new ScrollController();
 
+
   @override
   void initState() {
     firstNameController = TextEditingController();
@@ -121,13 +122,15 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     userPostsController = TextEditingController();
     uidController = TextEditingController();
 
+
     super.initState();
+    fetchProfileDataa();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
 
-    fetchProfileData();
+
 
   }
 
@@ -173,7 +176,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   //   }
   // }
 
-  fetchProfileData() async {
+  fetchProfileDataa() async {
+    print("bhai b");
     currUser = FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
@@ -181,20 +185,22 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
           .doc(currUser.uid)
           .get();
 
-      displayNameController.text = docSnap["displayName"];
-      firstNameController.text = docSnap["fname"];
-      lastNameController.text = docSnap["surname"];
-      uidController.text = docSnap["uid"];
-      emailController.text = docSnap["email"];
-      photoUrlController.text = docSnap["photoURL"];
-      phonenumberController.text = docSnap["phonenumber"];
-      emailVerify = docSnap["emailVerified"];
-      bioController.text = docSnap["bio"];
-      followers = docSnap["followers"];
-      following = docSnap["following"];
-      posts = docSnap["posts"];
-      private = docSnap["private"];
-      coverPhotoUrlController.text = docSnap['coverPhotoUrl'];
+      setState(() {
+        displayNameController.text = docSnap["displayName"];
+        firstNameController.text = docSnap["fname"];
+        lastNameController.text = docSnap["surname"];
+        uidController.text = docSnap["uid"];
+        emailController.text = docSnap["email"];
+        photoUrlController.text = docSnap["photoURL"];
+        phonenumberController.text = docSnap["phonenumber"];
+        emailVerify = docSnap["emailVerified"];
+        bioController.text = docSnap["bio"];
+        followers = docSnap["followers"];
+        following = docSnap["following"];
+        posts = docSnap["posts"];
+        private = docSnap["private"];
+        coverPhotoUrlController.text = docSnap['coverPhotoUrl'];
+      });
 
       setState(() {
         isLoading = false;
@@ -389,6 +395,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
       ),
     );
+    fetchProfileDataa();
     //print("jhj");
     //print(followersController.text);
     return Scaffold(
@@ -580,7 +587,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
                                       children: <Widget>[
-                                        (posts != null)?_buildStatItem(
+                                        (posts != 0 || posts != null)?_buildStatItem(
                                             "POSTS", posts.toString()):
                                         Center(child: CircularProgressIndicator()),
                                         GestureDetector(
@@ -596,7 +603,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                                 .text,
                                                           )),
                                                 ),
-                                            child: (followers != null)?
+                                            child: (followers != 0 || followers != null)?
                                             _buildStatItem("FOLLOWERS",
                                                followers.toString()):
                                                 Center(child: CircularProgressIndicator())
@@ -614,7 +621,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                                 .text,
                                                           )),
                                                 ),
-                                            child: (following != null)
+                                            child: (following != 0 || following != null)
                                             ?Flexible(
                                               child: _buildStatItem("FOLLOWING",
                                                   following.toString()),

@@ -57,6 +57,8 @@ class _searchtomessageState extends State<SearchtoMessage> {
               ? ListView.builder(
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index) {
+                    print(snapshot.data.documents[index]);
+                    print("isme kya hai");
                     return ChatRoomsTile(
                         snapshot.data.documents[index]
                             .data()["chatroomID"]
@@ -210,6 +212,8 @@ getChatRoomId(String a, String b) {
   print(a);
   print(b);
   print("get chat");
+  print(a.substring(0, 1).codeUnitAt(0));
+  print(b.substring(0, 1).codeUnitAt(0));
   if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
     print(a);
     return "$b\_$a";
