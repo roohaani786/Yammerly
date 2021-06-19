@@ -45,20 +45,21 @@ class _GalleryState extends State<Gallery> {
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
-            title: Text("Discard post ?"),
+            title: Text("Discard  ?"),
             content: Text("If you go back now, you will lose your post.",
                 style: TextStyle(color: Colors.deepPurple)),
             actions: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(right: 120.0),
-
                 child: Column(
                   children: [
-                    FlatButton(
-                      child: Text("Discard", style:
-                      TextStyle(
-                        color: Colors.red,
-                      ),),
+                    MaterialButton(
+                      child: Text(
+                        "Discard",
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
                       onPressed: () {
                         _deleteFile();
                         print(cam);
@@ -66,17 +67,21 @@ class _GalleryState extends State<Gallery> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return CameraExampleHome(cam: cam,);
+                              return CameraExampleHome(
+                                cam: cam,
+                              );
                             },
                           ),
                         );
                       },
                     ),
-                    FlatButton(
-                      child: Text("Keep", style:
-                      TextStyle(
-                        color: Colors.black,
-                      ),),
+                    MaterialButton(
+                      child: Text(
+                        "Keep",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -89,11 +94,9 @@ class _GalleryState extends State<Gallery> {
         });
   }
 
-
-
   getImage(File file) async {
     print("aa gayaaaa");
-    if(_selectedFile == null){
+    if (_selectedFile == null) {
       this.setState(() {
         _inProcess = true;
       });
@@ -101,8 +104,7 @@ class _GalleryState extends State<Gallery> {
       if (file != null) {
         File cropped = await ImageCropper.cropImage(
             sourcePath: file.path,
-            aspectRatio: CropAspectRatio(
-                ratioX: 1, ratioY: 1),
+            aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
             compressQuality: 100,
             maxWidth: 700,
             maxHeight: 700,
@@ -116,8 +118,7 @@ class _GalleryState extends State<Gallery> {
               backgroundColor: Colors.white,
               showCropGrid: false,
               dimmedLayerColor: Colors.black54,
-            )
-        );
+            ));
 
         this.setState(() {
           _selectedFile = cropped;
@@ -128,65 +129,54 @@ class _GalleryState extends State<Gallery> {
           _inProcess = false;
         });
       }
-    }else{
+    } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>
-            UploadImage(file: _selectedFile,
-              shared: false,isVideo:false)),
+        MaterialPageRoute(
+            builder: (context) => UploadImage(
+                file: _selectedFile, shared: false, isVideo: false)),
       );
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: GestureDetector(
-
         child: Scaffold(
-
           body: Container(
-
             child: Stack(
               children: [
-
                 Container(
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height,
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .height,
-                  child: (cam == 1) ? Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.rotationY(math.pi),
-                    child: (_selectedFile != null) ? Image.file(
-
-                      _selectedFile,
-                      width: 250,
-                      height: 250,
-                      fit: BoxFit.contain,
-                    ) : Image.file(
-                        File(currentFilePath.path),
-                        fit: BoxFit.cover
-                    ),
-                  ) : (_selectedFile != null) ? Image.file(
-                    _selectedFile,
-                    width: 250,
-                    height: 250,
-                    fit: BoxFit.contain,
-                  ) : Image.file(
-                    File(currentFilePath.path),
-                    fit: BoxFit.cover,
-                  ),
-
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.height,
+                  child: (cam == 1)
+                      ? Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.rotationY(math.pi),
+                          child: (_selectedFile != null)
+                              ? Image.file(
+                                  _selectedFile,
+                                  width: 250,
+                                  height: 250,
+                                  fit: BoxFit.contain,
+                                )
+                              : Image.file(File(currentFilePath.path),
+                                  fit: BoxFit.cover),
+                        )
+                      : (_selectedFile != null)
+                          ? Image.file(
+                              _selectedFile,
+                              width: 250,
+                              height: 250,
+                              fit: BoxFit.contain,
+                            )
+                          : Image.file(
+                              File(currentFilePath.path),
+                              fit: BoxFit.cover,
+                            ),
                 ),
-
 
                 // Padding(
                 //   padding: const EdgeInsets.only(top: 30.0, left: 6.0),
@@ -204,73 +194,78 @@ class _GalleryState extends State<Gallery> {
                   padding: const EdgeInsets.only(top: 30.0, left: 6.0),
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: IconButton(icon: Icon(Icons.close,
-                      color: Colors.grey.shade400,
-                      size: 30.0,), onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: Colors.white,
-                              title: Text("Discard post ?"),
-                              content: Text(
-                                  "If you go back now, you will loose your post.",
-                                  style: TextStyle(
-                                      color: Colors.deepPurple
-                                  )),
-                              actions: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 120.0),
-
-                                  child: Column(
-                                    children: [
-                                      FlatButton(
-                                        child: Text("Discard", style:
-                                        TextStyle(
-                                          color: Colors.red,
-                                        ),),
-                                        onPressed: () {
-                                          _deleteFile();
-                                          print("dsdhj");
-                                          print(cam);
-                                          // Navigator.pop(context,
-                                          // MaterialPageRoute(
-                                          //   builder: (context) {
-                                          //     return CameraScreen(cam: cam,);
-                                          //   }
-                                          // ));
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) {
-                                                return CameraExampleHome(cam: cam,);
-                                              },
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.grey.shade400,
+                        size: 30.0,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor: Colors.white,
+                                title: Text("Discard post ?"),
+                                content: Text(
+                                    "If you go back now, you will loose your post.",
+                                    style: TextStyle(color: Colors.deepPurple)),
+                                actions: <Widget>[
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(right: 120.0),
+                                    child: Column(
+                                      children: [
+                                        MaterialButton(
+                                          child: Text(
+                                            "Discard",
+                                            style: TextStyle(
+                                              color: Colors.red,
                                             ),
-                                          );
-                                        },
-                                      ),
-                                      FlatButton(
-                                        child: Text("Keep", style:
-                                        TextStyle(
-                                          color: Colors.black,
-                                        ),),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      )
-                                    ],
-                                  ),
-
-                                )
-                              ],
-                            );
-                          });
-                    },
+                                          ),
+                                          onPressed: () {
+                                            _deleteFile();
+                                            print("dsdhj");
+                                            print(cam);
+                                            // Navigator.pop(context,
+                                            // MaterialPageRoute(
+                                            //   builder: (context) {
+                                            //     return CameraScreen(cam: cam,);
+                                            //   }R
+                                            // ));
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) {
+                                                  return CameraExampleHome(
+                                                    cam: cam,
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        MaterialButton(
+                                          child: Text(
+                                            "Keep",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              );
+                            });
+                      },
                     ),
                   ),
                 ),
-
-
 
 //            Padding(
 //              padding: const EdgeInsets.only(top: 30.0,right: 6.0),
@@ -298,25 +293,30 @@ class _GalleryState extends State<Gallery> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 0.0),
                       child: ButtonTheme(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius
-                            .circular(20)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
                         child: Container(
                           width: 230.0,
-                          child: FlatButton(
+                          child: MaterialButton(
                             color: Colors.transparent,
                             onPressed: () =>
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) =>
-                            //       UploadImage(file: File(currentFilePath),
-                            //         shared: false,)),
-                            // ),
-                            (_selectedFile == null)?
-                            getImage(File(currentFilePath.path)):
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => UploadImage(isVideo:false,file: _selectedFile,shared: false,)),
-                            ),
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) =>
+                                //       UploadImage(file: File(currentFilePath),
+                                //         shared: false,)),
+                                // ),
+                                (_selectedFile == null)
+                                    ? getImage(File(currentFilePath.path))
+                                    : Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => UploadImage(
+                                                  isVideo: false,
+                                                  file: _selectedFile,
+                                                  shared: false,
+                                                )),
+                                      ),
 
                             child: Row(),
 //                            child: Row(
@@ -348,12 +348,12 @@ class _GalleryState extends State<Gallery> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 20.0, right: 30.0),
                       child: ButtonTheme(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius
-                            .circular(20)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
                         child: Container(
                           width: 95.0,
-                          child: RaisedButton(
-                            color: Colors.grey.shade200,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(primary: Colors.grey.shade200),
                             onPressed: () =>
                                 getImage(File(currentFilePath.path)),
                             // Navigator.push(
@@ -373,9 +373,12 @@ class _GalleryState extends State<Gallery> {
 
                             child: Row(
                               children: [
-                                Text("Post", style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),),
+                                Text(
+                                  "Post",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 Icon(Icons.keyboard_arrow_right),
                               ],
                             ),
@@ -385,17 +388,15 @@ class _GalleryState extends State<Gallery> {
                     ),
                   ),
                 ),
-                (_inProcess) ? Container(
-                  color: Colors.white,
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.95,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ) : Center()
-
+                (_inProcess)
+                    ? Container(
+                        color: Colors.white,
+                        height: MediaQuery.of(context).size.height * 0.95,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : Center()
               ],
             ),
           ),
@@ -420,7 +421,6 @@ class _GalleryState extends State<Gallery> {
     print('deleted');
     setState(() {});
   }
-
 
 //  Future uploadFile() async {
 //

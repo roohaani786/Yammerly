@@ -2,10 +2,14 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class Users {
+
+  // THIS CLASS WAS PREVIOUSLY User{}, but due to the firebase new package update, which uses User class instead of FirebaseUser, this class has been renamed to Users
+
   final String uid;
 
-  User({this.uid});
+  Users({this.uid});
+  UserData userData = UserData();
 }
 
 class UserData {
@@ -60,10 +64,10 @@ class UserData {
   }
   getUserData(ProfileNotifier profileNotifier) async {
     QuerySnapshot snapshot =
-    await Firestore.instance.collection("users").getDocuments();
+    await FirebaseFirestore.instance.collection("users").get();
     List<UserData> _profileList = [];
-    snapshot.documents.forEach((doc) {
-      UserData data = UserData.fromMap(doc.data);
+    snapshot.docs.forEach((doc) {
+      UserData data = UserData.fromMap(doc.data());
       _profileList.add(data);
     });
 

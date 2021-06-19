@@ -1,5 +1,6 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:techstagram/Login/login_screen.dart';
@@ -18,6 +19,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // SharedPreferences.setMockInitialValues({});
   // SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  await Firebase.initializeApp();
+
+
   runApp(MyApp());
 
 }
@@ -119,7 +124,7 @@ class _LoginCheckState extends State<LoginCheck> {
     // TODO: implement build
     return FutureBuilder(
       future: _repository.getCurrentUser(),
-      builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+      builder: (context, AsyncSnapshot<User> snapshot) {
         if (snapshot.hasData) {
 
           print("Already Loggedin");

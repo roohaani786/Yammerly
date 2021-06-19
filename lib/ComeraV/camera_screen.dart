@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_timer.dart';
 import 'package:techstagram/main.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
@@ -71,7 +72,7 @@ class CameraScreenState extends State<CameraScreen>
 
     _focusModeControlRowAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
-     // vsync: this,
+     //vsync: this,
     );
 
     _focusModeControlRowAnimation = CurvedAnimation(
@@ -123,29 +124,30 @@ class CameraScreenState extends State<CameraScreen>
   DocumentSnapshot docSnap;
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser =  FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
-      firstNameController.text = docSnap.data["fname"];
-      lastNameController.text = docSnap.data["surname"];
-      phoneNumberController.text = docSnap.data["phonenumber"];
-      emailController.text = docSnap.data["email"];
-      bioController.text = docSnap.data["bio"];
-      genderController.text = docSnap.data["gender"];
-      linkController.text = docSnap.data["link"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      displayNameController.text = docSnap.data["displayName"];
-      workController.text = docSnap.data["work"];
-      educationController.text = docSnap.data["education"];
-      currentCityController.text = docSnap.data["currentCity"];
-      homeTownController.text = docSnap.data["homeTown"];
-      relationshipController.text = docSnap.data["relationship"];
-      pincodeController.text = docSnap.data["pincode"];
 
-      uidController.text = docSnap.data["uid"];
+      firstNameController.text = docSnap["fname"];
+      lastNameController.text = docSnap["surname"];
+      phoneNumberController.text = docSnap["phonenumber"];
+      emailController.text = docSnap["email"];
+      bioController.text = docSnap["bio"];
+      genderController.text = docSnap["gender"];
+      linkController.text = docSnap["link"];
+      photoUrlController.text = docSnap["photoURL"];
+      displayNameController.text = docSnap["displayName"];
+      workController.text = docSnap["work"];
+      educationController.text = docSnap["education"];
+      currentCityController.text = docSnap["currentCity"];
+      homeTownController.text = docSnap["homeTown"];
+      relationshipController.text = docSnap["relationship"];
+      pincodeController.text = docSnap["pincode"];
+
+      uidController.text = docSnap["uid"];
 
       setState(() {
 //        isLoading = false;
@@ -185,7 +187,7 @@ class CameraScreenState extends State<CameraScreen>
       DeviceOrientation.portraitDown,
     ]);
 
-    _controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -221,8 +223,8 @@ class CameraScreenState extends State<CameraScreen>
 //   }
 
   bool flashOn=false;
-  File _image;
-  FirebaseUser currUser;
+  PickedFile _image;
+  User currUser;
 
   TextEditingController firstNameController,
       lastNameController,
@@ -233,7 +235,8 @@ class CameraScreenState extends State<CameraScreen>
       currentCityController,homeTownController,relationshipController,pincodeController ;
   bool upload = false;
   Future pickImage() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+    // ignore: deprecated_member_use
+    await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
       setState(() {
         _image = image;
         upload = true;
@@ -243,7 +246,7 @@ class CameraScreenState extends State<CameraScreen>
     if (_image != null){
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+          MaterialPageRoute(builder: (context) => UploadImage(file: File(_image.path)),));
     }else{
       Navigator.push(
           context,
@@ -274,24 +277,24 @@ class CameraScreenState extends State<CameraScreen>
     });
     Navigator.pop(context);
   }
-  final StorageReference storageReference =
+  final Reference storageReference =
   FirebaseStorage.instance.ref().child("Post Pictures");
 
   Future<String> uploadPhoto(mImageFile) async {
-    StorageUploadTask mStorageUploadTask =
+    UploadTask mStorageUploadTask =
     storageReference.child("post_$postId.jpg").putFile(mImageFile);
-    StorageTaskSnapshot storageTaskSnapshot =
-    await mStorageUploadTask.onComplete;
+    TaskSnapshot storageTaskSnapshot =
+    await mStorageUploadTask.whenComplete(() => null);
     String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
     return downloadUrl;
   }
 
   String postId = Uuid().v4();
 
-  final postReference = Firestore.instance.collection("posts");
+  final postReference = FirebaseFirestore.instance.collection("posts");
 
   savePostInfoToFirestore(String url) {
-    postReference.document(postId).setData({
+    postReference.doc(postId).set({
       "postId": postId,
       "uid" : uidController.text,
       "displayName": displayNameController.text,
@@ -313,13 +316,13 @@ class CameraScreenState extends State<CameraScreen>
   compressPhoto() async {
     final directory = await getTemporaryDirectory();
     final path = directory.path;
-    ImD.Image mImageFile = ImD.decodeImage(_image.readAsBytesSync());
+    ImD.Image mImageFile = ImD.decodeImage(await _image.readAsBytes());
     final compressedImage = File('$path/img_$uidController.jpg')
       ..writeAsBytesSync(
         ImD.encodeJpg(mImageFile, quality: 60),
       );
     setState(() {
-      _image = compressedImage;
+      _image = PickedFile(compressedImage.path);
     });
   }
 
@@ -396,6 +399,7 @@ class CameraScreenState extends State<CameraScreen>
                     color: Colors.white,
                   ),
                   onPressed: () {
+                    dispose();
                     // Navigator.pop(context,
                     //   MaterialPageRoute(builder: (context) => HomePage()),);
                     Navigator.push(
@@ -521,7 +525,7 @@ class CameraScreenState extends State<CameraScreen>
                 if (upload == true){
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => UploadImage(file: _image),));
+                      MaterialPageRoute(builder: (context) => UploadImage(file: File(_image.path),)));
                 }else{
                   Navigator.push(
                       context,
@@ -535,6 +539,7 @@ class CameraScreenState extends State<CameraScreen>
 
               ),
 
+              // ignore: deprecated_member_use
               FlatButton(
                 color: Colors.transparent,
                 onPressed: () async => null,
@@ -761,6 +766,7 @@ class CameraScreenState extends State<CameraScreen>
   }
 
   void showInSnackBar(String message) {
+    // ignore: deprecated_member_use
     _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 

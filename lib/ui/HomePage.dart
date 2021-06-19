@@ -18,6 +18,7 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
+import 'package:video_player/video_player.dart';
 import 'dart:async';
 import 'messagingsystem.dart';
 import 'searchlist.dart';
@@ -33,7 +34,8 @@ class HomePage extends StatefulWidget {
   final String uid;
   final int cam;
   int initialindexg;
-  FirebaseUser user;
+  User user;
+  static String dnu;
 
   @override
   _HomePageState createState() => _HomePageState(initialindexg,cam);
@@ -45,7 +47,7 @@ class _HomePageState extends State<HomePage> {
 
   TextEditingController taskTitleInputController;
   TextEditingController taskDescripInputController;
-  FirebaseUser currentUser;
+  User currentUser;
   FirebaseProvider firebaseProvider;
   // Create the page controller in your widget
 
@@ -59,30 +61,30 @@ class _HomePageState extends State<HomePage> {
   int followers;
   int following;
   int posts;
-
   Map<String, dynamic> _profile;
   bool _loading = false;
 
   DocumentSnapshot docSnap;
-  FirebaseUser currUser;
+  User currUser;
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser = FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
-      displayNameController.text = docSnap.data["displayName"];
-      uidController.text = docSnap.data["uid"];
-      emailController.text = docSnap.data["email"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      phonenumberController.text = docSnap.data["phonenumber"];
-      followers = docSnap.data["followers"];
-      following  = docSnap.data["following"];
-      posts  = docSnap.data["posts"];
+      displayNameController.text = docSnap["displayName"];
+      uidController.text = docSnap["uid"];
+      emailController.text = docSnap["email"];
+      photoUrlController.text = docSnap["photoURL"];
+      phonenumberController.text = docSnap["phonenumber"];
+      followers = docSnap["followers"];
+      following  = docSnap["following"];
+      posts  = docSnap["posts"];
       setState(() {
         displayNamecurrUser = displayNameController.text;
+        HomePage.dnu = displayNamecurrUser;
 
       });
     } on PlatformException catch (e) {
@@ -132,7 +134,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getCurrentUser() async {
-    currentUser = await FirebaseAuth.instance.currentUser();
+    currentUser = FirebaseAuth.instance.currentUser;
     firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
     setState(() {});
     print(currentUser.displayName);
@@ -144,9 +146,17 @@ class _HomePageState extends State<HomePage> {
   DateTime currentBackPressTime;
 
   Future<bool> onWillPop() {
-    print("hore ho kya bhai");
-    SystemNavigator.pop();
-    SystemNavigator.pop();
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null || now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      Fluttertoast.showToast(msg: "tap again for back");
+      return Future.value(false);
+    }
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    return Future.value(true);
+    // print("hore ho kya bhai");
+    // SystemNavigator.pop();
+    // SystemNavigator.pop();
   }
 
 
@@ -184,9 +194,9 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
   TabController tabController;
   Map<String, dynamic> _profile;
   bool _loading = false;
-  FirebaseUser currentUser;
+  User currentUser;
   FirebaseProvider firebaseProvider;
-
+  VideoPlayerController vpController;
 
   final int initialindexg;
   TextEditingController emailController,urlController,descriptionController,
@@ -194,10 +204,10 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
       bioController;
 
   DocumentSnapshot docSnap;
-  FirebaseUser currUser;
+  User currUser;
 
   void getCurrentUser() async {
-    currentUser = await FirebaseAuth.instance.currentUser();
+    currentUser = FirebaseAuth.instance.currentUser;
     firebaseProvider.user = await Repository().retrieveUserDetails(currentUser);
     setState(() {});
     print(currentUser.displayName);
@@ -207,20 +217,20 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
 
 
   fetchProfileData() async {
-    currUser = await FirebaseAuth.instance.currentUser();
+    currUser =  FirebaseAuth.instance.currentUser;
     try {
-      docSnap = await Firestore.instance
+      docSnap = await FirebaseFirestore.instance
           .collection("users")
-          .document(currUser.uid)
+          .doc(currUser.uid)
           .get();
-      displayNameController.text = docSnap.data["displayName"];
-      uidController.text = docSnap.data["uid"];
-      emailController.text = docSnap.data["email"];
-      photoUrlController.text = docSnap.data["photoURL"];
-      phonenumberController.text = docSnap.data["phonenumber"];
-      int followers = docSnap.data["followers"];
-      int following  = docSnap.data["following"];
-      int posts  = docSnap.data["posts"];
+      displayNameController.text = docSnap["displayName"];
+      uidController.text = docSnap["uid"];
+      emailController.text = docSnap["email"];
+      photoUrlController.text = docSnap["photoURL"];
+      phonenumberController.text = docSnap["phonenumber"];
+      int followers = docSnap["followers"];
+      int following  = docSnap["following"];
+      int posts  = docSnap["posts"];
       setState(() {
         String displayNamecurrUser = displayNameController.text;
 
@@ -304,125 +314,122 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     Drag drag;
     // TODO: implement build
 
-    return WillPopScope(
-      onWillPop: null,//onWillPop,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Yammerly',
-            style: TextStyle(
-                color: Colors.deepPurple,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.white,
-          leading: Row(
-            children: [
-              IconButton(
-                icon: Icon(
-                  FontAwesomeIcons.camera,
-                  color: Colors.deepPurple,
-                  //size: 10.0,
-                ),
-                onPressed: () {
-                  print("camera open");
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => CameraExampleHome(cam: 0,check: true),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-          actions: <Widget>[
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Yammerly',
+          style: TextStyle(
+              color: Colors.deepPurple,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        leading: Row(
+          children: [
             IconButton(
               icon: Icon(
-                FontAwesomeIcons.searchengin,
+                FontAwesomeIcons.camera,
                 color: Colors.deepPurple,
+                //size: 10.0,
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
+                print("camera open");
+                Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => CloudFirestoreSearch(
-                            displayNamecurrentUser: displayNameController.text,
-                            uidX: uidController.text,
-                          )),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.textsms,
-                color: Colors.deepPurple,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ConversationPage()),
+                    builder: (context) => CameraExampleHome(cam: 0,check: true),
+                  ),
                 );
               },
             ),
           ],
         ),
-        body: DefaultTabController(
-          length: 4,
-          //initialIndex: (initialindexg == null) ? 1 : initialindexg,
-          child: Scaffold(
-            body: DoubleBackToCloseApp(
-              snackBar: const SnackBar(
-                content: Text('Tap back again to leave'),
-              ),
-              child: TabBarView(
-                physics: NeverScrollableScrollPhysics(),
-                controller: tabController,
-                children: [
-                  new Container(
-                    child: ChatsPage(),
-                  ),
-                  new Container(
-                    child: FeedsPage(
-                      displayNamecurrentUser: displayNameController.text,
-                    ),
-                  ),
-                  new Container(
-                    //child: FeedsPage(),
-                    child: NotificationsPage(currUid: uidController.text),
-                  ),
-                  new Container(child: AccountBottomIconScreen()),
-                ],
-              ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              FontAwesomeIcons.searchengin,
+              color: Colors.deepPurple,
             ),
-            bottomNavigationBar: new Container(
-              height: 60.0,
-              child: new TabBar(
-                controller: tabController,
-                tabs: [
-                  Tab(
-                    icon: new Icon(Icons.blur_circular, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.home, size: 30),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.notifications, size: 30),
-                    //text: new Text(curARRrUid),
-                  ),
-                  Tab(
-                    icon: new Icon(Icons.account_circle, size: 30),
-                  )
-                ],
-                labelColor: Colors.purple,
-                unselectedLabelColor: Colors.deepPurple,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorPadding: EdgeInsets.all(5.0),
-                indicatorWeight: 3.0,
-                indicatorColor: Colors.deepPurple,
-              ),
-            ),
-            backgroundColor: Colors.white,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CloudFirebaseFirestoreSearch(
+                          displayNamecurrentUser: displayNameController.text,
+                          uidX: uidController.text,
+                        )),
+              );
+            },
           ),
+          IconButton(
+            icon: Icon(
+              Icons.textsms,
+              color: Colors.deepPurple,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ConversationPage(displayNameController.text)),
+              );
+            },
+          ),
+        ],
+      ),
+      body: DefaultTabController(
+        length: 4,
+        //initialIndex: (initialindexg == null) ? 1 : initialindexg,
+        child: Scaffold(
+          body: DoubleBackToCloseApp(
+            snackBar: const SnackBar(
+              content: Text('Tap back again to leave'),
+            ),
+            child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: tabController,
+              children: [
+                new Container(
+                  child: ChatsPage(videoPlayerController: vpController),
+                ),
+                new Container(
+                  child: FeedsPage(
+                    displayNamecurrentUser: displayNameController.text,
+                  ),
+                ),
+                new Container(
+                  //child: FeedsPage(),
+                  child: NotificationsPage(currUid: uidController.text,displayNameCurrUser: displayNameController.text),
+                ),
+                new Container(child: AccountBottomIconScreen()),
+              ],
+            ),
+          ),
+          bottomNavigationBar: new Container(
+            height: 60.0,
+            child: new TabBar(
+              controller: tabController,
+              tabs: [
+                Tab(
+                  icon: new Icon(Icons.blur_circular, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.home, size: 30),
+                ),
+                Tab(
+                  icon: new Icon(Icons.notifications, size: 30),
+                  //text: new Text(curARRrUid),
+                ),
+                Tab(
+                  icon: new Icon(Icons.account_circle, size: 30),
+                )
+              ],
+              labelColor: Colors.purple,
+              unselectedLabelColor: Colors.deepPurple,
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorPadding: EdgeInsets.all(5.0),
+              indicatorWeight: 3.0,
+              indicatorColor: Colors.deepPurple,
+            ),
+          ),
+          backgroundColor: Colors.white,
         ),
       ),
     );

@@ -6,7 +6,7 @@ import 'package:techstagram/services/database.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
-final CommentsRefrence = Firestore.instance.collection("posts");
+final CommentsRefrence = FirebaseFirestore.instance.collection("posts");
 
 class CommentsPage extends StatefulWidget{
   final String postId;
@@ -45,11 +45,17 @@ class CommentsPageState extends State<CommentsPage> {
 
   CommentsPageState({this.currUser,this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
 
-  retrieveComments(){
+
+  SaveCurrUserId()
+  async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('currUserId', currUser);
+  }  retrieveComments(){
+
     print("user");
     print(displayNamecurrentUser);
     return  StreamBuilder(
-      stream: CommentsRefrence.document(postId)
+      stream: CommentsRefrence.doc(postId)
           .collection("comments")
           .orderBy("timestamp", descending: false)
           .snapshots(),
@@ -60,7 +66,7 @@ class CommentsPageState extends State<CommentsPage> {
           );
         }
         List<Comment> comments = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           comments.add(Comment.fromDocument(document));
         });
         return ListView(
@@ -79,10 +85,10 @@ class CommentsPageState extends State<CommentsPage> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('commCount', commentCount);
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("posts")
-        .document(postId)
-        .updateData({'comments': comments + commentCount});
+        .doc(postId)
+        .update({'comments': comments + commentCount});
 
   }
 
@@ -103,24 +109,35 @@ class CommentsPageState extends State<CommentsPage> {
   Notification() async {
     //print(currUid);
 
-    setState(() {
-      // file = null;
-      NotificationId = Uuid().v4();
-    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String displayName = prefs.getString("displayName");
+    String displayNameCurrUser = prefs.getString('displayNameCurrUser');
 
-    return await Firestore.instance.collection("users")
-        .document(uid).collection("notification")
-        .document(NotificationId)
-        .setData({"commentId" : CommentId,
-      "notificationId" : NotificationId,
-      //"comment": commentTextEditingController.text,
+    print("911");
 
-      "timestamp": DateTime.now(),
-      "uid": currUser,
-      "status" : "Comment",
-      "postId" : postId,
-      "comment": commentTextEditingController.text,
-    });
+    if(displayName != displayNameCurrUser){
+      print("911");
+      setState(() {
+        // file = null;
+        NotificationId = Uuid().v4();
+      });
+
+      return await FirebaseFirestore.instance.collection("users")
+          .doc(uid).collection("notification")
+          .doc(currUser+postId+commentTextEditingController.text)
+          .set({"commentId" : CommentId,
+        "notificationId" : NotificationId,
+        //"comment": commentTextEditingController.text,
+
+        "timestamp": DateTime.now(),
+        "uid": currUser,
+        "status" : "Comment",
+        "postId" : postId,
+        "comment": commentTextEditingController.text,
+      });
+
+    }
+
 
     // return await Firestore.instance.collection("users")
     //     .document(uid).collection("notification")
@@ -141,12 +158,12 @@ class CommentsPageState extends State<CommentsPage> {
   }
 
   SaveCommentIP() async {
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .collection("posts")
-        .document(postId)
-        .updateData({'comments': comments + commentCount});
+        .doc(postId)
+        .update({'comments': comments + commentCount});
   }
 
   saveComment() async {
@@ -160,8 +177,8 @@ class CommentsPageState extends State<CommentsPage> {
       errordikhaoC = false;
     });
 
-    await CommentsRefrence.document(postId).collection("comments").document(CommentId)
-        .setData({"commentId" : CommentId,
+    await CommentsRefrence.doc(postId).collection("comments").doc(CommentId)
+        .set({"commentId" : CommentId,
       "username": displayNamecurrentUser,
       "comment": commentTextEditingController.text,
 
@@ -172,7 +189,7 @@ class CommentsPageState extends State<CommentsPage> {
 
     bool isNotPostOwner = uid != uid;
     if(isNotPostOwner){
-      CommentsRefrence.document(postId).collection("feedItems").add({
+      CommentsRefrence.doc(postId).collection("feedItems").add({
         "type": "comment",
         "commentDate": timestamp,
         "postId": postId,
@@ -185,7 +202,7 @@ class CommentsPageState extends State<CommentsPage> {
 
     return StreamBuilder(
 
-        stream: CommentsRefrence.document(postId).snapshots(),
+        stream: CommentsRefrence.doc(postId).snapshots(),
         builder: (context, dataSnapshotX)
         {
           int commentscount = dataSnapshotX.data["comments"];
@@ -206,7 +223,7 @@ class CommentsPageState extends State<CommentsPage> {
     print("oichhh!!1");
     print(commentscount);
 
-    CommentsRefrence.document(postId).updateData({"comments": commentscount + 1});
+    CommentsRefrence.doc(postId).update({"comments": commentscount + 1});
 
   }
 
@@ -214,6 +231,7 @@ class CommentsPageState extends State<CommentsPage> {
   void initState() {
 
     retrieveComments();
+    SaveCurrUserId();
 
   }
 
@@ -292,17 +310,36 @@ class Comment extends StatelessWidget {
 
   factory Comment.fromDocument(DocumentSnapshot documentSnapshot){
     return Comment(
-      userName: documentSnapshot["username"],
-      userId: documentSnapshot["uid"],
-      url: documentSnapshot["url"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      commentId : documentSnapshot["commentId"],
+      userName: (documentSnapshot.data() as Map<String,dynamic>)["username"],
+      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
+      url: (documentSnapshot.data() as Map<String,dynamic>)["url"],
+      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
+      commentId : (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
 
     );
   }
 
   get context => null;
+
+  DeleteNotification() async {
+
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String postId = prefs.getString('postId');
+    String currUid = prefs.getString('currUserId');
+    print(currUid);
+    print(postId);
+    print(comment);
+    print("amios");
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(userId)
+        .collection('notification')
+    //.where('displayName','==',displayName);
+        .doc(currUid+postId+comment)
+        .delete();
+  }
 
   deleteComments(String displayNameComment) async {
 
@@ -323,10 +360,11 @@ class Comment extends StatelessWidget {
 
       DatabaseService().CommentD(postId,comments,commCount);
       print(displayNameCurrUser);
-      await Firestore.instance.collection('posts').document(postId)
-          .collection("comments").document(commentId).delete();
+      await FirebaseFirestore.instance.collection('posts').doc(postId)
+          .collection("comments").doc(commentId).delete();
 
-    }else if(displayName == displayNameCurrUser){
+    }
+    else if(displayName == displayNameCurrUser){
       print("delte clickd");
 
       DatabaseService().CommentD(postId,comments,commCount);
@@ -334,15 +372,16 @@ class Comment extends StatelessWidget {
       print(displayName);
       print("halelula");
       print(displayNameCurrUser);
-      await Firestore.instance.collection('posts').document(postId)
-          .collection("comments").document(commentId).delete();
+      await FirebaseFirestore.instance.collection('posts').doc(postId)
+          .collection("comments").doc(commentId).delete();
     }
     else{
+      print("aaya bhai ko");
       return showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('You are not the owner of this post'),
+              title: Text('You are not the owner of this comment'),
               actions: <Widget>[
 
               ],
@@ -382,7 +421,7 @@ class Comment extends StatelessWidget {
                 title: (userName != null || comment != null)?Row(
                   children: [
                     Container(
-                      width: deviceWidth*0.65,
+                      width: deviceWidth*0.60,
                       //height: deviceHeight*0.01,
                       child: RichText(
                         textAlign: TextAlign.start,
@@ -408,6 +447,7 @@ class Comment extends StatelessWidget {
                     icon: Icon(Icons.delete),
                     onPressed: () {
                       deleteComments(userName);
+                      DeleteNotification();
                       print("delete me");
                     },
                   )

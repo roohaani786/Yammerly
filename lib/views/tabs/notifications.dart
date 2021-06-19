@@ -1,24 +1,33 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:techstagram/services/database.dart';
+import 'package:techstagram/ui/HomePage.dart';
+import 'package:techstagram/ui/Otheruser/other_user.dart';
+import 'package:techstagram/ui/post.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 
-final NotificationRefrence = Firestore.instance.collection("users");
+final NotificationRefrence = FirebaseFirestore.instance.collection("users");
 
 class NotificationsPage extends StatefulWidget{
   final String currUid;
+  static String cuid;
+  final String displayNameCurrUser;
 
 
-  NotificationsPage({this.currUid,});
+  NotificationsPage({this.currUid,this.displayNameCurrUser});
 
   @override
-  NotificationsPageState createState() => NotificationsPageState(currUid: currUid,);
+  NotificationsPageState createState() => NotificationsPageState(currUid: currUid,displayNameCurrUser: displayNameCurrUser);
 }
 
 class NotificationsPageState extends State<NotificationsPage> {
   final String currUid;
+  final String displayNameCurrUser;
   final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
 
   String CommentId = Uuid().v4();
@@ -26,17 +35,20 @@ class NotificationsPageState extends State<NotificationsPage> {
 
   TextEditingController commentTextEditingController = TextEditingController();
 
-  NotificationsPageState({this.currUid,});
+  NotificationsPageState({this.currUid,this.displayNameCurrUser});
   // return Firestore.instance
   //     .collection("posts")
   //     .orderBy("timestamp", descending: true)
   //     .snapshots();
 
-  retrieveNotificationsLike(){
+
+  retrieveNotificationsLike() {
      print("bhujm");
      print(currUid);
+
+
     return  StreamBuilder(
-      stream: NotificationRefrence.document(currUid)
+      stream: NotificationRefrence.doc(currUid)
           .collection("notification")
           .orderBy("timestamp", descending: true)
           .snapshots(),
@@ -47,7 +59,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           );
         }
         List<NotificationLike> Notifications = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           Notifications.add(NotificationLike.fromDocument(document));
         });
         return ListView(
@@ -61,7 +73,7 @@ class NotificationsPageState extends State<NotificationsPage> {
     print("bhujm");
     print(currUid);
     return  StreamBuilder(
-      stream: NotificationRefrence.document(currUid)
+      stream: NotificationRefrence.doc(currUid)
           .collection("notification")
           .orderBy("timestamp", descending: true)
           .snapshots(),
@@ -72,7 +84,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           );
         }
         List<NotificationComment> Notifications = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           Notifications.add(NotificationComment.fromDocument(document));
         });
         return ListView(
@@ -86,7 +98,7 @@ class NotificationsPageState extends State<NotificationsPage> {
     print("bhujm");
     print(currUid);
     return  StreamBuilder(
-      stream: NotificationRefrence.document(currUid)
+      stream: NotificationRefrence.doc(currUid)
           .collection("notification")
           .orderBy("timestamp", descending: true)
           .snapshots(),
@@ -97,7 +109,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           );
         }
         List<NotificationShare> Notifications = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           Notifications.add(NotificationShare.fromDocument(document));
         });
         return ListView(
@@ -110,8 +122,9 @@ class NotificationsPageState extends State<NotificationsPage> {
   retrieveNotificationsFollow(){
     print("bhujm");
     print(currUid);
+    NotificationsPage.cuid = currUid;
     return  StreamBuilder(
-      stream: NotificationRefrence.document(currUid)
+      stream: NotificationRefrence.doc(currUid)
           .collection("notification")
           .orderBy("timestamp", descending: true)
           .snapshots(),
@@ -122,7 +135,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           );
         }
         List<NotificationFollow> Notifications = [];
-        dataSnapshot.data.documents.forEach((document){
+        dataSnapshot.data.docs.forEach((document){
           Notifications.add(NotificationFollow.fromDocument(document));
         });
         return ListView(
@@ -131,6 +144,56 @@ class NotificationsPageState extends State<NotificationsPage> {
       },
     );
   }
+
+  retrieveNotificationsRequest(){
+    print("bhujm");
+    print(currUid);
+    return  StreamBuilder(
+      stream: NotificationRefrence.doc(currUid)
+          .collection("request")
+          .orderBy("timestamp", descending: true)
+          .snapshots(),
+      builder: (context, dataSnapshot){
+        if (!dataSnapshot.hasData){
+          return Container(
+            color: Colors.white,
+          );
+        }
+        List<NotificationRequest> Requests = [];
+        dataSnapshot.data.docs.forEach((document){
+          Requests.add(NotificationRequest.fromDocument(document));
+        });
+        return ListView(
+          children: Requests,
+        );
+      },
+    );
+  }
+
+//   fetchCurrentProfileData() async {
+//     //currUser =  FirebaseAuth.instance.currentUser;
+//     try {
+//       DocumentSnapshot docSnap;
+//       docSnap = await FirebaseFirestore.instance
+//           .collection("users")
+//           .doc(currUid)
+//           .get();
+//
+//       //uidControllerX.text = docSnap["uid"];
+//       followingX = docSnap["following"];
+//       photoUrlX = docSnap["photoURL"];
+//       print("fg");
+//       print(currUser.uid);
+//
+//       setState(() {
+// //        isLoading = false;
+// //        isEditable = true;
+//       });
+//     } on PlatformException catch (e) {
+//       print("PlatformException in fetching user profile. E  = " + e.message);
+//     }
+//   }
+
 
   bool errordikhaoC = false;
 
@@ -153,11 +216,16 @@ class NotificationsPageState extends State<NotificationsPage> {
   //setData({'liked': userEmail});
 
   var commentCount = 0;
+  saveCurrUser() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('currUid', currUid);
+      prefs.setString('displayNameCurrUser', displayNameCurrUser);
+  }
 
 
   @override
   void initState() {
-
+    saveCurrUser();
     retrieveNotificationsLike();
 
   }
@@ -165,7 +233,7 @@ class NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext) {
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
           backgroundColor: Colors.white,
 
@@ -178,6 +246,8 @@ class NotificationsPageState extends State<NotificationsPage> {
               retrieveNotificationsComment(),
               retrieveNotificationsShare(),
               retrieveNotificationsFollow(),
+              retrieveNotificationsRequest(),
+
               // Container(
               //     //color: Colors.blue,
               //     child: Icon(
@@ -206,28 +276,340 @@ class NotificationsPageState extends State<NotificationsPage> {
 
 //notfication for follow tab
 
+class NotificationRequest extends StatefulWidget {
+  final String userId;
+  final String comment;
+  final Timestamp timestampR;
+  final String status;
+  final bool Request;
+  final String RequestId;
+  final String commentId;
+  final String notificationId;
+  final int likes;
+  final int followers;
+  final String postId;
+
+  NotificationRequest(
+      {this.Request,
+      this.RequestId,
+        this.postId,
+        this.userId,
+        this.comment,
+        this.timestampR,
+        this.status,
+        this.followers,
+        this.commentId,
+        this.notificationId,
+        this.likes});
+
+  factory NotificationRequest.fromDocument(DocumentSnapshot documentSnapshot) {
+    return NotificationRequest(
+
+      Request: (documentSnapshot.data() as Map<String, dynamic>)["Request"],
+      RequestId: (documentSnapshot.data() as Map<String, dynamic>)["RequestId"],
+      timestampR: (documentSnapshot.data() as Map<String, dynamic>)["timestamp"],
+      userId: (documentSnapshot.data() as Map<String, dynamic>)["uid"],
+
+
+    );
+  }
+
+  @override
+  _NotificationRequestState createState() => _NotificationRequestState();
+}
+
+class _NotificationRequestState extends State<NotificationRequest> {
+
+  DocumentSnapshot docSnap;
+  String userName;
+  String postUrl;
+  String photoUrl;
+  String uid;
+  int following;
+  String uid1;
+  int followers1;
+  String displayName1;
+  String photoUrl1;
+
+  TextEditingController userNameController, photoUrlController,
+      postUrlController,followingController;
+
+  void initState() {
+    userNameController = TextEditingController();
+    photoUrlController = TextEditingController();
+    postUrlController = TextEditingController();
+
+
+    super.initState();
+
+    Fetchprofile();
+    Fetchpost();
+    fetchProfileData();
+  }
+//hrith profile fetched
+  Fetchprofile() async {
+    print("pust");
+    docSnap = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.userId)
+        .get();
+    photoUrlController.text = (docSnap.data() as Map<String, dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String, dynamic>)['displayName'];
+    following = docSnap["following"];
+    setState(() {
+      userName = userNameController.text;
+      photoUrl = photoUrlController.text;
+      //cloading[index] = true;
+    });
+  }
+
+  Fetchpost() async {
+    docSnap = await FirebaseFirestore.instance
+        .collection("posts")
+        .doc(widget.postId)
+        .get();
+    postUrlController.text = (docSnap.data() as Map<String, dynamic>)['url'];
+    setState(() {
+      postUrl = postUrlController.text;
+      // cdisplayName[index] = cdisplayNameController.text;
+      // cloading[index] = true;
+    });
+  }
+
+
+  String tAgo(DateTime d) {
+    Duration diff = DateTime.now().difference(d);
+    if (diff.inDays > 365)
+      return "${(diff.inDays / 365).floor()} ${(diff.inDays / 365).floor() == 1
+          ? "y"
+          : "y"}";
+    if (diff.inDays > 30)
+      return "${(diff.inDays / 30).floor()} ${(diff.inDays / 30).floor() == 1
+          ? "m"
+          : "m"}";
+    if (diff.inDays > 7)
+      return "${(diff.inDays / 7).floor()} ${(diff.inDays / 7).floor() == 1
+          ? "w"
+          : "w"}";
+    if (diff.inDays > 0)
+      return "${diff.inDays} ${diff.inDays == 1 ? "d" : "d"} ";
+    if (diff.inHours > 0)
+      return "${diff.inHours} ${diff.inHours == 1 ? "h" : "h"} ";
+    if (diff.inMinutes > 0)
+      return "${diff.inMinutes} ${diff.inMinutes == 1 ? "m" : "m"} ";
+    return "just now";
+  }
+  fetchProfileData() async {
+    //currUser =  FirebaseAuth.instance.currentUser;
+   // DocumentSnapshot docSnap;
+    try {
+      docSnap = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(NotificationsPage.cuid)
+          .get();
+
+      uid1 = docSnap["uid"];
+      followers1 = docSnap["followers"];
+      photoUrl1 = docSnap["photoURL"];
+      displayName1 = docSnap["displayName"];
+      print("fg");
+      //print(currUser.uid);
+
+      setState(() {
+//        isLoading = false;
+//        isEditable = true;
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException in fetching user profile. E  = " + e.message);
+    }
+  }
+  @override
+  Widget build(BuildContext) {
+    final deviceHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
+    final deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+
+    // Stream userQuery;
+    //
+    // userQuery = FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(NotificationsPage.cuid)
+    //     .snapshots();
+
+    return
+      (widget.Request == true) ?
+
+
+          Container(
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    OtherUserProfile(
+                                        displayName: userName,
+                                        uid: widget.userId)),
+                          );
+                        },
+                        child: Container(
+                          //width: 320.0,
+                          //width: deviceWidth * 1,
+                          child: ListTile(
+                            title: (userName != null)
+                                ? Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      RichText(
+                                        textAlign: TextAlign.start,
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: (userName == null)
+                                                  ? "loading..."
+                                                  : userName,
+                                              style: TextStyle(
+                                                fontSize: 15.0,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: " wants to follow you ",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.normal,
+                                                  fontSize: 15.0),
+                                            ),
+                                            TextSpan(
+                                              text: tAgo(
+                                                  widget.timestampR.toDate()),
+                                              style: TextStyle(
+                                                  color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              DatabaseService().followUser(followers1, uid1, userNameController.text, widget.userId, photoUrlController.text);
+                                              DatabaseService().increaseFollowing(widget.userId, following, userNameController.text, displayName1, uid1, photoUrl1);
+                                              FirebaseFirestore.instance
+                                                  .collection("users")
+                                                  .doc(NotificationsPage.cuid)
+                                                  .collection('request')
+                                                  .doc(widget.RequestId)
+                                                  .delete();
+                                            },
+                                            icon: Icon(Icons.check),
+                                            color: Colors.green,
+                                          ),
+                                          //MaterialButton(onPressed: (){},child: Text("Accept",style: TextStyle(color: Colors.white),),color: Colors.deepPurple,),
+
+                                          IconButton(
+                                            onPressed: () {
+                                              FirebaseFirestore.instance
+                                                  .collection("users")
+                                                  .doc(NotificationsPage.cuid)
+                                                  .collection('request')
+                                                  .doc(widget.RequestId)
+                                                  .delete();
+                                              //delete request
+                                            },
+                                            icon: Icon(Icons.close),
+                                            color: Colors.red,
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )
+                                : Text("loading....",
+                              style: TextStyle(color: Colors.black),),
+                            leading: (userName != null || widget.comment !=
+                                null)
+                                ? CircleAvatar(
+                              backgroundImage: (photoUrl == null)
+                                  ? NetworkImage(
+                                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC")
+                                  : CachedNetworkImageProvider(photoUrl),
+                            )
+                                : null,
+                            //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                          ),
+                        ),
+                      ),
+                      // Container(
+                      //     child: Image.network(url)
+                      // ),
+                    ],
+                  ),
+                  // Divider(
+                  //   thickness: 1,
+                  //   color: Colors.grey,
+                  //   indent: 15,
+                  //   endIndent: 15,
+                  // ),
+                ],
+              )) : Container();
+
+
+  }
+}
+
 class NotificationFollow extends StatefulWidget {
   final String userId;
   final String comment;
   final Timestamp timestamp;
   final String status;
+  final bool Request;
   final String commentId;
   final String notificationId;
   final int likes;
+  final int followers;
   final String postId;
 
-  NotificationFollow({this.postId,this.userId,this.comment,this.timestamp,this.status,this.commentId,this.notificationId,this.likes});
+  NotificationFollow(
+      {this.Request,
+      this.postId,
+      this.userId,
+      this.comment,
+      this.timestamp,
+      this.status,
+      this.followers,
+      this.commentId,
+      this.notificationId,
+      this.likes});
 
-  factory NotificationFollow.fromDocument(DocumentSnapshot documentSnapshot){
+  factory NotificationFollow.fromDocument(DocumentSnapshot documentSnapshot) {
     return NotificationFollow(
-      userId: documentSnapshot["uid"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      status: documentSnapshot["status"],
-      commentId: documentSnapshot["commentId"],
-      notificationId: documentSnapshot["notificationId"],
-      likes: documentSnapshot["likes"],
-      postId: documentSnapshot["postId"],
+      userId: (documentSnapshot.data() as Map<String, dynamic>)["uid"],
+      comment: (documentSnapshot.data() as Map<String, dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String, dynamic>)["timestamp"],
+      status: (documentSnapshot.data() as Map<String, dynamic>)["status"],
+      commentId: (documentSnapshot.data() as Map<String, dynamic>)["commentId"],
+      notificationId: (documentSnapshot.data() as Map<String, dynamic>)["notificationId"],
+      likes: (documentSnapshot.data() as Map<String, dynamic>)["likes"],
+      postId: (documentSnapshot.data() as Map<String, dynamic>)["postId"],
     );
   }
 
@@ -241,6 +623,7 @@ class _NotificationFollowState extends State<NotificationFollow> {
   String userName;
   String postUrl;
   String photoUrl;
+  String uid;
 
   TextEditingController userNameController,photoUrlController,postUrlController;
 
@@ -258,12 +641,12 @@ class _NotificationFollowState extends State<NotificationFollow> {
 
   Fetchprofile() async{
     print("pust");
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("users")
-        .document(widget.userId)
+        .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data['photoURL'];
-    userNameController.text = docSnap.data['displayName'];
+    photoUrlController.text = (docSnap.data() as Map<String,dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -272,11 +655,11 @@ class _NotificationFollowState extends State<NotificationFollow> {
   }
 
   Fetchpost() async{
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("posts")
-        .document(widget.postId)
+        .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap.data['url'];
+    postUrlController.text = (docSnap.data() as Map<String,dynamic>)['url'];
     setState(() {
       postUrl = postUrlController.text;
       // cdisplayName[index] = cdisplayNameController.text;
@@ -304,69 +687,75 @@ class _NotificationFollowState extends State<NotificationFollow> {
 
   @override
   Widget build(BuildContext) {
-    return (widget.status == "Follow")?Column(
-      children: [
-        Stack(
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
+    return
+      (widget.status == "Follow")?Column(
           children: [
-            Container(
-              //width: 320.0,
-              child: ListTile(
-                title: (userName != null || widget.comment != null)?Row(
-                  children: [
-                    Expanded(
-                      child: RichText(
-                        textAlign: TextAlign.start,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-<<<<<<< HEAD
-                              text: userName,
-                              style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
+            Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OtherUserProfile(displayName: userName, uid: widget.userId)),
+                    );
+                  },
+                child: Container(
+                  //width: 320.0,
+                  width: deviceWidth*1,
+                  child: ListTile(
+                    title: (userName != null || widget.comment != null)?Row(
+                      children: [
+                        Expanded(
+                          child: RichText(
+                            textAlign: TextAlign.start,
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: (userName == null)?"loading...":userName,
+                                  style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                                ),
+                                TextSpan(
+                                  text: " started following you ",
+                                  style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                      fontSize: 15.0),
+                                ),
+                                TextSpan(
+                                  text: tAgo(widget.timestamp.toDate()),
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ],
                             ),
-                            TextSpan(
-                              text: "  started following you",
-=======
-                              text: (userName == null)?"loading...":userName,
-                              style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                            ),
-                            TextSpan(
-                              text: " started following you ",
->>>>>>> 1ec24b7961b5b87d7fed60f4e4ce17210d174f9c
-                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                  fontSize: 15.0),
-                            ),
-                            TextSpan(
-                              text: tAgo(widget.timestamp.toDate()),
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
 
-                      ),
-                    )
-                  ],
-                ):Text(""),
-                leading: (userName != null || widget.comment != null)?CircleAvatar(
-                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
-                ):null,
-                //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
-              ),
+                          ),
+                        )
+                      ],
+                    ):Text(""),
+                    leading: (userName != null || widget.comment != null)?CircleAvatar(
+                      backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
+                    ):null,
+                    //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                  ),
+                ),
+                    ),
+                // Container(
+                //     child: Image.network(url)
+                // ),
+              ],
             ),
-            // Container(
-            //     child: Image.network(url)
+            // Divider(
+            //   thickness: 1,
+            //   color: Colors.grey,
+            //   indent: 15,
+            //   endIndent: 15,
             // ),
           ],
-        ),
-        // Divider(
-        //   thickness: 1,
-        //   color: Colors.grey,
-        //   indent: 15,
-        //   endIndent: 15,
-        // ),
-      ],
-    ):Container();
+        )
+    :Container();
   }
 }
 
@@ -386,14 +775,14 @@ class NotificationShare extends StatefulWidget {
 
   factory NotificationShare.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationShare(
-      userId: documentSnapshot["uid"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      status: documentSnapshot["status"],
-      commentId: documentSnapshot["commentId"],
-      notificationId: documentSnapshot["notificationId"],
-      likes: documentSnapshot["likes"],
-      postId: documentSnapshot["postId"],
+      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
+      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
+      status: (documentSnapshot.data() as Map<String,dynamic>)["status"],
+      commentId: (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
+      notificationId: (documentSnapshot.data() as Map<String,dynamic>)["notificationId"],
+      likes: (documentSnapshot.data() as Map<String,dynamic>)["likes"],
+      postId: (documentSnapshot.data() as Map<String,dynamic>)["postId"],
 
     );
   }
@@ -408,6 +797,8 @@ class _NotificationShareState extends State<NotificationShare> {
   String userName;
   String postUrl;
   String photoUrl;
+  String displayNameCurrUser;
+  String currUid;
 
   TextEditingController userNameController,photoUrlController,postUrlController;
 
@@ -420,17 +811,26 @@ class _NotificationShareState extends State<NotificationShare> {
 
     Fetchprofile();
     Fetchpost();
+    getCurrUid();
 
+  }
+  getCurrUid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currUid = prefs.getString("currUid");
+    displayNameCurrUser = prefs.getString("displayNameCurrUser");
+
+    print("abab");
+    print(currUid);
   }
 
   Fetchprofile() async{
     print("pust");
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("users")
-        .document(widget.userId)
+        .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data['photoURL'];
-    userNameController.text = docSnap.data['displayName'];
+    photoUrlController.text = (docSnap.data() as Map<String,dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -439,11 +839,11 @@ class _NotificationShareState extends State<NotificationShare> {
   }
 
   Fetchpost() async{
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("posts")
-        .document(widget.postId)
+        .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap.data['url'];
+    postUrlController.text = (docSnap.data() as Map<String,dynamic>)['url'];
     setState(() {
       postUrl = postUrlController.text;
       // cdisplayName[index] = cdisplayNameController.text;
@@ -471,56 +871,75 @@ class _NotificationShareState extends State<NotificationShare> {
 
   @override
   Widget build(BuildContext) {
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
     return (widget.status == "Share")?Column(
       children: [
         Stack(
           children: [
-            Container(
-              width: 320,
-              child: ListTile(
-                title: (userName != null || widget.comment != null)?Row(
-                  children: [
-                    Expanded(
-                      child: RichText(
-                        textAlign: TextAlign.start,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: (userName == null)?"loading...":userName,
-                              style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                            ),
-                            TextSpan(
-                              text: " shared your post ",
-                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                  fontSize: 15.0),
-                            ),
-                            TextSpan(
-                              text: tAgo(widget.timestamp.toDate()),
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => OtherUserProfile(displayName: userName, uid: widget.userId)),
+                );
+              },
+              child: Container(
+                width: deviceWidth*0.8,
+                child: ListTile(
+                  title: (userName != null || widget.comment != null)?Row(
+                    children: [
+                      Expanded(
+                        child: RichText(
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: (userName == null)?"loading...":userName,
+                                style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                              ),
+                              TextSpan(
+                                text: " shared your post ",
+                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                    fontSize: 15.0),
+                              ),
+                              TextSpan(
+                                text: tAgo(widget.timestamp.toDate()),
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
 
-                      ),
-                    )
-                  ],
-                ):Text(""),
-                leading: (userName != null || widget.comment != null)?CircleAvatar(
-                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
-                ):null,
-                //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                        ),
+                      )
+                    ],
+                  ):Text(""),
+                  leading: (userName != null || widget.comment != null)?CircleAvatar(
+                    backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
+                  ):null,
+                  //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                ),
               ),
             ),
-            (postUrl == null)?Container():Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
-                child: Container(
-                    height: 40,
-                    width: 40.0,
-                    child: CachedNetworkImage(imageUrl:postUrl)
+            (postUrl == null)?Container():GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNameCurrUser,PostUrl: postUrl,uidX: currUid,delete: false,)),
+                );
+              },
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
+                  child: Container(
+                      height: 40,
+                      width: 40.0,
+                      child: CachedNetworkImage(imageUrl:postUrl)
+                  ),
                 ),
               ),
             ),
@@ -550,14 +969,14 @@ class NotificationComment extends StatefulWidget {
 
   factory NotificationComment.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationComment(
-      userId: documentSnapshot["uid"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      status: documentSnapshot["status"],
-      commentId: documentSnapshot["commentId"],
-      notificationId: documentSnapshot["notificationId"],
-      likes: documentSnapshot["likes"],
-      postId: documentSnapshot["postId"],
+      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
+      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
+      status: (documentSnapshot.data() as Map<String,dynamic>)["status"],
+      commentId: (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
+      notificationId: (documentSnapshot.data() as Map<String,dynamic>)["notificationId"],
+      likes: (documentSnapshot.data() as Map<String,dynamic>)["likes"],
+      postId: (documentSnapshot.data() as Map<String,dynamic>)["postId"],
     );
   }
 
@@ -570,29 +989,43 @@ class _NotificationCommentState extends State<NotificationComment> {
   String userName;
   String postUrl;
   String photoUrl;
+  String displayNamePostUser;
+  String displayNameCurrUser;
+  String currUid;
 
-  TextEditingController userNameController,photoUrlController,postUrlController;
+  TextEditingController userNameController,photoUrlController,postUrlController,displayNamePostUserController;
 
   void initState() {
     userNameController = TextEditingController();
     photoUrlController = TextEditingController();
     postUrlController = TextEditingController();
+    displayNamePostUserController = TextEditingController();
 
     super.initState();
 
     Fetchprofile();
     Fetchpost();
+    getCurrUid();
 
+  }
+
+  getCurrUid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currUid = prefs.getString("currUid");
+    displayNameCurrUser = prefs.getString("displayNameCurrUser");
+
+    print("abab");
+    print(currUid);
   }
 
   Fetchprofile() async{
     print("pust");
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("users")
-        .document(widget.userId)
+        .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data['photoURL'];
-    userNameController.text = docSnap.data['displayName'];
+    photoUrlController.text = (docSnap.data() as Map<String,dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -601,13 +1034,15 @@ class _NotificationCommentState extends State<NotificationComment> {
   }
 
   Fetchpost() async{
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("posts")
-        .document(widget.postId)
+        .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap.data['url'];
+    postUrlController.text = (docSnap.data() as Map<String,dynamic>)['url'];
+    displayNamePostUserController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       postUrl = postUrlController.text;
+      displayNamePostUser = displayNamePostUserController.text;
       // cdisplayName[index] = cdisplayNameController.text;
       // cloading[index] = true;
     });
@@ -632,61 +1067,79 @@ class _NotificationCommentState extends State<NotificationComment> {
 
   @override
   Widget build(BuildContext) {
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
     return (widget.status == "Comment")?Column(
       children: [
         Stack(
           children: [
-            Container(
-              width: 320.0,
-              child: ListTile(
-                title: (userName != null || widget.comment != null)?Row(
-                  children: [
-                    Expanded(
-                      child: RichText(
-                        textAlign: TextAlign.start,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: (userName == null)?"loading":userName,
-                              style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                            ),
-                            TextSpan(
-                              text: " commented: ",
-                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                  fontSize: 15.0),
-                            ),
-                            TextSpan(
-                              text: widget.comment,
-                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                  fontSize: 15.0),
-                            ),
-                            TextSpan(
-                              text: " " + tAgo(widget.timestamp.toDate()),
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNameCurrUser,PostUrl: postUrl,uidX: currUid,delete: false,)),
+                );
+              },
+              child: Container(
+                width: deviceWidth*0.8,
+                child: ListTile(
+                  title: (userName != null || widget.comment != null)?Row(
+                    children: [
+                      Expanded(
+                        child: RichText(
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: (userName == null)?"loading":userName,
+                                style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                              ),
+                              TextSpan(
+                                text: " commented: ",
+                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                    fontSize: 15.0),
+                              ),
+                              TextSpan(
+                                text: widget.comment,
+                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                    fontSize: 15.0),
+                              ),
+                              TextSpan(
+                                text: " " + tAgo(widget.timestamp.toDate()),
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
 
-                      ),
-                    )
-                  ],
-                ):Text(""),
-                leading: (userName != null || widget.comment != null)?CircleAvatar(
-                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
-                ):null,
-                //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                        ),
+                      )
+                    ],
+                  ):Text(""),
+                  leading: (userName != null || widget.comment != null)?CircleAvatar(
+                    backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
+                  ):null,
+                  //subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                ),
               ),
             ),
-            (postUrl == null)?Container():Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
-                child: Container(
-                    height: 40,
-                    width: 40.0,
-                    child: (postUrl == null)?Container():CachedNetworkImage(imageUrl:postUrl)
+            (postUrl == null)?Container():GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNameCurrUser,PostUrl: postUrl,uidX: currUid,delete: false,)),
+                );
+              },
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
+                  child: Container(
+                      height: 40,
+                      width: 40.0,
+                      child: (postUrl == null)?Container():CachedNetworkImage(imageUrl:postUrl)
+                  ),
                 ),
               ),
             ),
@@ -722,14 +1175,14 @@ class NotificationLike extends StatefulWidget {
 
   factory NotificationLike.fromDocument(DocumentSnapshot documentSnapshot){
     return NotificationLike(
-      userId: documentSnapshot["uid"],
-      comment: documentSnapshot["comment"],
-      timestamp: documentSnapshot["timestamp"],
-      status: documentSnapshot["status"],
-      commentId: documentSnapshot["commentId"],
-      notificationId: documentSnapshot["notificationId"],
-      likes: documentSnapshot["likes"],
-      postId: documentSnapshot["postId"],
+      userId: (documentSnapshot.data() as Map<String,dynamic>)["uid"],
+      comment: (documentSnapshot.data() as Map<String,dynamic>)["comment"],
+      timestamp: (documentSnapshot.data() as Map<String,dynamic>)["timestamp"],
+      status: (documentSnapshot.data() as Map<String,dynamic>)["status"],
+      commentId: (documentSnapshot.data() as Map<String,dynamic>)["commentId"],
+      notificationId: (documentSnapshot.data() as Map<String,dynamic>)["notificationId"],
+      likes: (documentSnapshot.data() as Map<String,dynamic>)["likes"],
+      postId: (documentSnapshot.data() as Map<String,dynamic>)["postId"],
     );
   }
 
@@ -743,29 +1196,47 @@ class _NotificationLikeState extends State<NotificationLike> {
   String userName;
   String postUrl;
   String photoUrl;
+  String displayNamePostUser;
+  String currUid;
+  String displayNameCurrUser;
 
-  TextEditingController userNameController,photoUrlController,postUrlController;
+  TextEditingController userNameController,photoUrlController,postUrlController,displayNamePostUserController;
 
   void initState() {
     userNameController = TextEditingController();
     photoUrlController = TextEditingController();
     postUrlController = TextEditingController();
+    displayNamePostUserController = TextEditingController();
+    // setState(() async{
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   currUser = prefs.getString("currUser");
+    // });
 
     super.initState();
 
     Fetchprofile();
     Fetchpost();
+    getCurrUid();
 
+  }
+
+  getCurrUid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currUid = prefs.getString("currUid");
+    displayNameCurrUser = prefs.getString("displayNameCurrUser");
+
+    print("abab");
+    print(currUid);
   }
 
   Fetchprofile() async{
     print("pust");
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("users")
-        .document(widget.userId)
+        .doc(widget.userId)
         .get();
-    photoUrlController.text = docSnap.data['photoURL'];
-    userNameController.text = docSnap.data['displayName'];
+    photoUrlController.text = (docSnap.data() as Map<String,dynamic>)['photoURL'];
+    userNameController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       userName = userNameController.text;
       photoUrl = photoUrlController.text;
@@ -774,16 +1245,24 @@ class _NotificationLikeState extends State<NotificationLike> {
   }
 
   Fetchpost() async{
-    docSnap = await Firestore.instance
+    docSnap = await FirebaseFirestore.instance
         .collection("posts")
-        .document(widget.postId)
+        .doc(widget.postId)
         .get();
-    postUrlController.text = docSnap.data['url'];
+    postUrlController.text = (docSnap.data() as Map<String,dynamic>)['url'];
+    displayNamePostUserController.text = (docSnap.data() as Map<String,dynamic>)['displayName'];
     setState(() {
       postUrl = postUrlController.text;
+      displayNamePostUser = displayNamePostUserController.text;
       // cdisplayName[index] = cdisplayNameController.text;
       // cloading[index] = true;
     });
+    print("dick");
+    print(postUrl);
+    print(displayNamePostUser);
+    print(widget.userId);
+    print(currUid);
+    print(displayNameCurrUser);
   }
 
 
@@ -806,57 +1285,75 @@ class _NotificationLikeState extends State<NotificationLike> {
 
   @override
   Widget build(BuildContext) {
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
     return (widget.status == "like")?Column(
       children: [
         Stack(
           children: [
-            Container(
-              //color: Colors.red,
-              width: 320.0,
-              child: ListTile(
-                title: (userName != null || widget.comment != null)?Row(
-                  children: [
-                    Expanded(
-                      child: RichText(
-                        textAlign: TextAlign.start,
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: (userName == null)?"loading":userName,
-                              style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
-                            ),
-                            TextSpan(
-                              text: " liked you photo. ",
-                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
-                                  fontSize: 15.0),
-                            ),
-                            TextSpan(
-                              text: tAgo(widget.timestamp.toDate()),
-                                style: TextStyle(color: Colors.grey),
-                            ),
-                          ],
-                        ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => OtherUserProfile(uid: widget.userId,displayName: userName)),
+                );
+              },
+              child: Container(
+                width: deviceWidth*0.80,
+                child: ListTile(
+                  title: (userName != null || widget.comment != null)?Row(
+                    children: [
+                      Expanded(
+                        child: RichText(
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: (userName == null)?"loading":userName,
+                                style: TextStyle(fontSize: 15.0, color: Colors.black,fontWeight: FontWeight.bold,),
+                              ),
+                              TextSpan(
+                                text: " liked you photo. ",
+                                style: TextStyle(color: Colors.black,fontWeight: FontWeight.normal,
+                                    fontSize: 15.0),
+                              ),
+                              TextSpan(
+                                text: tAgo(widget.timestamp.toDate()),
+                                  style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
 
-                      ),
-                    )
-                  ],
-                ):Text(""),
-                leading: (userName != null || widget.comment != null)?CircleAvatar(
-                  backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
-                ):null,
-               // subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                        ),
+                      )
+                    ],
+                  ):Text(""),
+                  leading: (userName != null || widget.comment != null)?CircleAvatar(
+                    backgroundImage: (photoUrl == null)?NetworkImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAM1BMVEXk5ueutLfn6eqrsbTp6+zg4uOwtrnJzc/j5earsbW0uby4vcDQ09XGyszU19jd3+G/xMamCvwDAAAFLklEQVR4nO2d2bLbIAxAbYE3sDH//7WFbPfexG4MiCAcnWmnrzkjIRaD2jQMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMwzAMw5wQkHJczewxZh2lhNK/CBOQo1n0JIT74/H/qMV0Z7GU3aCcVPuEE1XDCtVLAhgtpme7H0s1N1U7QjO0L8F7llzGeh1hEG/8Lo7TUmmuSrOfns9xnGXpXxsONPpA/B6OqqstjC6Ax/0ujkNdYQQbKNi2k64qiiEZ+ohi35X+2YcZw/WujmslYewiAliVYrxgJYrdwUmwXsU+RdApUi83oNIE27YvrfB/ZPg8+BJETXnqh9CVzBbTQHgojgiCvtqU9thFJg/CKz3VIMKMEkIXxIWqIpIg2SkjYj+xC816mrJae2aiWGykxRNsW0UwiJghJDljYI5CD8GRiCtIsJxizYUPQ2pzItZy5pcisTRdk/a9m4amtNNfBuQkdVhSaYqfpNTSFGfb9GRIakrE2Pm+GFLaCQPqiu0OpWP+HMPQQcgQMiQprWXNmsVwIjQjYi/ZrhAqNTCgr2gu0Jnz85RSSjso0HkMFZ0YZjKkc26a/jlmh9JiDyDxi9oeorTYAzZkwwoMz19pzj9bnH/GP/+qbchjSGflneWYhtTuKdMOmNKZcJ5TjInQKcYXnESd/jQxy0ENpULTNGOGgxpap/oyw9pbUAqhfx2Dbkhovvfgz4iUzoM9+GlK6/Mh4q29hyC1mwro30hpVVLPF9wYQr71RazOeM5/cw81iBRD+A03aM9/C/obbrKjbYSpCmIVG3qT/Q8oeUo3Rz0IL7vI1tEbCB9pSiu8I/aV8x3Kg/BGWrWp4ZVs0nZfmAoEG4h/61yHYIJiFSl6Q0Vk6tTW1N8kYp8hdOkfHYYMXd2Qft+8CYwqYDSKvqIh+MCF8Wgca2u/cwdgeW3TtuVn6+1oBs3yLo5C2JpK6CvQzGpfUkz9UG/87gCsi5o2LIXolxN0FbwAsjOLEr+YJmXn7iR6N0BCt5p5cMxm7eAsfS+/CACQf4CTpKjzgkvr2cVarVTf96372yut7XLJ1sa7lv6VcfgYrWaxqr3Wlo1S6pvStr22sxOtTNPLzdY3nj20bPP+ejFdJYkLsjGLdtPBEbe/mr2bQKiXWJDroA+vtzc0p9aahuwqHMDYrQEXHEw9jwQl3drMpts9JBU1SdktPe5FBRdJQ6bwXBpa57ib2A8kukQDzMjh++Uo7Fo6Wd02Pkf4fknqoo4HtvAIjsqUcjx6DIPgWCaOML9rKI/oqD9/lgNrn+eF+p7j8tnzHBiR7+kdUGw/+V1Kzkc75mMy6U+FMaxjPibiM1U1uGM+puInHpmALZCgP4pt7i840MV8+0R1zPsRB6UTcqpizncYwZ89syDydfyWCwXB1l8/zRNGWbTG/GHKUm9AkxHMc/EGSk3z2+ArEhPEV5TUBLEvUGFcjEUH80J/jveTGOAJEljJbILWGQT3zRYiwuKsUXN1EEJAzBhRJFll7mBUG7KD8EqPkKekBREaL8hMDZLQSG6AQjtHPYmvTQnX0TtpC1SYCe2YdkkyLP3jj5BSbKiuR585eQhTgoje6yIb0Yb0C+mV6EYvebqw5SDy2WmubogZiF2AVxPC2FpDf8H2Q9QWo6IkjUxTWVEI3WY/wrCeSuqJ+eRWzXR/JXwgVjUMozbCOfoEZiSiKVGepqv5CJ8RyR4D7xBeamqa7z3BJ/z17JxuBPdv93d/a2Ki878MMAzDMAzDMAzDMAzDMF/KP09VUmxBAiI3AAAAAElFTkSuQmCC"):CachedNetworkImageProvider(photoUrl),
+                  ):null,
+                 // subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),
+                ),
               ),
             ),
-            (postUrl == null)?Container():Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
-                child: Container(
-                  height: 40,
-                    width: 40.0,
-                    child: CachedNetworkImage(imageUrl:postUrl)
+            (postUrl == null)?Container():GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => postPage(displayNamecurrentUser: displayNameCurrUser,PostUrl: postUrl,uidX: currUid,delete: false,)),
+                );
+              },
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top:8.0,bottom: 15.0,right: 30.0),
+                  child: Container(
+                    height: 40,
+                      width: 40.0,
+                      child: CachedNetworkImage(imageUrl:postUrl)
+                  ),
                 ),
               ),
             ),
@@ -916,6 +1413,14 @@ class TBar extends StatelessWidget implements PreferredSizeWidget {
           Tab(
             icon: Icon(
               FontAwesomeIcons.shareAlt,
+              color: Colors.deepPurple,
+              size: 24.0,
+              semanticLabel: 'Text to announce in accessibility modes',
+            ),
+          ),
+          Tab(
+            icon: Icon(
+              FontAwesomeIcons.userAlt,
               color: Colors.deepPurple,
               size: 24.0,
               semanticLabel: 'Text to announce in accessibility modes',

@@ -27,7 +27,7 @@ class _FbLoginPageState extends State<FbLoginPage> {
           child: Column(
             children: [
               (!isFacebookLoginIn
-                  ? RaisedButton(
+                  ? ElevatedButton(
                 child: Text('Facebook Login'),
                 onPressed: () {
                   facebookLogin(context).then((user) {
@@ -57,7 +57,7 @@ class _FbLoginPageState extends State<FbLoginPage> {
                   });
                 },
               )
-                  : RaisedButton(
+                  : ElevatedButton(
                 child: Text('Facebook Logout'),
                 onPressed: () {
                   facebookLoginout().then((response) {
@@ -75,8 +75,8 @@ class _FbLoginPageState extends State<FbLoginPage> {
     );
   }
 
-  Future<FirebaseUser> facebookLogin(BuildContext context) async {
-    FirebaseUser currentUser;
+  Future<User> facebookLogin(BuildContext context) async {
+    User currentUser;
     // fbLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
     // if you remove above comment then facebook login will take username and pasword for login in Webview
     try {
@@ -85,14 +85,14 @@ class _FbLoginPageState extends State<FbLoginPage> {
       if (facebookLoginResult.status == FacebookLoginStatus.loggedIn) {
         FacebookAccessToken facebookAccessToken =
             facebookLoginResult.accessToken;
-        final AuthCredential credential = FacebookAuthProvider.getCredential(
-            accessToken: facebookAccessToken.token);
-        final AuthResult user = await auth.signInWithCredential(credential);
+        final AuthCredential credential = FacebookAuthProvider.credential(
+            facebookAccessToken.token);
+        final UserCredential user = await auth.signInWithCredential(credential);
         assert(user.user.email != null);
         assert(user.user.displayName != null);
         assert(!user.user.isAnonymous);
         assert(await user.user.getIdToken() != null);
-        currentUser = await auth.currentUser();
+        currentUser = auth.currentUser;
         assert(user.user.uid == currentUser.uid);
         return currentUser;
       }

@@ -11,71 +11,73 @@ class DatabaseService {
 
   Future getdisplayName(String uid, String displayName) async {
 
-    return await Firestore.instance
+    return FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .snapshots();
   }
 
   Future updateEmailVerification(String uid,) async{
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
-        .updateData({'emailVerified': true});
+        .doc(uid)
+        .update({'emailVerified': true});
   }
 
   Future updatephotoURL(String uid, String photoURl) async {
 
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("posts")
-        .document(uid)
-        .updateData({'photoURL': photoURl});
+        .doc(uid)
+        .update({'photoURL': photoURl});
   }
 
   getUserByUsername(String displayName) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
         .where("displayName", isGreaterThanOrEqualTo: displayName)
-        .getDocuments();
+        .get();
   }
 
   getUserByUserEmail(String email) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
         .where("email", isEqualTo: email)
-        .getDocuments();
+        .get();
   }
+
+
 
   //collection reference
   final CollectionReference wiggleCollection =
-  Firestore.instance.collection('users');
-  final chatReference = Firestore.instance.collection('ChatRoom');
-  final anonChatReference = Firestore.instance.collection('Anonymous ChatRoom');
-  final cloudReference = Firestore.instance.collection('cloud');
-  final feedReference = Firestore.instance.collection('feed');
-  final followersReference = Firestore.instance.collection('followers');
-  final followingReference = Firestore.instance.collection('followings');
-  final gameReference = Firestore.instance.collection('game');
-  final triviaReference = Firestore.instance.collection('trivia');
-  final maleReference = Firestore.instance.collection('male');
-  final femaleReference = Firestore.instance.collection('female');
-  final compatibilityReference = Firestore.instance.collection('compatibility');
-  final bondReference = Firestore.instance.collection('Bond');
-  final postReference = Firestore.instance.collection('posts');
-  final blogReference = Firestore.instance.collection('blogs');
+  FirebaseFirestore.instance.collection('users');
+  final chatReference = FirebaseFirestore.instance.collection('ChatRoom');
+  final anonChatReference = FirebaseFirestore.instance.collection('Anonymous ChatRoom');
+  final cloudReference = FirebaseFirestore.instance.collection('cloud');
+  final feedReference = FirebaseFirestore.instance.collection('feed');
+  final followersReference = FirebaseFirestore.instance.collection('followers');
+  final followingReference = FirebaseFirestore.instance.collection('followings');
+  final gameReference = FirebaseFirestore.instance.collection('game');
+  final triviaReference = FirebaseFirestore.instance.collection('trivia');
+  final maleReference = FirebaseFirestore.instance.collection('male');
+  final femaleReference = FirebaseFirestore.instance.collection('female');
+  final compatibilityReference = FirebaseFirestore.instance.collection('compatibility');
+  final bondReference = FirebaseFirestore.instance.collection('Bond');
+  final postReference = FirebaseFirestore.instance.collection('posts');
+  final blogReference = FirebaseFirestore.instance.collection('blogs');
 
   Future<void> addData(blogData, String description) async {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("blogs")
-        .document('$description')
-        .setData(blogData)
+        .doc('$description')
+        .set(blogData)
         .catchError((e) {
       print(e);
     });
   }
 
   getData() async {
-    return await Firestore.instance
+    return FirebaseFirestore.instance
         .collection("blogs")
         .orderBy('time', descending: true)
         .snapshots();
@@ -83,38 +85,38 @@ class DatabaseService {
 
   addForumMessages(String desc, messageMap) async {
     blogReference
-        .document(desc)
+        .doc(desc)
         .collection("blogs")
-        .document(messageMap['time'].toString())
-        .setData(messageMap)
+        .doc(messageMap['time'].toString())
+        .set(messageMap)
         .catchError((e) {
       print(e.toString());
     });
   }
 
   getForumMessages(String desc) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("blogs")
-        .document(desc)
+        .doc(desc)
         .collection("blogs")
         .orderBy("time", descending: false)
         .snapshots();
   }
 
   Future updateGame(String gameRoomID, List player1, List player2) async {
-    return gameReference.document(gameRoomID).setData({
+    return gameReference.doc(gameRoomID).set({
       'player1': player1,
       'player2': player2,
     });
   }
 
   uploadtoken(String fcmToken) async {
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
-        .document(uid)
+        .doc(uid)
         .collection('tokens')
-        .document(uid)
-        .setData({
+        .doc(uid)
+        .set({
       'token': fcmToken,
       'createdAt': FieldValue.serverTimestamp(),
       'platform': Platform.operatingSystem
@@ -127,10 +129,10 @@ class DatabaseService {
         String answer1,
         String answer2}) async {
     return triviaReference
-        .document(triviaRoomID)
+        .doc(triviaRoomID)
         .collection('questions')
-        .document(question)
-        .setData({
+        .doc(question)
+        .set({
       'answer1': answer1,
       'answer2': answer2,
     });
@@ -138,60 +140,60 @@ class DatabaseService {
 
   Future createTriviaRoom(
       String triviaRoomID, String player1, String player2) async {
-    return triviaReference.document(triviaRoomID).setData({
+    return triviaReference.doc(triviaRoomID).set({
       'player1': player1,
       'player2': player2,
     });
   }
 
   Future uploadCompatibiltyAnswers({
-    User user,
+    SingleUser user,
     Wiggle wiggle,
     String compatibilityRoomID,
     List<String> myAnswers,
   }) async {
     return compatibilityReference
-        .document(compatibilityRoomID)
+        .doc(compatibilityRoomID)
         .collection('${user.displayName} answers')
-        .document(user.displayName)
-        .setData({
+        .doc(user.displayName)
+        .set({
       '${user.displayName} answers': myAnswers,
     });
   }
 
   Future uploadFriendCompatibiltyAnswers({
-    User user,
+    SingleUser user,
     Wiggle wiggle,
     String compatibilityRoomID,
     List<String> myAnswers,
   }) async {
     return compatibilityReference
-        .document(compatibilityRoomID)
+        .doc(compatibilityRoomID)
         .collection('${wiggle.name} answers')
-        .document(wiggle.name)
-        .setData({
+        .doc(wiggle.name)
+        .set({
       '${wiggle.name} answers': myAnswers,
     });
   }
 
   Future uploadCompatibiltyQuestions({
-    User user,
+    SingleUser user,
     Wiggle wiggle,
     String compatibilityRoomID,
     List<String> questions,
   }) async {
     return compatibilityReference
-        .document(compatibilityRoomID)
+        .doc(compatibilityRoomID)
         .collection('questions')
-        .document(compatibilityRoomID)
-        .setData({
+        .doc(compatibilityRoomID)
+        .set({
       'questions': questions,
     });
   }
 
   Future createCompatibilityRoom(
       {String compatibilityRoomID, String player1, String player2}) async {
-    return compatibilityReference.document(compatibilityRoomID).setData({
+    return compatibilityReference.doc(compatibilityRoomID).set({
       'player1': player1,
       'player2': player2,
     });
@@ -200,10 +202,10 @@ class DatabaseService {
   Future acceptRequest(String ownerID, String ownerName, String userDp,
       String userID, String senderEmail) {
     return feedReference
-        .document(ownerID)
+        .doc(ownerID)
         .collection('feed')
-        .document(senderEmail)
-        .setData({
+        .doc(senderEmail)
+        .set({
       'type': 'request',
       'ownerID': ownerID,
       'ownerName': ownerName,
@@ -218,9 +220,9 @@ class DatabaseService {
   getRequestStatus(String ownerID, String ownerName, String userDp,
       String userID, String senderEmail) async {
     return feedReference
-        .document(ownerID)
+        .doc(ownerID)
         .collection('feed')
-    //.document(senderEmail)
+    //.doc(senderEmail)
         .where('senderEmail', isEqualTo: senderEmail)
     // .get();
         .where('type', isEqualTo: 'request')
@@ -228,12 +230,12 @@ class DatabaseService {
   }
 
   Future uploadBondData(
-      {User user,
+      {SingleUser user,
         bool myAnon,
         Wiggle wiggle,
         bool friendAnon,
         String chatRoomID}) async {
-    return bondReference.document(chatRoomID).setData({
+    return bondReference.doc(chatRoomID).set({
       "${user.displayName} Email": user.email,
       "${user.displayName} Anon": myAnon,
       "${wiggle.name} Email": wiggle.email,
@@ -242,9 +244,9 @@ class DatabaseService {
   }
 
   getBond(String chatRoomID) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('Bond')
-        .document(chatRoomID)
+        .doc(chatRoomID)
         .snapshots();
     // .get();
   }
@@ -258,7 +260,7 @@ class DatabaseService {
         String gender,
         int score}) async {
     return gender == 'Male'
-        ? maleReference.document(email).setData({
+        ? maleReference.doc(email).set({
       "name": name,
       "email": email,
       "nickname": nickname,
@@ -266,7 +268,7 @@ class DatabaseService {
       "score": score,
       "isAnonymous": isAnonymous
     })
-        : femaleReference.document(email).setData({
+        : femaleReference.doc(email).set({
       "name": name,
       "email": email,
       "nickname": nickname,
@@ -278,14 +280,14 @@ class DatabaseService {
 
   Future uploadPhotos(String photo) async {
     return await wiggleCollection
-        .document(uid)
+        .doc(uid)
         .collection('photos')
-        .document()
-        .setData({'photo': photo});
+        .doc()
+        .set({'photo': photo});
   }
 
   Stream<QuerySnapshot> getphotos() {
-    return wiggleCollection.document(uid).collection('photos').snapshots();
+    return wiggleCollection.doc(uid).collection('photos').snapshots();
   }
 
   Future uploadUserData(
@@ -301,9 +303,9 @@ class DatabaseService {
       String playlist,
       String course,
       String accoms) async {
-    followersReference.document(email).collection('userFollowing');
-    followingReference.document(email).collection('userFollowers');
-    return await wiggleCollection.document(uid).setData({
+    followersReference.doc(email).collection('userFollowing');
+    followingReference.doc(email).collection('userFollowers');
+    return await wiggleCollection.doc(uid).set({
       "email": email,
       "name": name,
       "nickname": nickname,
@@ -326,13 +328,13 @@ class DatabaseService {
 
   Future updateAnonymous(bool isAnonymous) async {
     return await wiggleCollection
-        .document(uid)
-        .updateData({"isAnonymous": isAnonymous});
+        .doc(uid)
+        .update({"isAnonymous": isAnonymous});
   }
 
   Future updateAnonData(String anonBio, String anonInterest, String anonDp,
       String nickname) async {
-    return await wiggleCollection.document(uid).updateData({
+    return await wiggleCollection.doc(uid).update({
       'anonBio': anonBio,
       'anonInterest': anonInterest,
       'anonDp': anonDp,
@@ -344,34 +346,34 @@ class DatabaseService {
       int initialvalue, String raterEmail, bool isAdditional) async {
     if (isAdditional) {
       await wiggleCollection
-          .document(uid)
+          .doc(uid)
           .collection('likes')
-          .document(raterEmail)
-          .setData({'like': raterEmail});
+          .doc(raterEmail)
+          .set({'like': raterEmail});
     }
     return await wiggleCollection
-        .document(uid)
-        .updateData({'fame': initialvalue + 1});
+        .doc(uid)
+        .update({'fame': initialvalue + 1});
   }
 
 
 
   Future likepost(int initialvalue, String postId,String uid, String userDisplayName)  async {
 
-     await Firestore.instance
+     await FirebaseFirestore.instance
         .collection("posts")
-        .document(postId)
-        .updateData({'likes': initialvalue + 1});
+        .doc(postId)
+        .update({'likes': initialvalue + 1});
 
      print("bhai bhaibbb");
      print(uid);
 
-     Firestore.instance
+     FirebaseFirestore.instance
         .collection("posts")
-        .document(postId)
+        .doc(postId)
         .collection('likes')
-        .document(uid)
-        .setData({'liked': userDisplayName});
+        .doc(uid)
+        .set({'liked': userDisplayName});
 
 
   }
@@ -382,23 +384,23 @@ class DatabaseService {
 
     if(initialvalue < 0){
 
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection("posts")
-          .document(postId)
-          .updateData({'likes': 0});
+          .doc(postId)
+          .update({'likes': 0});
     }
 
     else{
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection("posts")
-          .document(postId)
-          .updateData({'likes': initialvalue - 1});
+          .doc(postId)
+          .update({'likes': initialvalue - 1});
 
-      Firestore.instance
+      FirebaseFirestore.instance
           .collection("posts")
-          .document(postId)
+          .doc(postId)
           .collection('likes')
-          .document(uid)
+          .doc(uid)
           .delete();
     }
 
@@ -408,62 +410,62 @@ class DatabaseService {
 
 //  Future followingUser(int following, String displayNameX, String displayName) async {
 
-//    return await Firestore.instance
+//    return await FirebaseFirestore.instance
 //        .collection("users")
-//        .document(displayName)
-//        .updateData({'following': following + 1});
+//        .doc(displayName)
+//        .update({'following': following + 1});
 //  }
 
   Future unfollowUser(int followers, String uid, String displayName) {
 
 
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
-        .updateData({'followers': followers - 1});
+        .doc(uid)
+        .update({'followers': followers - 1});
 
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .collection('followers')
-        .document(displayName)
+        .doc(displayName)
         .delete();
   }
 
   Future PhoneverificationX(String uid) async {
 //    .collection("users")
-//        .document(uid)
-//        .delete(); await Firestore.instance
+//        .doc(uid)
+//        .delete(); await FirebaseFirestore.instance
 
 
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
-        .updateData({'phoneVerified': true});
+        .doc(uid)
+        .update({'phoneVerified': true});
   }
 
   Future decreaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX) async {
 
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .collection('following')
-        .document(displayName)
+        .doc(displayName)
         .delete();
 
 
 //        if(following == 1 && following == 0){
-//          return await Firestore.instance
+//          return await FirebaseFirestore.instance
 //        .collection("users")
-//        .document(uidX)
-//        .updateData({'following': 0});
+//        .doc(uidX)
+//        .update({'following': 0});
 //        }
 
 //        else {
-          return await Firestore.instance
+          return await FirebaseFirestore.instance
               .collection("users")
-              .document(uid)
-              .updateData({'following': following - 1});
+              .doc(uid)
+              .update({'following': following - 1});
 //        }
   }
 
@@ -473,10 +475,10 @@ class DatabaseService {
     //String increment = postsController.text;
     //int incr = int.parse(posts);
     //print(incr);
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
-        .updateData({'posts': posts - 1});
+        .doc(uid)
+        .update({'posts': posts - 1});
   }
 
   CommentD(String postId,int comments,int commCount) async {
@@ -491,42 +493,38 @@ class DatabaseService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setInt('comments', Ucomments);
     }
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("posts")
-        .document(postId)
-        .updateData({'comments': (comments+commCount) - 1});
+        .doc(postId)
+        .update({'comments': (comments+commCount) - 1});
   }
 
   Future increaseFollowing(String uid,int following,String displayNameX, String displayName, String uidX,String photoUrlX) async {
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .collection('following')
-        .document(displayName)
-        .setData({'followingname' : displayName,'followinguid' : uidX,'photoUrl' : photoUrlX});
-
-        //.updateData({'followingname': uid,});
-
-    return await Firestore.instance
+        .doc(displayName)
+        .set({'followingname' : displayName,'followinguid' : uidX,'photoUrl' : photoUrlX});
+        //.update({'followingname': uid,});
+    return await FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
-        .updateData({'following': following + 1});
+        .doc(uid)
+        .update({'following': following + 1});
   }
   
 
   Future followUser(int followers, String uid, String displayName, String uidX,String photoUrlX) {
-
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
-        .updateData({'followers': followers + 1});
-
-    Firestore.instance
+        .doc(uid)
+        .update({'followers': followers + 1});
+    FirebaseFirestore.instance
         .collection("users")
-        .document(uid)
+        .doc(uid)
         .collection('followers')
-        .document(displayName)
-        .setData({
+        .doc(displayName)
+        .set({
       'followername': displayName,
       'followeruid': uidX,
       'photoUrl' : photoUrlX,
@@ -540,14 +538,14 @@ class DatabaseService {
       int initialvalue, String raterEmail, bool isAdditional) async {
     if (isAdditional) {
       await wiggleCollection
-          .document(uid)
+          .doc(uid)
           .collection('dislikes')
-          .document(raterEmail)
-          .setData({'dislike': raterEmail});
+          .doc(raterEmail)
+          .set({'dislike': raterEmail});
     }
     return await wiggleCollection
-        .document(uid)
-        .updateData({'fame': initialvalue - 1});
+        .doc(uid)
+        .update({'fame': initialvalue - 1});
   }
 
   Future updateUserData(
@@ -563,7 +561,7 @@ class DatabaseService {
       String course,
       String accoms,
       ) async {
-    return await wiggleCollection.document(uid).updateData({
+    return await wiggleCollection.doc(uid).update({
       "email": email,
       "name": name,
       "gender": gender,
@@ -581,38 +579,38 @@ class DatabaseService {
 
   //wiggle list from snapshot
   List<Wiggle> _wiggleListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map((doc) {
+    return snapshot.docs.map((doc) {
       return Wiggle(
-          id: doc.data['id'] ?? '',
-          email: doc.data['email'] ?? '',
-          dp: doc.data['dp'] ?? '',
-          name: doc.data['name'] ?? '',
-          bio: doc.data['bio'] ?? '',
-          community: doc.data['community'] ?? '',
-          gender: doc.data['gender'] ?? '',
-          block: doc.data['block'] ?? '',
-          nickname: doc.data['nickname'] ?? '',
-          isAnonymous: doc.data['isAnonymous'] ?? false,
-          anonBio: doc.data['anonBio'] ?? '',
-          anonInterest: doc.data['anonInterest'] ?? '',
-          anonDp: doc.data['anonDp'] ?? '',
-          fame: doc.data['fame'] ?? 0,
-          media: doc.data['media'] ?? '',
-          course: doc.data['course'] ?? '',
-          playlist: doc.data['playlist'] ?? '',
-          accoms: doc.data['accoms'] ?? '');
+          id: doc['id'] ?? '',
+          email: doc['email'] ?? '',
+          dp: doc['dp'] ?? '',
+          name: doc['name'] ?? '',
+          bio: doc['bio'] ?? '',
+          community: doc['community'] ?? '',
+          gender: doc['gender'] ?? '',
+          block: doc['block'] ?? '',
+          nickname: doc['nickname'] ?? '',
+          isAnonymous: doc['isAnonymous'] ?? false,
+          anonBio: doc['anonBio'] ?? '',
+          anonInterest: doc['anonInterest'] ?? '',
+          anonDp: doc['anonDp'] ?? '',
+          fame: doc['fame'] ?? 0,
+          media: doc['media'] ?? '',
+          course: doc['course'] ?? '',
+          playlist: doc['playlist'] ?? '',
+          accoms: doc['accoms'] ?? '');
     }).toList();
   }
 
   //userData from snapshot
-  User _userDataFromSnapshot(DocumentSnapshot snapshot) {
+  SingleUser _userDataFromSnapshot(DocumentSnapshot snapshot) {
 
-    return User(
-        email: snapshot.data['email'],
-        bio: snapshot.data['bio'],
-        displayName: snapshot.data['name'],
-        gender: snapshot.data['gender'],
-        photoUrl: snapshot.data['photoUrl'] ?? '');
+    return SingleUser(
+        email: snapshot['email'],
+        bio: snapshot['bio'],
+        displayName: snapshot['name'],
+        gender: snapshot['gender'],
+        photoUrl: snapshot['photoUrl'] ?? '');
   }
 
   //get wiggle stream
@@ -621,91 +619,92 @@ class DatabaseService {
   }
 
   //get user doc stream
-  Stream<User> get userData {
+  Stream<SingleUser> get userData {
     return wiggleCollection
-        .document(uid)
+        .doc(uid)
         .snapshots()
         .map(_userDataFromSnapshot);
   }
 
-  createChatRoom(String chatRoomID, dynamic chatRoomMap) {
-    Firestore.instance
+    createChatRoom(String chatRoomID, dynamic chatRoomMap) {
+    FirebaseFirestore.instance
         .collection("ChatRoom")
-        .document(chatRoomID)
-        .setData(chatRoomMap)
+        .doc(chatRoomID)
+        .set(chatRoomMap)
         .catchError((e) {
       print(e.toString());
     });
   }
 
   createAnonymousChatRoom(String chatRoomID, dynamic chatRoomMap) {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("Anonymous ChatRoom")
-        .document(chatRoomID)
-        .setData(chatRoomMap)
+        .doc(chatRoomID)
+        .set(chatRoomMap)
         .catchError((e) {
       print(e.toString());
     });
   }
 
   createSusChatRoom(String chatRoomID, dynamic chatRoomMap) {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("Sus ChatRoom")
-        .document(chatRoomID)
-        .setData(chatRoomMap)
+        .doc(chatRoomID)
+        .set(chatRoomMap)
         .catchError((e) {
       print(e.toString());
     });
   }
 
-  addConversationMessages(String chatRoomId, messageMap) async {
-    Firestore.instance
+  getConversationMessages(String chatRoomID ) async {
+   return  await FirebaseFirestore.instance
         .collection("ChatRoom")
-        .document(chatRoomId)
+        .doc(chatRoomID)
         .collection("chats")
-        .document(messageMap['time'].toString())
-        .setData(messageMap)
+        .orderBy("time")
+        .snapshots();
+        //.doc(messageMap['time'].toString())
+        //.set(messageMap)
     // .add(messageMap)
-        .catchError((e) {
-      print(e.toString());
-    });
+
   }
 
   addAnonymousConversationMessages(String chatRoomId, messageMap) async {
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection("Anonymous ChatRoom")
-        .document(chatRoomId)
+        .doc(chatRoomId)
         .collection("chats")
-        .document(messageMap['time'].toString())
-        .setData(messageMap)
+        .doc(messageMap['time'].toString())
+        .set(messageMap)
     // .add(messageMap)
         .catchError((e) {
       print(e.toString());
     });
   }
 
-  getConversationMessages(String chatRoomId) async {
-    return Firestore.instance
+  addConversationMessages(String chatRoomID,messageMap )  async {
+    return FirebaseFirestore.instance
         .collection("ChatRoom")
-        .document(chatRoomId)
+        .doc(chatRoomID)
         .collection("chats")
-        .orderBy("time", descending: false)
-        .snapshots();
+        .add(messageMap);
+        //.orderBy("time", descending: false)
+        //.snapshots();
   }
 
   getSusConversationMessages(String chatRoomId) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("Sus ChatRoom")
-        .document(chatRoomId)
+        .doc(chatRoomId)
         .collection("chats")
         .orderBy("time", descending: false)
         .snapshots();
   }
 
   getAnonymousConversationMessages(String chatRoomId) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("Anonymous ChatRoom")
-        .document(chatRoomId)
+        .doc(chatRoomId)
         .collection("chats")
         .orderBy("time", descending: false)
         .snapshots();
@@ -713,86 +712,86 @@ class DatabaseService {
 
 
   getPosts() async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("posts")
         .orderBy("timestamp", descending: true)
         .snapshots();
   }
 
   getUsers() async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("users")
         .orderBy("timestamp", descending: true)
         .snapshots();
   }
 
   getDocMyCompatibilityAnswers(wiggle, userData, compatibilityRoomID) async {
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("compatibility")
-        .document(compatibilityRoomID)
+        .doc(compatibilityRoomID)
         .collection("${userData.name} answers")
-        .getDocuments();
+        .get();
   }
 
   getDocFriendCompatibilityAnswers(
       wiggle, userData, compatibilityRoomID) async {
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection("compatibility")
-        .document(compatibilityRoomID)
+        .doc(compatibilityRoomID)
         .collection("${wiggle.name} answers")
-        .getDocuments();
+        .get();
   }
 
   getWho(String gender) async {
     return gender == "Female"
-        ? Firestore.instance
+        ? FirebaseFirestore.instance
         .collection('male')
         .orderBy("score", descending: true)
-        .getDocuments()
-        : Firestore.instance
+        .get()
+        : FirebaseFirestore.instance
         .collection('female')
         .orderBy("score", descending: true)
-        .getDocuments();
+        .get();
   }
 
   getReceivertoken(String email) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('users')
-        .document(uid)
+        .doc(uid)
         .collection('tokens')
-        .getDocuments();
+        .get();
   }
 
   getChatRooms(String userName) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("ChatRoom")
         .where("users", arrayContains: userName)
         .snapshots();
   }
 
   getNoOfChatRooms(String email) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("ChatRoom")
         .where("users", arrayContains: email)
-        .getDocuments();
+        .get();
   }
 
   getNoOfAnonChatRooms(String email) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("Anonymous ChatRoom")
         .where("users", arrayContains: email)
-        .getDocuments();
+        .get();
   }
 
   getAnonymousChatRooms(String userName) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("Anonymous ChatRoom")
         .where("users", arrayContains: userName)
         .snapshots();
   }
 
   getSusChatRooms(String userName) async {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection("Sus ChatRoom")
         .where("users", arrayContains: userName)
         .snapshots();

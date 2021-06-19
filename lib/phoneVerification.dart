@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _otpController = TextEditingController();
 
-  FirebaseUser _firebaseUser;
+  User _firebaseUser;
   String _status;
 
   AuthCredential _phoneAuthCredential;
@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _getFirebaseUser() async {
-    this._firebaseUser = await FirebaseAuth.instance.currentUser();
+    this._firebaseUser =  FirebaseAuth.instance.currentUser;
     setState(() {
       _status =
       (_firebaseUser == null) ? 'Not Logged In\n' : 'Already LoggedIn\n';
@@ -65,11 +65,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _login() async {
     /// This method is used to login the user
     /// `AuthCredential`(`_phoneAuthCredential`) is needed for the signIn method
-    /// After the signIn method from `AuthResult` we can get `FirebaserUser`(`_firebaseUser`)
+    /// After the signIn method from `UserCredential` we can get `FirebaserUser`(`_firebaseUser`)
     try {
       await FirebaseAuth.instance
           .signInWithCredential(this._phoneAuthCredential)
-          .then((AuthResult authRes) {
+          .then((UserCredential authRes) {
         _firebaseUser = authRes.user;
         print(_firebaseUser.toString());
       });
@@ -117,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print(phoneAuthCredential);
     }
 
-    void verificationFailed(AuthException error) {
+    void verificationFailed(FirebaseAuthException error) {
       print('verificationFailed');
       setState(() {
         _status += '$error\n';
@@ -172,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     /// when used different phoneNumber other than the current (running) device
     /// we need to use OTP to get `phoneAuthCredential` which is inturn used to signIn/login
-    this._phoneAuthCredential = PhoneAuthProvider.getCredential(
+    this._phoneAuthCredential = PhoneAuthProvider.credential(
         verificationId: this._verificationId, smsCode: smsCode);
 
     _login();
