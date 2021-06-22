@@ -76,7 +76,7 @@ class _BodyState extends State<Body> {
     super.dispose();
   }
 
-   _changePassword(String password) async {
+  _changePassword(String password) async {
     print(password);
     //Create an instance of the current user.
     User user = FirebaseAuth.instance.currentUser;
@@ -241,9 +241,9 @@ class _BodyState extends State<Body> {
         try {
           FacebookAccessToken facebookAccessToken =
               facebookLoginResult.accessToken;
-          final AuthCredential credential = FacebookAuthProvider.credential(facebookAccessToken.token);
-          final User user =
-              (await auth.signInWithCredential(credential)).user;
+          final AuthCredential credential =
+              FacebookAuthProvider.credential(facebookAccessToken.token);
+          final User user = (await auth.signInWithCredential(credential)).user;
           (FirebaseAuth.instance.currentUser).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);

@@ -20,7 +20,7 @@ import 'package:video_player/video_player.dart';
 class CameraExampleHome extends StatefulWidget {
   final int cam;
   final bool check;
-  
+
   const CameraExampleHome({Key key, this.cam, this.check}) : super(key: key);
   @override
   _CameraExampleHomeState createState() {
@@ -215,8 +215,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-bool timeronpress =false;
-bool flash = true;
+  bool timeronpress = false;
+  bool flash = true;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -264,18 +264,17 @@ bool flash = true;
                               onPressed: () {
                                 // Navigator.pop(context,
                                 //   MaterialPageRoute(builder: (context) => HomePage()),);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          HomePage(initialindexg: 1)),
-                                );
+                                Navigator.of(context).pop();
                               },
                             ),
                           ),
                           (timeronpress)
-                          ?Positioned( bottom: 80.0,
-                            right: 165.0, child:   TimerText(dependencies: dependencies),):Container(),
+                              ? Positioned(
+                                  bottom: 80.0,
+                                  right: 165.0,
+                                  child: TimerText(dependencies: dependencies),
+                                )
+                              : Container(),
                           Column(
                             children: [
                               Padding(
@@ -484,59 +483,57 @@ bool flash = true;
     );
   }
 
-  Widget   _flashModeControlRowWidget() {
-
+  Widget _flashModeControlRowWidget() {
     {
       return SizeTransition(
-      sizeFactor: _flashModeControlRowAnimation,
-      child: ClipRect(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            IconButton(
-              icon: Icon(Icons.flash_off),
-              color: controller?.value?.flashMode == FlashMode.off
-                  ? Colors.orange
-                  : Colors.white,
-              onPressed: controller != null
-                  ? () => onSetFlashModeButtonPressed(FlashMode.off)
-                  : null,
-            ),
-            IconButton(
-              icon: Icon(Icons.flash_auto),
-              color: controller?.value?.flashMode == FlashMode.auto
-                  ? Colors.orange
-                  : Colors.white,
-              onPressed: controller != null
-                  ? () => onSetFlashModeButtonPressed(FlashMode.auto)
-                  : null,
-            ),
-            IconButton(
-              icon: Icon(Icons.flash_on),
-              color: controller?.value?.flashMode == FlashMode.always
-                  ? Colors.orange
-                  : Colors.white,
-              onPressed: controller != null
-                  ? () => onSetFlashModeButtonPressed(FlashMode.always)
-                  : null,
-            ),
-            IconButton(
-              icon: Icon(Icons.highlight),
-              color: controller?.value?.flashMode == FlashMode.torch
-                  ? Colors.orange
-                  : Colors.white,
-              onPressed: controller != null
-                  ? () => onSetFlashModeButtonPressed(FlashMode.torch)
-                  : null,
-            ),
-          ],
+        sizeFactor: _flashModeControlRowAnimation,
+        child: ClipRect(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              IconButton(
+                icon: Icon(Icons.flash_off),
+                color: controller?.value?.flashMode == FlashMode.off
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.off)
+                    : null,
+              ),
+              IconButton(
+                icon: Icon(Icons.flash_auto),
+                color: controller?.value?.flashMode == FlashMode.auto
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.auto)
+                    : null,
+              ),
+              IconButton(
+                icon: Icon(Icons.flash_on),
+                color: controller?.value?.flashMode == FlashMode.always
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.always)
+                    : null,
+              ),
+              IconButton(
+                icon: Icon(Icons.highlight),
+                color: controller?.value?.flashMode == FlashMode.torch
+                    ? Colors.orange
+                    : Colors.white,
+                onPressed: controller != null
+                    ? () => onSetFlashModeButtonPressed(FlashMode.torch)
+                    : null,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
     }
   }
-
 
   Widget _exposureModeControlRowWidget() {
     final ButtonStyle styleAuto = TextButton.styleFrom(
@@ -702,6 +699,7 @@ bool flash = true;
 
   bool _isRecordingMode = false;
   bool _isRecording = false;
+
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
     return Container(
@@ -710,31 +708,6 @@ bool flash = true;
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         //mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          // IconButton(
-          //     icon: Icon(
-          //       FontAwesomeIcons.photoVideo,
-          //       color: Colors.white60,
-          //     ),
-          //     onPressed: () {
-          //       pickImage();
-          //       if (upload == true) {
-          //         Navigator.push(
-          //             context,
-          //             MaterialPageRoute(
-          //               builder: (context) => UploadImage(
-          //                   file: _image, shared: false, isVideo: false),
-          //             ));
-          //       } else {
-          //         Navigator.push(
-          //             context,
-          //             MaterialPageRoute(
-          //               builder: (context) => CameraExampleHome(
-          //                 cam: 0,
-          //               ),
-          //             ));
-          //       }
-          //     }),
-
           // FlatButton(
           //   color: Colors.transparent,
           //   onPressed: () async => null,
@@ -789,29 +762,31 @@ bool flash = true;
                   radius: 28.0,
                   //camera button
                   child: GestureDetector(
-                    onLongPressStart: (details) async{
+                    onLongPressStart: (details) async {
                       onVideoRecordButtonPressed();
                       setState(() {
                         _isRecording = true;
-                        timeronpress =true;
+                        timeronpress = true;
                         (controller?.value?.flashMode == FlashMode.auto)
-                            ?onSetFlashModeButtonPressed(FlashMode.auto)
-                            :(controller?.value?.flashMode == FlashMode.torch)
-                            ?onSetFlashModeButtonPressed(FlashMode.torch)
-                            :onSetFlashModeButtonPressed(FlashMode.off);
+                            ? onSetFlashModeButtonPressed(FlashMode.auto)
+                            : (controller?.value?.flashMode == FlashMode.torch)
+                                ? onSetFlashModeButtonPressed(FlashMode.torch)
+                                : onSetFlashModeButtonPressed(FlashMode.off);
                       });
                     },
-                    onLongPressEnd: (details)async {
+                    onLongPressEnd: (details) async {
                       onStopButtonPressed();
                       setState(() {
-
                         _isRecording = false;
-                       timeronpress = false;
+                        timeronpress = false;
                       });
                     },
                     child: IconButton(
                       icon: _isRecording
-                          ? Icon(Icons.radio_button_on,color: Colors.red.shade400,)
+                          ? Icon(
+                              Icons.radio_button_on,
+                              color: Colors.red.shade400,
+                            )
                           : Icon(Icons.camera_alt),
                       color: Colors.black,
                       onPressed: controller != null &&
@@ -831,7 +806,6 @@ bool flash = true;
                       children: [
                         //when recording button pressed this single button appears when clicked recording starts
 
-
                         IconButton(
                           icon: const Icon(Icons.videocam),
                           color: Colors.white,
@@ -846,7 +820,6 @@ bool flash = true;
                           onTap: () {
                             // rightButtonPressed();
                             //   dependencies.stopwatch.stop();
-
 
                             setState(() {
                               dependencies.stopwatch.stop();

@@ -25,16 +25,15 @@ class CameraScreen extends StatefulWidget {
   final int cam;
   final bool check;
 
-  const CameraScreen({Key key,this.cam,this.check}) : super(key: key);
+  const CameraScreen({Key key, this.cam, this.check}) : super(key: key);
 
   @override
-  CameraScreenState createState() => CameraScreenState(cam: cam,check: check);
+  CameraScreenState createState() => CameraScreenState(cam: cam, check: check);
 }
 
 class CameraScreenState extends State<CameraScreen>
     with AutomaticKeepAliveClientMixin {
-
-  CameraScreenState({this.cam,this.check});
+  CameraScreenState({this.cam, this.check});
   CameraController _controller;
   List<CameraDescription> _cameras;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -52,9 +51,6 @@ class CameraScreenState extends State<CameraScreen>
   Animation<double> _exposureModeControlRowAnimation;
   Animation<double> _focusModeControlRowAnimation;
 
-
-
-
   @override
   void initState() {
     _initCamera();
@@ -62,17 +58,17 @@ class CameraScreenState extends State<CameraScreen>
 
     _flashModeControlRowAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
-     // vsync: this,
+      // vsync: this,
     );
 
     _exposureModeControlRowAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
-     // vsync: this,
+      // vsync: this,
     );
 
     _focusModeControlRowAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
-     //vsync: this,
+      //vsync: this,
     );
 
     _focusModeControlRowAnimation = CurvedAnimation(
@@ -124,7 +120,7 @@ class CameraScreenState extends State<CameraScreen>
   DocumentSnapshot docSnap;
 
   fetchProfileData() async {
-    currUser =  FirebaseAuth.instance.currentUser;
+    currUser = FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("users")
@@ -222,17 +218,26 @@ class CameraScreenState extends State<CameraScreen>
 // //     }
 //   }
 
-  bool flashOn=false;
+  bool flashOn = false;
   PickedFile _image;
   User currUser;
 
   TextEditingController firstNameController,
       lastNameController,
       emailController,
-      phoneNumberController,uidController,
-      bioController,genderController,linkController,photoUrlController,
-      displayNameController,workController,educationController,
-      currentCityController,homeTownController,relationshipController,pincodeController ;
+      phoneNumberController,
+      uidController,
+      bioController,
+      genderController,
+      linkController,
+      photoUrlController,
+      displayNameController,
+      workController,
+      educationController,
+      currentCityController,
+      homeTownController,
+      relationshipController,
+      pincodeController;
   bool upload = false;
   Future pickImage() async {
     // ignore: deprecated_member_use
@@ -243,14 +248,20 @@ class CameraScreenState extends State<CameraScreen>
       });
     });
 
-    if (_image != null){
+    if (_image != null) {
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UploadImage(file: File(_image.path)),));
-    }else{
+          MaterialPageRoute(
+            builder: (context) => UploadImage(file: File(_image.path)),
+          ));
+    } else {
       Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CameraScreen(cam: cam,),));
+          MaterialPageRoute(
+            builder: (context) => CameraScreen(
+              cam: cam,
+            ),
+          ));
     }
 //    Navigator.push(
 //      context,
@@ -258,6 +269,7 @@ class CameraScreenState extends State<CameraScreen>
 //    );
     print("Done..");
   }
+
   String url;
 
   controlUploadAndSave() async {
@@ -277,14 +289,15 @@ class CameraScreenState extends State<CameraScreen>
     });
     Navigator.pop(context);
   }
+
   final Reference storageReference =
-  FirebaseStorage.instance.ref().child("Post Pictures");
+      FirebaseStorage.instance.ref().child("Post Pictures");
 
   Future<String> uploadPhoto(mImageFile) async {
     UploadTask mStorageUploadTask =
-    storageReference.child("post_$postId.jpg").putFile(mImageFile);
+        storageReference.child("post_$postId.jpg").putFile(mImageFile);
     TaskSnapshot storageTaskSnapshot =
-    await mStorageUploadTask.whenComplete(() => null);
+        await mStorageUploadTask.whenComplete(() => null);
     String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
     return downloadUrl;
   }
@@ -296,11 +309,11 @@ class CameraScreenState extends State<CameraScreen>
   savePostInfoToFirestore(String url) {
     postReference.doc(postId).set({
       "postId": postId,
-      "uid" : uidController.text,
+      "uid": uidController.text,
       "displayName": displayNameController.text,
       "timestamp": Timestamp.now(),
       "email": emailController.text,
-      "photoURL" :photoUrlController.text,
+      "photoURL": photoUrlController.text,
 //      "email": widget.userData.email,
 //      "description": descriptionController.text,
       "likes": 0,
@@ -326,12 +339,8 @@ class CameraScreenState extends State<CameraScreen>
     });
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
-
     super.build(context);
     if (_controller != null) {
       if (!_controller.value.isInitialized) {
@@ -364,18 +373,15 @@ class CameraScreenState extends State<CameraScreen>
     return WillPopScope(
       onWillPop: _onWillPop,
       child: GestureDetector(
-        onDoubleTap: (){
+        onDoubleTap: () {
           _onCameraSwitch();
         },
         child: Scaffold(
-
           backgroundColor: Colors.transparent,
           key: _scaffoldKey,
           extendBody: true,
           body: Stack(
             children: <Widget>[
-
-
               _buildCameraPreview(),
               Positioned(
                 top: 24.0,
@@ -429,7 +435,6 @@ class CameraScreenState extends State<CameraScreen>
                   },
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.only(top: 24.0),
                 child: Align(
@@ -460,11 +465,6 @@ class CameraScreenState extends State<CameraScreen>
                   ),
                 ),
               ),
-
-
-
-
-
               if (_isRecordingMode)
                 Positioned(
                   left: 0,
@@ -474,10 +474,8 @@ class CameraScreenState extends State<CameraScreen>
                     key: _timerKey,
                   ),
                 ),
-
             ],
           ),
-
           bottomNavigationBar: _buildBottomNavigationBar(),
         ),
       ),
@@ -501,7 +499,6 @@ class CameraScreenState extends State<CameraScreen>
     );
   }
 
-
   Widget _buildBottomNavigationBar() {
     return Container(
       color: Colors.transparent,
@@ -512,32 +509,33 @@ class CameraScreenState extends State<CameraScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-
               IconButton(
-
-                  icon: Icon(FontAwesomeIcons.photoVideo,
-                    color: Colors.white60,), onPressed:
-                  (){
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(builder: (context) => pickImage(),));
-                pickImage();
-                if (upload == true){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => UploadImage(file: File(_image.path),)));
-                }else{
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CameraScreen(
-                          cam: 0,
-                        ),
-                      ));
-                }
-              }
-
-              ),
+                  icon: Icon(
+                    FontAwesomeIcons.photoVideo,
+                    color: Colors.white60,
+                  ),
+                  onPressed: () {
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => pickImage(),));
+                    pickImage();
+                    if (upload == true) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UploadImage(
+                                    file: File(_image.path),
+                                  )));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CameraScreen(
+                              cam: 0,
+                            ),
+                          ));
+                    }
+                  }),
 
               // ignore: deprecated_member_use
               FlatButton(
@@ -550,7 +548,9 @@ class CameraScreenState extends State<CameraScreen>
                     highlightColor: Colors.transparent,
                     icon: Icon(
                       (_isRecordingMode)
-                          ? (_isRecording) ? Icons.stop : Icons.videocam
+                          ? (_isRecording)
+                              ? Icons.stop
+                              : Icons.videocam
                           : Icons.camera_alt,
                       size: 28.0,
                       color: (_isRecording) ? Colors.red : Colors.black,
@@ -580,7 +580,6 @@ class CameraScreenState extends State<CameraScreen>
                       }
                     },
                   ),
-
                 ),
               ),
               IconButton(
@@ -641,11 +640,11 @@ class CameraScreenState extends State<CameraScreen>
 
   Future<void> _onCameraSwitch() async {
     //final CameraDescription cameraDescription =
-    if(cam == 0){
+    if (cam == 0) {
       setState(() {
         cam = 1;
       });
-    }else if(cam == 1){
+    } else if (cam == 1) {
       setState(() {
         cam = 0;
       });
@@ -656,11 +655,10 @@ class CameraScreenState extends State<CameraScreen>
     if (_controller != null) {
       await _controller.dispose();
     }
-    _controller = CameraController(cameraDescription, ResolutionPreset.ultraHigh);
+    _controller =
+        CameraController(cameraDescription, ResolutionPreset.ultraHigh);
     _controller.addListener(() {
-      if (mounted) setState(() {
-
-      });
+      if (mounted) setState(() {});
       if (_controller.value.hasError) {
         showInSnackBar('Camera error ${_controller.value.errorDescription}');
       }
@@ -689,14 +687,16 @@ class CameraScreenState extends State<CameraScreen>
       String filePath = '$dirPath/${_timestamp()}.jpeg';
       print('path: $filePath');
 
-
       // Attempt to take a picture and log where it's been saved.
       XFile halua = await _controller.takePicture();
       setState(() {});
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => Gallery(filePath: halua,cam: cam,)),
+            builder: (context) => Gallery(
+                  filePath: halua,
+                  cam: cam,
+                )),
       );
     }
   }

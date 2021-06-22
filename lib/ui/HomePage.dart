@@ -14,6 +14,7 @@ import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/repository.dart';
+import 'package:techstagram/status/status_screen.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
@@ -23,12 +24,14 @@ import 'dart:async';
 import 'messagingsystem.dart';
 import 'searchlist.dart';
 
-
 class HomePage extends StatefulWidget {
-
-  HomePage({ Key key, this.title = "Yammerly",
-    this.uid,this.initialindexg,this.cam
-  }) : super(key: key); //update this to include the uid in the constructor
+  HomePage(
+      {Key key,
+      this.title = "Yammerly",
+      this.uid,
+      this.initialindexg,
+      this.cam})
+      : super(key: key); //update this to include the uid in the constructor
 
   final String title;
   final String uid;
@@ -38,25 +41,30 @@ class HomePage extends StatefulWidget {
   static String dnu;
 
   @override
-  _HomePageState createState() => _HomePageState(initialindexg,cam);
+  _HomePageState createState() => _HomePageState(initialindexg, cam);
 }
 
-final PageController _pageController = PageController(initialPage: 1,keepPage: true);
+final PageController _pageController =
+    PageController(initialPage: 1, keepPage: true);
 
 class _HomePageState extends State<HomePage> {
-
   TextEditingController taskTitleInputController;
   TextEditingController taskDescripInputController;
   User currentUser;
   FirebaseProvider firebaseProvider;
   // Create the page controller in your widget
 
-  _HomePageState(this.initialindexg,this.cam);
+  _HomePageState(this.initialindexg, this.cam);
 
   int initialindexg;
   int cam;
-  TextEditingController emailController,urlController,descriptionController,
-      displayNameController,uidController,photoUrlController,phonenumberController,
+  TextEditingController emailController,
+      urlController,
+      descriptionController,
+      displayNameController,
+      uidController,
+      photoUrlController,
+      phonenumberController,
       bioController;
   int followers;
   int following;
@@ -80,12 +88,11 @@ class _HomePageState extends State<HomePage> {
       photoUrlController.text = docSnap["photoURL"];
       phonenumberController.text = docSnap["phonenumber"];
       followers = docSnap["followers"];
-      following  = docSnap["following"];
-      posts  = docSnap["posts"];
+      following = docSnap["following"];
+      posts = docSnap["posts"];
       setState(() {
         displayNamecurrUser = displayNameController.text;
         HomePage.dnu = displayNamecurrUser;
-
       });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
@@ -93,10 +100,10 @@ class _HomePageState extends State<HomePage> {
     print(uidController.text);
     print("bajbaj");
   }
+
   PageView myPageView;
 
   String displayNamecurrUser;
-
 
   @override
   initState() {
@@ -118,12 +125,11 @@ class _HomePageState extends State<HomePage> {
     fetchProfileData();
     this.getCurrentUser();
 
-
     myPageView = PageView(
       controller: _pageController,
       allowImplicitScrolling: true,
       children: <Widget>[
-        CameraExampleHome(cam: 0,check: true),
+        CameraExampleHome(cam: 0, check: true),
         //CameraExampleHome(),
         //CameraScreen(cam: 0, check: true),
         TabLayoutDemo(initialindexg),
@@ -147,7 +153,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<bool> onWillPop() {
     DateTime now = DateTime.now();
-    if (currentBackPressTime == null || now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
       currentBackPressTime = now;
       Fluttertoast.showToast(msg: "tap again for back");
       return Future.value(false);
@@ -158,8 +165,6 @@ class _HomePageState extends State<HomePage> {
     // SystemNavigator.pop();
     // SystemNavigator.pop();
   }
-
-
 
   //final FirebaseMessaging _fcm = FirebaseMessaging();
 
@@ -179,7 +184,9 @@ class _HomePageState extends State<HomePage> {
 List<CameraDescription> cameras = [];
 
 class TabLayoutDemo extends StatefulWidget {
-  TabLayoutDemo(this.initialindexg,);
+  TabLayoutDemo(
+    this.initialindexg,
+  );
 
   final int initialindexg;
   @override
@@ -189,7 +196,8 @@ class TabLayoutDemo extends StatefulWidget {
 bool hideappbar = false;
 bool hidebottombar = false;
 
-class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProviderStateMixin{
+class _TabLayoutDemoState extends State<TabLayoutDemo>
+    with SingleTickerProviderStateMixin {
   _TabLayoutDemoState(this.initialindexg);
   TabController tabController;
   Map<String, dynamic> _profile;
@@ -199,8 +207,13 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
   VideoPlayerController vpController;
 
   final int initialindexg;
-  TextEditingController emailController,urlController,descriptionController,
-      displayNameController,uidController,photoUrlController,phonenumberController,
+  TextEditingController emailController,
+      urlController,
+      descriptionController,
+      displayNameController,
+      uidController,
+      photoUrlController,
+      phonenumberController,
       bioController;
 
   DocumentSnapshot docSnap;
@@ -215,9 +228,8 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     print(currentUser.uid);
   }
 
-
   fetchProfileData() async {
-    currUser =  FirebaseAuth.instance.currentUser;
+    currUser = FirebaseAuth.instance.currentUser;
     try {
       docSnap = await FirebaseFirestore.instance
           .collection("users")
@@ -229,11 +241,10 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
       photoUrlController.text = docSnap["photoURL"];
       phonenumberController.text = docSnap["phonenumber"];
       int followers = docSnap["followers"];
-      int following  = docSnap["following"];
-      int posts  = docSnap["posts"];
+      int following = docSnap["following"];
+      int posts = docSnap["posts"];
       setState(() {
         String displayNamecurrUser = displayNameController.text;
-
       });
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
@@ -241,7 +252,6 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     print(uidController.text);
     print("bajbaj");
   }
-
 
   @override
   void initState() {
@@ -305,7 +315,6 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     // Local dragStartDetail.
@@ -336,7 +345,8 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                 print("camera open");
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => CameraExampleHome(cam: 0,check: true),
+                    builder: (context) =>
+                        CameraExampleHome(cam: 0, check: true),
                   ),
                 );
               },
@@ -368,7 +378,9 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ConversationPage(displayNameController.text)),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ConversationPage(displayNameController.text)),
               );
             },
           ),
@@ -387,7 +399,7 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
               controller: tabController,
               children: [
                 new Container(
-                  child: ChatsPage(videoPlayerController: vpController),
+                  child: DetailStatusScreen(),
                 ),
                 new Container(
                   child: FeedsPage(
@@ -396,7 +408,9 @@ class _TabLayoutDemoState extends State<TabLayoutDemo> with SingleTickerProvider
                 ),
                 new Container(
                   //child: FeedsPage(),
-                  child: NotificationsPage(currUid: uidController.text,displayNameCurrUser: displayNameController.text),
+                  child: NotificationsPage(
+                      currUid: uidController.text,
+                      displayNameCurrUser: displayNameController.text),
                 ),
                 new Container(child: AccountBottomIconScreen()),
               ],

@@ -3,40 +3,29 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/Welcome/welcome_screen.dart';
 import 'package:techstagram/intro/intro_page.dart';
 import 'package:techstagram/resources/repository.dart';
 import 'package:techstagram/ui/HomePage.dart';
-import 'package:techstagram/ui/ProfilePage.dart';
-
-import 'Signup/signup_screen.dart';
 
 bool seen;
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   // SharedPreferences.setMockInitialValues({});
   // SharedPreferences prefs = await SharedPreferences.getInstance();
 
   await Firebase.initializeApp();
 
-
   runApp(MyApp());
-
 }
 
-
 class MyApp extends StatefulWidget {
-
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-
-
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -104,19 +93,17 @@ class CheckState extends State<Check> with AfterLayoutMixin<Check> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:Center(),
+      body: Center(),
     );
   }
 }
 
-class LoginCheck extends StatefulWidget{
-
+class LoginCheck extends StatefulWidget {
   @override
   _LoginCheckState createState() => _LoginCheckState();
 }
 
 class _LoginCheckState extends State<LoginCheck> {
-
   var _repository = Repository();
 
   @override
@@ -126,10 +113,8 @@ class _LoginCheckState extends State<LoginCheck> {
       future: _repository.getCurrentUser(),
       builder: (context, AsyncSnapshot<User> snapshot) {
         if (snapshot.hasData) {
-
           print("Already Loggedin");
           return HomePage(initialindexg: 1);
-
         } else {
           print("Not loggedIn");
           return WelcomeScreen();

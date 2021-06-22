@@ -430,9 +430,8 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                 String photoUrl;
 
-                                  photoUrl = aja['photoURL'];
-                                  print(aja['photoURL']);
-
+                                photoUrl = aja['photoURL'];
+                                print(aja['photoURL']);
 
                                 String OwnerDisplayName;
 
@@ -444,17 +443,20 @@ class _FeedsPageState extends State<FeedsPage> {
                                         .data()
                                         .containsKey('OwnerDisplayName') ==
                                     null) {
-                                  OwnerDisplayName = aja['OwnerDisplayName'];}
-    if (snapshot.data.docs[index]
-        .data()
-        .containsKey('OwnerPhotourl') ==
-    null) {
-                                  OwnerPhotourl = aja['OwnerPhotourl'];}
-    if (snapshot.data.docs[index]
-        .data()
-        .containsKey('OwnerDescription') ==
-    null) {
-                                  OwnerDescription = aja['OwnerDescription'];}
+                                  OwnerDisplayName = aja['OwnerDisplayName'];
+                                }
+                                if (snapshot.data.docs[index]
+                                        .data()
+                                        .containsKey('OwnerPhotourl') ==
+                                    null) {
+                                  OwnerPhotourl = aja['OwnerPhotourl'];
+                                }
+                                if (snapshot.data.docs[index]
+                                        .data()
+                                        .containsKey('OwnerDescription') ==
+                                    null) {
+                                  OwnerDescription = aja['OwnerDescription'];
+                                }
                                 bool shared;
 
                                 if (snapshot.data.docs[index]
@@ -466,30 +468,28 @@ class _FeedsPageState extends State<FeedsPage> {
 
                                 String uid = aja["uid"];
                                 int shares;
-    if (snapshot.data.docs[index]
-        .data()
-        .containsKey('shares') ==
-    null) {
-                                shares = aja["shares"];}
+                                if (snapshot.data.docs[index]
+                                        .data()
+                                        .containsKey('shares') ==
+                                    null) {
+                                  shares = aja["shares"];
+                                }
 
                                 String url;
 
-
                                 Timestamp timestamp = aja['timestamp'];
 
-                                  url = aja['url'];
-
+                                url = aja['url'];
 
                                 int cam = aja['cam'];
 
                                 String postId = aja['postId'];
                                 int likes;
 
-      likes = aja['likes'];
+                                likes = aja['likes'];
                                 int comments;
 
                                 comments = aja['comments'];
-
 
                                 Timestamp OwnertimeStamp;
                                 String OwnerUid;
@@ -498,13 +498,14 @@ class _FeedsPageState extends State<FeedsPage> {
                                         .data()
                                         .containsKey('OwnertimeStamp') ==
                                     null) {
-                                  OwnertimeStamp = aja['OwnerTimeStamp'];}
-                                  if (snapshot.data.docs[index]
-                                      .data()
-                                      .containsKey('OwnerUid') ==
-                                  null) {
-                                  OwnerUid = aja['OwnerUid'];}
-
+                                  OwnertimeStamp = aja['OwnerTimeStamp'];
+                                }
+                                if (snapshot.data.docs[index]
+                                        .data()
+                                        .containsKey('OwnerUid') ==
+                                    null) {
+                                  OwnerUid = aja['OwnerUid'];
+                                }
 
 //print("push");
                                 bool isVideo = aja['isVideo'];
@@ -2170,7 +2171,7 @@ class _FeedsPageState extends State<FeedsPage> {
                                           ),
                                         );
                                 }
-                               },
+                              },
                             ),
                           ),
                         ],

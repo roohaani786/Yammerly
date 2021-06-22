@@ -13,12 +13,10 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-
   // Shared State for Widgets
   Stream<User> user; // firebase user
   Stream<Map<String, dynamic>> profile; // custom user data in Firestore
   PublishSubject loading = PublishSubject();
-
 
   AuthService() {
     user = _auth.authStateChanges();
@@ -37,8 +35,6 @@ class AuthService {
   }
 
   Future<String> emailVerify() async {
-
-
     User user;
 
     print("bahia bhia");
@@ -49,8 +45,7 @@ class AuthService {
       print("Success");
       Fluttertoast.showToast(
           timeInSecForIosWeb: 100,
-          msg:
-          "email Verification link has been sent to your mail");
+          msg: "email Verification link has been sent to your mail");
       return user.uid;
     } catch (e) {
       print("An error occured while trying to send email verification");
@@ -69,20 +64,18 @@ class AuthService {
 
     // Step 2
     final GoogleSignInAuthentication googleAuth =
-    await googleUser.authentication;
+        await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    final User user =
-        (await _auth.signInWithCredential(credential)).user;
+    final User user = (await _auth.signInWithCredential(credential)).user;
 // Checking if email and name is null
-    checkuserexists(user.uid,user,user.displayName);
+    checkuserexists(user.uid, user, user.displayName);
 
 //      updateUserData(user);
-
 
     // Step 3
 
@@ -102,25 +95,19 @@ class AuthService {
     return result.docs.isEmpty;
   }
 
+  checkuserexists(String uid, User user, String displayName) async {
+    final snapShotX =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
-  checkuserexists(String uid,User user,String displayName) async {
-    final snapShotX = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get();
-
-    if (snapShotX.exists ) {
+    if (snapShotX.exists) {
       updateUserData(user);
-    }
-    else{
+    } else {
       updatenewUserData(user);
     }
 //        updatenewUserData(user);
-
   }
 
   User userdatax;
-
 
   void updateUserData(User user) async {
     DocumentReference ref = _db.collection('users').doc(user.uid);
@@ -134,10 +121,9 @@ class AuthService {
       //'followers': user.followers,
       //'following': user.following,
       //'posts': user.posts,
-      'bio' : "Proud Hashtager",
+      'bio': "Proud Hashtager",
       'emailVerified': false,
       'phoneVerified': false,
-
     }, SetOptions(merge: true));
   }
 
@@ -153,10 +139,9 @@ class AuthService {
       'followers': 0,
       'following': 0,
       'posts': 0,
-      'bio' : "Proud Hashtager",
+      'bio': "Proud Hashtager",
       'emailVerified': false,
       'phoneVerified': false,
-
     }, SetOptions(merge: true));
   }
 
