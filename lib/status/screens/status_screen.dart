@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:techstagram/models/users.dart';
 import 'package:techstagram/status/cam/camera_screen.dart';
-import 'package:techstagram/status/status_model.dart';
-import 'package:techstagram/status/status_view_page.dart';
+import 'package:techstagram/status/model/status_model.dart';
+import 'package:techstagram/status/screens/status_view_page.dart';
+import 'package:techstagram/status/widgets/status_screen_body.dart';
 
 class DetailStatusScreen extends StatefulWidget {
   @override
@@ -18,18 +19,6 @@ class DetailStatusScreen extends StatefulWidget {
 class _DetailStatusScreenState extends State<DetailStatusScreen> {
   File pickedImage;
   UploadTask task;
-
-  @override
-  void initState() {
-    print('initstatr initialised');
-    super.initState();
-    loadData();
-  }
-
-  loadData() async {
-    print("initialize load data");
-    FirebaseFirestore.instance.collection("story").doc();
-  }
 
   Future selectImage(ImageSource source) async {
     await Permission.photos.request();
@@ -41,9 +30,7 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('screen loaded');
     TextEditingController text = TextEditingController();
-
     return Scaffold(
       floatingActionButton: Container(
         height: 100,
@@ -62,6 +49,7 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                     ),
                     buttons: [
                       DialogButton(
+                          color: Colors.deepPurple[400],
                           child: Text(
                             'Upload Text',
                             style: TextStyle(color: Colors.white),
@@ -95,12 +83,18 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                     content: Column(
                       children: [
                         TextButton(
-                            child: Text('Choose from Files'),
+                            child: Text(
+                              'Choose from Files',
+                              style: TextStyle(color: Colors.purple[400]),
+                            ),
                             onPressed: () {
                               selectImage(ImageSource.gallery);
                             }),
                         TextButton(
-                          child: Text('Capture from camera'),
+                          child: Text(
+                            'Capture from camera',
+                            style: TextStyle(color: Colors.purple[400]),
+                          ),
                           onPressed: () {
                             // selectImage(ImageSource.camera);
                             Navigator.of(context).push(MaterialPageRoute(
@@ -111,6 +105,7 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                     ),
                     buttons: [
                       DialogButton(
+                          color: Colors.deepPurple[400],
                           child: Text(
                             'Upload Photo',
                             style: TextStyle(color: Colors.white),
@@ -132,52 +127,5 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
       ),
       body: StatusScreenBody(),
     );
-  }
-}
-
-class StatusScreenBody extends StatefulWidget {
-  const StatusScreenBody({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _StatusScreenBodyState createState() => _StatusScreenBodyState();
-}
-
-class _StatusScreenBodyState extends State<StatusScreenBody> {
-  @override
-  Widget build(BuildContext context) {
-    var stream = FirebaseFirestore.instance.collection("story").snapshots();
-
-    return StreamBuilder(
-        stream: stream,
-        builder: (BuildContext ctx, snapShot) {
-          switch (snapShot.connectionState) {
-            case ConnectionState.none:
-              return Center(child: Text("nothing to show"));
-            case ConnectionState.waiting:
-              return Center(child: Text("waiting"));
-            default:
-              if (snapShot.hasData) {
-                return ListView.builder(
-                    itemCount: snapShot.data.docs.length,
-                    itemBuilder: (ctx, i) {
-                      String id = snapShot.data.docs[i].id;
-                      String pic = snapShot.data.docs[i].data()["photoURL"];
-                      print(pic);
-                      return GestureDetector(
-                        child: ListTile(
-                            leading: CircleAvatar(
-                          child: Image.network(pic.toString()),
-                        )),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => StatusViewScreen(id: id)));
-                        },
-                      );
-                    });
-              }
-          }
-        });
   }
 }

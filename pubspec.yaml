@@ -52,6 +52,7 @@ dependencies:
   path: null
   path_provider: ^2.0.2
   permission_handler: null
+  random_color: ^1.0.5
   rename: null
   responsive_layout_builder: null
   rflutter_alert: ^2.0.2
@@ -63,7 +64,6 @@ dependencies:
   string_validator: null
   transparent_image: null
   video_player: null
-
 
 dev_dependencies:
   flutter_test:

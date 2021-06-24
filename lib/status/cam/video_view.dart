@@ -5,10 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:techstagram/status/model/status_model.dart';
+import 'package:techstagram/status/screens/status_screen.dart';
 import 'package:video_player/video_player.dart';
-
-import '../status_model.dart';
-import '../status_screen.dart';
 
 class VideoViewPage extends StatefulWidget {
   const VideoViewPage({Key key, this.file}) : super(key: key);

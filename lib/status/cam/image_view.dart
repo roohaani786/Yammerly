@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:techstagram/status/status_model.dart';
-import 'package:techstagram/status/status_screen.dart';
+import 'package:techstagram/status/model/status_model.dart';
+import 'package:techstagram/status/screens/status_screen.dart';
 
 class ImageViewPage extends StatelessWidget {
   const ImageViewPage({Key key, this.file}) : super(key: key);
@@ -62,8 +62,8 @@ class ImageViewPage extends StatelessWidget {
       final Status status =
           Status(data: urlDownload, type: StatusType.image, caption: text.text);
       status.addMediaStatus();
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => DetailStatusScreen()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => DetailStatusScreen()));
     }
 
     return Scaffold(
