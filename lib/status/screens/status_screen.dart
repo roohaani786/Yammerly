@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,7 +6,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:techstagram/status/cam/camera_screen.dart';
 import 'package:techstagram/status/model/status_model.dart';
-import 'package:techstagram/status/screens/status_view_page.dart';
 import 'package:techstagram/status/widgets/status_screen_body.dart';
 
 class DetailStatusScreen extends StatefulWidget {
@@ -42,6 +39,10 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                 backgroundColor: Colors.deepPurple[400],
                 onPressed: () {
                   Alert(
+                    closeFunction: () {
+                      Navigator.of(context).pop();
+                      setState(() {});
+                    },
                     context: context,
                     title: 'Enter Text',
                     content: TextField(
@@ -59,7 +60,7 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                                 Status(data: text.text, type: StatusType.text);
                             status.addTextStatus();
                             Navigator.of(context).pop();
-                            //setState(() {});
+                            setState(() {});
                           })
                     ],
                   ).show();
@@ -78,6 +79,10 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                 backgroundColor: Colors.deepPurple[400],
                 onPressed: () {
                   Alert(
+                    closeFunction: () {
+                      Navigator.of(context).pop();
+                      setState(() {});
+                    },
                     context: context,
                     title: 'Select Photo',
                     content: Column(
@@ -113,6 +118,7 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                           onPressed: () {
                             //   uploadFile();
                             Navigator.of(context).pop();
+                            setState(() {});
                           })
                     ],
                   ).show();

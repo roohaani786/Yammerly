@@ -62,28 +62,26 @@ class _IntroPageState extends State<IntroPage> {
           Padding(
             padding: const EdgeInsets.only(left: 160.0),
           ),
-
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return WelcomeScreen();
-                    },
-                  ),
-                );
-              },
-              child: Text(
-                "Skip",
-                style: TextStyle(
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return WelcomeScreen();
+                  },
+                ),
+              );
+            },
+            child: Text(
+              "Skip",
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                   color: Colors.purple,
-                  fontFamily: "Quicksand-Bold"
-                ),
-              ),
+                  fontFamily: "Quicksand-Bold"),
             ),
+          ),
         ],
       ),
     );
@@ -100,19 +98,18 @@ class _IntroPageState extends State<IntroPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 25.0),
                 child: Text(
-              "Welcome to Yammerly",
+                  "Welcome to Yammerly",
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 35,
-                    color: Colors.deepPurple,
-                    fontFamily: "Cookie-Regular"
-                  ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 35,
+                      color: Colors.deepPurple,
+                      fontFamily: "Cookie-Regular"),
                 ),
               ),
 
-Padding(
-  padding: const EdgeInsets.only(top: 100.0),
-),
+              Padding(
+                padding: const EdgeInsets.only(top: 100.0),
+              ),
 //              SizedBox(
 //                height: 15,
 //              ),
@@ -120,7 +117,7 @@ Padding(
 //              SizedBox(
 //                height: 25,
 //              ),
-             _displayText(list[index].text),
+              _displayText(list[index].text),
             ],
           );
         },
@@ -140,7 +137,6 @@ Padding(
             child: Container(
               width: 70,
               height: 70,
-
             ),
           ),
           Align(
@@ -186,10 +182,9 @@ Padding(
     return Text(
       text,
       style: TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 25,
-        fontFamily: "Cookie-Regular"
-      ),
+          fontWeight: FontWeight.w500,
+          fontSize: 25,
+          fontFamily: "Cookie-Regular"),
       textAlign: TextAlign.center,
     );
   }
@@ -198,10 +193,7 @@ Padding(
     return Image.asset(
       "assets/images/$path.jpg",
       height: MediaQuery.of(context).size.height * .24,
-      width: MediaQuery
-          .of(context)
-          .size
-          .height * .2,
+      width: MediaQuery.of(context).size.height * .2,
     );
   }
 }

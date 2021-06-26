@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:techstagram/status/model/status_model.dart';
 import 'package:techstagram/status/screens/status_view_page.dart';
@@ -31,6 +32,18 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
         .doc(curUsr.uid)
         .get();
     curUsrPic = result.data()["photoURL"];
+  }
+
+  isViewed(String id) async {
+    print('func called ' + id);
+    var result = await FirebaseFirestore.instance
+        .collection("story")
+        .doc(curUsr.email)
+        .collection("viewed")
+        .doc(id)
+        .get();
+    print(id + ' view res ' + result.exists.toString());
+    return result.exists;
   }
 
   @override
@@ -74,41 +87,15 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
             );
           default:
             if (Status.viewedStatusList != []) {
-              return Container(
+              return Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 child: Column(
                   children: [
-                    Card(
-                      child: GestureDetector(
-                        child: ListTile(
-                          leading: Container(
-                            height: 35,
-                            width: 35,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: NetworkImage(curUsrPic.toString()),
-                                  fit: BoxFit.cover),
-                            ),
-                          ),
-                          title: Text(
-                            'MyStatus',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => StatusViewScreen(
-                                id: curUsr.email,
-                                myStatus: true,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    MyStatus(
+                        curUsrPic: curUsrPic,
+                        curUsr: curUsr,
+                        snapshot: snapShot),
                     Divider(),
                     SizedBox(
                       height: 15,
@@ -119,7 +106,6 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
                         GestureDetector(
                           onTap: () {
                             viewRecent = true;
-                            Status.getViewedStatus();
                             setState(() {});
                           },
                           child: Container(
@@ -140,7 +126,6 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
                         GestureDetector(
                           onTap: () {
                             viewRecent = false;
-                            Status.getViewedStatus();
                             setState(() {});
                           },
                           child: Container(
@@ -166,106 +151,200 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
                             shrinkWrap: true,
                             itemCount: snapShot.data.docs.length,
                             itemBuilder: (ctx, i) {
-                              Status.getViewedStatus();
                               String id = snapShot.data.docs[i].id;
                               print('listview recent id ' + id);
                               deleteStatus(id);
 
-                              if (!Status.viewedStatusList.contains(id)) {
-                                print(Status.viewedStatusList);
-                                String pic =
-                                    snapShot.data.docs[i].data()["photoURL"];
-                                DateTime date = DateTime.tryParse(snapShot
-                                    .data.docs[i]
-                                    .data()["time"]
-                                    .toString());
+                              print(Status.viewedStatusList);
+                              String pic =
+                                  snapShot.data.docs[i].data()["photoURL"];
+                              DateTime date = DateTime.tryParse(snapShot
+                                  .data.docs[i]
+                                  .data()["time"]
+                                  .toString());
 
-                                return GestureDetector(
-                                  child: Card(
-                                    child: ListTile(
-                                      title: Text(snapShot.data.docs[i]
-                                          .data()["displayName"]
-                                          .toString()),
-                                      leading: Container(
-                                        height: 35,
-                                        width: 35,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    pic.toString()),
-                                                fit: BoxFit.cover)),
-                                      ),
-                                      trailing:
-                                          Text("${date.hour}:${date.minute}"),
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                StatusViewScreen(id: id)));
-                                  },
-                                );
-                              }
+                              return FutureBuilder(
+                                future: isViewed(id),
+                                builder: (Context, snap) {
+                                  switch (snap.data.toString()) {
+                                    case 'null':
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    case 'true':
+                                      return Center(
+                                        child: Text('nothing to show'),
+                                      );
+                                    case 'false':
+                                      return GestureDetector(
+                                        child: Card(
+                                          child: ListTile(
+                                            title: Text(snapShot.data.docs[i]
+                                                .data()["displayName"]
+                                                .toString()),
+                                            leading: Container(
+                                              height: 35,
+                                              width: 35,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          pic.toString()),
+                                                      fit: BoxFit.cover)),
+                                            ),
+                                            trailing: Text(
+                                                "${date.hour}:${date.minute}"),
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          //print('snap data' + snap.data().toString());
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      StatusViewScreen(
+                                                          id: id)));
+                                        },
+                                      );
+                                  }
+                                },
+                              );
                             },
                           )
                         : ListView.builder(
                             shrinkWrap: true,
                             itemCount: snapShot.data.docs.length,
                             itemBuilder: (ctx, i) {
-                              Status.getViewedStatus();
                               String id = snapShot.data.docs[i].id;
+                              print('listview recent id ' + id);
                               deleteStatus(id);
 
-                              String name = snapShot.data.docs[i]
-                                  .data()["displayName"]
-                                  .toString();
-                              print('viewd screen on ' + id);
                               print(Status.viewedStatusList);
-                              if (Status.viewedStatusList.contains(id)) {
-                                print('viewed stats : ' + id);
-                                String pic =
-                                    snapShot.data.docs[i].data()["photoURL"];
-                                DateTime date = DateTime.tryParse(snapShot
-                                    .data.docs[i]
-                                    .data()["time"]
-                                    .toString());
+                              String pic =
+                                  snapShot.data.docs[i].data()["photoURL"];
+                              DateTime date = DateTime.tryParse(snapShot
+                                  .data.docs[i]
+                                  .data()["time"]
+                                  .toString());
 
-                                return GestureDetector(
-                                  child: Card(
-                                    child: ListTile(
-                                      title: Text(name),
-                                      leading: Container(
-                                        height: 35,
-                                        width: 35,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    pic.toString()),
-                                                fit: BoxFit.cover)),
-                                      ),
-                                      trailing:
-                                          Text("${date.hour}:${date.minute}"),
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                StatusViewScreen(id: id)));
-                                  },
-                                );
-                              }
+                              return FutureBuilder(
+                                future: isViewed(id),
+                                builder: (Context, snap) {
+                                  switch (snap.data.toString()) {
+                                    case 'null':
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    case 'false':
+                                      return Center(
+                                        child: Text('nothing to show'),
+                                      );
+                                    case 'true':
+                                      return GestureDetector(
+                                        child: Card(
+                                          child: ListTile(
+                                            title: Text(snapShot.data.docs[i]
+                                                .data()["displayName"]
+                                                .toString()),
+                                            leading: Container(
+                                              height: 35,
+                                              width: 35,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          pic.toString()),
+                                                      fit: BoxFit.cover)),
+                                            ),
+                                            trailing: Text(
+                                                "${date.hour}:${date.minute}"),
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      StatusViewScreen(
+                                                          id: id)));
+                                        },
+                                      );
+                                  }
+                                },
+                              );
                             },
-                          ),
+                          )
                   ],
                 ),
               );
             }
         }
       },
+    );
+  }
+}
+
+class MyStatus extends StatelessWidget {
+  const MyStatus({
+    Key key,
+    @required this.curUsrPic,
+    @required this.curUsr,
+    @required this.snapshot,
+  }) : super(key: key);
+
+  final String curUsrPic;
+  final User curUsr;
+  final AsyncSnapshot<dynamic> snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    isMyStatus() async {
+      var result = await FirebaseFirestore.instance
+          .collection("story")
+          .doc(curUsr.email)
+          .collection("uploaded status")
+          .get();
+      print(' view res my stat ' + result.size.toString());
+      return result.size;
+    }
+
+    return FutureBuilder(
+      future: isMyStatus(),
+      builder: (context, snap) => Card(
+        child: GestureDetector(
+          child: ListTile(
+            leading: Container(
+              height: 35,
+              width: 35,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                    image: NetworkImage(curUsrPic.toString()),
+                    fit: BoxFit.cover),
+              ),
+            ),
+            title: Text(
+              'MyStatus',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          onTap: () {
+            switch (snap.data) {
+              case 0:
+                return Center(
+                  child: Text('nothing to show'),
+                );
+              default:
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => StatusViewScreen(
+                      id: curUsr.email,
+                      myStatus: true,
+                    ),
+                  ),
+                );
+            }
+          },
+        ),
+      ),
     );
   }
 }

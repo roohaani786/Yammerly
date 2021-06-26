@@ -27,22 +27,36 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
 
     List<Status> statusList = [];
 
+    duplicateChk(String data) {
+      bool res = true;
+      for (int i = 0; i < statusList.length; i++) {
+        if (statusList[i].data == data)
+          res = true;
+        else
+          res = false;
+      }
+      return res;
+    }
+
     void addData(dynamic doc) {
       var type;
       final data = doc["data"];
       var caption;
+      if (duplicateChk(data)) {
+        switch (doc["type"]) {
+          case 'text':
+            type = StatusType.text;
 
-      switch (doc["type"]) {
-        case 'text':
-          type = StatusType.text;
-          statusList.add(Status(data: data, type: type));
-          break;
+            statusList.add(Status(data: data, type: type));
+            break;
 
-        case 'image':
-          type = StatusType.image;
-          caption = doc["caption"];
-          statusList.add(Status(data: data, type: type, caption: caption));
-          break;
+          case 'image':
+            type = StatusType.image;
+            caption = doc["caption"];
+
+            statusList.add(Status(data: data, type: type, caption: caption));
+            break;
+        }
       }
     }
 
@@ -88,8 +102,6 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
     }
 
     uploaderView() {
-      print(widget.id.toString());
-      print(currUser.email);
       fbRef
           .doc(widget.id.toString())
           .collection("viewers")
