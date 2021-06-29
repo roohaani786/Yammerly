@@ -10,14 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/ComeraV/Camera.dart';
-import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/repository.dart';
-import 'package:techstagram/status/model/status_model.dart';
 import 'package:techstagram/status/screens/status_screen.dart';
 import 'package:techstagram/ui/ProfilePage.dart';
-import 'package:techstagram/views/tabs/chats.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
 import 'package:video_player/video_player.dart';
@@ -116,7 +113,6 @@ class _HomePageState extends State<HomePage> {
     uidController = TextEditingController();
     photoUrlController = TextEditingController();
     phonenumberController = TextEditingController();
-    Status.getViewedStatus();
     super.initState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));

@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:string_validator/string_validator.dart';
 import 'package:techstagram/ui/messagesearchlist.dart';
 
 class ConversationPage extends StatefulWidget {
@@ -18,7 +18,7 @@ class _ConversationPageState extends State<ConversationPage> {
 //      return;
 //
 //    if (details.primaryVelocity.compareTo(0) == -1) {
-////      dispose();
+//       dispose();
 //      return;
 //    }
 //    else {
@@ -29,26 +29,61 @@ class _ConversationPageState extends State<ConversationPage> {
 //    }
 //  }
 
+  getUserName(List<dynamic> users) {
+    print('tst' + users[0]);
+    if (users[0] == displayName)
+      return users[1];
+    else
+      return users[0];
+  }
+
+  getUserInfo(dynamic doc) async {
+    String userName = getUserName(doc['users']);
+    String pic = '';
+    print('userName fetched ' + userName);
+    print('pre test fetch name ' + userName);
+    var res = await FirebaseFirestore.instance
+        .collection("users")
+        .where("displayName", isEqualTo: userName)
+        .get();
+    //     .then((value) {
+    //   value.docs.forEach((result) {
+    //     pic = result.data()['photoURL'];
+    //   });
+    // });
+    pic = res.docs
+        .where((element) => element.data()['displayName'] == userName)
+        .first['photoURL'];
+    print('booy' + pic);
+    return pic;
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    return GestureDetector(
-//      onHorizontalDragEnd: (DragEndDetails details) =>
-//          _onHorizontalDrag(details),
-      child: SafeArea(
-          child: Scaffold(
-        backgroundColor: Colors.white,
-//              appBar: ChatAppBar(), /
-        appBar: AppBar(
-          title: Text(
-            "Messaging",
-            style: TextStyle(
-              color: Colors.deepPurple,
-              fontWeight: FontWeight.bold,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.deepPurple,
+        child: Icon(Icons.search),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  SearchtoMessage(displayNamecurrentUser: displayName),
             ),
+          );
+        },
+      ),
+      appBar: AppBar(
+        title: Text(
+          "Messaging",
+          style: TextStyle(
+            color: Colors.deepPurple,
+            fontWeight: FontWeight.bold,
           ),
-          backgroundColor: Colors.white,
-          leading: IconButton(
+        ),
+        backgroundColor: Colors.white,
+        leading: IconButton(
           color: Colors.deepPurple,
           icon: Icon(
             Icons.arrow_back_ios,
@@ -58,34 +93,51 @@ class _ConversationPageState extends State<ConversationPage> {
             Navigator.of(context).pop();
           },
         ),
+      ),
+      body: SafeArea(
+        child: Scaffold(
+          body: StreamBuilder(
+            stream:
+                FirebaseFirestore.instance.collection("ChatRoom").snapshots(),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  return Text('No internet Coneection');
+                case ConnectionState.waiting:
+                  return CircularProgressIndicator();
+                default:
+                  return ListView.builder(
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (context, i) {
+                      if (snapshot.data.docs[i]['users']
+                          .contains(displayName)) {
+                        getUserInfo(snapshot.data.docs[i]);
+                        return FutureBuilder(
+                          future: getUserInfo(snapshot.data.docs[i]),
+                          builder: (context, snap) {
+                            //  switch (snapshot.data.toString()) {
+                            //       case '':
+                            //         return CircularProgressIndicator();
+                            //         default:
+                            //          print('func data ' + snapshot.data);
+                            return Card(
+                              child: ListTile(
+                                title: Text(getUserName(
+                                    snapshot.data.docs[i]['users'])),
+                              ),
+                            );
+                            //      }
+                          },
+                        );
+                      } else
+                        return Container();
+                    },
+                  );
+              }
+            },
+          ),
         ),
-        body:
-
-             Stack(children: <Widget>[
-               Column(
-                 children: <Widget>[
-                  Expanded(child:
-                  SearchtoMessage(displayNamecurrentUser: displayName)
-                  ),
-                  
-        //     Align(
-        //   alignment: Alignment.center,
-        //   child: MaterialButton(
-        //       onPressed: () {},
-        //       child: Text(
-        //         "working on messaging",
-        //         style: TextStyle(
-        //           color: Colors.purple,
-        //           fontWeight: FontWeight.bold,
-        //           fontSize: 15.0,
-        //         ),
-        //       )),
-        // ),
-                 ],
-               ),
-             ]
-     )
-      )),
+      ),
     );
   }
 }

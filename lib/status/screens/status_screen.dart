@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,12 +19,43 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
   File pickedImage;
   UploadTask task;
 
-  Future selectImage(ImageSource source) async {
+  Future selectImage() async {
     await Permission.photos.request();
-    final result = await ImagePicker.platform.pickImage(source: source);
+    final result =
+        await ImagePicker.platform.pickImage(source: ImageSource.gallery);
     if (result == null) return;
     final path = result.path;
+
     setState(() => pickedImage = File(path));
+  }
+
+  String uid;
+  User currUser = FirebaseAuth.instance.currentUser;
+  String urlDownload;
+  getCurrentUser() async {
+    var docSnap = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(currUser.uid)
+        .get();
+    uid = docSnap["uid"];
+  }
+
+  Future uploadFile() async {
+    getCurrentUser();
+    Reference storageRef = FirebaseStorage.instance
+        .ref()
+        .child("Story")
+        .child(uid)
+        .child(DateTime.now().toString());
+
+    UploadTask uploadTask = storageRef.putFile(pickedImage);
+    TaskSnapshot taskSnapshot = await uploadTask;
+
+    urlDownload = await taskSnapshot.ref.getDownloadURL();
+
+    final Status status =
+        Status(data: urlDownload, type: StatusType.image, caption: '');
+    status.addMediaStatus();
   }
 
   @override
@@ -93,7 +126,7 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                               style: TextStyle(color: Colors.purple[400]),
                             ),
                             onPressed: () {
-                              selectImage(ImageSource.gallery);
+                              selectImage();
                             }),
                         TextButton(
                           child: Text(
@@ -101,7 +134,6 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                             style: TextStyle(color: Colors.purple[400]),
                           ),
                           onPressed: () {
-                            // selectImage(ImageSource.camera);
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => CameraScreen()));
                           },
@@ -116,7 +148,7 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () {
-                            //   uploadFile();
+                            uploadFile();
                             Navigator.of(context).pop();
                             setState(() {});
                           })

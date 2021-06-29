@@ -19,49 +19,40 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var stream = FirebaseFirestore.instance
-        .collection("story")
-        .doc(widget.id)
-        .collection("uploaded status")
-        .snapshots();
-
     List<Status> statusList = [];
-
-    duplicateChk(String data) {
-      bool res = true;
-      for (int i = 0; i < statusList.length; i++) {
-        if (statusList[i].data == data)
-          res = true;
-        else
-          res = false;
-      }
-      return res;
-    }
+    List<StoryItem> storyItems = [];
+    final controller = StoryController();
 
     void addData(dynamic doc) {
       var type;
       final data = doc["data"];
       var caption;
-      if (duplicateChk(data)) {
-        switch (doc["type"]) {
-          case 'text':
-            type = StatusType.text;
-
-            statusList.add(Status(data: data, type: type));
-            break;
-
-          case 'image':
-            type = StatusType.image;
-            caption = doc["caption"];
-
-            statusList.add(Status(data: data, type: type, caption: caption));
-            break;
-        }
+      switch (doc["type"]) {
+        case 'text':
+          type = StatusType.text;
+          statusList.add(Status(data: data, type: type));
+          break;
+        case 'image':
+          type = StatusType.image;
+          caption = doc["caption"];
+          statusList.add(Status(data: data, type: type, caption: caption));
+          break;
       }
     }
 
-    final controller = StoryController();
-    List<StoryItem> storyItems = [];
+    getData() async {
+      await FirebaseFirestore.instance
+          .collection("story")
+          .doc(widget.id)
+          .collection("uploaded status")
+          .snapshots()
+          .forEach((element) {
+        element.docs.forEach((element) {
+          addData(element.data());
+        });
+      });
+    }
+
     void addStoryItem() {
       for (int i = 0; i < statusList.length; i++) {
         if (statusList[i].type == StatusType.text)
@@ -112,48 +103,44 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: StreamBuilder(
-        stream: stream,
+        stream: FirebaseFirestore.instance
+            .collection('story')
+            .doc(widget.id)
+            .collection('uploaded status')
+            .snapshots(),
         builder: (BuildContext ctx, snapShot) {
+          print(getData());
           switch (snapShot.connectionState) {
             case ConnectionState.none:
               return Center(child: Text("nothing to show"));
-
             case ConnectionState.waiting:
-              return Center(child: Text("waiting"));
-
+              return Center(child: Text('waiting'));
             default:
               if (snapShot.hasData) {
-                for (int i = 0; i < snapShot.data.docs.length; i++) {
-                  addData(snapShot.data.docs[i]);
-                  addStoryItem();
-                  if (storyItems.isEmpty) Navigator.of(context).pop();
-                }
-                if (storyItems.isNotEmpty) {
-                  return Material(
-                    child: StoryView(
-                      storyItems: storyItems,
-                      controller: controller,
-                      onVerticalSwipeComplete: (direction) {
-                        if (widget.myStatus && direction == Direction.up)
-                          Alert(
-                              context: context,
-                              title: "Views : $views",
-                              buttons: []).show();
-                        if (direction == Direction.down)
-                          Navigator.of(context).pop();
-                      },
-                      inline: false,
-                      onComplete: () {
-                        Status.getViewedStatus();
-                        usrViewed();
-                        uploaderView();
+                getData();
+                addStoryItem();
+                return Material(
+                  child: StoryView(
+                    storyItems: storyItems,
+                    controller: controller,
+                    onVerticalSwipeComplete: (direction) {
+                      if (widget.myStatus && direction == Direction.up)
+                        Alert(
+                            context: context,
+                            title: "Views : $views",
+                            buttons: []).show();
+                      if (direction == Direction.down)
                         Navigator.of(context).pop();
-                      },
-                    ),
-                  );
-                }
-              } else
-                Navigator.of(context).pop();
+                    },
+                    inline: false,
+                    onComplete: () {
+                      usrViewed();
+                      uploaderView();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                );
+              }
           }
         },
       ),

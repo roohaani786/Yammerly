@@ -35,15 +35,24 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
   }
 
   isViewed(String id) async {
-    print('func called ' + id);
     var result = await FirebaseFirestore.instance
         .collection("story")
-        .doc(curUsr.email)
-        .collection("viewed")
         .doc(id)
+        .collection("uploaded status")
         .get();
-    print(id + ' view res ' + result.exists.toString());
-    return result.exists;
+
+    if (result.size.toDouble() > 0) {
+      var res = await FirebaseFirestore.instance
+          .collection("story")
+          .doc(curUsr.email)
+          .collection("viewed")
+          .doc(id)
+          .get();
+
+      return res.exists;
+    } else {
+      return null;
+    }
   }
 
   @override
@@ -86,196 +95,177 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
               child: CircularProgressIndicator(),
             );
           default:
-            if (Status.viewedStatusList != []) {
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                child: Column(
-                  children: [
-                    MyStatus(
-                        curUsrPic: curUsrPic,
-                        curUsr: curUsr,
-                        snapshot: snapShot),
-                    Divider(),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            viewRecent = true;
-                            setState(() {});
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            alignment: Alignment.center,
-                            height: 30,
-                            width: 110,
-                            decoration: BoxDecoration(
-                                color: recentColour,
-                                borderRadius: BorderRadius.circular(30)),
-                            child: Text(
-                              'Recent',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
-                            ),
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              child: Column(
+                children: [
+                  MyStatus(
+                      curUsrPic: curUsrPic, curUsr: curUsr, snapshot: snapShot),
+                  Divider(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          viewRecent = true;
+                          setState(() {});
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          alignment: Alignment.center,
+                          height: 30,
+                          width: 110,
+                          decoration: BoxDecoration(
+                              color: recentColour,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Text(
+                            'Recent',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            viewRecent = false;
-                            setState(() {});
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            alignment: Alignment.center,
-                            height: 30,
-                            width: 110,
-                            decoration: BoxDecoration(
-                                color: viewedColour,
-                                borderRadius: BorderRadius.circular(30)),
-                            child: Text(
-                              'Viewed',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
-                            ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          viewRecent = false;
+                          setState(() {});
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          alignment: Alignment.center,
+                          height: 30,
+                          width: 110,
+                          decoration: BoxDecoration(
+                              color: viewedColour,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Text(
+                            'Viewed',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                         ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    viewRecent
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: snapShot.data.docs.length,
-                            itemBuilder: (ctx, i) {
-                              String id = snapShot.data.docs[i].id;
-                              print('listview recent id ' + id);
-                              deleteStatus(id);
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  viewRecent
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: snapShot.data.docs.length,
+                          itemBuilder: (ctx, i) {
+                            String id = snapShot.data.docs[i].id;
 
-                              print(Status.viewedStatusList);
-                              String pic =
-                                  snapShot.data.docs[i].data()["photoURL"];
-                              DateTime date = DateTime.tryParse(snapShot
-                                  .data.docs[i]
-                                  .data()["time"]
-                                  .toString());
+                            deleteStatus(id);
 
-                              return FutureBuilder(
-                                future: isViewed(id),
-                                builder: (Context, snap) {
-                                  switch (snap.data.toString()) {
-                                    case 'null':
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    case 'true':
-                                      return Center(
-                                        child: Text('nothing to show'),
-                                      );
-                                    case 'false':
-                                      return GestureDetector(
-                                        child: Card(
-                                          child: ListTile(
-                                            title: Text(snapShot.data.docs[i]
-                                                .data()["displayName"]
-                                                .toString()),
-                                            leading: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          pic.toString()),
-                                                      fit: BoxFit.cover)),
-                                            ),
-                                            trailing: Text(
-                                                "${date.hour}:${date.minute}"),
+                            String pic =
+                                snapShot.data.docs[i].data()["photoURL"];
+                            DateTime date = DateTime.tryParse(snapShot
+                                .data.docs[i]
+                                .data()["time"]
+                                .toString());
+
+                            return FutureBuilder(
+                              future: isViewed(id),
+                              builder: (Context, snap) {
+                                switch (snap.data.toString()) {
+                                  case 'null':
+                                    return Text('');
+                                  case 'true':
+                                    return Text('');
+                                  case 'false':
+                                    return GestureDetector(
+                                      child: Card(
+                                        child: ListTile(
+                                          title: Text(snapShot.data.docs[i]
+                                              .data()["displayName"]
+                                              .toString()),
+                                          leading: Container(
+                                            height: 35,
+                                            width: 35,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        pic.toString()),
+                                                    fit: BoxFit.cover)),
                                           ),
+                                          trailing: Text(
+                                              "${date.hour}:${date.minute}"),
                                         ),
-                                        onTap: () {
-                                          //print('snap data' + snap.data().toString());
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      StatusViewScreen(
-                                                          id: id)));
-                                        },
-                                      );
-                                  }
-                                },
-                              );
-                            },
-                          )
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: snapShot.data.docs.length,
-                            itemBuilder: (ctx, i) {
-                              String id = snapShot.data.docs[i].id;
-                              print('listview recent id ' + id);
-                              deleteStatus(id);
+                                      ),
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    StatusViewScreen(id: id)));
+                                      },
+                                    );
+                                }
+                              },
+                            );
+                          },
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: snapShot.data.docs.length,
+                          itemBuilder: (ctx, i) {
+                            String id = snapShot.data.docs[i].id;
 
-                              print(Status.viewedStatusList);
-                              String pic =
-                                  snapShot.data.docs[i].data()["photoURL"];
-                              DateTime date = DateTime.tryParse(snapShot
-                                  .data.docs[i]
-                                  .data()["time"]
-                                  .toString());
+                            deleteStatus(id);
 
-                              return FutureBuilder(
-                                future: isViewed(id),
-                                builder: (Context, snap) {
-                                  switch (snap.data.toString()) {
-                                    case 'null':
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    case 'false':
-                                      return Center(
-                                        child: Text('nothing to show'),
-                                      );
-                                    case 'true':
-                                      return GestureDetector(
-                                        child: Card(
-                                          child: ListTile(
-                                            title: Text(snapShot.data.docs[i]
-                                                .data()["displayName"]
-                                                .toString()),
-                                            leading: Container(
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          pic.toString()),
-                                                      fit: BoxFit.cover)),
-                                            ),
-                                            trailing: Text(
-                                                "${date.hour}:${date.minute}"),
+                            String pic =
+                                snapShot.data.docs[i].data()["photoURL"];
+                            DateTime date = DateTime.tryParse(snapShot
+                                .data.docs[i]
+                                .data()["time"]
+                                .toString());
+
+                            return FutureBuilder(
+                              future: isViewed(id),
+                              builder: (Context, snap) {
+                                switch (snap.data.toString()) {
+                                  case 'null':
+                                    return Text('');
+                                  case 'false':
+                                    return Text('');
+
+                                  case 'true':
+                                    return GestureDetector(
+                                      child: Card(
+                                        child: ListTile(
+                                          title: Text(snapShot.data.docs[i]
+                                              .data()["displayName"]
+                                              .toString()),
+                                          leading: Container(
+                                            height: 35,
+                                            width: 35,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        pic.toString()),
+                                                    fit: BoxFit.cover)),
                                           ),
+                                          trailing: Text(
+                                              "${date.hour}:${date.minute}"),
                                         ),
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      StatusViewScreen(
-                                                          id: id)));
-                                        },
-                                      );
-                                  }
-                                },
-                              );
-                            },
-                          )
-                  ],
-                ),
-              );
-            }
+                                      ),
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    StatusViewScreen(id: id)));
+                                      },
+                                    );
+                                }
+                              },
+                            );
+                          },
+                        )
+                ],
+              ),
+            );
         }
       },
     );
@@ -302,7 +292,7 @@ class MyStatus extends StatelessWidget {
           .doc(curUsr.email)
           .collection("uploaded status")
           .get();
-      print(' view res my stat ' + result.size.toString());
+
       return result.size;
     }
 

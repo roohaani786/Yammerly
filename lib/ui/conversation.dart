@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:techstagram/services/database.dart';
+
 class ConversationScreen extends StatefulWidget {
   final String chatRoomID;
   final displayName;
@@ -87,10 +87,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   child: TextField(
                     controller: messageController,
                     decoration: InputDecoration(
-                      hintText: "Enter Message",
-                        border :InputBorder.none
-                    ),
-
+                        hintText: "Enter Message", border: InputBorder.none),
                   ),
                 ),
                 IconButton(

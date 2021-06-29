@@ -23,21 +23,6 @@ class Status {
   String caption;
   Color colour;
   final storyRef = FirebaseFirestore.instance.collection("story");
-  static List<String> viewedStatusList = [];
-
-  static getViewedStatus() {
-    viewedStatusList = [];
-    FirebaseFirestore.instance
-        .collection("story")
-        .doc(currUser.email.toString())
-        .collection("viewed")
-        .get()
-        .then((value) => value.docs.forEach((element) {
-              if (!viewedStatusList.contains(element.id))
-                viewedStatusList.add(element.id);
-            }));
-    print('final' + viewedStatusList.toString());
-  }
 
   addUserData() async {
     var result = await FirebaseFirestore.instance
@@ -84,8 +69,6 @@ class Status {
   }
 
   void addTextStatus() async {
-    print('uploading text');
-    print(currUser.email);
     await storyRef.doc(currUser.email).collection("uploaded status").doc().set(
       {
         'data': data,
@@ -99,7 +82,6 @@ class Status {
   }
 
   void addMediaStatus() async {
-    print('uploading text');
     await storyRef.doc(currUser.email).collection("uploaded status").doc().set({
       'data': data,
       'type': returnFileType(type),

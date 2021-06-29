@@ -29,7 +29,6 @@ class _searchtomessageState extends State<SearchtoMessage> {
   String uidf = SearchtoMessage().uidX;
 
   createChatRoombySearch(String searchKey) {
-    print("create chatroom me aaaya");
     String chatRoomID = getChatRoomId(searchKey, displayNamecurrentUser);
 
     List<String> users = [searchKey, displayNamecurrentUser];
@@ -203,7 +202,6 @@ class _searchtomessageState extends State<SearchtoMessage> {
                 );
         },
       ),
-
     );
   }
 }
