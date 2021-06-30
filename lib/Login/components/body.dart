@@ -14,6 +14,7 @@ import 'package:techstagram/Signup/components/social_icon.dart';
 import 'package:techstagram/Signup/signup_screen.dart';
 import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
 
@@ -100,7 +101,7 @@ class _BodyState extends State<Body> {
 //  }
 
   void onGoogleSignIn(BuildContext context) async {
-    FirebaseUser user = await authService.hellogoogleSignIn();
+    User user = await authService.hellogoogleSignIn();
     print(user);
     var userSignedIn = await Navigator.pushAndRemoveUntil(
       context,
@@ -174,7 +175,7 @@ class _BodyState extends State<Body> {
 //  }
 
   Future<String> signIn(String email, String password) async {
-    FirebaseUser user;
+    User user;
     String errorMessage;
 
     this.setState(() {
@@ -184,7 +185,7 @@ class _BodyState extends State<Body> {
     try {
       if (_loginFormKey.currentState.validate()) {
         print("bhaibhia");
-        AuthResult result = await FirebaseAuth.instance
+        UserCredential result = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
             email: emailInputController.text,
             password: pwdInputController.text);
@@ -251,7 +252,7 @@ class _BodyState extends State<Body> {
 
   PublishSubject loading = PublishSubject();
 
-  Future<FirebaseUser> facebookLogin(BuildContext context) async {
+  Future<User> facebookLogin(BuildContext context) async {
     loading.add(true);
 
 
@@ -275,19 +276,17 @@ class _BodyState extends State<Body> {
         try {
           FacebookAccessToken facebookAccessToken =
               facebookLoginResult.accessToken;
-          final AuthCredential credential = FacebookAuthProvider.getCredential(
-              accessToken: facebookAccessToken.token);
-          final FirebaseUser user = (await auth.signInWithCredential(
+          final AuthCredential credential = FacebookAuthProvider.credential(facebookAccessToken.token);
+          final User user = (await auth.signInWithCredential(
               credential))
               .user;
-          (await FirebaseAuth.instance.currentUser()).uid;
+          (FirebaseAuth.instance.currentUser).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
 
-
-          AuthService().checkuserexists(user.uid, user, user.displayName);
+          AuthService().checkuserexists(user.uid,user,user.displayName);
           loading.add(false);
 
           print("signed in " + user.displayName);
@@ -303,6 +302,7 @@ class _BodyState extends State<Body> {
                       color: Colors.deepPurple
                   )),
                   actions: <Widget>[
+                    // ignore: deprecated_member_use
                     FlatButton(
                       child: Text("Close"),
                       onPressed: () {
@@ -560,23 +560,6 @@ class _BodyState extends State<Body> {
                             SocalIcon(
                                 iconSrc: "assets/icons/google-icon.svg",
                                 press: () {
-//                                  signInWithGoogle(success).whenComplete(() {
-//                           if (success == true)
-//                                    Navigator.of(context).push(
-//                                      MaterialPageRoute(
-//                                        builder: (context) {
-//                                          return HomePage(
-////                                    title: "Welcome",
-//                                          );
-//                                        },
-//                                      ),
-//                                    );
-//                           else
-//                             Navigator.pop(
-//                               context
-//                             );
-//
-//                                  });
 
                                   onGoogleSignIn(context);
                                 }),

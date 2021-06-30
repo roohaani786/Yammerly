@@ -10,6 +10,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/Login/components/background.dart';
 import 'package:techstagram/Login/login_screen.dart';
 import 'package:techstagram/components/rounded_button.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import '../../constants.dart';
 import '../../forgotpassword.dart';
@@ -33,7 +34,10 @@ class _BodyState extends State<Body> {
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
   TextEditingController emailInputController;
-  TextEditingController ppwdInputController,pwdInputController,newpwdInputController,CnewpwdInputController;
+  TextEditingController ppwdInputController,
+      pwdInputController,
+      newpwdInputController,
+      CnewpwdInputController;
   bool isUserSignedIn = true;
 
   final FocusNode _email = FocusNode();
@@ -67,40 +71,36 @@ class _BodyState extends State<Body> {
     newpwdInputController.dispose();
     CnewpwdInputController.dispose();
     ppwdInputController.dispose();
-   // _newPasswordController.dispose();
-   // _repeatPasswordController.dispose();
+    // _newPasswordController.dispose();
+    // _repeatPasswordController.dispose();
     super.dispose();
   }
 
-  void _changePassword(String password) async{
+  _changePassword(String password) async {
     print(password);
     //Create an instance of the current user.
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    User user = FirebaseAuth.instance.currentUser;
 
     //Pass in the password to updatePassword.
-    user.updatePassword(password).then((_){
-      FirebaseAuth.instance
-          .signOut()
-          .then((result) =>
-          Navigator.push(context, new MaterialPageRoute(
-              builder: (context) =>
-              new LoginScreen())
-          ));
+    user.updatePassword(password).then((_) {
+      FirebaseAuth.instance.signOut().then((result) => Navigator.push(context,
+          new MaterialPageRoute(builder: (context) => new LoginScreen())));
       print("Succesfull changed password");
       return PasswordChanged();
-    }).catchError((error){
+    }).catchError((error) {
       print("Password can't be changed" + error.toString());
       showDialog(
           context: context,
           builder: (BuildContext context) {
-
             return AlertDialog(
               content: Text(
                 '$error',
                 style: TextStyle(color: Colors.black),
               ),
-              title: Text("Error !", style:
-              TextStyle(color: Colors.red),),
+              title: Text(
+                "Error !",
+                style: TextStyle(color: Colors.red),
+              ),
             );
           });
       //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
@@ -108,7 +108,6 @@ class _BodyState extends State<Body> {
   }
 
   String emailValidator(String value) {
-
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
@@ -132,13 +131,11 @@ class _BodyState extends State<Body> {
     });
   }
 
-
   bool errordikhaoL = false;
   bool login = false;
 
-
-  Future<String> signIn(String email,String password,String Npassword) async {
-    FirebaseUser user;
+  Future<String> signIn(String email, String password, String Npassword) async {
+    User user;
     String errorMessage;
 
     // this.setState(() {
@@ -147,18 +144,18 @@ class _BodyState extends State<Body> {
 
     try {
       if (_loginFormKey.currentState.validate()) {
-        AuthResult result = await FirebaseAuth.instance
+        UserCredential result = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-            email: emailInputController.text,
-            password: ppwdInputController.text);
+                email: emailInputController.text,
+                password: ppwdInputController.text);
         user = result.user;
         this.setState(() {
           login = true;
         });
 
-        if(login){
+        if (login) {
           _changePassword(newpwdInputController.text);
-        }else{
+        } else {
           print("error hai bro");
         }
         // Navigator.pushAndRemoveUntil(
@@ -189,7 +186,7 @@ class _BodyState extends State<Body> {
           break;
         default:
           errorMessage =
-          "An error occurred, maybe due to unfilled fields, internet or other issue.";
+              "An error occurred, maybe due to unfilled fields, internet or other issue.";
       }
 
       Future.error(errorMessage);
@@ -207,8 +204,10 @@ class _BodyState extends State<Body> {
                 '$errorMessage',
                 style: TextStyle(color: Colors.black),
               ),
-              title: Text("Error !", style:
-              TextStyle(color: Colors.red),),
+              title: Text(
+                "Error !",
+                style: TextStyle(color: Colors.red),
+              ),
             );
           });
     }
@@ -220,13 +219,11 @@ class _BodyState extends State<Body> {
 
   PublishSubject loading = PublishSubject();
 
-  Future<FirebaseUser> facebookLogin(BuildContext context) async {
+  Future<User> facebookLogin(BuildContext context) async {
     loading.add(true);
 
-
     var facebookLogin = FacebookLogin();
-    var facebookLoginResult =
-    await facebookLogin.logIn(['email']);
+    var facebookLoginResult = await facebookLogin.logIn(['email']);
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
         print("Error");
@@ -244,17 +241,14 @@ class _BodyState extends State<Body> {
         try {
           FacebookAccessToken facebookAccessToken =
               facebookLoginResult.accessToken;
-          final AuthCredential credential = FacebookAuthProvider.getCredential(
-              accessToken: facebookAccessToken.token);
-          final FirebaseUser user = (await auth.signInWithCredential(
-              credential))
-              .user;
-          (await FirebaseAuth.instance.currentUser()).uid;
+          final AuthCredential credential =
+              FacebookAuthProvider.credential(facebookAccessToken.token);
+          final User user = (await auth.signInWithCredential(credential)).user;
+          (FirebaseAuth.instance.currentUser).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
 //        assert(user.getIdToken() != null);
-
           authService.updateUserData(user);
           loading.add(false);
 
@@ -266,11 +260,10 @@ class _BodyState extends State<Body> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text("Error"),
-                  content: Text(e.code, style: TextStyle(
-                      color: Colors.deepPurple
-                  )),
+                  content:
+                      Text(e.code, style: TextStyle(color: Colors.deepPurple)),
                   actions: <Widget>[
-                    FlatButton(
+                    MaterialButton(
                       child: Text("Close"),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -279,11 +272,10 @@ class _BodyState extends State<Body> {
                   ],
                 );
               });
-    }
+        }
 //        onLoginStatusChanged(true);
         break;
     }
-
   }
 
   //facebook logout method
@@ -301,11 +293,13 @@ class _BodyState extends State<Body> {
       _obscureText = !_obscureText;
     });
   }
+
   void _toggle1() {
     setState(() {
       _obscureText1 = !_obscureText1;
     });
   }
+
   void _toggle2() {
     setState(() {
       _obscureText2 = !_obscureText2;
@@ -314,26 +308,30 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-
     bool loginfail = false;
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple,), onPressed:
-          (){
-            Navigator.pop(context);
-          }
-              ),
-          title: Text("Change Password",style: TextStyle(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.deepPurple,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        title: Text(
+          "Change Password",
+          style: TextStyle(
             color: Colors.deepPurple,
-          ),),
+          ),
         ),
-        body: ResponsiveLayoutBuilder(
-          builder: (context, size) =>
-              Background(
-                child: !isLoading ? SingleChildScrollView(
+      ),
+      body: ResponsiveLayoutBuilder(
+        builder: (context, size) => Background(
+          child: !isLoading
+              ? SingleChildScrollView(
                   child: Form(
                     key: _loginFormKey,
                     child: Column(
@@ -344,7 +342,6 @@ class _BodyState extends State<Body> {
                           height: 200.0,
                         ),
                         SizedBox(height: 10.0),
-
                         Padding(
                           padding: const EdgeInsets.only(
                               right: 10.0, top: 30.0, bottom: 0.0, left: 10.0),
@@ -353,8 +350,8 @@ class _BodyState extends State<Body> {
                             width: 250.0,
                             child: Container(
                               margin: EdgeInsets.symmetric(vertical: 5),
-                              padding:
-                              EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+                              padding: EdgeInsets.only(
+                                  top: 5, bottom: 2, right: 5, left: 10),
 //                              width: size.width * 0.8,
                               decoration: BoxDecoration(
                                 color: kPrimaryLightColor,
@@ -366,7 +363,6 @@ class _BodyState extends State<Body> {
                                 ),
                               ),
                               child: TextFormField(
-
                                 style: TextStyle(
                                     fontSize: 12.0,
                                     height: 1.6,
@@ -383,8 +379,8 @@ class _BodyState extends State<Body> {
                                     border: InputBorder.none,
                                     errorBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
-                                          color: Colors.red,
-                                        )),
+                                      color: Colors.red,
+                                    )),
                                     contentPadding: EdgeInsets.only(
                                         left: 0, right: 3, top: 6, bottom: 12),
                                     errorStyle: TextStyle(
@@ -406,8 +402,6 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                         ),
-
-
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Container(
@@ -419,7 +413,8 @@ class _BodyState extends State<Body> {
                               ),
                               child: Container(
                                 margin: EdgeInsets.symmetric(vertical: 5),
-                                padding: EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+                                padding: EdgeInsets.only(
+                                    top: 5, bottom: 2, right: 5, left: 10),
 //                              width: size.width * 0.8,
                                 decoration: BoxDecoration(
                                   color: kPrimaryLightColor,
@@ -435,37 +430,37 @@ class _BodyState extends State<Body> {
                                   cursorColor: kPrimaryColor,
 
                                   decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.only(
-                                          left: 0, right: 3, top: 6, bottom: 12),
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: Colors.red)),
-                                      suffixIcon: GestureDetector(
-                                        onTap: () {
-                                          _toggle();
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0),
-                                          child: new Icon(
-                                            _obscureText
-                                                ? FontAwesomeIcons.eyeSlash
-                                                : FontAwesomeIcons.eye,
-                                            size: 15.0,
-                                            color: Colors.deepPurple,
-                                          ),
+                                    contentPadding: EdgeInsets.only(
+                                        left: 0, right: 3, top: 6, bottom: 12),
+                                    errorBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.red)),
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        _toggle();
+                                      },
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 5.0),
+                                        child: new Icon(
+                                          _obscureText
+                                              ? FontAwesomeIcons.eyeSlash
+                                              : FontAwesomeIcons.eye,
+                                          size: 15.0,
+                                          color: Colors.deepPurple,
                                         ),
                                       ),
-                                      icon: Icon(
-                                        FontAwesomeIcons.lock,
-                                        color: Colors.brown.shade300,
-                                      ),
-                                      border: InputBorder.none,
-                                      fillColor: Colors.deepPurple.shade50,
-                                      errorText:
-                                      loginfail ? 'password not match' : null,
-                                      filled: true,
-                                      hintText: "Current Password",
+                                    ),
+                                    icon: Icon(
+                                      FontAwesomeIcons.lock,
+                                      color: Colors.brown.shade300,
+                                    ),
+                                    border: InputBorder.none,
+                                    fillColor: Colors.deepPurple.shade50,
+                                    errorText:
+                                        loginfail ? 'password not match' : null,
+                                    filled: true,
+                                    hintText: "Current Password",
                                     // errorText: checkCurrentPasswordValid
                                     //     ? null
                                     //     : "Please double check your current password",
@@ -486,7 +481,6 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                         ),
-
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Container(
@@ -498,7 +492,8 @@ class _BodyState extends State<Body> {
                               ),
                               child: Container(
                                 margin: EdgeInsets.symmetric(vertical: 5),
-                                padding: EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+                                padding: EdgeInsets.only(
+                                    top: 5, bottom: 2, right: 5, left: 10),
 //                              width: size.width * 0.8,
                                 decoration: BoxDecoration(
                                   color: kPrimaryLightColor,
@@ -515,17 +510,20 @@ class _BodyState extends State<Body> {
 
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.only(
-                                          left: 0, right: 3, top: 6, bottom: 12),
+                                          left: 0,
+                                          right: 3,
+                                          top: 6,
+                                          bottom: 12),
                                       errorBorder: OutlineInputBorder(
                                           borderSide:
-                                          BorderSide(color: Colors.red)),
+                                              BorderSide(color: Colors.red)),
                                       suffixIcon: GestureDetector(
                                         onTap: () {
                                           _toggle1();
                                         },
                                         child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0),
+                                          padding:
+                                              const EdgeInsets.only(top: 5.0),
                                           child: new Icon(
                                             _obscureText1
                                                 ? FontAwesomeIcons.eyeSlash
@@ -541,8 +539,9 @@ class _BodyState extends State<Body> {
                                       ),
                                       border: InputBorder.none,
                                       fillColor: Colors.deepPurple.shade50,
-                                      errorText:
-                                      loginfail ? 'password not match' : null,
+                                      errorText: loginfail
+                                          ? 'password not match'
+                                          : null,
                                       filled: true,
                                       hintText: "New Password"),
                                   controller: newpwdInputController,
@@ -561,7 +560,6 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                         ),
-
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Container(
@@ -573,7 +571,8 @@ class _BodyState extends State<Body> {
                               ),
                               child: Container(
                                 margin: EdgeInsets.symmetric(vertical: 5),
-                                padding: EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
+                                padding: EdgeInsets.only(
+                                    top: 5, bottom: 2, right: 5, left: 10),
 //                              width: size.width * 0.8,
                                 decoration: BoxDecoration(
                                   color: kPrimaryLightColor,
@@ -590,17 +589,20 @@ class _BodyState extends State<Body> {
 
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.only(
-                                          left: 0, right: 3, top: 6, bottom: 12),
+                                          left: 0,
+                                          right: 3,
+                                          top: 6,
+                                          bottom: 12),
                                       errorBorder: OutlineInputBorder(
                                           borderSide:
-                                          BorderSide(color: Colors.red)),
+                                              BorderSide(color: Colors.red)),
                                       suffixIcon: GestureDetector(
                                         onTap: () {
                                           _toggle2();
                                         },
                                         child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0),
+                                          padding:
+                                              const EdgeInsets.only(top: 5.0),
                                           child: new Icon(
                                             _obscureText2
                                                 ? FontAwesomeIcons.eyeSlash
@@ -616,8 +618,9 @@ class _BodyState extends State<Body> {
                                       ),
                                       border: InputBorder.none,
                                       fillColor: Colors.deepPurple.shade50,
-                                      errorText:
-                                      loginfail ? 'password not match' : null,
+                                      errorText: loginfail
+                                          ? 'password not match'
+                                          : null,
                                       filled: true,
                                       hintText: "Confirm New Password"),
                                   controller: CnewpwdInputController,
@@ -641,31 +644,34 @@ class _BodyState extends State<Body> {
                           child: RoundedButtonX(
                               text: "Change Password",
                               press: () {
-                                if(newpwdInputController.text == CnewpwdInputController.text){
-                                  signIn(emailInputController.text,
-                                      ppwdInputController.text,newpwdInputController.text);
-                                }else{
+                                if (newpwdInputController.text ==
+                                    CnewpwdInputController.text) {
+                                  signIn(
+                                      emailInputController.text,
+                                      ppwdInputController.text,
+                                      newpwdInputController.text);
+                                } else {
                                   showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-
                                         return AlertDialog(
                                           content: Text(
                                             'Password does not Match !',
-                                            style: TextStyle(color: Colors.black),
+                                            style:
+                                                TextStyle(color: Colors.black),
                                           ),
-                                          title: Text("Error !", style:
-                                          TextStyle(color: Colors.red),),
+                                          title: Text(
+                                            "Error !",
+                                            style: TextStyle(color: Colors.red),
+                                          ),
                                         );
                                       });
                                 }
-
 
 //
                               }),
                         ),
                         SizedBox(height: 15.0),
-
                         Padding(
                           padding: EdgeInsets.only(right: 0.0, top: 10.0),
                           child: Container(
@@ -686,21 +692,21 @@ class _BodyState extends State<Body> {
                             ),
                           ),
                         ),
-
                       ],
                     ),
                   ),
-                ) : CircularProgressIndicator(
+                )
+              : CircularProgressIndicator(
                   strokeWidth: 5.0,
                   semanticsLabel: 'loading...',
                   semanticsValue: 'loading...',
                   backgroundColor: Colors.deepPurpleAccent,
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                      Colors.deepPurple),
+                  valueColor:
+                      new AlwaysStoppedAnimation<Color>(Colors.deepPurple),
                 ),
-              ),
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -716,8 +722,8 @@ class PasswordChanged extends StatelessWidget {
   }
 }
 
-_fieldFocusChange(BuildContext context, FocusNode currentFocus,
-    FocusNode nextFocus) {
+_fieldFocusChange(
+    BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
 }

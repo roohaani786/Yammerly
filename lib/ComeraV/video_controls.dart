@@ -41,9 +41,10 @@ class _VideoControlsState extends State<VideoControls>
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.transparent,
       child: Container(
         height: 80,
-        color: Colors.deepPurple,
+        color: Colors.transparent,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[

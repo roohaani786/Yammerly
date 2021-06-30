@@ -1,5 +1,5 @@
-  import 'package:cloud_firestore/cloud_firestore.dart';
-  import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart' as fl;
@@ -14,6 +14,7 @@ import 'package:techstagram/Signup/components/social_icon.dart';
 import 'package:techstagram/components/already_have_an_account_acheck.dart';
 import 'package:techstagram/components/rounded_button.dart';
 import 'package:techstagram/components/text_field_container.dart';
+import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:flutter/services.dart';
@@ -70,21 +71,18 @@ class _BodyState extends State<Body> {
     });
   }
 
-
   void onGoogleSignIn(BuildContext context) async {
     final valid = await usernameCheck(displayNameInputController.text);
     if (!valid) {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-
             return AlertDialog(
               title: Text("Error"),
-              content: Text("Display name already exists!", style: TextStyle(
-                  color: Colors.deepPurple
-              )),
+              content: Text("Display name already exists!",
+                  style: TextStyle(color: Colors.deepPurple)),
               actions: <Widget>[
-                FlatButton(
+                MaterialButton(
                   child: Text("Close"),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -93,9 +91,8 @@ class _BodyState extends State<Body> {
               ],
             );
           });
-    }
-    else {
-      FirebaseUser user = await authService.hellogoogleSignIn();
+    } else {
+      User user = await authService.hellogoogleSignIn();
       print(user);
       var userSignedIn = await Navigator.pushAndRemoveUntil(
         context,
@@ -113,16 +110,14 @@ class _BodyState extends State<Body> {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  FirebaseUser user;
+  User user;
   PublishSubject loading = PublishSubject();
 
-  Future<FirebaseUser> facebookLogin(BuildContext context) async {
+  Future<User> facebookLogin(BuildContext context) async {
     loading.add(true);
 
-
     var facebookLogin = FacebookLogin();
-    var facebookLoginResult =
-    await facebookLogin.logIn(['email']);
+    var facebookLoginResult = await facebookLogin.logIn(['email']);
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
         print("Error");
@@ -140,12 +135,11 @@ class _BodyState extends State<Body> {
         try {
           FacebookAccessToken facebookAccessToken =
               facebookLoginResult.accessToken;
-          final AuthCredential credential = FacebookAuthProvider.getCredential(
-              accessToken: facebookAccessToken.token);
-          final FirebaseUser user = (await auth.signInWithCredential(
-              credential))
-              .user;
-          (await FirebaseAuth.instance.currentUser()).uid;
+          final AuthCredential credential = FacebookAuthProvider.credential(
+             facebookAccessToken.token);
+          final User user =
+              (await auth.signInWithCredential(credential)).user;
+          (FirebaseAuth.instance.currentUser).uid;
 //        assert(user.email != null);
 //        assert(user.displayName != null);
 //        assert(user.isAnonymous);
@@ -157,11 +151,10 @@ class _BodyState extends State<Body> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text("Error"),
-                  content: Text(e.code, style: TextStyle(
-                      color: Colors.deepPurple
-                  )),
+                  content:
+                      Text(e.code, style: TextStyle(color: Colors.deepPurple)),
                   actions: <Widget>[
-                    FlatButton(
+                    MaterialButton(
                       child: Text("Close"),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -174,7 +167,6 @@ class _BodyState extends State<Body> {
 //        onLoginStatusChanged(true);
         break;
     }
-
   }
 
   bool errordikhao = false;
@@ -217,18 +209,16 @@ class _BodyState extends State<Body> {
   String validateDisplayName(String value) {
 // Indian Mobile number are of 10 digit only
 
-    if (value.length == 0){
+    if (value.length == 0) {
       print(value.length);
       setState(() {
         errordikhaoDN = true;
       });
-    }else if(value.contains(" ")){
-      setState((){
-        errordikhaoDN= true;
+    } else if (value.contains(" ")) {
+      setState(() {
+        errordikhaoDN = true;
       });
     }
-
-
 
     // return 'Mobile Number must be of 10 digit';
 
@@ -259,7 +249,6 @@ class _BodyState extends State<Body> {
   String errorMessage = '';
   String successMessage = '';
 
-
   void _toggle() {
     setState(() {
       _obscureText = !_obscureText;
@@ -273,40 +262,34 @@ class _BodyState extends State<Body> {
   }
 
   Future<bool> usernameCheck(String displayName) async {
-    final result = await Firestore.instance
+    final result = await FirebaseFirestore.instance
         .collection('users')
         .where('displayName', isEqualTo: displayName)
-        .getDocuments();
-    return result.documents.isEmpty;
+        .get();
+    return result.docs.isEmpty;
   }
 
   Future<String> signup(String email, String password, String firstname,
       String lastname, String phonenumber, String displayname) async {
-
     String errorMessage;
 
     this.setState(() {
       isLoading = true;
     });
     try {
-
-       if (_registerFormKey.currentState.validate()) {
-        if (pwdInputController.text ==
-            confirmPwdInputController.text) {
-
+      if (_registerFormKey.currentState.validate()) {
+        if (pwdInputController.text == confirmPwdInputController.text) {
           bool valid = await usernameCheck(displayNameInputController.text);
           if (!valid) {
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
-
                   return AlertDialog(
                     title: Text("Error"),
-                    content: Text("Display name already exists!", style: TextStyle(
-                        color: Colors.deepPurple
-                    )),
+                    content: Text("Display name already exists!",
+                        style: TextStyle(color: Colors.deepPurple)),
                     actions: <Widget>[
-                      FlatButton(
+                      MaterialButton(
                         child: Text("Close"),
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -315,18 +298,17 @@ class _BodyState extends State<Body> {
                     ],
                   );
                 });
-          }else if(errordikhaoDN == true) {
+          } else if (errordikhaoDN == true) {
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
-
                   return AlertDialog(
                     title: Text("Error"),
-                    content: Text("Display should not be null or contain spaces", style: TextStyle(
-                        color: Colors.deepPurple
-                    )),
+                    content: Text(
+                        "Display should not be null or contain spaces",
+                        style: TextStyle(color: Colors.deepPurple)),
                     actions: <Widget>[
-                      FlatButton(
+                      MaterialButton(
                         child: Text("Close"),
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -343,62 +325,78 @@ class _BodyState extends State<Body> {
           else {
             FirebaseAuth.instance
                 .createUserWithEmailAndPassword(
-                email: emailInputController.text,
-                password: pwdInputController.text)
-
-                .then((authResult) =>
-                Firestore.instance
+                    email: emailInputController.text,
+                    password: pwdInputController.text)
+                .then((authResult) => FirebaseFirestore.instance
                     .collection("users")
-                    .document(authResult.user.uid)
-                    .setData({
-                  "uid": authResult.user.uid,
-                  "fname": firstNameInputController.text,
-                  "surname": lastNameInputController.text,
-                  "phonenumber": phoneNumberController.text,
-                  "email": emailInputController.text,
-                  "displayName": displayNameInputController.text.toLowerCase(),
-                  'followers': 0,
-                  'following': 0,
-                  'posts': 0,
-                  'photoURL': 'https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png',
-                  'bio': "Proud Hashtager",
-                  'emailVerified': false,
-                  'phoneVerified': false,
-                })
-                    .then((result) =>
-                {
-
-
-                  Navigator.pushAndRemoveUntil(
-                    context,
+                    .doc(authResult.user.uid)
+                    .set({
+                      "uid": authResult.user.uid,
+                      "fname": firstNameInputController.text,
+                      "surname": lastNameInputController.text,
+                      "phonenumber": phoneNumberController.text,
+                      "email": emailInputController.text,
+                      "displayName":
+                          displayNameInputController.text.toLowerCase(),
+                      'followers': 0,
+                      'following': 0,
+                      'posts': 0,
+                      'photoURL':
+                          'https://w7.pngwing.com/pngs/281/431/png-transparent-computer-icons-avatar-user-profile-online-identity-avatar.png',
+                      'bio': "Proud Hashtager",
+                      'emailVerified': false,
+                      'phoneVerified': false,
+                      'private': false,
+                    })
+                    .then((result) => {
+                          Navigator.pushAndRemoveUntil(
+                            context,
                             MaterialPageRoute(
                                 builder: (context) => HomePage(
                                       initialindexg: 1,
                                     )),
                             (Route<dynamic> route) => false,
                           ),
-                  firstNameInputController.clear(),
-                  lastNameInputController.clear(),
-                  phoneNumberController.clear(),
-                  emailInputController.clear(),
-                  displayNameInputController.clear(),
-                  pwdInputController.clear(),
-                  confirmPwdInputController.clear()
-                })
+                          firstNameInputController.clear(),
+                          lastNameInputController.clear(),
+                          phoneNumberController.clear(),
+                          emailInputController.clear(),
+                          displayNameInputController.clear(),
+                          pwdInputController.clear(),
+                          confirmPwdInputController.clear()
+                        })
                     .catchError(
-
                       (err) =>
 //                          print(err.code),
-                  showDialog(
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Error"),
+                                  content: Text(err.code,
+                                      style:
+                                          TextStyle(color: Colors.deepPurple)),
+                                  actions: <Widget>[
+                                    MaterialButton(
+                                      child: Text("Close"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
+                                );
+                              }),
+                    ))
+                .catchError(
+                  (err) => showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text("Error"),
-                          content: Text(err.code, style: TextStyle(
-                              color: Colors.deepPurple
-                          )),
+                          content: Text(err.code,
+                              style: TextStyle(color: Colors.deepPurple)),
                           actions: <Widget>[
-                            FlatButton(
+                            MaterialButton(
                               child: Text("Close"),
                               onPressed: () {
                                 Navigator.of(context).pop();
@@ -407,31 +405,7 @@ class _BodyState extends State<Body> {
                           ],
                         );
                       }),
-
-
-                ))
-                .catchError((err) =>
-                showDialog(
-
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Error"),
-                        content: Text(err.code,
-                            style: TextStyle(
-                                color: Colors.deepPurple
-                            )),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text("Close"),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        ],
-                      );
-                    }),
-            );
+                );
           }
         } else {
           showDialog(
@@ -441,7 +415,7 @@ class _BodyState extends State<Body> {
                   title: Text("Error"),
                   content: Text("The passwords do not match"),
                   actions: <Widget>[
-                    FlatButton(
+                    MaterialButton(
                       child: Text("Close"),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -452,9 +426,7 @@ class _BodyState extends State<Body> {
               });
         }
       }
-    }
-
-    catch (error) {
+    } catch (error) {
       switch (error.code) {
         case "ERROR_INVALID_EMAIL":
           errorMessage = "Your email address appears to be malformed.";
@@ -476,12 +448,11 @@ class _BodyState extends State<Body> {
           break;
         default:
           errorMessage =
-          "An error occurred, maybe due to unfilled fields, internet or other issue.";
+              "An error occurred, maybe due to unfilled fields, internet or other issue.";
       }
 
       Future.error(errorMessage);
     }
-
 
     if (errorMessage != null) {
       this.setState(() {
@@ -495,8 +466,10 @@ class _BodyState extends State<Body> {
                 'sd',
                 style: TextStyle(color: Colors.black),
               ),
-              title: Text("Error !", style:
-              TextStyle(color: Colors.red),),
+              title: Text(
+                "Error !",
+                style: TextStyle(color: Colors.red),
+              ),
             );
           });
     }
@@ -512,421 +485,444 @@ class _BodyState extends State<Body> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Background(
-        child: (isLoading == false) ? SingleChildScrollView(
-          child: Form(
-            key: _registerFormKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+        child: (isLoading == false)
+            ? SingleChildScrollView(
+                child: Form(
+                  key: _registerFormKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
 //                Text(
 //                  "SIGNUP",
 //                  style: TextStyle(fontWeight: FontWeight.bold),
 //                ),
 //                SizedBox(height: size.height * 0.001),
-                SvgPicture.asset(
-                  "assets/icons/signup.svg",
-                  height: size.height * 0.20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: 10.0, top: 1.0, bottom: 1.0, left: 10.0),
-                  child: Container(
-                    height: 50.0,
-                    width: 250.0,
-                    child: TextFieldContainer(
-                      child: TextFormField(
-                        style: TextStyle(
-                            fontSize: 12.0, height: 1.5, color: Colors.black),
-                        textInputAction: TextInputAction.next,
-                        focusNode: _firstName,
-                        onFieldSubmitted: (term) {
-                          _fieldFocusChange(context, _firstName, _lastName);
-                        },
+                      SvgPicture.asset(
+                        "assets/icons/signup.svg",
+                        height: size.height * 0.20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 10.0, top: 1.0, bottom: 1.0, left: 10.0),
+                        child: Container(
+                          height: 50.0,
+                          width: 250.0,
+                          child: TextFieldContainer(
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  height: 1.5,
+                                  color: Colors.black),
+                              textInputAction: TextInputAction.next,
+                              focusNode: _firstName,
+                              onFieldSubmitted: (term) {
+                                _fieldFocusChange(
+                                    context, _firstName, _lastName);
+                              },
 //                            style: TextStyle(
 //                                fontSize: 20.0,
 //                                height: 2.0,
 //                                color: Colors.black
 //                            ),
-                        cursorColor: kPrimaryColor,
+                              cursorColor: kPrimaryColor,
 
-
-
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(
-                              left: 0, right: 3, top: 6, bottom: 12),
-                          errorStyle: TextStyle(
-                            fontSize: 10.0,
-                            height: 0.3,
-                          ),
-                          icon: Icon(
-                            Icons.person,
-                            //  size: 12.0,
-                            color: kPrimaryColor,
-                          ),
-                          fillColor: Colors.deepPurple.shade50,
-                          filled: true,
-                          hintText: "First name",
-                        ),
-                        controller: firstNameInputController,
-                        //enableInteractiveSelection: false,
-                        // keyboardType: TextInputType.name,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(
+                                    left: 0, right: 3, top: 6, bottom: 12),
+                                errorStyle: TextStyle(
+                                  fontSize: 10.0,
+                                  height: 0.3,
+                                ),
+                                icon: Icon(
+                                  Icons.person,
+                                  //  size: 12.0,
+                                  color: kPrimaryColor,
+                                ),
+                                fillColor: Colors.deepPurple.shade50,
+                                filled: true,
+                                hintText: "First name",
+                              ),
+                              controller: firstNameInputController,
+                              //enableInteractiveSelection: false,
+                              // keyboardType: TextInputType.name,
 //                      validator: emailValidator,
-                      ),
-                    ),
-                  ),
-                ),
-
-
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
-                  child: Container(
-                    height: 50.0,
-                    width: 250.0,
-                    child: TextFieldContainer(
-                      child: TextFormField(
-                        style: TextStyle(
-                            fontSize: 12.0, height: 1.5, color: Colors.black),
-                        textInputAction: TextInputAction.next,
-                        focusNode: _lastName,
-                        onFieldSubmitted: (term) {
-                          _fieldFocusChange(context, _lastName, _displayName);
-                        },
-                        cursorColor: kPrimaryColor,
-
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(
-                              left: 0, right: 3, top: 6, bottom: 12),
-                          errorStyle: TextStyle(
-                            fontSize: 10.0,
-                            height: 0.3,
-                          ),
-                          icon: Icon(
-                            Icons.person,
-                            color: kPrimaryColor,
-                          ),
-                          fillColor: Colors.deepPurple.shade50,
-                          filled: true,
-                          hintText: "Last name",
-                        ),
-                        controller: lastNameInputController,
-                        //enableInteractiveSelection: false,
-                        //  keyboardType: TextInputType.name,
-//                      validator: emailValidator,
-                      ),
-                    ),
-                  ),
-                ),
-
-
-          Padding(
-            padding: const EdgeInsets.only(
-                right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
-            child: Container(
-              height: 50.0,
-              width: 250.0,
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
-                padding:
-                EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
-                width: size.width * 0.8,
-                decoration: BoxDecoration(
-                  color: kPrimaryLightColor,
-                  borderRadius: BorderRadius.circular(29),
-                  border: Border.all(
-                    color: (errordikhaoDN == true)
-                        ? Colors.red
-                        : kPrimaryLightColor,
-                  ),
-                ),
-
-                child: TextFormField(
-                  style: TextStyle(
-                      fontSize: 12.0, height: 1.5, color: Colors.black),
-                  textInputAction: TextInputAction.next,
-                  focusNode: _displayName,
-                  onFieldSubmitted: (term) {
-                    _fieldFocusChange(context, _displayName, _phoneNumber);
-                  },
-                  cursorColor: kPrimaryColor,
-
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(
-                        left: 0, right: 3, top: 6, bottom: 12),
-                    errorStyle: TextStyle(
-                      fontSize: 10.0,
-                      height: 0.3,
-                    ),
-                    icon: Icon(
-                      Icons.person,
-                      color: kPrimaryColor,
-                    ),
-                    fillColor: Colors.deepPurple.shade50,
-                    filled: true,
-                    hintText: "Username",
-                  ),
-                  controller: displayNameInputController,
-                  validator: validateDisplayName,
-                  //enableInteractiveSelection: false,
-                  //  keyboardType: TextInputType.name,
-//                      validator: emailValidator,
-                ),
-              ),
-            ),
-          ),
-
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
-                  child: Container(
-                    height: 50.0,
-                    width: 250.0,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 5),
-                      padding:
-                      EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
-                      width: size.width * 0.8,
-                      decoration: BoxDecoration(
-                        color: kPrimaryLightColor,
-                        borderRadius: BorderRadius.circular(29),
-                        border: Border.all(
-                          color: (errordikhaoN == true)
-                              ? Colors.red
-                              : kPrimaryLightColor,
-                        ),
-                      ),
-                      child: TextFormField(
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
-                        style: TextStyle(
-                            fontSize: 12.0, height: 1.5, color: Colors.black),
-                        textInputAction: TextInputAction.next,
-                        focusNode: _phoneNumber,
-                        onFieldSubmitted: (term) {
-                          _fieldFocusChange(context, _phoneNumber, _email);
-                        },
-                        cursorColor: kPrimaryColor,
-
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 6, bottom: 12),
-                            errorStyle: TextStyle(
-                              fontSize: 10.0,
-                              height: 0.3,
                             ),
-                            icon: Icon(
-                              Icons.phone_android,
-                              color: kPrimaryColor,
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
+                        child: Container(
+                          height: 50.0,
+                          width: 250.0,
+                          child: TextFieldContainer(
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  height: 1.5,
+                                  color: Colors.black),
+                              textInputAction: TextInputAction.next,
+                              focusNode: _lastName,
+                              onFieldSubmitted: (term) {
+                                _fieldFocusChange(
+                                    context, _lastName, _displayName);
+                              },
+                              cursorColor: kPrimaryColor,
+
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(
+                                    left: 0, right: 3, top: 6, bottom: 12),
+                                errorStyle: TextStyle(
+                                  fontSize: 10.0,
+                                  height: 0.3,
+                                ),
+                                icon: Icon(
+                                  Icons.person,
+                                  color: kPrimaryColor,
+                                ),
+                                fillColor: Colors.deepPurple.shade50,
+                                filled: true,
+                                hintText: "Last name",
+                              ),
+                              controller: lastNameInputController,
+                              //enableInteractiveSelection: false,
+                              //  keyboardType: TextInputType.name,
+//                      validator: emailValidator,
                             ),
-                            fillColor: Colors.deepPurple.shade50,
-                            filled: true,
-                            hintText: "Phone number (optional)"),
-                        controller: phoneNumberController,
-                        validator: validateMobile,
-                        //enableInteractiveSelection: false,
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
+                        child: Container(
+                          height: 50.0,
+                          width: 250.0,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            padding: EdgeInsets.only(
+                                top: 5, bottom: 2, right: 5, left: 10),
+                            width: size.width * 0.8,
+                            decoration: BoxDecoration(
+                              color: kPrimaryLightColor,
+                              borderRadius: BorderRadius.circular(29),
+                              border: Border.all(
+                                color: (errordikhaoDN == true)
+                                    ? Colors.red
+                                    : kPrimaryLightColor,
+                              ),
+                            ),
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  height: 1.5,
+                                  color: Colors.black),
+                              textInputAction: TextInputAction.next,
+                              focusNode: _displayName,
+                              onFieldSubmitted: (term) {
+                                _fieldFocusChange(
+                                    context, _displayName, _phoneNumber);
+                              },
+                              cursorColor: kPrimaryColor,
+
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.only(
+                                    left: 0, right: 3, top: 6, bottom: 12),
+                                errorStyle: TextStyle(
+                                  fontSize: 10.0,
+                                  height: 0.3,
+                                ),
+                                icon: Icon(
+                                  Icons.person,
+                                  color: kPrimaryColor,
+                                ),
+                                fillColor: Colors.deepPurple.shade50,
+                                filled: true,
+                                hintText: "Username",
+                              ),
+                              controller: displayNameInputController,
+                              validator: validateDisplayName,
+                              //enableInteractiveSelection: false,
+                              //  keyboardType: TextInputType.name,
+//                      validator: emailValidator,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
+                        child: Container(
+                          height: 50.0,
+                          width: 250.0,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            padding: EdgeInsets.only(
+                                top: 5, bottom: 2, right: 5, left: 10),
+                            width: size.width * 0.8,
+                            decoration: BoxDecoration(
+                              color: kPrimaryLightColor,
+                              borderRadius: BorderRadius.circular(29),
+                              border: Border.all(
+                                color: (errordikhaoN == true)
+                                    ? Colors.red
+                                    : kPrimaryLightColor,
+                              ),
+                            ),
+                            child: TextFormField(
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]'))
+                              ],
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  height: 1.5,
+                                  color: Colors.black),
+                              textInputAction: TextInputAction.next,
+                              focusNode: _phoneNumber,
+                              onFieldSubmitted: (term) {
+                                _fieldFocusChange(
+                                    context, _phoneNumber, _email);
+                              },
+                              cursorColor: kPrimaryColor,
+
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(
+                                      left: 0, right: 3, top: 6, bottom: 12),
+                                  errorStyle: TextStyle(
+                                    fontSize: 10.0,
+                                    height: 0.3,
+                                  ),
+                                  icon: Icon(
+                                    Icons.phone_android,
+                                    color: kPrimaryColor,
+                                  ),
+                                  fillColor: Colors.deepPurple.shade50,
+                                  filled: true,
+                                  hintText: "Phone number (optional)"),
+                              controller: phoneNumberController,
+                              validator: validateMobile,
+                              //enableInteractiveSelection: false,
 //                        keyboardType: TextInputType.number,
 //                      validator: emailValidator,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
-                  child: Container(
-                    height: 50.0,
-                    width: 250.0,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 5),
-                      padding:
-                      EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
-                      width: size.width * 0.8,
-                      decoration: BoxDecoration(
-                        color: kPrimaryLightColor,
-                        borderRadius: BorderRadius.circular(29),
-                        border: Border.all(
-                          color: (errordikhao == true)
-                              ? Colors.red
-                              : kPrimaryLightColor,
+                            ),
+                          ),
                         ),
                       ),
-                      child: TextFormField(
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@.]'))],
-                        style: TextStyle(
-                            fontSize: 12.0, height: 1.5, color: Colors.black),
-                        textInputAction: TextInputAction.next,
-                        focusNode: _email,
-                        onFieldSubmitted: (term) {
-                          _fieldFocusChange(context, _email, _pwd);
-                        },
-                        cursorColor: kPrimaryColor,
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
+                        child: Container(
+                          height: 50.0,
+                          width: 250.0,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            padding: EdgeInsets.only(
+                                top: 5, bottom: 2, right: 5, left: 10),
+                            width: size.width * 0.8,
+                            decoration: BoxDecoration(
+                              color: kPrimaryLightColor,
+                              borderRadius: BorderRadius.circular(29),
+                              border: Border.all(
+                                color: (errordikhao == true)
+                                    ? Colors.red
+                                    : kPrimaryLightColor,
+                              ),
+                            ),
+                            child: TextFormField(
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[a-zA-Z0-9@.]'))
+                              ],
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  height: 1.5,
+                                  color: Colors.black),
+                              textInputAction: TextInputAction.next,
+                              focusNode: _email,
+                              onFieldSubmitted: (term) {
+                                _fieldFocusChange(context, _email, _pwd);
+                              },
+                              cursorColor: kPrimaryColor,
 
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                )),
-                            contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 6, bottom: 12),
-                            errorStyle: TextStyle(
-                              fontSize: 10.0,
-                              height: 0.3,
-                            ),
-                            icon: Icon(
-                              Icons.email,
-                              color: kPrimaryColor,
-                            ),
-                            fillColor: Colors.deepPurple.shade50,
-                            filled: true,
-                            hintText: "Email"),
-                        controller: emailInputController,
-                        validator: emailValidator,
-                        //enableInteractiveSelection: false,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  errorBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                    color: Colors.red,
+                                  )),
+                                  contentPadding: EdgeInsets.only(
+                                      left: 0, right: 3, top: 6, bottom: 12),
+                                  errorStyle: TextStyle(
+                                    fontSize: 10.0,
+                                    height: 0.3,
+                                  ),
+                                  icon: Icon(
+                                    Icons.email,
+                                    color: kPrimaryColor,
+                                  ),
+                                  fillColor: Colors.deepPurple.shade50,
+                                  filled: true,
+                                  hintText: "Email"),
+                              controller: emailInputController,
+                              validator: emailValidator,
+                              //enableInteractiveSelection: false,
 //                        keyboardType: TextInputType.emailAddress,
 //                      validator: emailValidator,
-                      ),
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
-                  child: Container(
-                    height: 50.0,
-                    width: 250.0,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 5),
-                      padding:
-                      EdgeInsets.only(top: 5, bottom: 2, right: 5, left: 10),
-                      width: size.width * 0.8,
-                      decoration: BoxDecoration(
-                        color: kPrimaryLightColor,
-                        borderRadius: BorderRadius.circular(29),
-                        border: Border.all(
-                          color: (errordikhaoP == true)
-                              ? Colors.red
-                              : kPrimaryLightColor,
+                            ),
+                          ),
                         ),
                       ),
-                      child: TextFormField(
-                        style: TextStyle(
-                            fontSize: 12.0, height: 1.5, color: Colors.black),
-                        textInputAction: TextInputAction.next,
-                        focusNode: _pwd,
-                        onFieldSubmitted: (term) {
-                          _fieldFocusChange(context, _pwd, _confirmPwd);
-                        },
-                        cursorColor: kPrimaryColor,
-                        obscureText: _obscureText,
 
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                _toggle();
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: new Icon(
-                                  _obscureText
-                                      ? FontAwesomeIcons.eyeSlash
-                                      : FontAwesomeIcons.eye,
-                                  size: 15.0,
-                                  color: Colors.deepPurple,
-                                ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
+                        child: Container(
+                          height: 50.0,
+                          width: 250.0,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            padding: EdgeInsets.only(
+                                top: 5, bottom: 2, right: 5, left: 10),
+                            width: size.width * 0.8,
+                            decoration: BoxDecoration(
+                              color: kPrimaryLightColor,
+                              borderRadius: BorderRadius.circular(29),
+                              border: Border.all(
+                                color: (errordikhaoP == true)
+                                    ? Colors.red
+                                    : kPrimaryLightColor,
                               ),
                             ),
-                            contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 6, bottom: 12),
-                            errorStyle: TextStyle(
-                              fontSize: 9.0,
-                              height: 0.3,
-                            ),
-                            icon: Icon(
-                              Icons.lock,
-                              color: kPrimaryColor,
-                            ),
-                            fillColor: Colors.deepPurple.shade50,
-                            filled: true,
-                            hintText: "Create password"),
-                        controller: pwdInputController,
-                        validator: pwdValidator,
-                       // enableInteractiveSelection: false,
-//                      validator: emailValidator,
-                      ),
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.only(
-                      right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
-                  child: Container(
-                    height: 50.0,
-                    width: 250.0,
-                    child: TextFieldContainer(
-                      child: TextFormField(
-                        style: TextStyle(
-                            fontSize: 12.0, height: 1.5, color: Colors.black),
-                        textInputAction: TextInputAction.done,
-                        focusNode: _confirmPwd,
-                        onFieldSubmitted: (value) {
-                          _confirmPwd.unfocus();
-                          RoundedButtonX();
-                        },
-                        cursorColor: kPrimaryColor,
-
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                _toggle2();
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  height: 1.5,
+                                  color: Colors.black),
+                              textInputAction: TextInputAction.next,
+                              focusNode: _pwd,
+                              onFieldSubmitted: (term) {
+                                _fieldFocusChange(context, _pwd, _confirmPwd);
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: new Icon(
-                                  _obscureText1
-                                      ? FontAwesomeIcons.eyeSlash
-                                      : FontAwesomeIcons.eye,
-                                  size: 15.0,
-                                  color: Colors.deepPurple,
-                                ),
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.only(
-                                left: 0, right: 3, top: 6, bottom: 12),
-                            errorStyle: TextStyle(
-                              fontSize: 10.0,
-                              height: 0.3,
-                            ),
-                            icon: Icon(
-                              Icons.lock,
-                              color: kPrimaryColor,
-                            ),
-                            fillColor: Colors.deepPurple.shade50,
-                            filled: true,
-                            hintText: "Confirm password"),
-                        controller: confirmPwdInputController,
-                        obscureText: _obscureText1,
-                        //enableInteractiveSelection: false,
-//                      validator: emailValidator,
-                      ),
-                    ),
-                  ),
-                ),
+                              cursorColor: kPrimaryColor,
+                              obscureText: _obscureText,
 
-                RoundedButtonX(
-                  text: "SIGNUP",
-                  press: () {
-                    signup(emailInputController.text, pwdInputController.text,
-                        firstNameInputController.text,
-                        lastNameInputController.text,
-                        phoneNumberController.text,displayNameInputController.text);
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {
+                                      _toggle();
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: new Icon(
+                                        _obscureText
+                                            ? FontAwesomeIcons.eyeSlash
+                                            : FontAwesomeIcons.eye,
+                                        size: 15.0,
+                                        color: Colors.deepPurple,
+                                      ),
+                                    ),
+                                  ),
+                                  contentPadding: EdgeInsets.only(
+                                      left: 0, right: 3, top: 6, bottom: 12),
+                                  errorStyle: TextStyle(
+                                    fontSize: 9.0,
+                                    height: 0.3,
+                                  ),
+                                  icon: Icon(
+                                    Icons.lock,
+                                    color: kPrimaryColor,
+                                  ),
+                                  fillColor: Colors.deepPurple.shade50,
+                                  filled: true,
+                                  hintText: "Create password"),
+                              controller: pwdInputController,
+                              validator: pwdValidator,
+                              // enableInteractiveSelection: false,
+//                      validator: emailValidator,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 10.0, top: 0.0, bottom: 0.0, left: 10.0),
+                        child: Container(
+                          height: 50.0,
+                          width: 250.0,
+                          child: TextFieldContainer(
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  height: 1.5,
+                                  color: Colors.black),
+                              textInputAction: TextInputAction.done,
+                              focusNode: _confirmPwd,
+                              onFieldSubmitted: (value) {
+                                _confirmPwd.unfocus();
+                                RoundedButtonX();
+                              },
+                              cursorColor: kPrimaryColor,
+
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {
+                                      _toggle2();
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: new Icon(
+                                        _obscureText1
+                                            ? FontAwesomeIcons.eyeSlash
+                                            : FontAwesomeIcons.eye,
+                                        size: 15.0,
+                                        color: Colors.deepPurple,
+                                      ),
+                                    ),
+                                  ),
+                                  contentPadding: EdgeInsets.only(
+                                      left: 0, right: 3, top: 6, bottom: 12),
+                                  errorStyle: TextStyle(
+                                    fontSize: 10.0,
+                                    height: 0.3,
+                                  ),
+                                  icon: Icon(
+                                    Icons.lock,
+                                    color: kPrimaryColor,
+                                  ),
+                                  fillColor: Colors.deepPurple.shade50,
+                                  filled: true,
+                                  hintText: "Confirm password"),
+                              controller: confirmPwdInputController,
+                              obscureText: _obscureText1,
+                              //enableInteractiveSelection: false,
+//                      validator: emailValidator,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      RoundedButtonX(
+                        text: "SIGNUP",
+                        press: () {
+                          signup(
+                              emailInputController.text,
+                              pwdInputController.text,
+                              firstNameInputController.text,
+                              lastNameInputController.text,
+                              phoneNumberController.text,
+                              displayNameInputController.text);
 
 //                    if (_registerFormKey.currentState.validate()) {
 //                      if (pwdInputController.text ==
@@ -936,7 +932,7 @@ class _BodyState extends State<Body> {
 //                            email: emailInputController.text,
 //                            password: pwdInputController.text)
 //                            .then((authResult) =>
-//                            Firestore.instance
+//                            FirebaseFirestore.instance
 //                                .collection("users")
 //                                .document(authResult.user.uid)
 //                                .setData({
@@ -982,29 +978,29 @@ class _BodyState extends State<Body> {
 //                            });
 //                      }
 //                    }
-                  },
-                ),
-                SizedBox(height: size.height * 0.01),
-                AlreadyHaveAnAccountCheck(
-                  login: false,
-                  press: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return LoginScreen();
                         },
                       ),
-                    );
-                  },
-                ),
-                OrDivider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SocalIcon(
-                        iconSrc: "assets/icons/google-icon.svg",
+                      SizedBox(height: size.height * 0.01),
+                      AlreadyHaveAnAccountCheck(
+                        login: false,
                         press: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return LoginScreen();
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      OrDivider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SocalIcon(
+                              iconSrc: "assets/icons/google-icon.svg",
+                              press: () {
 //                          signInWithGoogle(success).whenComplete(() {
 ////                            if (success == true)
 //                            Navigator.of(context).push(
@@ -1017,58 +1013,55 @@ class _BodyState extends State<Body> {
 //                              ),
 //                            );
 //                          });
-                          onGoogleSignIn(context);
-                        }),
-                    SocalIcon(
-                      iconSrc: "assets/icons/facebook.svg",
-                      press: () {
-                        facebookLogin(context).then(
-                              (user) {
-
-
-                            setState(() {
-                              isFacebookLoginIn = true;
-                              successMessage =
-                              'Logged in successfully.\nDisplay Name : ${user
-                                  .displayName}\nYou can now navigate to Home Page.';
-                            });
-                            if(isFacebookLoginIn == true){
-                              facebooksuccess ? Navigator
-                                  .pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-
-                                          HomePage(
-                                            initialindexg: 1,
+                                onGoogleSignIn(context);
+                              }),
+                          SocalIcon(
+                            iconSrc: "assets/icons/facebook.svg",
+                            press: () {
+                              facebookLogin(context).then(
+                                (user) {
+                                  setState(() {
+                                    isFacebookLoginIn = true;
+                                    successMessage =
+                                        'Logged in successfully.\nDisplay Name : ${user.displayName}\nYou can now navigate to Home Page.';
+                                  });
+                                  if (isFacebookLoginIn == true) {
+                                    facebooksuccess
+                                        ? Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => HomePage(
+                                                      initialindexg: 1,
                                                     )),
-                                      (_) => false) : Navigator.pushNamed(
-                                  context, "/Login");
-                            }
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ) : CircularProgressIndicator(
-          strokeWidth: 5.0,
-          semanticsLabel: 'loading...',
-          semanticsValue: 'loading...',
-          backgroundColor: Colors.deepPurpleAccent,
-          valueColor: new AlwaysStoppedAnimation<Color>(Colors.deepPurple),
-        ),
+                                            (_) => false)
+                                        : Navigator.pushNamed(
+                                            context, "/Login");
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              )
+            : CircularProgressIndicator(
+                strokeWidth: 5.0,
+                semanticsLabel: 'loading...',
+                semanticsValue: 'loading...',
+                backgroundColor: Colors.deepPurpleAccent,
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+              ),
       ),
     );
   }
 }
 
-
-_fieldFocusChange(BuildContext context, FocusNode currentFocus,
-    FocusNode nextFocus) {
+_fieldFocusChange(
+    BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
   currentFocus.unfocus();
   FocusScope.of(context).requestFocus(nextFocus);
 }
