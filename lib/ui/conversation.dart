@@ -22,14 +22,14 @@ class _ConversationScreenState extends State<ConversationScreen>
     with WidgetsBindingObserver {
   DatabaseService databaseService = new DatabaseService();
   TextEditingController messageController = new TextEditingController();
+  Timer debounce;
+  int debounceTime = 500;
   final displayName;
   final enduser;
 
   _ConversationScreenState(this.displayName, this.enduser);
 
   Widget ChatMessageList() {
-    print('display name ' + displayName);
-    print('enduser ' + enduser);
     return StreamBuilder(
         stream: chatMessageStream,
         builder: (context, snapshot) {
@@ -63,24 +63,6 @@ class _ConversationScreenState extends State<ConversationScreen>
     messageController.text = '';
   }
 
-  // Future<dynamic> getUserInfo() async {
-  //   String id = '';
-  //   print('userName fetched ' + widget.enduser);
-  //   await FirebaseFirestore.instance
-  //       .collection("users")
-  //       .where("displayName", isEqualTo: widget.enduser)
-  //       .get()
-  //       .then((value) {
-  //     value.docs.forEach((result) {
-  //       id = result.id;
-  //     });
-  //   });
-  //   if (id == '')
-  //     return null;
-  //   else
-  //     return id;
-  // }
-
   bool isTyping = false;
   handleSubmitted(String text) {
     messageController.clear();
@@ -108,10 +90,26 @@ class _ConversationScreenState extends State<ConversationScreen>
             return Text(
               'typing ..',
               textAlign: TextAlign.center,
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+              ),
             );
+          else if (snap.data.data()["$enduser typing"].toString() == 'paused')
+            return Text('stopped typing..',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                ));
           else
             return Container();
         });
+  }
+
+  onSearchChanged() {
+    if (debounce?.isActive ?? false) debounce.cancel();
+    debounce = Timer(Duration(milliseconds: debounceTime), () {
+      if (messageController.text != '') setTyping('paused');
+    });
   }
 
   @override
@@ -122,6 +120,7 @@ class _ConversationScreenState extends State<ConversationScreen>
         chatMessageStream = value;
       });
     });
+    messageController.addListener(onSearchChanged);
     setTyping('false');
     isTyping = false;
     super.initState();
