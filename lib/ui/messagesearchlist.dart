@@ -37,7 +37,7 @@ class _searchtomessageState extends State<SearchtoMessage> {
       "chatRoomID": chatRoomID
     };
     DatabaseService().createChatRoom(chatRoomID, chatRoomMap);
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => ConversationScreen(
@@ -93,7 +93,6 @@ class _searchtomessageState extends State<SearchtoMessage> {
           color: Colors.white,
           child: TextField(
             decoration: InputDecoration(
-//                prefixIcon: Icon(Icons.search,color: Colors.white,),
                 hintText: ' Search...',
                 border: InputBorder.none,
                 hintStyle: TextStyle(
@@ -101,7 +100,6 @@ class _searchtomessageState extends State<SearchtoMessage> {
                 )),
             onChanged: (val) {
               setState(() {
-//                fname = val;
                 searchKey = val;
                 streamQuery = FirebaseFirestore.instance
                     .collection('users')
@@ -147,54 +145,47 @@ class _searchtomessageState extends State<SearchtoMessage> {
                         snapshot.data.docs[index]["displayName"];
                     print(displayName);
                     return (searchKey != null)
-                        ? Card(
-                            child: Row(
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 25,
-                                ),
-                                MaterialButton(
-                                  onPressed: () {
-                                    print("user pe click kiya");
-                                    createChatRoombySearch(searchKey);
-                                    // print(searchKey);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      (photoUrl != null)
-                                          ? CircleAvatar(
-                                              radius: 20,
-                                              backgroundImage:
-                                                  NetworkImage(photoUrl),
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                            )
-                                          : CircleAvatar(
-                                              radius: 20,
-                                              child: IconButton(
-                                                  icon: Icon(
-                                                    FontAwesomeIcons.userCircle,
-                                                    color: Colors.deepPurple,
-                                                  ),
-                                                  onPressed: null),
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                            ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 20.0),
-                                        child: Text(
-                                          searchKey,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                        ? GestureDetector(
+                            onTap: () {
+                              print("user pe click kiya");
+                              createChatRoombySearch(searchKey);
+                              // print(searchKey);
+                            },
+                            child: Card(
+                              child: Row(
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: 25,
                                   ),
-                                ),
-                              ],
+                                  (photoUrl != null)
+                                      ? CircleAvatar(
+                                          radius: 20,
+                                          backgroundImage:
+                                              NetworkImage(photoUrl),
+                                          backgroundColor: Colors.transparent,
+                                        )
+                                      : CircleAvatar(
+                                          radius: 20,
+                                          child: IconButton(
+                                              icon: Icon(
+                                                FontAwesomeIcons.userCircle,
+                                                color: Colors.deepPurple,
+                                              ),
+                                              onPressed: null),
+                                          backgroundColor: Colors.transparent,
+                                        ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 20.0),
+                                    child: Text(
+                                      searchKey,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           )
                         : Container();

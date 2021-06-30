@@ -1,10 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/cupertino.dart';
+//import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +17,7 @@ import 'package:techstagram/ui/ProfilePage.dart';
 import 'package:techstagram/views/tabs/feeds.dart';
 import 'package:techstagram/views/tabs/notifications.dart';
 import 'package:video_player/video_player.dart';
-import 'dart:async';
+//import 'dart:async';
 import 'messagingsystem.dart';
 import 'searchlist.dart';
 
@@ -45,7 +44,7 @@ class HomePage extends StatefulWidget {
 final PageController _pageController =
     PageController(initialPage: 1, keepPage: true);
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   TextEditingController taskTitleInputController;
   TextEditingController taskDescripInputController;
   User currentUser;
@@ -113,10 +112,11 @@ class _HomePageState extends State<HomePage> {
     uidController = TextEditingController();
     photoUrlController = TextEditingController();
     phonenumberController = TextEditingController();
+
     super.initState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
-
+    WidgetsBinding.instance.addObserver(this);
     authService.loading.listen((state) => setState(() => _loading = state));
 
     fetchProfileData();
@@ -133,7 +133,25 @@ class _HomePageState extends State<HomePage> {
         // Container(color: Colors.yellow),
       ],
     );
+    setStatus('true');
     super.initState();
+  }
+
+  setStatus(String val) async {
+    DateTime time;
+    if (val == 'false') time = DateTime.now();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currUser.uid)
+        .update({'online': val, 'last seen': time.toString()});
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed)
+      setStatus('true');
+    else
+      setStatus('false');
   }
 
   void getCurrentUser() async {

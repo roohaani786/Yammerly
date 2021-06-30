@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:techstagram/ui/conversation.dart';
 import 'package:techstagram/ui/messagesearchlist.dart';
 
 class ConversationPage extends StatefulWidget {
@@ -37,27 +39,48 @@ class _ConversationPageState extends State<ConversationPage> {
       return users[0];
   }
 
-  getUserInfo(dynamic doc) async {
+  Future<dynamic> getUserInfo(dynamic doc) async {
     String userName = getUserName(doc['users']);
     String pic = '';
+    String id = '';
     print('userName fetched ' + userName);
     print('pre test fetch name ' + userName);
-    var res = await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
         .where("displayName", isEqualTo: userName)
-        .get();
-    //     .then((value) {
-    //   value.docs.forEach((result) {
-    //     pic = result.data()['photoURL'];
-    //   });
-    // });
-    pic = res.docs
-        .where((element) => element.data()['displayName'] == userName)
-        .first['photoURL'];
-    print('booy' + pic);
-    return pic;
+        .get()
+        .then((value) {
+      value.docs.forEach((result) {
+        pic = result.data()['photoURL'];
+        id = result.id;
+      });
+    });
+    if (pic == '')
+      return null;
+    else
+      return [pic, id];
   }
 
+  Widget onlineStatus(String id) {
+    return StreamBuilder(
+      stream:
+          FirebaseFirestore.instance.collection("users").doc(id).snapshots(),
+      builder: (context, snap) {
+        if (snap.data.data()['online'] == 'true')
+          return Text('online', style: TextStyle(fontStyle: FontStyle.italic));
+        else {
+          DateTime time =
+              DateTime.tryParse(snap.data.data()['last seen'].toString());
+          return Text(
+            '${time.hour}:${time.minute}',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          );
+        }
+      },
+    );
+  }
+
+  User curUsr = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,8 +120,10 @@ class _ConversationPageState extends State<ConversationPage> {
       body: SafeArea(
         child: Scaffold(
           body: StreamBuilder(
-            stream:
-                FirebaseFirestore.instance.collection("ChatRoom").snapshots(),
+            stream: FirebaseFirestore.instance
+                .collection("ChatRoom")
+                .orderBy('time', descending: true)
+                .snapshots(),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
@@ -112,21 +137,47 @@ class _ConversationPageState extends State<ConversationPage> {
                       if (snapshot.data.docs[i]['users']
                           .contains(displayName)) {
                         getUserInfo(snapshot.data.docs[i]);
+
                         return FutureBuilder(
                           future: getUserInfo(snapshot.data.docs[i]),
                           builder: (context, snap) {
-                            //  switch (snapshot.data.toString()) {
-                            //       case '':
-                            //         return CircularProgressIndicator();
-                            //         default:
-                            //          print('func data ' + snapshot.data);
-                            return Card(
-                              child: ListTile(
-                                title: Text(getUserName(
-                                    snapshot.data.docs[i]['users'])),
-                              ),
-                            );
-                            //      }
+                            if (snap.hasData) {
+                              print('func data ' + snapshot.data.toString());
+                              String name =
+                                  getUserName(snapshot.data.docs[i]['users']);
+
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ConversationScreen(
+                                          chatRoomID: snapshot.data.docs[i].id,
+                                          displayName: displayName,
+                                          enduser: name),
+                                    ),
+                                  );
+                                },
+                                child: Card(
+                                  child: ListTile(
+                                    leading: Container(
+                                      height: 35,
+                                      width: 35,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                snap.data[0].toString()),
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                    title: Text(name),
+                                    trailing: onlineStatus(snap.data[1]),
+                                  ),
+                                ),
+                              );
+                            } else
+                              return Center(child: CircularProgressIndicator());
                           },
                         );
                       } else

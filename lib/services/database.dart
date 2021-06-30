@@ -655,6 +655,11 @@ class DatabaseService {
   }
 
   addConversationMessages(String chatRoomID, messageMap) async {
+    await FirebaseFirestore.instance
+        .collection("ChatRoom")
+        .doc(chatRoomID)
+        .update({'time': DateTime.now().microsecondsSinceEpoch});
+
     return FirebaseFirestore.instance
         .collection("ChatRoom")
         .doc(chatRoomID)
@@ -669,7 +674,7 @@ class DatabaseService {
         .collection("Sus ChatRoom")
         .doc(chatRoomId)
         .collection("chats")
-        .orderBy("time", descending: false)
+        .orderBy("time")
         .snapshots();
   }
 
