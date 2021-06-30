@@ -862,7 +862,7 @@
 //           //       mainAxisSize: MainAxisSize.min,
 //           //       children: <Widget>[
 //           //         createPostHead(context, userData),
-//           //         createPostPicture(userData),
+//           //         createure(userData),
 //           //         SizedBox(
 //           //           height: 10,
 //           //         ),

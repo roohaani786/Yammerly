@@ -16,14 +16,13 @@ class RoundedButtonX extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       margin: EdgeInsets.symmetric(vertical: 6),
-      width: 200.0,
+      width: 212.0,
       height: 40.0,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(29),
-        child: FlatButton(
+        child: MaterialButton(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
           color: color,
           onPressed: press,

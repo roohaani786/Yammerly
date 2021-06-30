@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Otheruser/other_user.dart';
 
-class CloudFirestoreSearch extends StatefulWidget {
+class CloudFirebaseFirestoreSearch extends StatefulWidget {
   final String displayNamecurrentUser;
   final String uidX;
-  CloudFirestoreSearch({this.displayNamecurrentUser,this.uidX});
+  CloudFirebaseFirestoreSearch({this.displayNamecurrentUser, this.uidX});
   @override
-  _CloudFirestoreSearchState createState() => _CloudFirestoreSearchState(displayNamecurrentUser: displayNamecurrentUser,uidX: uidX);
+  _CloudFirebaseFirestoreSearchState createState() => _CloudFirebaseFirestoreSearchState(
+      displayNamecurrentUser: displayNamecurrentUser, uidX: uidX);
 }
 
-class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
+class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSearch> {
   String fname = "";
   String lname = "";
   String searchKey;
@@ -20,9 +22,54 @@ class _CloudFirestoreSearchState extends State<CloudFirestoreSearch> {
   final displayNamecurrentUser;
   final uidX;
 
-  _CloudFirestoreSearchState({this.displayNamecurrentUser,this.uidX});
+  _CloudFirebaseFirestoreSearchState({this.displayNamecurrentUser, this.uidX});
 
-String uidf = CloudFirestoreSearch().uidX;
+  // Future<void> _showSearch() async {
+  //   final searchText = await showSearch<String>(
+  //     context: context,
+  //     delegate: SearchWithSuggestionDelegate(
+  //       onSearchChanged: _getRecentSearchesLike,
+  //     ),
+  //   );
+  //
+  //   //Save the searchText to SharedPref so that next time you can use them as recent searches.
+  //   await _saveToRecentSearches(searchText);
+  //
+  //   //Do something with searchText. Note: This is not a result.
+  // }
+
+  List<String> allSearches = [];
+
+  Future<List<String>> _getRecentSearchesLike(String query) async {
+    final pref = await SharedPreferences.getInstance();
+    allSearches = pref.getStringList("recentSearches");
+    allSearches = pref.getStringList("recentSearches");
+    print("get recent search");
+    print(allSearches);
+    //return allSearches.where((search) => search.startsWith(query)).toList();
+  }
+
+  Future<void> _saveToRecentSearches(String searchText) async {
+    if (searchText == null) return; //Should not be null
+    final pref = await SharedPreferences.getInstance();
+
+    //Use `Set` to avoid duplication of recentSearches
+    Set<String> allSearches =
+        pref.getStringList("recentSearches")?.toSet() ?? {};
+
+    //Place it at first in the set
+    allSearches = {searchText, ...allSearches};
+    pref.setStringList("recentSearches", allSearches.toList());
+  }
+
+  searchHistory(String val) async{
+
+    print("search history");
+
+    await _saveToRecentSearches(val);
+  }
+
+  String uidf = CloudFirebaseFirestoreSearch().uidX;
   @override
   Widget build(BuildContext context) {
     print("cv");
@@ -33,7 +80,10 @@ String uidf = CloudFirestoreSearch().uidX;
         backgroundColor: Colors.white,
         leading: IconButton(
           color: Colors.deepPurple,
-          icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple,),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.deepPurple,
+          ),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -41,106 +91,149 @@ String uidf = CloudFirestoreSearch().uidX;
         title: Container(
           color: Colors.white,
           child: TextField(
+            textInputAction: TextInputAction.search,
+            onSubmitted: (val){
+              searchHistory(val);
+            },
             decoration: InputDecoration(
 //                prefixIcon: Icon(Icons.search,color: Colors.white,),
-                hintText: ' Search...',hintStyle: TextStyle(
-              color: Colors.black,
-            )),
+                hintText: ' Search...',
+                hintStyle: TextStyle(
+                  color: Colors.black,
+                )),
             onChanged: (val) {
               setState(() {
 //                fname = val;
-              searchKey = val;
-              streamQuery = Firestore.instance.collection('users')
-                  .where('displayName', isGreaterThanOrEqualTo: searchKey)
-                  .where('displayName', isLessThan: searchKey +'z')
-                  .snapshots();
+                searchKey = val;
+                streamQuery = FirebaseFirestore.instance
+                    .collection('users')
+                    .where('displayName', isGreaterThanOrEqualTo: searchKey)
+                    .where('displayName', isLessThan: searchKey + 'z')
+                    .snapshots();
+                _getRecentSearchesLike(val);
+                //searchHistory(val);
+
+                //_showSearch();
               });
+
             },
           ),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: (searchKey != "" && searchKey != null)?streamQuery
-        :
-//        Firestore.instance.collection("users").snapshots(),
+      body: SingleChildScrollView(
+        child: (allSearches == [])?Container(
+          child: Text("history"),
+        ):StreamBuilder<QuerySnapshot>(
+          stream: (searchKey != "" && searchKey != null && allSearches != [])//&& allSearches.length != null)
+              ? streamQuery
+              :
+//        FirebaseFirestore.instance.collection("users").snapshots(),
 //        (fname != "" && fname != null)
-             Firestore.instance
-            .collection('users')
-            .where("searchKeywords", arrayContains: fname)
-            .snapshots(),
-//            : Firestore.instance.collection("users").snapshots(),
-        builder: (context, snapshot) {
-          return (snapshot.connectionState == ConnectionState.waiting)
-              ? Center(child: Container(
-              decoration:  BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                      'assets/images/profileedit.png'),
-                  fit: BoxFit.cover,
-                ),
-          shape: BoxShape.circle,
-              ),child: CircularProgressIndicator()))
-              : ListView.builder(
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-//              DocumentSnapshot sd = snapshot.data.documents[index];
-              searchKey = snapshot.data.documents[index]["displayName"];
-              String photoUrl = snapshot.data.documents[index]["photoURL"];
-              String uid = snapshot.data.documents[index]["uid"];
-              String displayName = snapshot.data.documents[index]["displayName"];
-              print(displayName);
-              return (searchKey!= null)?Card(
-                child: Row(
-                  children: <Widget>[
+          FirebaseFirestore.instance
+              .collection('users')
+              .where("searchKeywords", arrayContains: fname)
+              .snapshots(),
+//            : FirebaseFirestore.instance.collection("users").snapshots(),
+          builder: (context, snapshot) {
+            return (snapshot.connectionState == ConnectionState.waiting)
+                ? Center(
+                child: Container(
 
-                    SizedBox(
-                      width: 25,
-                    ),
-
-                        FlatButton(
-                          onPressed: (){
+                    child: CircularProgressIndicator())
+            )
+                : Column(
+              children: [
+                  (snapshot.data.docs.length ==  0 || !snapshot.hasData)
+                      ?ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: allSearches.length,
+                  itemBuilder: (context, index) {
+                    return (index<5)?ListTile(
+                      leading: Icon(Icons.restore),
+                      title: Text("${allSearches[index]}"),
+                      //onTap: () => close(context, _oldFilters[index]),
+                    ):Container();
+                  },
+                ):
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (context, index) {
+//              DocumentSnapshot sd = snapshot.data.docs[index];
+                    searchKey = snapshot.data.docs[index]["displayName"];
+                    String photoUrl =
+                    snapshot.data.docs[index]["photoURL"];
+                    String uid = snapshot.data.docs[index]["uid"];
+                    String displayName =
+                    snapshot.data.docs[index]["displayName"];
+                    print(displayName);
+                    return (searchKey != null)
+                        ? Row(
+                      children: <Widget>[
+                        // SizedBox(
+                        //   width: 25,
+                        // ),
+                        MaterialButton(
+                          onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => OtherUserProfile(uid: uid,displayNamecurrentUser: displayNamecurrentUser,displayName: displayName, uidX: uidX)),
+                                  builder: (context) =>
+                                  OtherUserProfile(
+                                          uid: uid,
+                                          displayNamecurrentUser:
+                                          displayNamecurrentUser,
+                                          displayName: displayName,
+                                          uidX: uidX,)),
                             );
+                            searchHistory(searchKey);
                           },
                           child: Row(
-                          children: [
-                            (photoUrl!=null)?CircleAvatar(
-                              radius: 20,
-                              backgroundImage:
-                              NetworkImage(photoUrl),
-                              backgroundColor: Colors.transparent,
-                            ): CircleAvatar(
-                              radius: 20,
-                              child: IconButton(icon:
-                              Icon(FontAwesomeIcons.userCircle,
-                              color: Colors.deepPurple,), onPressed: null),
-                              backgroundColor: Colors.transparent,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: Text(
-                                searchKey,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 20,
+                            children: [
+                              (photoUrl != null)
+                                  ? CircleAvatar(
+                                radius: 20,
+                                backgroundImage:
+                                NetworkImage(photoUrl),
+                                backgroundColor:
+                                Colors.transparent,
+                              )
+                                  : CircleAvatar(
+                                radius: 20,
+                                child: IconButton(
+                                    icon: Icon(
+                                      FontAwesomeIcons.userCircle,
+                                      color: Colors.deepPurple,
+                                    ),
+                                    onPressed: null),
+                                backgroundColor:
+                                Colors.transparent,
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.only(left: 20.0),
+                                child: Text(
+                                  searchKey,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                      ),
+                            ],
+                          ),
                         ),
-
-                  ],
+                      ],
+                    )
+                        : Container();
+                  },
                 ),
-              ):Container();
-            },
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
-
 }
+

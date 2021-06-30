@@ -1,22 +1,37 @@
-import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:techstagram/utils/utils.dart';
-
+import 'package:video_player/video_player.dart';
+//import 'package:better_player/better_player.dart';
 class ChatsPage extends StatefulWidget {
+  final VideoPlayerController videoPlayerController;
+  final bool looping;
+
+   ChatsPage({Key key, @required this.videoPlayerController, this.looping})
+      : super(key: key);
 
   @override
-
   _ChatsPageState createState() => _ChatsPageState();
-
 }
 
-bool cameraon = true;
+//bool cameraon = true;
 
 class _ChatsPageState extends State<ChatsPage> {
+  
 
+  
+@override
+  void initState() {
+    super.initState();
+   // _chewieController = ChewieController(
+   //    videoPlayerController: widget.videoPlayerController,
+   //    aspectRatio: 16 / 9,
+   //    autoInitialize: true,
+   //    looping: widget.looping,
+   //  );
+  }
   void _onHorizontalDrag(DragEndDetails details) {
     if (details.primaryVelocity == 0)
       // user have just tapped on screen (no dragging)
@@ -27,10 +42,7 @@ class _ChatsPageState extends State<ChatsPage> {
         context,
         MaterialPageRoute(builder: (context) => HomePage(initialindexg: 3)),
       );
-
-
-    }
-    else {
+    } else {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => CameraScreen(cam: 0)),
@@ -38,17 +50,20 @@ class _ChatsPageState extends State<ChatsPage> {
     }
   }
 
-  @override
+  
+
+  
+
   Widget build(BuildContext context) {
-    final deviceWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    // Chewie(
+    //   controller: _chewieController,
+    // );
+    final deviceWidth = MediaQuery.of(context).size.width;
 
     final pageTitle = Padding(
       padding: EdgeInsets.only(top: 0.0, bottom: 20.0),
       child: Text(
-        "Status Updates",
+        "Status updates ",
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: Colors.black,
@@ -79,10 +94,7 @@ class _ChatsPageState extends State<ChatsPage> {
       AvailableImages.emptyState['assetPath'],
     );
 
-
-
     return GestureDetector(
-
       onTap: () => print("hui"),
 
 //      onHorizontalDragUpdate: (details){
@@ -100,7 +112,7 @@ class _ChatsPageState extends State<ChatsPage> {
 //      }
 
       child: Scaffold(
-        // resizeToAvoidBottomPadding: false,
+      //   resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.only(
@@ -109,7 +121,7 @@ class _ChatsPageState extends State<ChatsPage> {
               right: 30.0,
               bottom: 30.0,
             ),
-            height: deviceHeight+500,
+            height: deviceHeight + 500,
             width: deviceWidth,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,31 +130,38 @@ class _ChatsPageState extends State<ChatsPage> {
                 SizedBox(
                   height: deviceHeight * 0.1,
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    image,
-                    notificationHeader,
-                    notificationText,
-                    AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: BetterPlayer.network(
-                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-                        )
-                    ),
-                    AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: BetterPlayer.network(
-                            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-                        )
-                    ),
-                  ],
-                ),
+                // Column(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: <Widget>[
+                //     image,
+                //     notificationHeader,
+                //     notificationText,
+                //
+                //     AspectRatio(
+                //         aspectRatio: 16 / 9,
+                //         child: BetterPlayer.network(
+                //             'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                //         )
+                //     ),
+                //     AspectRatio(
+                //         aspectRatio: 16 / 9,
+                //         child: BetterPlayer.network(
+                //             'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                //         )
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    widget.videoPlayerController.dispose();
+    //_chewieController.dispose();
   }
 }

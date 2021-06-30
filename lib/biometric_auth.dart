@@ -50,7 +50,8 @@ class  BiometricauthState extends State< Biometricauth> {
         _isAuthenticating = true;
         _authorized = 'Authenticating';
       });
-      authenticated = await auth.authenticateWithBiometrics(
+      authenticated = await auth.authenticate(
+          biometricOnly: true,
           localizedReason: 'Scan your fingerprint to authenticate',
           useErrorDialogs: true,
           stickyAuth: true);
@@ -89,17 +90,20 @@ class  BiometricauthState extends State< Biometricauth> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     Text('Can check biometrics: $_canCheckBiometrics\n'),
+                    // ignore: deprecated_member_use
                     RaisedButton(
                       child: const Text('Check biometrics'),
                       onPressed: _checkBiometrics,
                     ),
                     Text('Available biometrics: $_availableBiometrics\n'),
+                    // ignore: deprecated_member_use
                     RaisedButton(
                       child: const Text('Get available biometrics'),
                       onPressed: _getAvailableBiometrics,
                     ),
                     Text('Current State: $_authorized\n'),
 
+                    // ignore: deprecated_member_use
                     RaisedButton(
                       child: Text(_isAuthenticating ? 'Cancel' : 'Authenticate'),
                       onPressed:

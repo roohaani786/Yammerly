@@ -5,40 +5,37 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:techstagram/models/users.dart';
 
 class AuthService {
   // Dependencies
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Firestore _db = Firestore.instance;
-
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   // Shared State for Widgets
-  Observable<FirebaseUser> user; // firebase user
-  Observable<Map<String, dynamic>> profile; // custom user data in Firestore
+  Stream<User> user; // firebase user
+  Stream<Map<String, dynamic>> profile; // custom user data in Firestore
   PublishSubject loading = PublishSubject();
 
-
   AuthService() {
-    user = Observable(_auth.onAuthStateChanged);
+    user = _auth.authStateChanges();
 
-    profile = user.switchMap((FirebaseUser u) {
+    profile = user.switchMap((User u) {
       if (u != null) {
         return _db
             .collection('users')
-            .document(u.uid)
+            .doc(u.uid)
             .snapshots()
-            .map((snap) => snap.data);
+            .map((snap) => snap.data());
       } else {
-        return Observable.just({});
+        return Stream.value(({}));
       }
     });
   }
 
   Future<String> emailVerify() async {
-
-
-    FirebaseUser user;
+    User user;
 
     print("bahia bhia");
     //print(user.email);
@@ -48,8 +45,7 @@ class AuthService {
       print("Success");
       Fluttertoast.showToast(
           timeInSecForIosWeb: 100,
-          msg:
-          "email Verification link has been sent to your mail");
+          msg: "email Verification link has been sent to your mail");
       return user.uid;
     } catch (e) {
       print("An error occured while trying to send email verification");
@@ -60,7 +56,7 @@ class AuthService {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  Future<FirebaseUser> hellogoogleSignIn() async {
+  Future<User> hellogoogleSignIn() async {
     loading.add(true);
 
     // Step 1
@@ -68,21 +64,18 @@ class AuthService {
 
     // Step 2
     final GoogleSignInAuthentication googleAuth =
-    await googleUser.authentication;
+        await googleUser.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    final FirebaseUser user =
-        (await _auth.signInWithCredential(credential)).user;
-
+    final User user = (await _auth.signInWithCredential(credential)).user;
 // Checking if email and name is null
-    checkuserexists(user.uid,user,user.displayName);
+    checkuserexists(user.uid, user, user.displayName);
 
 //      updateUserData(user);
-
 
     // Step 3
 
@@ -95,70 +88,61 @@ class AuthService {
   }
 
   Future<bool> usernameCheck(String displayName) async {
-    final result = await Firestore.instance
+    final result = await FirebaseFirestore.instance
         .collection('users')
         .where('displayName', isEqualTo: displayName)
-        .getDocuments();
-    return result.documents.isEmpty;
+        .get();
+    return result.docs.isEmpty;
   }
 
+  checkuserexists(String uid, User user, String displayName) async {
+    final snapShotX =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
-  checkuserexists(String uid,FirebaseUser user,String displayName) async {
-    final snapShotX = await Firestore.instance
-        .collection('users')
-        .document(uid)
-        .get();
-
-
-    if (snapShotX.exists ) {
+    if (snapShotX.exists) {
       updateUserData(user);
-    }
-    else{
+    } else {
       updatenewUserData(user);
     }
 //        updatenewUserData(user);
-
   }
 
   User userdatax;
 
+  void updateUserData(User user) async {
+    DocumentReference ref = _db.collection('users').doc(user.uid);
 
-  void updateUserData(FirebaseUser user) async {
-    DocumentReference ref = _db.collection('users').document(user.uid);
-
-    return ref.setData({
+    return ref.set({
       'uid': user.uid,
       'email': user.email,
-      'photoURL': user.photoUrl,
+      'photoURL': user.photoURL,
       'displayName': user.displayName.toLowerCase(),
       'lastSeen': DateTime.now(),
-      'followers': userdatax.followers,
-      'following': userdatax.following,
-      'posts': userdatax.posts,
-      'bio' : "Proud Hashtager",
+      //'followers': user.followers,
+      //'following': user.following,
+      //'posts': user.posts,
+      'bio': "Proud Hashtager",
       'emailVerified': false,
       'phoneVerified': false,
-
-    }, merge: true);
+    }, SetOptions(merge: true));
   }
 
-  void updatenewUserData(FirebaseUser user) async {
-    DocumentReference ref = _db.collection('users').document(user.uid);
+  void updatenewUserData(User user) async {
+    DocumentReference ref = _db.collection('users').doc(user.uid);
 
-    return ref.setData({
+    return ref.set({
       'uid': user.uid,
       'email': user.email,
-      'photoURL': user.photoUrl,
+      'photoURL': user.photoURL,
       'displayName': user.displayName.toLowerCase(),
       'lastSeen': DateTime.now(),
       'followers': 0,
       'following': 0,
       'posts': 0,
-      'bio' : "Proud Hashtager",
+      'bio': "Proud Hashtager",
       'emailVerified': false,
       'phoneVerified': false,
-
-    }, merge: true);
+    }, SetOptions(merge: true));
   }
 
   void signOut() {

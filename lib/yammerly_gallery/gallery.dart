@@ -85,7 +85,7 @@ class _galleryState extends State<gallery> {
           context,
           MaterialPageRoute(builder: (context) =>
               UploadImage(file: selectedfile,
-                shared: false,)),
+                  shared: false,isVideo:false)),
         );
         setState(() {
           selectedfile == null;
@@ -121,33 +121,39 @@ class _galleryState extends State<gallery> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width*0.75,
-                  child: Row(
-                    children: <Widget>[
-                      GestureDetector(
-                          onTap : () => Navigator.pop(context),
-                          child: Icon(Icons.clear)),
-                      SizedBox(width: 10),
-                      DropdownButtonHideUnderline(
-                          child: DropdownButton<FileModel>(
-                            items: getItems(),
-                            onChanged: (FileModel d) {
-                              assert(d.files.length > 0);
-                              image = d.files[0];
-                              setState(() {
-                                selectedModel = d;
-                              });
-                            },
-                            value: selectedModel,
-                          ))
-                    ],
+                  child: Expanded(
+                    child: Row(
+                      children: <Widget>[
+                        GestureDetector(
+                            onTap : () => Navigator.pop(context),
+                            child: Icon(Icons.clear)),
+                        SizedBox(width: 10),
+                        DropdownButtonHideUnderline(
+                          child: Expanded(
+                            child: DropdownButton<FileModel>(
+                              isExpanded: true,
+                                items: getItems(),
+                                onChanged: (FileModel d) {
+                                  assert(d.files.length > 0);
+                                  image = d.files[0];
+                                  setState(() {
+                                    selectedModel = d;
+                                  });
+                                },
+                                value: selectedModel,
+                              ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    width: 80.0,
-                    height: 15.0,
-                    child: FlatButton(
+                    width: MediaQuery.of(context).size.width *0.2,
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    child: MaterialButton(
                       onPressed: () => getImage(File(image)),
                       child: Text(
                         'Next',
@@ -170,29 +176,31 @@ class _galleryState extends State<gallery> {
             (files == null)?CircularProgressIndicator()
                 :selectedModel == null
                 ? Container()
-                : Container(
+                : Expanded(
+                  child: Container(
               height: MediaQuery.of(context).size.height * 0.38,
               child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      crossAxisSpacing: 4,
-                      mainAxisSpacing: 4),
-                  itemBuilder: (_, i) {
-                    var file = selectedModel.files[i];
-                    return GestureDetector(
-                      child: Image.file(
-                        File(file),
-                        fit: BoxFit.cover,
-                      ),
-                      onTap: () {
-                        setState(() {
-                          image = file;
-                        });
-                      },
-                    );
-                  },
-                  itemCount: selectedModel.files.length),
-            )
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        crossAxisSpacing: 4,
+                        mainAxisSpacing: 4),
+                    itemBuilder: (_, i) {
+                      var file = selectedModel.files[i];
+                      return GestureDetector(
+                        child: Image.file(
+                          File(file),
+                          fit: BoxFit.cover,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            image = file;
+                          });
+                        },
+                      );
+                    },
+                    itemCount: selectedModel.files.length),
+            ),
+                )
           ],
         ),
       ),

@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.7.0
+version: 1.7.6
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -23,170 +23,54 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  #Number of plugins in use:- (34)
-
-  cupertino_icons: ^0.1.3
-  #This adds the Cupertino Icons font to your application.
-  #Use with the CupertinoIcons class for iOS style icons.
-  #Plugin link:- https://pub.dev/packages/cupertino_icons
-
-  flutter_screenutil:
-  #A flutter plugin for adapting screen and font size.
-  #Let's your UI display a reasonable layout on different screen sizes!
-  #Plugin link:- https://pub.dev/packages/flutter_screenutil
-
-  google_sign_in:
-  #Flutter plugin for Google Sign-In,
-  #A secure authentication system for signing in with a Google account on Android and iOS.
-  #Plugin link:- https://pub.dev/packages/google_sign_in
-
-  firebase_auth:
-  #Flutter plugin for Firebase Auth, enabling Android and iOS authentication using passwords,
-  #Phone numbers and identity providers like Google, Facebook and Twitter.
-  #Plugin link:- https://pub.dev/packages/firebase_auth
-
-  firebase_database:
-  #Flutter plugin for Firebase Database, a cloud-hosted NoSQL database with realtime data syncing across Android and iOS clients,
-  #And offline access.
-  #Plugin link:- https://pub.dev/packages/firebase_database
-
-  rename:
-  #It helps you to change your flutter project's AppName and BundleId for different platforms,
-  #Currently only available for IOS, Android and macOS
-  #Plugin link:- https://pub.dev/packages/rename
-
-  cloud_firestore:
-  #Flutter plugin for Cloud Firestore, a cloud-hosted, noSQL database with
-  #live synchronization and offline support on Android and iOS.
-  #Plugin link:- https://pub.dev/packages/cloud_firestore
-
-  rxdart: 0.20.0
-  #RxDart is an implementation of the popular reactiveX api for asynchronous programming,
-  #Leveraging the native Dart Streams api.
-  #Plugin link:- https://pub.dev/packages/rxdart
-
-  image_picker:
-  #Flutter plugin for selecting images from the Android and iOS image library, and taking new pictures with the camera.
-  #Plugin link:- https://pub.dev/packages/image_picker
-
-  firebase_storage:
-  #Flutter plugin for Firebase Cloud Storage, a powerful, simple,
-  #And cost-effective object storage service for Android and iOS.
-  #Plugin link:- https://pub.dev/packages/firebase_storage
-
-  font_awesome_flutter:
-  #The Font Awesome Icon pack available as Flutter Icons.Provides 1500 additional icons to use in your apps.
-  #Plugin link:- https://pub.dev/packages/font_awesome_flutter
-
-  shared_preferences:
-  #Flutter plugin for reading and writing simple key-value pairs. Wraps NSUserDefaults on iOS and SharedPreferences on Android.
-  #Plugin link:- https://pub.dev/packages/shared_preferences
-
-  cached_network_image: ^2.0.0-rc
-  #Flutter library to load and cache network images. Can also be used with placeholder and error widgets.
-  #Plugin link:- https://pub.dev/packages/cached_network_image
-
-  image:
-  #Provides server and web apps the ability to load, manipulate,
-  #And save images with various image file formats including PNG, JPEG, GIF, BMP, WebP, TIFF, TGA, PSD, PVR, and OpenEXR.
-  #Plugin link:- https://pub.dev/packages/image
-
-  flutter_facebook_login:
-  #A Flutter plugin for allowing users to authenticate with native Android &amp; iOS Facebook login SDKs.
-  #Plugin link:- https://pub.dev/packages/flutter_facebook_login
-
-  flutter_svg: 0.18.0
-  #An SVG rendering and widget library for Flutter, which allows painting and displaying Scalable Vector Graphics 1.1 files.
-  #Plugin link:- https://pub.dev/packages/flutter_svg
-
-  camera: ^0.7.0
-  #A Flutter plugin for getting information about and controlling the camera on Android and iOS.
-  #Supports previewing the camera feed, capturing images, capturing video, and streaming image buffers to dart.
-  #Plugin link:- https://pub.dev/packages/camera
-
-  path_provider:
-  #Flutter plugin for getting commonly used locations on host platform file systems, such as the temp and app data directories.
-  #Plugin link:- https://pub.dev/packages/path_provider
-
-  path:
-  #A comprehensive, cross-platform path manipulation library for Dart.
-  #The path package provides common operations for manipulating paths: joining, splitting, normalizing, etc.
-  #Plugin link:- https://pub.dev/packages/path
-
-  image_cropper:
-  #A Flutter plugin for Android and iOS supports cropping images
-  #Plugin link:- https://pub.dev/packages/image_cropper
-
-  after_layout:
-  #Brings functionality to execute code after the first layout of a widget has been performed,
-  #i.e. after the first frame has been displayed.
-  #Plugin link:- https://pub.dev/packages/after_layout
-
-  better_player:
-  #Advanced video player based on video_player and Chewie.
-  #It's solves many typical use cases and it's easy to run.
-
-  responsive_layout_builder:
-  #Flutter package for building responsive layout based on screen sizes and orientation.
-  #It could be wristwatch, small/medium/large mobile, small/large tablet or desktop.
-  #Plugin link:- https://pub.dev/packages/responsive_layout_builder
-
-  video_player: ^0.10.2+5
-  #A Flutter plugin for iOS, Android and Web for playing back video on a Widget surface.
-  #Plugin link:- https://pub.dev/packages/video_player
-
-  settings_ui:
-  #Create native settings for Flutter app in minutes. Use single interfaces to build
-  #Plugin link:- https://pub.dev/packages/settings_ui
-
-  flutter_icons: ^1.0.0+1
-  #Customizable Icons for Flutter,Inspired by react-native-vector-icons
-  #Plugin link:- https://pub.dev/packages/flutter_icons
-
-  permission_handler:
-  #This plugin provides a cross-platform (iOS, Android) API to request permissions and check their status
-  #Plugin link:- https://pub.dev/packages/permission_handler
-
-  catcher:
-  #Catcher is Flutter plugin which automatically catches error/exceptions and handle them.
-  #Plugin link:- https://pub.dev/packages/catcher
-
-  local_auth:
-  #This Flutter plugin provides means to perform local, on-device authentication of the user.
-  #Plugin link:- https://pub.dev/packages/local_auth
-
-  http:
-  #A composable, Future-based library for making HTTP requests.
-  #Package link:- https://pub.dev/packages/http
-
-  string_validator: ^0.1.4
-  #String validation and sanitization for Dart.
-  #Plugin link:- https://pub.dev/packages/string_validator
-
-  image_editor_pro: ^1.0.6
-  #Image Editor Plugin with simple, easy support for image editing using paints,text and emoji like stories.
-  #Plugin link:- https://pub.dev/packages/image_editor_pro
-
-  storage_path: ^0.2.0
-  #A flutter plugin to get all images, audios, videos and files location path in json format.
-  #Plugin link:- https://pub.dev/packages/storage_path
-
-  transparent_image: ^1.0.0
-  #A transparent image in Dart code, represented as a Uint8List.
-  #Plugin link:- https://pub.dev/packages/transparent_image
-
-  double_back_to_close_app: ^1.2.0
-  #use for double back to exit app
-
+  after_layout: null
+  cached_network_image: null
+  camera: ^0.8.1+2
+  catcher: null
+  cloud_firestore: ^2.2.0
+  cupertino_icons: null
+  double_back_to_close_app: null
+  firebase_auth: ^1.2.0
+  firebase_core: null
+  firebase_database: null
+  firebase_messaging: null
+  firebase_storage: ^8.1.3
+  flutter_facebook_login: null
+  flutter_icons: null
+  flutter_image_compress: ^1.0.0
+  flutter_screenutil: null
+  flutter_svg: ^0.22.0
+  font_awesome_flutter: null
+  google_sign_in: null
+  http: null
+  image: null
+  image_cropper: null
+  image_editor_pro: null
+  image_gallery: null
+  image_picker: ^0.7.5
+  local_auth: null
+  path: null
+  path_provider: ^2.0.2
+  permission_handler: null
+  random_color: ^1.0.5
+  rename: null
+  responsive_layout_builder: null
+  rflutter_alert: ^2.0.2
+  rxdart: null
+  settings_ui: null
+  shared_preferences: null
+  storage_path: null
+  story_view: ^0.13.1
+  string_validator: null
+  transparent_image: null
+  video_player: null
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 # For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
+# following page: https://dart.dev/tools/pub/pubspec 
 # The following section is specific to Flutter.
 flutter:
   fonts:
@@ -212,4 +96,3 @@ flutter:
     - assets/
     - assets/images/
     - assets/icons/
-
