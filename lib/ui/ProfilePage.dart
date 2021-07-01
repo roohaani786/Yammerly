@@ -5,21 +5,25 @@ import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image/image.dart' as ImD;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:techstagram/main.dart';
 import 'package:techstagram/models/user.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/ui/followerlist.dart';
 import 'package:techstagram/ui/followinglist.dart';
 import 'package:techstagram/ui/post.dart';
+import 'package:techstagram/ui/qrCodeGenerate.dart';
 import 'package:techstagram/utils/utils.dart';
 import 'package:techstagram/yammerly_gallery/gallery.dart';
-
+import 'package:qr_flutter/qr_flutter.dart';
 import '../constants.dart';
 import 'HomePage.dart';
 import 'ProfileEdit.dart';
@@ -129,6 +133,48 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channel.description,
+                color: Colors.blue,
+                playSound: true,
+                icon: '@mipmap/ic_launcher',
+              ),
+            ));
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      if (notification != null && android != null) {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text(notification.title),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [Text(notification.body)],
+                  ),
+                ),
+              );
+            });
+      }
+    });
 
 
 
@@ -413,7 +459,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     print(coverPhotoUrlController.text);
                     showDialog<void>(
                         context:
-                            context, // THIS WAS MISSING// user must tap button!
+                        context, // THIS WAS MISSING// user must tap button!
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text(
@@ -444,7 +490,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                         ),
                                         Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 20.0),
+                                          const EdgeInsets.only(left: 20.0),
                                           child: Text('Set new cover photo'),
                                         ),
                                       ],
@@ -456,7 +502,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       onTap: () {
                                         pickImagefromCamera();
                                         Navigator.of(context,
-                                                rootNavigator: true)
+                                            rootNavigator: true)
                                             .pop(context);
                                       },
                                       child: Row(
@@ -480,7 +526,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                       onTap: () {
                                         deleteCoverPhoto();
                                         Navigator.of(context,
-                                                rootNavigator: true)
+                                            rootNavigator: true)
                                             .pop(context);
                                       },
                                       child: Row(
@@ -510,7 +556,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: (coverPhotoUrlController.text == "" ||
-                                cover == true)
+                            cover == true)
                             ? AssetImage('assets/images/gogo.png')
                             : NetworkImage(coverPhotoUrlController.text),
                         fit: BoxFit.contain,
@@ -521,39 +567,135 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                 ),
                 Align(
                   alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 15.0, top: 5.0),
-                    child: Column(
+                  child: Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Container(
-                          height: 30.0,
-                          width: 30.0,
-                          decoration: const ShapeDecoration(
-                            color: Colors.black,
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            color: Colors.white,
-                            //color: Colors.white,
-                            icon: new Icon(
-                              Icons.settings,
-                              size: 15.0,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProfileSettings(
-                                        emailController.text,
-                                        phonenumberController.text,
-                                        emailVerify,
-                                        uidController.text)),
-                              );
-                            },
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0, top: 5.0),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 30.0,
+                                width: 30.0,
+                                decoration: const ShapeDecoration(
+                                  color: Colors.black,
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  color: Colors.white,
+                                  //color: Colors.white,
+                                  icon: new Icon(
+                                    Icons.qr_code_outlined,
+                                    size: 15.0,
+                                  ),
+                                  onPressed: () {
+                                    showDialog(context: context, builder: (context){
+                                      return AlertDialog(
+                                        title: Text(
+                                          'Select option :-',
+                                          style: TextStyle(
+                                            fontSize: 15.0,
+                                          ),
+                                        ),
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context, rootNavigator: true)
+                                                      .pop(context);
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => QrCodeGenerator(displayNameController.text)));
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.qr_code_2_sharp,
+                                                      color: kPrimaryColor,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                      const EdgeInsets.only(left: 20.0),
+                                                      child: Text('View Your QR Code'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 20.0),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.of(context,
+                                                        rootNavigator: true)
+                                                        .pop(context);
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.qr_code_scanner_sharp,
+                                                        color: kPrimaryColor,
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(
+                                                            left: 20.0),
+                                                        child: Text('Scan QR Code'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    });
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: deviceHeight * 0.11,
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(
-                          height: deviceHeight * 0.11,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0, top: 5.0),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 30.0,
+                                width: 30.0,
+                                decoration: const ShapeDecoration(
+                                  color: Colors.black,
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  color: Colors.white,
+                                  //color: Colors.white,
+                                  icon: new Icon(
+                                    Icons.settings,
+                                    size: 15.0,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfileSettings(
+                                              emailController.text,
+                                              phonenumberController.text,
+                                              emailVerify,
+                                              uidController.text)),
+                                    );
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: deviceHeight * 0.11,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -585,44 +727,44 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                     padding: const EdgeInsets.only(left: 120.0),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
+                                      MainAxisAlignment.spaceAround,
                                       children: <Widget>[
                                         (posts != 0 || posts != null)?_buildStatItem(
                                             "POSTS", posts.toString()):
                                         Center(child: CircularProgressIndicator()),
                                         GestureDetector(
                                             onTap: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          FollowersList(
-                                                            displayNamecurrentUserX:
-                                                                displayNameController
-                                                                    .text,
-                                                            uidX: uidController
-                                                                .text,
-                                                          )),
-                                                ),
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FollowersList(
+                                                        displayNamecurrentUserX:
+                                                        displayNameController
+                                                            .text,
+                                                        uidX: uidController
+                                                            .text,
+                                                      )),
+                                            ),
                                             child: (followers != 0 || followers != null)?
                                             _buildStatItem("FOLLOWERS",
-                                               followers.toString()):
-                                                Center(child: CircularProgressIndicator())
+                                                followers.toString()):
+                                            Center(child: CircularProgressIndicator())
                                         ),
                                         GestureDetector(
                                             onTap: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          FollowingList(
-                                                            displayNamecurrentUser:
-                                                                displayNameController
-                                                                    .text,
-                                                            uidX: uidController
-                                                                .text,
-                                                          )),
-                                                ),
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FollowingList(
+                                                        displayNamecurrentUser:
+                                                        displayNameController
+                                                            .text,
+                                                        uidX: uidController
+                                                            .text,
+                                                      )),
+                                            ),
                                             child: (following != 0 || following != null)
-                                            ?Flexible(
+                                                ?Flexible(
                                               child: _buildStatItem("FOLLOWING",
                                                   following.toString()),
                                             ):
@@ -671,7 +813,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                   textAlign: TextAlign.left,
                                                   style: TextStyle(
                                                     fontFamily:
-                                                        'Source Sans Pro',
+                                                    'Source Sans Pro',
                                                     fontSize: 15.0,
                                                     color: Colors.grey.shade700,
                                                     fontWeight: FontWeight.bold,
@@ -689,7 +831,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                   textAlign: TextAlign.left,
                                                   style: TextStyle(
                                                     fontFamily:
-                                                        'Source Sans Pro',
+                                                    'Source Sans Pro',
                                                     fontSize: 15.0,
                                                     color: Colors.grey.shade700,
                                                     fontWeight: FontWeight.bold,
@@ -714,7 +856,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                               height: 30.0,
                                               child: Ink(
                                                 decoration:
-                                                    const ShapeDecoration(
+                                                const ShapeDecoration(
                                                   color: Colors.black,
                                                   shape: CircleBorder(),
                                                 ),
@@ -770,187 +912,187 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                             builder: (context, snapshot) {
                               if (snapshot == null) {
                                 return Container(child:
-                                  Center(child: CircularProgressIndicator())
+                                Center(child: CircularProgressIndicator())
                                 );
                               }
                               //itemCount = snapshot.data.docs.length;
                               return (!snapshot.hasData)?Container(child: Center(child: CircularProgressIndicator())):(posts != 0)
                                   ? Column(
-                                      children: [
-                                        new Expanded(
-                                            child: GridView.builder(
-                                                shrinkWrap: true,
-                                                controller: ScrollController(),
-                                                itemCount: snapshot.data.docs.length,
-                                                gridDelegate:
-                                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                                        crossAxisCount: 3,
-                                                        crossAxisSpacing: 10.0,
-                                                        mainAxisSpacing: 10.0),
-                                                itemBuilder: (context, index) {
-                                                  int len = snapshot.data.docs.length;
-                                                 // print(len);
-                                                  //print("length batar hai");
-                                                  postIdX = snapshot.data
-                                                          .docs[index]
-                                                      ['postId'];
+                                children: [
+                                  new Expanded(
+                                      child: GridView.builder(
+                                          shrinkWrap: true,
+                                          controller: ScrollController(),
+                                          itemCount: snapshot.data.docs.length,
+                                          gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              crossAxisSpacing: 10.0,
+                                              mainAxisSpacing: 10.0),
+                                          itemBuilder: (context, index) {
+                                            int len = snapshot.data.docs.length;
+                                            // print(len);
+                                            //print("length batar hai");
+                                            postIdX = snapshot.data
+                                                .docs[index]
+                                            ['postId'];
 
-                                                  String email = snapshot.data
-                                                          .docs[index]
-                                                      ['email'];
+                                            String email = snapshot.data
+                                                .docs[index]
+                                            ['email'];
 
-                                                  String description = snapshot.data
-                                                          .docs[index]
-                                                      ['description'];
+                                            String description = snapshot.data
+                                                .docs[index]
+                                            ['description'];
 
-                                                  String displayName = snapshot.data
-                                                          .docs[index]
-                                                      ['displayName'];
+                                            String displayName = snapshot.data
+                                                .docs[index]
+                                            ['displayName'];
 
-                                                  String photoUrl = snapshot.data
-                                                          .docs[index]
-                                                      ['photoURL'];
+                                            String photoUrl = snapshot.data
+                                                .docs[index]
+                                            ['photoURL'];
 
-                                                  String uid = snapshot.data
-                                                      .docs[index]["uid"];
+                                            String uid = snapshot.data
+                                                .docs[index]["uid"];
 
-                                                  int cam = snapshot.data
-                                                      .docs[index]['cam'];
+                                            int cam = snapshot.data
+                                                .docs[index]['cam'];
 
-                                                  Timestamp timestamp = snapshot.data
-                                                          .docs[index]
-                                                      ['timestamp'];
+                                            Timestamp timestamp = snapshot.data
+                                                .docs[index]
+                                            ['timestamp'];
 
-                                                  String url = snapshot.data
-                                                      .docs[index]['url'];
+                                            String url = snapshot.data
+                                                .docs[index]['url'];
 
-                                                  String postId = snapshot.data
-                                                          .docs[index]
-                                                      ['postId'];
+                                            String postId = snapshot.data
+                                                .docs[index]
+                                            ['postId'];
 
-                                                  int likes = snapshot.data
-                                                          .docs[index]
-                                                      ['likes'];
+                                            int likes = snapshot.data
+                                                .docs[index]
+                                            ['likes'];
 
-                                                  readTimestamp(
-                                                      timestamp.seconds);
+                                            readTimestamp(
+                                                timestamp.seconds);
 
-                                                  getlikes(
-                                                      displayNameController
-                                                          .text,
-                                                      postId);
+                                            getlikes(
+                                                displayNameController
+                                                    .text,
+                                                postId);
 
-                                                  if (likes < 0 || likes == 0) {
-                                                    liked = false;
-                                                  }
+                                            if (likes < 0 || likes == 0) {
+                                              liked = false;
+                                            }
 
-                                                  return Container(
-                                                    //color: Colors.grey.shade300,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .stretch,
-                                                      children: [
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          postPage(
-                                                                            displayNamecurrentUser:
-                                                                                displayName,
-                                                                            PostUrl:
-                                                                                url,
-                                                                            uidX:
-                                                                                uid,
-                                                                            delete:
-                                                                                true,
-                                                                          )),
-                                                            );
-                                                          },
-                                                          child: ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topLeft: Radius
-                                                                  .circular(
-                                                                      8.0),
-                                                              topRight: Radius
-                                                                  .circular(
-                                                                      8.0),
-                                                              bottomLeft: Radius
-                                                                  .circular(
-                                                                      8.0),
-                                                              bottomRight:
-                                                                  Radius
-                                                                      .circular(
-                                                                          8.0),
-                                                            ),
-                                                            child: (cam == 1)
-                                                                ? Transform(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .center,
-                                                                    transform: Matrix4
-                                                                        .rotationY(
-                                                                            math.pi),
-                                                                    child: Image
-                                                                        .network(
-                                                                      url,
-                                                                      // width: 300,
-                                                                      height:
-                                                                          104,
-                                                                      fit: BoxFit
-                                                                          .cover,
-                                                                    ),
-                                                                  )
-                                                                : Image.network(
-                                                                    url,
-                                                                    // width: 300,
-                                                                    height: 104,
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                  ),
-                                                          ),
+                                            return Container(
+                                              //color: Colors.grey.shade300,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment
+                                                    .stretch,
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                postPage(
+                                                                  displayNamecurrentUser:
+                                                                  displayName,
+                                                                  PostUrl:
+                                                                  url,
+                                                                  uidX:
+                                                                  uid,
+                                                                  delete:
+                                                                  true,
+                                                                )),
+                                                      );
+                                                    },
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                      BorderRadius
+                                                          .only(
+                                                        topLeft: Radius
+                                                            .circular(
+                                                            8.0),
+                                                        topRight: Radius
+                                                            .circular(
+                                                            8.0),
+                                                        bottomLeft: Radius
+                                                            .circular(
+                                                            8.0),
+                                                        bottomRight:
+                                                        Radius
+                                                            .circular(
+                                                            8.0),
+                                                      ),
+                                                      child: (cam == 1)
+                                                          ? Transform(
+                                                        alignment:
+                                                        Alignment
+                                                            .center,
+                                                        transform: Matrix4
+                                                            .rotationY(
+                                                            math.pi),
+                                                        child: Image
+                                                            .network(
+                                                          url,
+                                                          // width: 300,
+                                                          height:
+                                                          104,
+                                                          fit: BoxFit
+                                                              .cover,
                                                         ),
-                                                      ],
+                                                      )
+                                                          : Image.network(
+                                                        url,
+                                                        // width: 300,
+                                                        height: 104,
+                                                        fit: BoxFit
+                                                            .cover,
+                                                      ),
                                                     ),
-                                                  );
-                                                })),
-                                      ],
-                                    )
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          })),
+                                ],
+                              )
                                   : Container(
-                                      padding: EdgeInsets.only(
-                                        top: 5.0,
-                                        left: 30.0,
-                                        right: 30.0,
-                                        bottom: 5.0,
-                                      ),
-                                      //height: 200,
-                                      height: deviceHeight * 0.20,
-                                      width: deviceWidth,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          //pageTitle,
-                                          // SizedBox(
-                                          //   height: deviceHeight * 0.1,
-                                          // ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              image,
-                                              notificationHeader,
-                                              //notificationText,
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
+                                padding: EdgeInsets.only(
+                                  top: 5.0,
+                                  left: 30.0,
+                                  right: 30.0,
+                                  bottom: 5.0,
+                                ),
+                                //height: 200,
+                                height: deviceHeight * 0.20,
+                                width: deviceWidth,
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    //pageTitle,
+                                    // SizedBox(
+                                    //   height: deviceHeight * 0.1,
+                                    // ),
+                                    Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        image,
+                                        notificationHeader,
+                                        //notificationText,
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
                             }),
                         //child: Image.network(uidCurrUser),
                       )
@@ -965,39 +1107,39 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
 //                    padding: const EdgeInsets.only(right: 250.0),
                     child: (photoUrlController.text != null)
                         ? Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  //borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 5,
-                                  ),
-                                ),
-                                child: Container(
-                                  height: 100,
-                                  width: 100.0,
-                                  child: (photoUrlController.text == null)
-                                      ?Center(child: CircularProgressIndicator())
-                                  :CachedNetworkImage(
-                                    imageUrl: photoUrlController.text,
-                                    placeholder: (context,index){
-                                      return Center(child: CircularProgressIndicator());
-                                    },
-                                  )
-                                  //backgroundImage: NetworkImage(photoUrlController.text)
-                                )),
-                          )
-                        : Container(
-                            child: IconButton(
-                                icon: Icon(
-                                  FontAwesomeIcons.userCircle,
-                                  color: Colors.deepPurple,
-                                ),
-                                onPressed: () {
-                                  print("hello");
-                                }),
+                      alignment: Alignment.bottomLeft,
+                      child: Container(
+                          decoration: BoxDecoration(
+                            //borderRadius: BorderRadius.circular(100),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 5,
+                            ),
                           ),
+                          child: Container(
+                              height: 100,
+                              width: 100.0,
+                              child: (photoUrlController.text == null)
+                                  ?Center(child: CircularProgressIndicator())
+                                  :CachedNetworkImage(
+                                imageUrl: photoUrlController.text,
+                                placeholder: (context,index){
+                                  return Center(child: CircularProgressIndicator());
+                                },
+                              )
+                            //backgroundImage: NetworkImage(photoUrlController.text)
+                          )),
+                    )
+                        : Container(
+                      child: IconButton(
+                          icon: Icon(
+                            FontAwesomeIcons.userCircle,
+                            color: Colors.deepPurple,
+                          ),
+                          onPressed: () {
+                            print("hello");
+                          }),
+                    ),
                   ),
                 ),
               ],

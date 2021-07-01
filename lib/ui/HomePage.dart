@@ -2,6 +2,9 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 //import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -9,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:techstagram/ComeraV/Camera.dart';
+import 'package:techstagram/main.dart';
 import 'package:techstagram/resources/auth.dart';
 import 'package:techstagram/resources/firebase_provider.dart';
 import 'package:techstagram/resources/repository.dart';
@@ -66,6 +70,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   int followers;
   int following;
   int posts;
+  DateTime birthday;
   Map<String, dynamic> _profile;
   bool _loading = false;
 
@@ -79,6 +84,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           .collection("users")
           .doc(currUser.uid)
           .get();
+      birthday = docSnap["Birthday"];
       displayNameController.text = docSnap["displayName"];
       uidController.text = docSnap["uid"];
       emailController.text = docSnap["email"];
@@ -112,7 +118,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     uidController = TextEditingController();
     photoUrlController = TextEditingController();
     phonenumberController = TextEditingController();
-
     super.initState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
@@ -121,6 +126,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     fetchProfileData();
     this.getCurrentUser();
+
+    if(birthday == DateTime.now()){
+
+      flutterLocalNotificationsPlugin.show(
+          0,
+          "Testing ",
+          "How you doin ?",
+          NotificationDetails(
+              android: AndroidNotificationDetails(channel.id, channel.name, channel.description,
+                  importance: Importance.high,
+                  color: Colors.deepPurple,
+                  playSound: true,
+                  icon: '@mipmap/ic_launcher')));
+
+    }
 
     myPageView = PageView(
       controller: _pageController,
@@ -383,6 +403,16 @@ class _TabLayoutDemoState extends State<TabLayoutDemo>
                           uidX: uidController.text,
                         )),
               );
+              flutterLocalNotificationsPlugin.show(
+                  0,
+                  "Testing ",
+                  "How you doin ?",
+                  NotificationDetails(
+                      android: AndroidNotificationDetails(channel.id, channel.name, channel.description,
+                          importance: Importance.high,
+                          color: Colors.deepPurple,
+                          playSound: true,
+                          icon: '@mipmap/ic_launcher')));
             },
           ),
           IconButton(
