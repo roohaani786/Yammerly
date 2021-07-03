@@ -46,6 +46,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       lastNameController,
       emailController,
       bioController,
+      birthdayController,
       genderController,
       linkController,
       photoUrlController,
@@ -62,6 +63,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       pinCodeController,
       userPostsController,
       uidController;
+
+  DateTime selectedDate = DateTime.now();
+  DateTime birthdate;
+  String displayDate;
 
   void sendVerificationEmail() async {
     print("andar aaya");
@@ -332,6 +337,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     Icons.calendar_today,
                     color: Colors.grey,
                   )),
+              SettingsTile(
+                onPressed: _selectDate,
+                  title:(displayDate!=null)?displayDate: 'Set your Birthday',
+                  leading: Icon(
+                    Icons.calendar_today,
+                    color: Colors.grey,
+                  )),
             ],
           ),
           SettingsSection(
@@ -452,5 +464,20 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         ],
       ),
     );
+  }
+  _selectDate(BuildContext context) async {
+
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(1921,1),
+        lastDate: DateTime.now());
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        String date =
+            "${picked.toLocal().day}/${picked.toLocal().month}/${picked.toLocal().year}";
+        displayDate = date;
+      });
   }
 }

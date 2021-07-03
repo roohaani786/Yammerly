@@ -1,9 +1,9 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-
-void main() => runApp(MaterialApp(home: QRScreen()));
+import 'package:techstagram/ui/Otheruser/other_user.dart';
 
 class QRScreen extends StatefulWidget {
   @override
@@ -31,7 +31,7 @@ class _QRScreenState extends State<QRScreen> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          Expanded(flex: 4, child: _buildQrView(context)),
+          Expanded(flex: 5, child: _buildQrView(context)),
           Expanded(
             flex: 1,
             child: FittedBox(
@@ -113,6 +113,16 @@ class _QRScreenState extends State<QRScreen> {
                                   MaterialStateProperty.all(Colors.deepPurple)),
                           onPressed: () async {
                             await controller?.resumeCamera();
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           OtherUserProfile(
+                            //             uid: uid,
+                            //             displayNamecurrentUser:
+                            //             displayName: displayName,
+                            //             uidX: uidX,)),
+                            // );
                           },
                           child: Text('Resume', style: TextStyle(fontSize: 20)),
                         ),
@@ -155,6 +165,20 @@ class _QRScreenState extends State<QRScreen> {
     controller.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;
+        String uid = FirebaseFirestore.instance.collection('users').doc("uid").toString();
+        String displayNamecurrentUser = FirebaseFirestore.instance.collection('users').doc("uid").toString();
+        String uidX = FirebaseFirestore.instance.collection('users').where("uid",isEqualTo: result.code).toString();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  OtherUserProfile(
+                    uid: uid,
+                    displayNamecurrentUser:
+                    displayNamecurrentUser,
+                    displayName: result.code,
+                    uidX: uidX,)),
+        );
       });
     });
   }

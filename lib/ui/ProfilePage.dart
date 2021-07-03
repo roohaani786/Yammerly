@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -14,6 +15,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image/image.dart' as ImD;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:techstagram/ComeraV/qr_scanner.dart';
 import 'package:techstagram/main.dart';
 import 'package:techstagram/models/user.dart';
@@ -27,8 +29,10 @@ import 'package:techstagram/yammerly_gallery/gallery.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../constants.dart';
 import 'HomePage.dart';
+import 'Otheruser/other_user.dart';
 import 'ProfileEdit.dart';
 import 'profilesettings.dart';
+
 
 class AccountBottomIconScreen extends StatefulWidget {
   final User user;

@@ -31,6 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String loadingMessage = "Loading Profile Data";
   TextEditingController firstNameController,
       lastNameController,
+      birthdayController,
       emailController,
       phoneNumberController,
       uidController,
@@ -52,6 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Map<String, dynamic> _profile;
   bool _loading = false;
 
+
   @override
   initState() {
     super.initState();
@@ -60,7 +62,7 @@ class _ProfilePageState extends State<ProfilePage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-
+    birthdayController = TextEditingController();
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
     emailController = TextEditingController();
@@ -76,7 +78,6 @@ class _ProfilePageState extends State<ProfilePage> {
     homeTownController = TextEditingController();
     relationshipController = TextEditingController();
     pincodeController = TextEditingController();
-
     uidController = TextEditingController();
 
     super.initState();
@@ -92,6 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
           .collection("users")
           .doc(currUser.uid)
           .get();
+      birthdayController.text = docSnap["birthday"];
       firstNameController.text = docSnap['fname'];
       lastNameController.text = docSnap["surname"];
       phoneNumberController.text = docSnap["phonenumber"];
@@ -273,7 +275,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       bioController.text.trim()) {
                     print("Bio Changed");
                     isChanged = true;
-                  } else if (docSnap["gender"].toString().trim() !=
+                  } else if (docSnap["birthday"].toString().trim() !=
+                      birthdayController.text.trim()) {
+                    print("Birthday Changed");
+                    isChanged = true;
+                  }else if (docSnap["gender"].toString().trim() !=
                       genderController.text.trim()) {
                     print("Gender Changed");
                     isChanged = true;
@@ -377,6 +383,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     setState(() => isLoading = true);
                     try {
                       Map<String, dynamic> data = {};
+                      data["birthday"] = birthdayController.text.trim();
                       data["fname"] = firstNameController.text.trim();
                       data["surname"] = lastNameController.text.trim();
                       data["phonenumber"] = phoneNumberController.text.trim();
@@ -1067,4 +1074,6 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
 }
+
