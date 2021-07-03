@@ -1,14 +1,17 @@
 import 'dart:io';
 import 'dart:math' as math;
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:path/path.dart' as path;
+import 'package:photofilters/filters/preset_filters.dart';
+import 'package:photofilters/widgets/photo_filter.dart';
 import 'package:techstagram/ComeraV/Camera.dart';
 import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:techstagram/ui/HomePage.dart';
+import 'package:image/image.dart' as imageLib;
 
 class Gallery extends StatefulWidget {
   Gallery({this.filePath, this.cam});
@@ -34,7 +37,7 @@ class _GalleryState extends State<Gallery> {
 
   @override
   void initState() {
-    debugPrint('gallery');
+    cropImage(File(currentFilePath.path));
     super.initState();
   }
 
@@ -94,13 +97,42 @@ class _GalleryState extends State<Gallery> {
         });
   }
 
-  getImage(File file) async {
-    print("aa gayaaaa");
+  Future imageFilter(context) async {
+    if (_selectedFile != null) {
+      File imageFile = _selectedFile;
+      String fileName = path.basename(imageFile.path);
+      var image = imageLib.decodeImage(await imageFile.readAsBytes());
+      image = imageLib.copyResize(image, width: 600);
+      Map imagefile = await Navigator.push(
+        context,
+        new MaterialPageRoute(
+          builder: (context) => new PhotoFilterSelector(
+            title: Text("Photo Filter"),
+            appBarColor: Colors.deepPurple,
+            image: image,
+            filters: presetFiltersList,
+            filename: fileName,
+            loader: Center(child: CircularProgressIndicator()),
+            fit: BoxFit.contain,
+          ),
+        ),
+      );
+
+      if (imagefile != null && imagefile.containsKey('image_filtered')) {
+        setState(() {
+          _selectedFile = imagefile['image_filtered'];
+        });
+      }
+    } else
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('PLease crop the image first!')));
+  }
+
+  cropImage(File file) async {
     if (_selectedFile == null) {
       this.setState(() {
         _inProcess = true;
       });
-      //File image = await ImagePicker.pickImage(source: source);
       if (file != null) {
         File cropped = await ImageCropper.cropImage(
             sourcePath: file.path,
@@ -129,14 +161,18 @@ class _GalleryState extends State<Gallery> {
           _inProcess = false;
         });
       }
-    } else {
+    }
+  }
+
+  getImage(File file) async {
+    cropImage(File(currentFilePath.path));
+    if (_selectedFile != null)
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => UploadImage(
                 file: _selectedFile, shared: false, isVideo: false)),
       );
-    }
   }
 
   @override
@@ -177,19 +213,6 @@ class _GalleryState extends State<Gallery> {
                               fit: BoxFit.cover,
                             ),
                 ),
-
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 30.0, left: 6.0),
-                //   child: Align(
-                //     alignment: Alignment.topRight,
-                //     child: IconButton(icon: Icon(Icons.edit,
-                //       color: Colors.grey.shade400,
-                //       size: 30.0,), onPressed: () {
-                //       getimageditor(File(currentFilePath));
-                //     },
-                //     ),
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.only(top: 30.0, left: 6.0),
                   child: Align(
@@ -225,14 +248,6 @@ class _GalleryState extends State<Gallery> {
                                           ),
                                           onPressed: () {
                                             _deleteFile();
-                                            print("dsdhj");
-                                            print(cam);
-                                            // Navigator.pop(context,
-                                            // MaterialPageRoute(
-                                            //   builder: (context) {
-                                            //     return CameraScreen(cam: cam,);
-                                            //   }R
-                                            // ));
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -266,125 +281,39 @@ class _GalleryState extends State<Gallery> {
                     ),
                   ),
                 ),
-
-//            Padding(
-//              padding: const EdgeInsets.only(top: 30.0,right: 6.0),
-//              child: Align(
-//                alignment: Alignment.topRight,
-//                child: Positioned(
-//                  child: IconButton(
-//
-//                    onPressed: () {
-//                      _deleteFile();
-//                    },
-//
-//                    icon: Icon(Icons.delete_outline,
-//                      color: Colors.grey.shade200,),
-//
-//                  ),
-//                ),
-//              ),
-//            ),
-
                 Padding(
-                  padding: const EdgeInsets.only(right: 50.0, bottom: 3.0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 0.0),
-                      child: ButtonTheme(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Container(
-                          width: 230.0,
-                          child: MaterialButton(
-                            color: Colors.transparent,
-                            onPressed: () =>
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(builder: (context) =>
-                                //       UploadImage(file: File(currentFilePath),
-                                //         shared: false,)),
-                                // ),
-                                (_selectedFile == null)
-                                    ? getImage(File(currentFilePath.path))
-                                    : Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => UploadImage(
-                                                  isVideo: false,
-                                                  file: _selectedFile,
-                                                  shared: false,
-                                                )),
-                                      ),
-
-                            child: Row(),
-//                            child: Row(
-//                              children: [
-//                                Padding(
-//                                  padding: const EdgeInsets.only(right: 0.0,),
-//                                  child: Icon(FontAwesomeIcons.angleDoubleRight,
-//                                    color: Colors.grey.shade200,),
-//                                ),
-//                                Text("Swipe right for saved posts",style: TextStyle(
-//                                    fontWeight: FontWeight.w600,
-//                                    color: Colors.grey.shade200,
-////                                fontSize: 15.0
-//                                ),),
-//
-//                              ],
-//                            ),
-                          ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CircleAvatar(
+                            backgroundColor: Colors.deepPurple,
+                            child: IconButton(
+                                onPressed: () {
+                                  imageFilter(context);
+                                },
+                                icon: Icon(
+                                  Icons.filter,
+                                  size: 18,
+                                  color: Colors.white,
+                                ))),
+                        SizedBox(
+                          width: 10,
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.only(right: 6.0),
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0, right: 30.0),
-                      child: ButtonTheme(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Container(
-                          width: 95.0,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(primary: Colors.grey.shade200),
-                            onPressed: () =>
-                                getImage(File(currentFilePath.path)),
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) =>
-                            //       UploadImage(file: File(currentFilePath),
-                            //         shared: false,)),
-                            // ),
-                            //image = File(currentFilePath);
-                            // (_selectedFile == null)?
-                            //
-                            // getImage(File(currentFilePath)):
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => UploadImage(file: _selectedFile,cam: cam)),
-                            // ),
-
-                            child: Row(
-                              children: [
-                                Text(
-                                  "Post",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Icon(Icons.keyboard_arrow_right),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                        ElevatedButton(
+                          onPressed: () {
+                            getImage(File(currentFilePath.path));
+                          },
+                          child:
+                              Text((_selectedFile != null) ? 'Post' : 'Crop'),
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.deepPurple)),
+                        )
+                      ],
                     ),
                   ),
                 ),
