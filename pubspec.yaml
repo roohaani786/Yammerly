@@ -66,6 +66,8 @@ dependencies:
   video_player: null
   qr_flutter: ^4.0.0
   flutter_local_notifications: ^6.0.0
+  photofilters: ^3.0.1
+  qr_code_scanner: ^0.5.1
 
 dev_dependencies:
   flutter_test:
