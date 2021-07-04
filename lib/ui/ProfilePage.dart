@@ -33,7 +33,6 @@ import 'Otheruser/other_user.dart';
 import 'ProfileEdit.dart';
 import 'profilesettings.dart';
 
-
 class AccountBottomIconScreen extends StatefulWidget {
   final User user;
   final String uid;
@@ -642,9 +641,10 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                       onTap: () {
                                                         Navigator.of(context).push(
                                                             MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        QRScreen()));
+                                                                builder: (context) =>
+                                                                    QRScreen(
+                                                                        displayNameController
+                                                                            .text)));
                                                       },
                                                       child: Row(
                                                         children: [
