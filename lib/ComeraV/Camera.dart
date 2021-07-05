@@ -370,13 +370,13 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         child: Container(
           child: Center(
             child: GestureDetector(
-          //    onHorizontalDragStart:,
-          //    onHorizontalDragEnd: ,
-          // wrap shader mask with screenshot widget
+              //    onHorizontalDragStart:,
+              //    onHorizontalDragEnd: ,
+              // wrap shader mask with screenshot widget
               child: ShaderMask(
-                blendMode: Filters.filterList[0].blendMode,
-                shaderCallback: (rect) => Filters.filterList[0].gradient
-                    .createShader(rect),
+                blendMode: Filters.filterList[1].blendMode,
+                shaderCallback: (rect) =>
+                    Filters.filterList[1].gradient.createShader(rect),
                 child: CameraPreview(
                   controller,
                   child: LayoutBuilder(builder:
