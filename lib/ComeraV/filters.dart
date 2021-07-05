@@ -10,10 +10,10 @@ class Filters {
   static List<CameraFilterModel> filterList = [
     CameraFilterModel(
       blendMode: BlendMode.color,
-      gradient: LinearGradient(
-          colors: [Colors.red, Colors.green],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight),
-    )
+      gradient: LinearGradient(colors: [
+        Colors.red,
+        Colors.green,
+      ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+    ),
   ];
 }

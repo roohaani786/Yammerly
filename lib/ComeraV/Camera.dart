@@ -11,6 +11,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:techstagram/ComeraV/filters.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_preview.dart';
 import 'package:techstagram/resources/uploadimage.dart';
@@ -368,25 +369,27 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         onPointerUp: (_) => _pointers--,
         child: Container(
           child: Center(
-            child: ShaderMask(
-              blendMode: BlendMode.color,
-              shaderCallback: (rect) => LinearGradient(
-                      colors: [Colors.red, Colors.green],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight)
-                  .createShader(rect),
-              child: CameraPreview(
-                controller,
-                child: LayoutBuilder(builder:
-                    (BuildContext context, BoxConstraints constraints) {
-                  return GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onScaleStart: _handleScaleStart,
-                    onScaleUpdate: _handleScaleUpdate,
-                    onTapDown: (details) =>
-                        onViewFinderTap(details, constraints),
-                  );
-                }),
+            child: GestureDetector(
+          //    onHorizontalDragStart:,
+          //    onHorizontalDragEnd: ,
+          // wrap shader mask with screenshot widget
+              child: ShaderMask(
+                blendMode: Filters.filterList[0].blendMode,
+                shaderCallback: (rect) => Filters.filterList[0].gradient
+                    .createShader(rect),
+                child: CameraPreview(
+                  controller,
+                  child: LayoutBuilder(builder:
+                      (BuildContext context, BoxConstraints constraints) {
+                    return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onScaleStart: _handleScaleStart,
+                      onScaleUpdate: _handleScaleUpdate,
+                      onTapDown: (details) =>
+                          onViewFinderTap(details, constraints),
+                    );
+                  }),
+                ),
               ),
             ),
           ),
