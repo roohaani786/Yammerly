@@ -368,17 +368,26 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         onPointerUp: (_) => _pointers--,
         child: Container(
           child: Center(
-            child: CameraPreview(
-              controller,
-              child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onScaleStart: _handleScaleStart,
-                  onScaleUpdate: _handleScaleUpdate,
-                  onTapDown: (details) => onViewFinderTap(details, constraints),
-                );
-              }),
+            child: ShaderMask(
+              blendMode: BlendMode.color,
+              shaderCallback: (rect) => LinearGradient(
+                      colors: [Colors.red, Colors.green],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight)
+                  .createShader(rect),
+              child: CameraPreview(
+                controller,
+                child: LayoutBuilder(builder:
+                    (BuildContext context, BoxConstraints constraints) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onScaleStart: _handleScaleStart,
+                    onScaleUpdate: _handleScaleUpdate,
+                    onTapDown: (details) =>
+                        onViewFinderTap(details, constraints),
+                  );
+                }),
+              ),
             ),
           ),
         ),

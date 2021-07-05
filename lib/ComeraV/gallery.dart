@@ -8,9 +8,7 @@ import 'package:path/path.dart' as path;
 import 'package:photofilters/filters/preset_filters.dart';
 import 'package:photofilters/widgets/photo_filter.dart';
 import 'package:techstagram/ComeraV/Camera.dart';
-import 'package:techstagram/ComeraV/camera_screen.dart';
 import 'package:techstagram/resources/uploadimage.dart';
-import 'package:techstagram/ui/HomePage.dart';
 import 'package:image/image.dart' as imageLib;
 
 class Gallery extends StatefulWidget {
