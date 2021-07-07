@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:techstagram/services/database.dart';
 
 class ConversationScreen extends StatefulWidget {
-  final String chatRoomID;
-  final String displayName;
-  final String enduser;
-
   const ConversationScreen(
       {Key key, this.chatRoomID, this.displayName, this.enduser})
       : super(key: key);
+
+  final String chatRoomID;
+  final String displayName;
+  final String enduser;
 
   @override
   _ConversationScreenState createState() =>
@@ -20,14 +20,37 @@ class ConversationScreen extends StatefulWidget {
 
 class _ConversationScreenState extends State<ConversationScreen>
     with WidgetsBindingObserver {
+  _ConversationScreenState(this.displayName, this.enduser);
+
+  Stream chatMessageStream;
   DatabaseService databaseService = new DatabaseService();
-  TextEditingController messageController = new TextEditingController();
   Timer debounce;
   int debounceTime = 500;
   final displayName;
   final enduser;
+  bool isTyping = false;
+  TextEditingController messageController = new TextEditingController();
 
-  _ConversationScreenState(this.displayName, this.enduser);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) setTyping('false');
+  }
+
+  @override
+  void initState() {
+    DatabaseService().getConversationMessages(widget.chatRoomID).then((value) {
+      WidgetsBinding.instance.addObserver(this);
+      setState(() {
+        chatMessageStream = value;
+      });
+    });
+    messageController.addListener(onSearchChanged);
+    setTyping('false');
+    isTyping = false;
+    super.initState();
+  }
 
   Widget ChatMessageList() {
     return StreamBuilder(
@@ -49,8 +72,6 @@ class _ConversationScreenState extends State<ConversationScreen>
         });
   }
 
-  Stream chatMessageStream;
-
   SendMessage() {
     if (messageController.text.isNotEmpty) {
       Map<String, dynamic> messageMap = {
@@ -63,7 +84,6 @@ class _ConversationScreenState extends State<ConversationScreen>
     messageController.text = '';
   }
 
-  bool isTyping = false;
   handleSubmitted(String text) {
     messageController.clear();
     setState(() {
@@ -86,22 +106,14 @@ class _ConversationScreenState extends State<ConversationScreen>
             .doc(widget.chatRoomID)
             .snapshots(),
         builder: (context, snap) {
-          if (snap.data.data()["$enduser typing"].toString() == 'true')
-            return Text(
-              'typing ..',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-              ),
-            );
-          else if (snap.data.data()["$enduser typing"].toString() == 'paused')
-            return Text('stopped typing..',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                ));
-          else
-            return Container();
+          switch (snap.data.data()["$enduser typing"].toString()) {
+            case 'true':
+              return AppbarText(text: 'typing..');
+            case 'paused':
+              return AppbarText(text: 'stopped typing..');
+            default:
+              return Container();
+          }
         });
   }
 
@@ -112,20 +124,6 @@ class _ConversationScreenState extends State<ConversationScreen>
     });
   }
 
-  @override
-  void initState() {
-    DatabaseService().getConversationMessages(widget.chatRoomID).then((value) {
-      WidgetsBinding.instance.addObserver(this);
-      setState(() {
-        chatMessageStream = value;
-      });
-    });
-    messageController.addListener(onSearchChanged);
-    setTyping('false');
-    isTyping = false;
-    super.initState();
-  }
-
   setTyping(String val) async {
     await FirebaseFirestore.instance
         .collection('ChatRoom')
@@ -133,13 +131,6 @@ class _ConversationScreenState extends State<ConversationScreen>
         .update({
       '$displayName typing': val,
     });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.detached) setTyping('false');
   }
 
   @override
@@ -199,11 +190,26 @@ class _ConversationScreenState extends State<ConversationScreen>
   }
 }
 
-class MessageTile extends StatelessWidget {
-  final String message;
-  final bool isSendByMe;
+class AppbarText extends StatelessWidget {
+  const AppbarText({Key key, this.text}) : super(key: key);
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontStyle: FontStyle.italic,
+      ),
+    );
+  }
+}
 
+class MessageTile extends StatelessWidget {
   MessageTile(this.message, this.isSendByMe);
+
+  final bool isSendByMe;
+  final String message;
 
   @override
   Widget build(BuildContext context) {
