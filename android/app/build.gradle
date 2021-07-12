@@ -48,7 +48,7 @@ android {
         applicationId "com.affletus.techstagram"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 28
+        versionCode 29
         versionName "1.7.7"
     }
 
