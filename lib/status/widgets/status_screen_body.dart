@@ -89,7 +89,7 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
           case ConnectionState.none:
             return Center(child: Text("nothing to show"));
           case ConnectionState.waiting:
-            return Expanded(
+            return Center(
               child: CircularProgressIndicator(),
             );
           default:

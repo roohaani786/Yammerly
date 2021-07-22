@@ -89,6 +89,9 @@ class _searchtomessageState extends State<SearchtoMessage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        leading: IconButton(icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple),onPressed: (){
+          Navigator.pop(context);
+        },),
         title: Container(
           color: Colors.white,
           child: TextField(

@@ -18,9 +18,9 @@ class CommentsPage extends StatefulWidget{
   final String displayNamecurrentUser;
   final int comments;
   final String currUser;
+  final bool iscommentingEnabled;
 
-
-  CommentsPage({this.currUser,this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
+  CommentsPage({this.currUser,this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser, this.iscommentingEnabled});
 
   @override
   CommentsPageState createState() => CommentsPageState(currUser: currUser,comments: comments,postId: postId, uid: uid, postImageUrl: postImageUrl,timestamp: timestamp,displayName: displayName,photoUrl: photoUrl,displayNamecurrentUser: displayNamecurrentUser);
@@ -34,6 +34,7 @@ class CommentsPageState extends State<CommentsPage> {
   final Timestamp timestamp;
   final String displayName;
   final String photoUrl;
+  final bool isCommentingEnabled;
   final String displayNamecurrentUser;
   final GlobalKey<FormState> _CommentKey = GlobalKey<FormState>();
   final String currUser;
@@ -43,7 +44,7 @@ class CommentsPageState extends State<CommentsPage> {
 
   TextEditingController commentTextEditingController = TextEditingController();
 
-  CommentsPageState({this.currUser,this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
+  CommentsPageState({this.isCommentingEnabled,this.currUser,this.comments,this.postId,this.uid,this.postImageUrl,this.timestamp,this.displayName,this.photoUrl,this.displayNamecurrentUser});
 
 
   SaveCurrUserId()
@@ -366,7 +367,6 @@ class Comment extends StatelessWidget {
     }
     else if(displayName == displayNameCurrUser){
       print("delte clickd");
-
       DatabaseService().CommentD(postId,comments,commCount);
       print(postId);
       print(displayName);
@@ -456,7 +456,10 @@ class Comment extends StatelessWidget {
                 leading: (userName != null || comment != null)?Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: CircleAvatar(
-                    backgroundImage: CachedNetworkImageProvider(url),
+                    backgroundColor: Colors.transparent,
+                    foregroundImage:(url=="")
+                        ?AssetImage('assets/no_image.png')
+                    :CachedNetworkImageProvider(url)
                   ),
                 ):null,
                 subtitle: (userName != null || comment != null)?Text(tAgo(timestamp.toDate()),style: TextStyle(color: Colors.grey),):Text(""),

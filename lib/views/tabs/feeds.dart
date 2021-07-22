@@ -118,7 +118,6 @@ class _FeedsPageState extends State<FeedsPage> {
     fetchLikes();
     //getPostCount();
   }
-
   File crop;
   Timer timer; //declare timer variable
 
@@ -229,9 +228,11 @@ class _FeedsPageState extends State<FeedsPage> {
           likess[index] = true;
         });
       } else {
-        setState(() {
-          likess[index] = false;
-        });
+        if(mounted) {
+          setState(() {
+            likess[index] = false;
+          });
+        }
       }
     });
   }
@@ -279,11 +280,12 @@ class _FeedsPageState extends State<FeedsPage> {
     cpurlController.text = (docSnap.data() as Map<String, dynamic>)['photoURL'];
     cdisplayNameController.text =
         (docSnap.data() as Map<String, dynamic>)['displayName'];
+    if(mounted){
     setState(() {
       cpurl[index] = cpurlController.text;
       cdisplayName[index] = cdisplayNameController.text;
       cloading[index] = true;
-    });
+    });}
   }
 
   String readTimestamp(int timestamp) {
@@ -352,59 +354,6 @@ class _FeedsPageState extends State<FeedsPage> {
       key: _scaffoldKey,
       body: Column(
         children: [
-          SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(children: [
-                Row(
-                  children: [
-                    Container(
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {},
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CircleAvatar(
-                                  radius: 22,
-                                  backgroundColor: Colors.deepPurple,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    child: Icon(Icons.add,
-                                        color: Colors.deepPurple),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: 15,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: CircleAvatar(
-                                        radius: 22,
-                                        backgroundColor: Colors.deepPurple,
-                                        child: CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          foregroundImage:
-                                              AssetImage('assets/no_image.png'),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                            ),
-                          ],
-                        ),
-                        decoration: BoxDecoration(
-                          //color: Colors.deepPurple,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        height: MediaQuery.of(context).size.height * 0.08,
-                        width: MediaQuery.of(context).size.width),
-                  ],
-                )
-              ])),
           Expanded(
             child: StreamBuilder(
               stream: postsStream,

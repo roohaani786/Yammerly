@@ -64,13 +64,13 @@ class _ConversationPageState extends State<ConversationPage> {
   Widget onlineStatus(String id) {
     return StreamBuilder(
       stream:
-          FirebaseFirestore.instance.collection("users").doc(id).snapshots(),
+      FirebaseFirestore.instance.collection("users").doc(id).snapshots(),
       builder: (context, snap) {
         if (snap.data.data()['online'] == 'true')
           return Text('online', style: TextStyle(fontStyle: FontStyle.italic));
         else {
           DateTime time =
-              DateTime.tryParse(snap.data.data()['last seen'].toString());
+          DateTime.tryParse(snap.data.data()['last seen'].toString());
           return Text(
             '${time.hour}:${time.minute}',
             style: TextStyle(fontStyle: FontStyle.italic),
@@ -127,24 +127,24 @@ class _ConversationPageState extends State<ConversationPage> {
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-                  return Text('No internet Coneection');
+                  return Text('No internet Connection');
                 case ConnectionState.waiting:
                   return CircularProgressIndicator();
                 default:
+                  print(snapshot.data.docs.length.toString());
                   return ListView.builder(
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (context, i) {
                       if (snapshot.data.docs[i]['users']
                           .contains(displayName)) {
-                        getUserInfo(snapshot.data.docs[i]);
-
+                        getUserInfo(snapshot.data.docs[i] && snapshot.data.docs.length>1);
                         return FutureBuilder(
                           future: getUserInfo(snapshot.data.docs[i]),
                           builder: (context, snap) {
                             if (snap.hasData) {
                               print('func data ' + snapshot.data.toString());
                               String name =
-                                  getUserName(snapshot.data.docs[i]['users']);
+                              getUserName(snapshot.data.docs[i]['users']);
 
                               return GestureDetector(
                                 onTap: () {
@@ -160,16 +160,9 @@ class _ConversationPageState extends State<ConversationPage> {
                                 },
                                 child: Card(
                                   child: ListTile(
-                                    leading: Container(
-                                      height: 35,
-                                      width: 35,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            image: NetworkImage(
-                                                snap.data[0].toString()),
-                                            fit: BoxFit.cover),
-                                      ),
+                                    leading: CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          snap.data[0].toString()),
                                     ),
                                     title: Text(name),
                                     trailing: onlineStatus(snap.data[1]),
@@ -181,7 +174,7 @@ class _ConversationPageState extends State<ConversationPage> {
                           },
                         );
                       } else
-                        return Container();
+                        return Container(height: MediaQuery.of(context).size.height*0.8,child: Center(child: Text("Search your friends and start texting!")));
                     },
                   );
               }

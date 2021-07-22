@@ -128,9 +128,8 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     followingController = TextEditingController();
     userPostsController = TextEditingController();
     uidController = TextEditingController();
-
-    super.initState();
     fetchProfileDataa();
+    super.initState();
     // Subscriptions are created here
     authService.profile.listen((state) => setState(() => _profile = state));
 
@@ -179,6 +178,30 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    emailController.dispose();
+    lastNameController.dispose();
+    uidController.dispose();
+    displayNameController.dispose();
+    photoUrlController.dispose();
+    firstNameController.dispose();
+    phonenumberController.dispose();
+    workController.dispose();
+    relationshipController.dispose();
+    educationController.dispose();
+    currentCityController.dispose();
+    userPostsController.dispose();
+    followersController.dispose();
+    followingController.dispose();
+    genderController.dispose();
+    bioController.dispose();
+    linkController.dispose();
+    coverPhotoUrlController.dispose();
+    super.dispose();
+  }
 //  String displayName;
 //  String photoUrl;
 //  String bio;
@@ -229,29 +252,30 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
           .collection("users")
           .doc(currUser.uid)
           .get();
-
-      setState(() {
-        displayNameController.text = docSnap["displayName"];
-        firstNameController.text = docSnap["fname"];
-        lastNameController.text = docSnap["surname"];
-        uidController.text = docSnap["uid"];
-        emailController.text = docSnap["email"];
-        photoUrlController.text = docSnap["photoURL"];
-        phonenumberController.text = docSnap["phonenumber"];
-        emailVerify = docSnap["emailVerified"];
-        bioController.text = docSnap["bio"];
-        followers = docSnap["followers"];
-        following = docSnap["following"];
-        posts = docSnap["posts"];
-        private = docSnap["private"];
-        coverPhotoUrlController.text = docSnap['coverPhotoUrl'];
-      });
-
-      setState(() {
-        isLoading = false;
-        isEditable = false;
-      });
-
+      if(mounted) {
+        setState(() {
+          displayNameController.text = docSnap["displayName"];
+          firstNameController.text = docSnap["fname"];
+          lastNameController.text = docSnap["surname"];
+          uidController.text = docSnap["uid"];
+          emailController.text = docSnap["email"];
+          photoUrlController.text = docSnap["photoURL"];
+          phonenumberController.text = docSnap["phonenumber"];
+          emailVerify = docSnap["emailVerified"];
+          bioController.text = docSnap["bio"];
+          followers = docSnap["followers"];
+          following = docSnap["following"];
+          posts = docSnap["posts"];
+          private = docSnap["private"];
+          coverPhotoUrlController.text = docSnap['coverPhotoUrl'];
+        });
+      }
+      if(mounted) {
+        setState(() {
+          isLoading = false;
+          isEditable = false;
+        });
+      }
       getUserPosts(uidController.text);
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
@@ -566,61 +590,92 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                 ),
                 Align(
                   alignment: Alignment.topRight,
-                  child: Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0, top: 5.0),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 30.0,
-                                width: 30.0,
-                                decoration: const ShapeDecoration(
-                                  color: Colors.black,
-                                  shape: CircleBorder(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15.0, top: 5.0),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 30.0,
+                              width: 30.0,
+                              decoration: const ShapeDecoration(
+                                color: Colors.black,
+                                shape: CircleBorder(),
+                              ),
+                              child: IconButton(
+                                color: Colors.white,
+                                //color: Colors.white,
+                                icon: new Icon(
+                                  Icons.qr_code_outlined,
+                                  size: 15.0,
                                 ),
-                                child: IconButton(
-                                  color: Colors.white,
-                                  //color: Colors.white,
-                                  icon: new Icon(
-                                    Icons.qr_code_outlined,
-                                    size: 15.0,
-                                  ),
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text(
-                                              'Select option :-',
-                                              style: TextStyle(
-                                                fontSize: 15.0,
-                                              ),
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                            'Select option :-',
+                                            style: TextStyle(
+                                              fontSize: 15.0,
                                             ),
-                                            content: SingleChildScrollView(
-                                              child: ListBody(
-                                                children: <Widget>[
-                                                  GestureDetector(
+                                          ),
+                                          content: SingleChildScrollView(
+                                            child: ListBody(
+                                              children: <Widget>[
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.of(context,
+                                                            rootNavigator:
+                                                                true)
+                                                        .pop(context);
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                QrCodeGenerator(
+                                                                    displayNameController
+                                                                        .text)));
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.qr_code_2_sharp,
+                                                        color: kPrimaryColor,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 20.0),
+                                                        child: Text(
+                                                            'View Your QR Code'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 20.0),
+                                                  child: GestureDetector(
                                                     onTap: () {
-                                                      Navigator.of(context,
-                                                              rootNavigator:
-                                                                  true)
-                                                          .pop(context);
-                                                      Navigator.push(
-                                                          context,
+                                                      Navigator.of(context).push(
                                                           MaterialPageRoute(
                                                               builder: (context) =>
-                                                                  QrCodeGenerator(
+                                                                  QRScreen(
                                                                       displayNameController
                                                                           .text)));
                                                     },
                                                     child: Row(
                                                       children: [
                                                         Icon(
-                                                          Icons.qr_code_2_sharp,
-                                                          color: kPrimaryColor,
+                                                          Icons
+                                                              .qr_code_scanner_sharp,
+                                                          color:
+                                                              kPrimaryColor,
                                                         ),
                                                         Padding(
                                                           padding:
@@ -628,97 +683,64 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                                       .only(
                                                                   left: 20.0),
                                                           child: Text(
-                                                              'View Your QR Code'),
+                                                              'Scan QR Code'),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 20.0),
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        Navigator.of(context).push(
-                                                            MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    QRScreen(
-                                                                        displayNameController
-                                                                            .text)));
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons
-                                                                .qr_code_scanner_sharp,
-                                                            color:
-                                                                kPrimaryColor,
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 20.0),
-                                                            child: Text(
-                                                                'Scan QR Code'),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                          );
-                                        });
-                                  },
-                                ),
+                                          ),
+                                        );
+                                      });
+                                },
                               ),
-                              SizedBox(
-                                height: deviceHeight * 0.11,
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: deviceHeight * 0.11,
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0, top: 5.0),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 30.0,
-                                width: 30.0,
-                                decoration: const ShapeDecoration(
-                                  color: Colors.black,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  color: Colors.white,
-                                  //color: Colors.white,
-                                  icon: new Icon(
-                                    Icons.settings,
-                                    size: 15.0,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ProfileSettings(
-                                              emailController.text,
-                                              phonenumberController.text,
-                                              emailVerify,
-                                              uidController.text)),
-                                    );
-                                  },
-                                ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15.0, top: 5.0),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 30.0,
+                              width: 30.0,
+                              decoration: const ShapeDecoration(
+                                color: Colors.black,
+                                shape: CircleBorder(),
                               ),
-                              SizedBox(
-                                height: deviceHeight * 0.11,
+                              child: IconButton(
+                                color: Colors.white,
+                                //color: Colors.white,
+                                icon: new Icon(
+                                  Icons.settings,
+                                  size: 15.0,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProfileSettings(
+                                            emailController.text,
+                                            phonenumberController.text,
+                                            emailVerify,
+                                            uidController.text)),
+                                  );
+                                },
                               ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: deviceHeight * 0.11,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 Align(
@@ -790,11 +812,9 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                                 ),
                                             child: (following != 0 ||
                                                     following != null)
-                                                ? Flexible(
-                                                    child: _buildStatItem(
-                                                        "FOLLOWING",
-                                                        following.toString()),
-                                                  )
+                                                ? _buildStatItem(
+                                                    "FOLLOWING",
+                                                    following.toString())
                                                 : Center(
                                                     child:
                                                         CircularProgressIndicator())),
@@ -946,9 +966,35 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                               //itemCount = snapshot.data.docs.length;
                               return (!snapshot.hasData)
                                   ? Container(
-                                      child: Center(
-                                          child: CircularProgressIndicator()))
-                                  : (posts != 0)
+                                    padding: EdgeInsets.only(
+                                      top: 5.0,
+                                      left: 30.0,
+                                      right: 30.0,
+                                      bottom: 5.0,
+                                    ),
+                                    //height: 200,
+                                    height: deviceHeight * 0.20,
+                                    width: deviceWidth,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        //pageTitle,
+                                        // SizedBox(
+                                        //   height: deviceHeight * 0.1,
+                                        // ),
+                                        Column(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            image,
+                                            notificationHeader,
+                                            //notificationText,
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ): (posts != 0)
                                       ? Column(
                                           children: [
                                             new Expanded(

@@ -31,7 +31,6 @@ class _ProfilePageState extends State<ProfilePage> {
   String loadingMessage = "Loading Profile Data";
   TextEditingController firstNameController,
       lastNameController,
-      birthdayController,
       emailController,
       phoneNumberController,
       uidController,
@@ -62,7 +61,6 @@ class _ProfilePageState extends State<ProfilePage> {
     authService.profile.listen((state) => setState(() => _profile = state));
 
     authService.loading.listen((state) => setState(() => _loading = state));
-    birthdayController = TextEditingController();
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
     emailController = TextEditingController();
@@ -93,23 +91,22 @@ class _ProfilePageState extends State<ProfilePage> {
           .collection("users")
           .doc(currUser.uid)
           .get();
-      birthdayController.text = docSnap["birthday"];
-      firstNameController.text = docSnap['fname'];
-      lastNameController.text = docSnap["surname"];
-      phoneNumberController.text = docSnap["phonenumber"];
-      emailController.text = docSnap["email"];
-      bioController.text = docSnap["bio"];
-      genderController.text = docSnap["gender"];
-      linkController.text = docSnap["link"];
-      photoUrlController.text = docSnap["photoURL"];
-      displayNameController.text = docSnap["displayName"];
-      workController.text = docSnap["work"];
-      educationController.text = docSnap["education"];
-      currentCityController.text = docSnap["currentCity"];
-      homeTownController.text = docSnap["homeTown"];
-      relationshipController.text = docSnap["relationship"];
-      pincodeController.text = docSnap["pincode"];
-      uidController.text = docSnap["uid"];
+      firstNameController.text = (docSnap.data() as Map<String, dynamic>)["fname"];
+      lastNameController.text = (docSnap.data() as Map<String, dynamic>)["surname"];
+      phoneNumberController.text = (docSnap.data() as Map<String, dynamic>)["phonenumber"];
+      emailController.text = (docSnap.data() as Map<String, dynamic>)["email"];
+      bioController.text = (docSnap.data() as Map<String, dynamic>)["bio"];
+      genderController.text = (docSnap.data() as Map<String, dynamic>)["gender"];
+      linkController.text = (docSnap.data() as Map<String, dynamic>)["link"];
+      photoUrlController.text = (docSnap.data() as Map<String, dynamic>)["photoURL"];
+      displayNameController.text = (docSnap.data() as Map<String, dynamic>)["displayName"];
+      workController.text = (docSnap.data() as Map<String, dynamic>)["work"];
+      educationController.text = (docSnap.data() as Map<String, dynamic>)["education"];
+      currentCityController.text = (docSnap.data() as Map<String, dynamic>)["currentCity"];
+      homeTownController.text = (docSnap.data() as Map<String, dynamic>)["homeTown"];
+      relationshipController.text = (docSnap.data() as Map<String, dynamic>)["relationship"];
+      pincodeController.text = (docSnap.data() as Map<String, dynamic>)["pincode"];
+      uidController.text = (docSnap.data() as Map<String, dynamic>)["uid"];
 
       setState(() {
         isLoading = false;
@@ -275,10 +272,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       bioController.text.trim()) {
                     print("Bio Changed");
                     isChanged = true;
-                  } else if (docSnap["birthday"].toString().trim() !=
-                      birthdayController.text.trim()) {
-                    print("Birthday Changed");
-                    isChanged = true;
                   }else if (docSnap["gender"].toString().trim() !=
                       genderController.text.trim()) {
                     print("Gender Changed");
@@ -383,7 +376,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     setState(() => isLoading = true);
                     try {
                       Map<String, dynamic> data = {};
-                      data["birthday"] = birthdayController.text.trim();
                       data["fname"] = firstNameController.text.trim();
                       data["surname"] = lastNameController.text.trim();
                       data["phonenumber"] = phoneNumberController.text.trim();

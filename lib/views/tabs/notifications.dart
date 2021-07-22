@@ -63,7 +63,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           Notifications.add(NotificationLike.fromDocument(document));
         });
         return ListView(
-          children: Notifications,
+          children:(Notifications.length==0)?[Container(child: Center(child: Text('No new Notifications')))]: Notifications,
         );
       },
     );
@@ -88,7 +88,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           Notifications.add(NotificationComment.fromDocument(document));
         });
         return ListView(
-          children: Notifications,
+          children:(Notifications.length==0)?[Container(child: Center(child: Text('No new Notifications')))]: Notifications,
         );
       },
     );
@@ -113,7 +113,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           Notifications.add(NotificationShare.fromDocument(document));
         });
         return ListView(
-          children: Notifications,
+          children:(Notifications.length==0)?[Container(child: Center(child: Text('No new Notifications')))]: Notifications,
         );
       },
     );
@@ -139,7 +139,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           Notifications.add(NotificationFollow.fromDocument(document));
         });
         return ListView(
-          children: Notifications,
+          children:(Notifications.length==0)?[Container(child: Center(child: Text('No new Notifications')))]: Notifications,
         );
       },
     );
@@ -164,7 +164,7 @@ class NotificationsPageState extends State<NotificationsPage> {
           Requests.add(NotificationRequest.fromDocument(document));
         });
         return ListView(
-          children: Requests,
+          children:(Requests.length==0)?[Container(child: Center(child: Text('No new Notifications')))]: Requests,
         );
       },
     );

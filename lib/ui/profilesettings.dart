@@ -46,7 +46,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       lastNameController,
       emailController,
       bioController,
-      birthdayController,
       genderController,
       linkController,
       photoUrlController,
@@ -63,10 +62,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       pinCodeController,
       userPostsController,
       uidController;
-
-  DateTime selectedDate = DateTime.now();
-  DateTime birthdate;
-  String displayDate;
 
   void sendVerificationEmail() async {
     print("andar aaya");
@@ -179,7 +174,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   }
 
   Future<void> checkEmailVerified() async {
-   User firebaseUser = auth.currentUser;
+    User firebaseUser = auth.currentUser;
 
     await firebaseUser.reload();
     if (firebaseUser.emailVerified) {
@@ -260,38 +255,38 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 ),
                 trailing: (email != null)
                     ? (emailVerification == true)
-                        ? Text(
-                            "Verified",
-                            style: TextStyle(
-                              color: Colors.deepPurple,
-                            ),
-                          )
-                        : MaterialButton(
-                            onPressed: () {
-                              sendVerificationEmail();
-                            },
-                            child: Text(
-                              "Verify your email",
-                              style: TextStyle(
-                                color: Colors.red,
-                              ),
-                            ),
-                          )
+                    ? Text(
+                  "Verified",
+                  style: TextStyle(
+                    color: Colors.deepPurple,
+                  ),
+                )
+                    : MaterialButton(
+                  onPressed: () {
+                    sendVerificationEmail();
+                  },
+                  child: Text(
+                    "Verify your email",
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                )
                     : Text(
-                        "No Email",
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
-                      ),
+                  "No Email",
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
               ),
               SettingsTile(
                 onTap: () {
                   FirebaseAuth.instance
                       .signOut()
                       .then((result) => Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => new LoginScreen())))
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => new LoginScreen())))
                       .catchError((err) => print(err));
                   print("loggedout");
                 },
@@ -305,9 +300,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       FirebaseAuth.instance
                           .signOut()
                           .then((result) => Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (context) => new LoginScreen())))
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => new LoginScreen())))
                           .catchError((err) => print(err));
                       print("loggedout");
                     }),
@@ -333,13 +328,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   )),
               SettingsTile(
                   title: 'Reminders',
-                  leading: Icon(
-                    Icons.calendar_today,
-                    color: Colors.grey,
-                  )),
-              SettingsTile(
-                onPressed: _selectDate,
-                  title:(displayDate!=null)?displayDate: 'Set your Birthday',
                   leading: Icon(
                     Icons.calendar_today,
                     color: Colors.grey,
@@ -441,7 +429,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               SettingsTile(
                   title: 'Privacy Policy',
                   leading:
-                      Icon(Icons.collections_bookmark, color: Colors.grey)),
+                  Icon(Icons.collections_bookmark, color: Colors.grey)),
             ],
           ),
           CustomSection(
@@ -464,20 +452,5 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         ],
       ),
     );
-  }
-  _selectDate(BuildContext context) async {
-
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(1921,1),
-        lastDate: DateTime.now());
-    if (picked != null && picked != selectedDate)
-      setState(() {
-        selectedDate = picked;
-        String date =
-            "${picked.toLocal().day}/${picked.toLocal().month}/${picked.toLocal().year}";
-        displayDate = date;
-      });
   }
 }

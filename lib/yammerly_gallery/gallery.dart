@@ -121,31 +121,29 @@ class _galleryState extends State<gallery> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width*0.75,
-                  child: Expanded(
-                    child: Row(
-                      children: <Widget>[
-                        GestureDetector(
-                            onTap : () => Navigator.pop(context),
-                            child: Icon(Icons.clear)),
-                        SizedBox(width: 10),
-                        DropdownButtonHideUnderline(
-                          child: Expanded(
-                            child: DropdownButton<FileModel>(
-                              isExpanded: true,
-                                items: getItems(),
-                                onChanged: (FileModel d) {
-                                  assert(d.files.length > 0);
-                                  image = d.files[0];
-                                  setState(() {
-                                    selectedModel = d;
-                                  });
-                                },
-                                value: selectedModel,
-                              ),
-                          ),
-                        )
-                      ],
-                    ),
+                  child: Row(
+                    children: <Widget>[
+                      GestureDetector(
+                          onTap : () => Navigator.pop(context),
+                          child: Icon(Icons.clear)),
+                      SizedBox(width: 10),
+                      DropdownButtonHideUnderline(
+                        child: Expanded(
+                          child: DropdownButton<FileModel>(
+                            isExpanded: true,
+                              items: getItems(),
+                              onChanged: (FileModel d) {
+                                assert(d.files.length > 0);
+                                image = d.files[0];
+                                setState(() {
+                                  selectedModel = d;
+                                });
+                              },
+                              value: selectedModel,
+                            ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
                 Padding(
