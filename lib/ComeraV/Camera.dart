@@ -9,6 +9,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:techstagram/ComeraV/filters.dart';
@@ -128,8 +129,14 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       parent: _focusModeControlRowAnimationController,
       curve: Curves.easeInCubic,
     );
+  hasFlashlight();
   }
-
+  bool _hasFlashlight = false;
+  static const MethodChannel _channel = const MethodChannel('flashlight');
+  Future<bool> hasFlashlight() async {
+   _hasFlashlight = await _channel.invokeMethod('hasFlashlight');
+    return _hasFlashlight;
+  }
   int cam = 0;
   Future<void> _onCameraSwitch() async {
     //final CameraDescription cameraDescription =
@@ -280,7 +287,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(top: 24.0),
-                                child: Align(
+                                child: (_hasFlashlight)?Align(
                                   alignment: Alignment.topCenter,
                                   child: IconButton(
                                     icon: Icon(
@@ -307,7 +314,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                                     },
                                     //onPressed: () => TorchCompat.turnOff(),
                                   ),
-                                ),
+                                ):Container(),
                               ),
                               _modeControlRowWidget(),
                             ],
@@ -353,7 +360,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   Widget _cameraPreviewWidget() {
     final size = MediaQuery.of(context).size;
     final deviceRatio = size.width / size.height;
-    final aspectRatio = 3 / 4;
+    final aspectRatio = deviceRatio;
     if (controller == null || !controller.value.isInitialized) {
       return const Text(
         '',
@@ -373,24 +380,38 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               //    onHorizontalDragStart:,
               //    onHorizontalDragEnd: ,
               // wrap shader mask with screenshot widget
-              child: ShaderMask(
-                blendMode: Filters.filterList[1].blendMode,
-                shaderCallback: (rect) =>
-                    Filters.filterList[1].gradient.createShader(rect),
-                child: CameraPreview(
-                  controller,
-                  child: LayoutBuilder(builder:
-                      (BuildContext context, BoxConstraints constraints) {
-                    return GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onScaleStart: _handleScaleStart,
-                      onScaleUpdate: _handleScaleUpdate,
-                      onTapDown: (details) =>
-                          onViewFinderTap(details, constraints),
-                    );
-                  }),
-                ),
+              child:
+              CameraPreview(
+                controller,
+                child: LayoutBuilder(builder:
+                    (BuildContext context, BoxConstraints constraints) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onScaleStart: _handleScaleStart,
+                    onScaleUpdate: _handleScaleUpdate,
+                    onTapDown: (details) =>
+                        onViewFinderTap(details, constraints),
+                  );
+                }),
               ),
+              // ShaderMask(
+              //   blendMode: Filters.filterList[1].blendMode,
+              //   shaderCallback: (rect) =>
+              //       Filters.filterList[1].gradient.createShader(rect),
+              //   child: CameraPreview(
+              //     controller,
+              //     child: LayoutBuilder(builder:
+              //         (BuildContext context, BoxConstraints constraints) {
+              //       return GestureDetector(
+              //         behavior: HitTestBehavior.opaque,
+              //         onScaleStart: _handleScaleStart,
+              //         onScaleUpdate: _handleScaleUpdate,
+              //         onTapDown: (details) =>
+              //             onViewFinderTap(details, constraints),
+              //       );
+              //     }),
+              //   ),
+              // ),
             ),
           ),
         ),

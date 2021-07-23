@@ -182,24 +182,27 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
   void dispose() {
     // Clean up the controller when the widget is removed from the
     // widget tree.
-    emailController.dispose();
-    lastNameController.dispose();
-    uidController.dispose();
-    displayNameController.dispose();
-    photoUrlController.dispose();
     firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
     phonenumberController.dispose();
+    pinCodeController.dispose();
+    bioController.dispose();
+    genderController.dispose();
+    linkController.dispose();
+    photoUrlController.dispose();
+    coverPhotoUrlController.dispose();
+    displayNameController.dispose();
     workController.dispose();
-    relationshipController.dispose();
     educationController.dispose();
     currentCityController.dispose();
-    userPostsController.dispose();
+    homeTownController.dispose();
+    relationshipController.dispose();
+    pinCodeController.dispose();
     followersController.dispose();
     followingController.dispose();
-    genderController.dispose();
-    bioController.dispose();
-    linkController.dispose();
-    coverPhotoUrlController.dispose();
+    userPostsController.dispose();
+    uidController.dispose();
     super.dispose();
   }
 //  String displayName;
@@ -252,7 +255,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
           .collection("users")
           .doc(currUser.uid)
           .get();
-      if(mounted) {
+
         setState(() {
           displayNameController.text = docSnap["displayName"];
           firstNameController.text = docSnap["fname"];
@@ -269,13 +272,11 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
           private = docSnap["private"];
           coverPhotoUrlController.text = docSnap['coverPhotoUrl'];
         });
-      }
-      if(mounted) {
+
         setState(() {
           isLoading = false;
           isEditable = false;
         });
-      }
       getUserPosts(uidController.text);
     } on PlatformException catch (e) {
       print("PlatformException in fetching user profile. E  = " + e.message);
@@ -582,7 +583,7 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                                 cover == true)
                             ? AssetImage('assets/images/gogo.png')
                             : NetworkImage(coverPhotoUrlController.text),
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     //color: Colors.lightBlueAccent,
@@ -743,490 +744,499 @@ class _AccountBottomIconScreenState extends State<AccountBottomIconScreen> {
                     ],
                   ),
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: deviceHeight * 0.15,
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.4,
-                        width: width,
+                StreamBuilder<Object>(
+                  stream: FirebaseAuth.instance.authStateChanges(),
+                  builder: (context, snapshot) {
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: deviceHeight * 0.15,
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            width: width,
 
-                        // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
-                        child: Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  height: height * 0.33,
-                                  width: width,
-                                  margin: EdgeInsets.only(top: 8.0),
-                                  decoration: BoxDecoration(),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 120.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: <Widget>[
-                                        (posts != 0 || posts != null)
-                                            ? _buildStatItem(
-                                                "POSTS", posts.toString())
-                                            : Center(
-                                                child:
-                                                    CircularProgressIndicator()),
-                                        GestureDetector(
-                                            onTap: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          FollowersList(
-                                                            displayNamecurrentUserX:
-                                                                displayNameController
-                                                                    .text,
-                                                            uidX: uidController
-                                                                .text,
-                                                          )),
-                                                ),
-                                            child: (followers != 0 ||
-                                                    followers != null)
-                                                ? _buildStatItem("FOLLOWERS",
-                                                    followers.toString())
-                                                : Center(
-                                                    child:
-                                                        CircularProgressIndicator())),
-                                        GestureDetector(
-                                            onTap: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          FollowingList(
-                                                            displayNamecurrentUser:
-                                                                displayNameController
-                                                                    .text,
-                                                            uidX: uidController
-                                                                .text,
-                                                          )),
-                                                ),
-                                            child: (following != 0 ||
-                                                    following != null)
+                            // margin: EdgeInsets.only(top:200, bottom: 70,left: 20,right: 20),
+                            child: Row(
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      height: height * 0.33,
+                                      width: width,
+                                      margin: EdgeInsets.only(top: 8.0),
+                                      decoration: BoxDecoration(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 120.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: <Widget>[
+                                            (posts != 0 || posts != null)
                                                 ? _buildStatItem(
-                                                    "FOLLOWING",
-                                                    following.toString())
+                                                    "POSTS", posts.toString())
                                                 : Center(
                                                     child:
-                                                        CircularProgressIndicator())),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                  width: 200,
-                                ),
-                                Container(
-                                    width: deviceWidth,
-                                    child: Row(
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 25.0, left: 20),
-                                              child: Container(
-                                                width: deviceWidth * 0.85,
-                                                child: Text(
-                                                  firstNameController.text +
-                                                      " " +
-                                                      lastNameController.text,
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontSize: 26.0,
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontFamily: 'Pacifico',
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 5.0, left: 20),
-                                              child: Container(
-                                                width: deviceWidth * 0.85,
-                                                child: Text(
-                                                  displayNameController.text,
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        'Source Sans Pro',
-                                                    fontSize: 15.0,
-                                                    color: Colors.grey.shade700,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 5.0, left: 20),
-                                              child: Container(
-                                                width: deviceWidth * 0.85,
-                                                child: Text(
-                                                  bioController.text,
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        'Source Sans Pro',
-                                                    fontSize: 15.0,
-                                                    color: Colors.grey.shade700,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                                        CircularProgressIndicator()),
+                                            GestureDetector(
+                                                onTap: () => Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              FollowersList(
+                                                                displayNamecurrentUserX:
+                                                                    displayNameController
+                                                                        .text,
+                                                                uidX: uidController
+                                                                    .text,
+                                                              )),
+                                                    ),
+                                                child: (followers != 0 ||
+                                                        followers != null)
+                                                    ? _buildStatItem("FOLLOWERS",
+                                                        followers.toString())
+                                                    : Center(
+                                                        child:
+                                                            CircularProgressIndicator())),
+                                            GestureDetector(
+                                                onTap: () => Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              FollowingList(
+                                                                displayNamecurrentUser:
+                                                                    displayNameController
+                                                                        .text,
+                                                                uidX: uidController
+                                                                    .text,
+                                                              )),
+                                                    ),
+                                                child: (following != 0 ||
+                                                        following != null)
+                                                    ? _buildStatItem(
+                                                        "FOLLOWING",
+                                                        following.toString())
+                                                    : Center(
+                                                        child:
+                                                            CircularProgressIndicator())),
                                           ],
                                         ),
-
-                                        // SizedBox(
-                                        //   width: deviceWidth*0.05,
-                                        // ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 10.0,
-                                          ),
-                                          child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: SizedBox(
-                                              width: 30,
-                                              height: 30.0,
-                                              child: Ink(
-                                                decoration:
-                                                    const ShapeDecoration(
-                                                  color: Colors.black,
-                                                  shape: CircleBorder(),
-                                                ),
-                                                child: IconButton(
-                                                    color: Colors.white,
-                                                    icon: Icon(
-                                                      FontAwesomeIcons.userEdit,
-                                                      size: 15,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                      width: 200,
+                                    ),
+                                    Container(
+                                        width: deviceWidth,
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      top: 25.0, left: 20),
+                                                  child: Container(
+                                                    width: deviceWidth * 0.85,
+                                                    child: Text(
+                                                      firstNameController.text +
+                                                          " " +
+                                                          lastNameController.text,
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                        fontSize: 26.0,
+                                                        color: Colors.black,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontFamily: 'Pacifico',
+                                                      ),
                                                     ),
-                                                    //color: Colors.white,
-                                                    // child: Padding(
-                                                    //   padding: const EdgeInsets.only(right:50.0),
-                                                    //   child: Icon(
-                                                    //     FontAwesomeIcons.userEdit,
-                                                    //     color: Colors.white,
-                                                    //     size: 24.0,
-                                                    //   ),
-                                                    // ),
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                ProfilePage()),
-                                                      );
-                                                    }),
-                                              ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      top: 5.0, left: 20),
+                                                  child: Container(
+                                                    width: deviceWidth * 0.85,
+                                                    child: Text(
+                                                      displayNameController.text,
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            'Source Sans Pro',
+                                                        fontSize: 15.0,
+                                                        color: Colors.grey.shade700,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      top: 5.0, left: 20),
+                                                  child: Container(
+                                                    width: deviceWidth * 0.85,
+                                                    child: Text(
+                                                      bioController.text,
+                                                      textAlign: TextAlign.left,
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            'Source Sans Pro',
+                                                        fontSize: 15.0,
+                                                        color: Colors.grey.shade700,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        )
-                                      ],
-                                    ))
+
+                                            // SizedBox(
+                                            //   width: deviceWidth*0.05,
+                                            // ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 10.0,
+                                              ),
+                                              child: Align(
+                                                alignment: Alignment.topRight,
+                                                child: SizedBox(
+                                                  width: 30,
+                                                  height: 30.0,
+                                                  child: Ink(
+                                                    decoration:
+                                                        const ShapeDecoration(
+                                                      color: Colors.black,
+                                                      shape: CircleBorder(),
+                                                    ),
+                                                    child: IconButton(
+                                                        color: Colors.white,
+                                                        icon: Icon(
+                                                          FontAwesomeIcons.userEdit,
+                                                          size: 15,
+                                                        ),
+                                                        //color: Colors.white,
+                                                        // child: Padding(
+                                                        //   padding: const EdgeInsets.only(right:50.0),
+                                                        //   child: Icon(
+                                                        //     FontAwesomeIcons.userEdit,
+                                                        //     color: Colors.white,
+                                                        //     size: 24.0,
+                                                        //   ),
+                                                        // ),
+                                                        onPressed: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    ProfilePage()),
+                                                          );
+                                                        }),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ))
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                        width: deviceWidth * 0.87,
-                        child: Divider(
-                          thickness: 2.0,
-                          color: Colors.teal.shade700,
-                        ),
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.75,
-                        //height: 200.0,
-                        width: 340.0,
+                          ),
+                          SizedBox(
+                            height: 30,
+                            width: deviceWidth * 0.87,
+                            child: Divider(
+                              thickness: 2.0,
+                              color: Colors.teal.shade700,
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.75,
+                            //height: 200.0,
+                            width: 340.0,
 
-                        child: StreamBuilder(
-                            stream: userPostsStream,
-                            builder: (context, snapshot) {
-                              if (snapshot == null) {
-                                return Container(
-                                    child: Center(
-                                        child: CircularProgressIndicator()));
-                              }
-                              //itemCount = snapshot.data.docs.length;
-                              return (!snapshot.hasData)
-                                  ? Container(
-                                    padding: EdgeInsets.only(
-                                      top: 5.0,
-                                      left: 30.0,
-                                      right: 30.0,
-                                      bottom: 5.0,
-                                    ),
-                                    //height: 200,
-                                    height: deviceHeight * 0.20,
-                                    width: deviceWidth,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        //pageTitle,
-                                        // SizedBox(
-                                        //   height: deviceHeight * 0.1,
-                                        // ),
-                                        Column(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                            child: StreamBuilder(
+                                stream: userPostsStream,
+                                builder: (context, snapshot) {
+                                  if (snapshot == null) {
+                                    return Container(
+                                        child: Center(
+                                            child: CircularProgressIndicator()));
+                                  }
+                                  //itemCount = snapshot.data.docs.length;
+                                  return (!snapshot.hasData)
+                                      ? Container(
+                                        padding: EdgeInsets.only(
+                                          top: 5.0,
+                                          left: 30.0,
+                                          right: 30.0,
+                                          bottom: 5.0,
+                                        ),
+                                        //height: 200,
+                                        height: deviceHeight * 0.20,
+                                        width: deviceWidth,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            image,
-                                            notificationHeader,
-                                            //notificationText,
+                                            //pageTitle,
+                                            // SizedBox(
+                                            //   height: deviceHeight * 0.1,
+                                            // ),
+                                            Column(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                image,
+                                                notificationHeader,
+                                                //notificationText,
+                                              ],
+                                            ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ): (posts != 0)
-                                      ? Column(
-                                          children: [
-                                            new Expanded(
-                                                child: GridView.builder(
-                                                    shrinkWrap: true,
-                                                    controller:
-                                                        ScrollController(),
-                                                    itemCount: snapshot
-                                                        .data.docs.length,
-                                                    gridDelegate:
-                                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                                            crossAxisCount: 3,
-                                                            crossAxisSpacing:
-                                                                10.0,
-                                                            mainAxisSpacing:
-                                                                10.0),
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      int len = snapshot
-                                                          .data.docs.length;
-                                                      // print(len);
-                                                      //print("length batar hai");
-                                                      postIdX = snapshot
-                                                              .data.docs[index]
-                                                          ['postId'];
+                                      ): (posts != 0)
+                                          ? Column(
+                                              children: [
+                                                new Expanded(
+                                                    child: GridView.builder(
+                                                        shrinkWrap: true,
+                                                        controller:
+                                                            ScrollController(),
+                                                        itemCount: snapshot
+                                                            .data.docs.length,
+                                                        gridDelegate:
+                                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                                crossAxisCount: 3,
+                                                                crossAxisSpacing:
+                                                                    10.0,
+                                                                mainAxisSpacing:
+                                                                    10.0),
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          int len = snapshot
+                                                              .data.docs.length;
+                                                          // print(len);
+                                                          //print("length batar hai");
+                                                          postIdX = snapshot
+                                                                  .data.docs[index]
+                                                              ['postId'];
 
-                                                      String email = snapshot
-                                                          .data
-                                                          .docs[index]['email'];
+                                                          String email = snapshot
+                                                              .data
+                                                              .docs[index]['email'];
 
-                                                      String description =
-                                                          snapshot.data
-                                                                  .docs[index]
-                                                              ['description'];
+                                                          String description =
+                                                              snapshot.data
+                                                                      .docs[index]
+                                                                  ['description'];
 
-                                                      String displayName =
-                                                          snapshot.data
-                                                                  .docs[index]
-                                                              ['displayName'];
+                                                          String displayName =
+                                                              snapshot.data
+                                                                      .docs[index]
+                                                                  ['displayName'];
 
-                                                      String photoUrl = snapshot
-                                                              .data.docs[index]
-                                                          ['photoURL'];
+                                                          String photoUrl = snapshot
+                                                                  .data.docs[index]
+                                                              ['photoURL'];
 
-                                                      String uid = snapshot.data
-                                                          .docs[index]["uid"];
+                                                          String uid = snapshot.data
+                                                              .docs[index]["uid"];
 
-                                                      int cam = snapshot.data
-                                                          .docs[index]['cam'];
+                                                          int cam = snapshot.data
+                                                              .docs[index]['cam'];
 
-                                                      Timestamp timestamp =
-                                                          snapshot.data
-                                                                  .docs[index]
-                                                              ['timestamp'];
+                                                          Timestamp timestamp =
+                                                              snapshot.data
+                                                                      .docs[index]
+                                                                  ['timestamp'];
 
-                                                      String url = snapshot.data
-                                                          .docs[index]['url'];
+                                                          String url = snapshot.data
+                                                              .docs[index]['url'];
 
-                                                      String postId = snapshot
-                                                              .data.docs[index]
-                                                          ['postId'];
+                                                          String postId = snapshot
+                                                                  .data.docs[index]
+                                                              ['postId'];
 
-                                                      int likes = snapshot.data
-                                                          .docs[index]['likes'];
+                                                          int likes = snapshot.data
+                                                              .docs[index]['likes'];
 
-                                                      readTimestamp(
-                                                          timestamp.seconds);
+                                                          readTimestamp(
+                                                              timestamp.seconds);
 
-                                                      getlikes(
-                                                          displayNameController
-                                                              .text,
-                                                          postId);
+                                                          getlikes(
+                                                              displayNameController
+                                                                  .text,
+                                                              postId);
 
-                                                      if (likes < 0 ||
-                                                          likes == 0) {
-                                                        liked = false;
-                                                      }
+                                                          if (likes < 0 ||
+                                                              likes == 0) {
+                                                            liked = false;
+                                                          }
 
-                                                      return Container(
-                                                        //color: Colors.grey.shade300,
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .stretch,
-                                                          children: [
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              postPage(
-                                                                                displayNamecurrentUser: displayName,
-                                                                                PostUrl: url,
-                                                                                uidX: uid,
-                                                                                delete: true,
-                                                                              )),
-                                                                );
-                                                              },
-                                                              child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          8.0),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          8.0),
-                                                                  bottomLeft: Radius
-                                                                      .circular(
-                                                                          8.0),
-                                                                  bottomRight: Radius
-                                                                      .circular(
-                                                                          8.0),
-                                                                ),
-                                                                child: (cam ==
-                                                                        1)
-                                                                    ? Transform(
-                                                                        alignment:
-                                                                            Alignment.center,
-                                                                        transform:
-                                                                            Matrix4.rotationY(math.pi),
-                                                                        child: Image
+                                                          return Container(
+                                                            //color: Colors.grey.shade300,
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .stretch,
+                                                              children: [
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder:
+                                                                              (context) =>
+                                                                                  postPage(
+                                                                                    displayNamecurrentUser: displayName,
+                                                                                    PostUrl: url,
+                                                                                    uidX: uid,
+                                                                                    delete: true,
+                                                                                  )),
+                                                                    );
+                                                                  },
+                                                                  child: ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .only(
+                                                                      topLeft: Radius
+                                                                          .circular(
+                                                                              8.0),
+                                                                      topRight: Radius
+                                                                          .circular(
+                                                                              8.0),
+                                                                      bottomLeft: Radius
+                                                                          .circular(
+                                                                              8.0),
+                                                                      bottomRight: Radius
+                                                                          .circular(
+                                                                              8.0),
+                                                                    ),
+                                                                    child: (cam ==
+                                                                            1)
+                                                                        ? Transform(
+                                                                            alignment:
+                                                                                Alignment.center,
+                                                                            transform:
+                                                                                Matrix4.rotationY(math.pi),
+                                                                            child: Image
+                                                                                .network(
+                                                                              url,
+                                                                              // width: 300,
+                                                                              height:
+                                                                                  104,
+                                                                              fit: BoxFit
+                                                                                  .cover,
+                                                                            ),
+                                                                          )
+                                                                        : Image
                                                                             .network(
-                                                                          url,
-                                                                          // width: 300,
-                                                                          height:
-                                                                              104,
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                        ),
-                                                                      )
-                                                                    : Image
-                                                                        .network(
-                                                                        url,
-                                                                        // width: 300,
-                                                                        height:
-                                                                            104,
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                      ),
-                                                              ),
+                                                                            url,
+                                                                            // width: 300,
+                                                                            height:
+                                                                                104,
+                                                                            fit: BoxFit
+                                                                                .cover,
+                                                                          ),
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    })),
-                                          ],
-                                        )
-                                      : Container(
-                                          padding: EdgeInsets.only(
-                                            top: 5.0,
-                                            left: 30.0,
-                                            right: 30.0,
-                                            bottom: 5.0,
-                                          ),
-                                          //height: 200,
-                                          height: deviceHeight * 0.20,
-                                          width: deviceWidth,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              //pageTitle,
-                                              // SizedBox(
-                                              //   height: deviceHeight * 0.1,
-                                              // ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                          );
+                                                        })),
+                                              ],
+                                            )
+                                          : Container(
+                                              padding: EdgeInsets.only(
+                                                top: 5.0,
+                                                left: 30.0,
+                                                right: 30.0,
+                                                bottom: 5.0,
+                                              ),
+                                              //height: 200,
+                                              height: deviceHeight * 0.20,
+                                              width: deviceWidth,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: <Widget>[
-                                                  image,
-                                                  notificationHeader,
-                                                  //notificationText,
+                                                  //pageTitle,
+                                                  // SizedBox(
+                                                  //   height: deviceHeight * 0.1,
+                                                  // ),
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      image,
+                                                      notificationHeader,
+                                                      //notificationText,
+                                                    ],
+                                                  ),
                                                 ],
                                               ),
-                                            ],
-                                          ),
-                                        );
-                            }),
-                        //child: Image.network(uidCurrUser),
-                      )
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    height: deviceHeight * 0.31,
-                    width: deviceWidth * 0.96,
-//                    padding: const EdgeInsets.only(right: 250.0),
-                    child: (photoUrlController.text != null)
-                        ? Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  //borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 5,
-                                  ),
-                                ),
-                                child: Container(
-                                    height: 100,
-                                    width: 100.0,
-                                    child: (photoUrlController.text == null)
-                                        ? Center(
-                                            child: CircularProgressIndicator())
-                                        : CachedNetworkImage(
-                                            imageUrl: photoUrlController.text,
-                                            placeholder: (context, index) {
-                                              return Center(
-                                                  child:
-                                                      CircularProgressIndicator());
-                                            },
-                                          )
-                                    //backgroundImage: NetworkImage(photoUrlController.text)
-                                    )),
-                          )
-                        : Container(
-                            child: IconButton(
-                                icon: Icon(
-                                  FontAwesomeIcons.userCircle,
-                                  color: Colors.deepPurple,
-                                ),
-                                onPressed: () {
-                                  print("hello");
+                                            );
                                 }),
-                          ),
-                  ),
+                            //child: Image.network(uidCurrUser),
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                ),
+                StreamBuilder<Object>(
+                  stream: FirebaseAuth.instance.authStateChanges(),
+                  builder: (context, snapshot) {
+                    return Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        height: deviceHeight * 0.31,
+                        width: deviceWidth * 0.96,
+//                    padding: const EdgeInsets.only(right: 250.0),
+                        child: (photoUrlController.text != null)
+                            ? Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      //borderRadius: BorderRadius.circular(100),
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 5,
+                                      ),
+                                    ),
+                                    child: Container(
+                                        height: 100,
+                                        width: 100.0,
+                                        child: (photoUrlController.text == null)
+                                            ? Center(child: CircularProgressIndicator())
+                                            : CachedNetworkImage(
+                                                imageUrl: "${Uri.parse(photoUrlController.text)}",
+                                                placeholder: (context, index) {
+                                                  return Center(
+                                                      child:
+                                                          CircularProgressIndicator());
+                                                },
+                                              )
+                                        //backgroundImage: NetworkImage(photoUrlController.text)
+                                        )),
+                              )
+                            : Container(
+                                child: IconButton(
+                                    icon: Icon(
+                                      FontAwesomeIcons.userCircle,
+                                      color: Colors.deepPurple,
+                                    ),
+                                    onPressed: () {
+                                      print("hello");
+                                    }),
+                              ),
+                      ),
+                    );
+                  }
                 ),
               ],
             ),

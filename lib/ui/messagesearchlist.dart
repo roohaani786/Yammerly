@@ -131,7 +131,7 @@ class _searchtomessageState extends State<SearchtoMessage> {
                   child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/images/profileedit.png'),
+                          image: AssetImage('assets/images/3.jpg'),
                           fit: BoxFit.cover,
                         ),
                         shape: BoxShape.circle,
@@ -191,7 +191,7 @@ class _searchtomessageState extends State<SearchtoMessage> {
                               ),
                             ),
                           )
-                        : Container();
+                        : Container(child: Text("No username found!"));
                   },
                 );
         },
