@@ -132,12 +132,21 @@ class _ConversationPageState extends State<ConversationPage> {
                   return CircularProgressIndicator();
                 default:
                   print(snapshot.data.docs.length.toString());
-                  return ListView.builder(
+                  return
+                    (!snapshot.hasData)?
+                        Center(child: Container(child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset("assets/images/empty.png"),
+                            Text("You have no messages yet",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
+                          ],
+                        )))
+                    :ListView.builder(
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (context, i) {
                       if (snapshot.data.docs[i]['users']
                           .contains(displayName)) {
-                        getUserInfo(snapshot.data.docs[i] && snapshot.data.docs.length>1);
+                        getUserInfo(snapshot.data.docs[i]);
                         return FutureBuilder(
                           future: getUserInfo(snapshot.data.docs[i]),
                           builder: (context, snap) {
@@ -174,7 +183,7 @@ class _ConversationPageState extends State<ConversationPage> {
                           },
                         );
                       } else
-                        return Container(height: MediaQuery.of(context).size.height*0.8,child: Center(child: Text("Search your friends and start texting!")));
+                        return Container();
                     },
                   );
               }

@@ -403,16 +403,16 @@ class _TabLayoutDemoState extends State<TabLayoutDemo>
                           uidX: uidController.text,
                         )),
               );
-              flutterLocalNotificationsPlugin.show(
-                  0,
-                  "Testing ",
-                  "How you doin ?",
-                  NotificationDetails(
-                      android: AndroidNotificationDetails(channel.id, channel.name, channel.description,
-                          importance: Importance.high,
-                          color: Colors.deepPurple,
-                          playSound: true,
-                          icon: '@mipmap/ic_launcher')));
+              // flutterLocalNotificationsPlugin.show(
+              //     0,
+              //     "Testing ",
+              //     "How you doin ?",
+              //     NotificationDetails(
+              //         android: AndroidNotificationDetails(channel.id, channel.name, channel.description,
+              //             importance: Importance.high,
+              //             color: Colors.deepPurple,
+              //             playSound: true,
+              //             icon: '@mipmap/ic_launcher')));
             },
           ),
           IconButton(

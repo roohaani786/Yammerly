@@ -137,55 +137,57 @@ class _ConversationScreenState extends State<ConversationScreen>
   Widget build(BuildContext context) {
     final height =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: Text(enduser),
-        actions: [
-          Container(
-              padding: const EdgeInsets.all(10),
-              alignment: Alignment.center,
-              child: typingStatus())
-        ],
-      ),
-      body: Container(
-          child: Stack(
-        children: [
-          Container(height: height * 0.82, child: ChatMessageList()),
-          Container(
-            alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              color: Colors.white,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      onChanged: (String text) {
-                        isTyping = text.length > 0;
-                        updateTypingState();
-                      },
-                      onSubmitted: handleSubmitted,
-                      controller: messageController,
-                      decoration: InputDecoration(
-                          hintText: "Enter Message", border: InputBorder.none),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.deepPurple,
+          title: Text(enduser),
+          actions: [
+            Container(
+                padding: const EdgeInsets.all(10),
+                alignment: Alignment.center,
+                child: typingStatus())
+          ],
+        ),
+        body: Container(
+            child: Stack(
+          children: [
+            Container(height: height * 0.82, child: ChatMessageList()),
+            Container(
+              alignment: Alignment.bottomCenter,
+              //padding: EdgeInsets.symmetric(vertical: 16),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                color: Colors.white,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        onChanged: (String text) {
+                          isTyping = text.length > 0;
+                          updateTypingState();
+                        },
+                        onSubmitted: handleSubmitted,
+                        controller: messageController,
+                        decoration: InputDecoration(
+                            hintText: "Enter Message", border: InputBorder.none),
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: () {
-                      isTyping = false;
-                      updateTypingState();
-                      SendMessage();
-                    },
-                  ),
-                ],
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () {
+                        isTyping = false;
+                        updateTypingState();
+                        SendMessage();
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      )),
+          ],
+        )),
+      ),
     );
   }
 }

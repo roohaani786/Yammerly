@@ -69,6 +69,7 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
             SizedBox(
               height: 45,
               child: FloatingActionButton(
+                heroTag: "TextButton",
                 backgroundColor: Colors.deepPurple[400],
                 onPressed: () {
                   Alert(
@@ -109,6 +110,7 @@ class _DetailStatusScreenState extends State<DetailStatusScreen> {
             SizedBox(
               height: 45,
               child: FloatingActionButton(
+                heroTag: "imageButton",
                 backgroundColor: Colors.deepPurple[400],
                 onPressed: () {
                   Alert(

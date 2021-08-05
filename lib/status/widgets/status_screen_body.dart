@@ -310,7 +310,7 @@ class MyStatus extends StatelessWidget {
               ),
             ),
             title: Text(
-              'MyStatus',
+              'My Status',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),

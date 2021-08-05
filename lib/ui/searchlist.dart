@@ -27,7 +27,7 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
   // Future<void> _showSearch() async {
   //   final searchText = await showSearch<String>(
   //     context: context,
-  //     delegate: SearchWithSuggestionDelegate(
+  //     delegate: SearchDelegate<searchText>.showSuggestions(
   //       onSearchChanged: _getRecentSearchesLike,
   //     ),
   //   );
@@ -46,7 +46,7 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
     allSearches = pref.getStringList("recentSearches");
     print("get recent search");
     print(allSearches);
-    //return allSearches.where((search) => search.startsWith(query)).toList();
+    return allSearches.where((search) => search.startsWith(query)).toList();
   }
 
   Future<void> _saveToRecentSearches(String searchText) async {
@@ -111,8 +111,7 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
                     .where('displayName', isLessThan: searchKey + 'z')
                     .snapshots();
                 _getRecentSearchesLike(val);
-                //searchHistory(val);
-
+                searchHistory(val);
                 //_showSearch();
               });
 
@@ -138,10 +137,9 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
             return (snapshot.connectionState == ConnectionState.waiting)
                 ? Center(
                 child: Container(
-
                     child: CircularProgressIndicator())
             )
-                : Column(
+                :(snapshot.connectionState ==  ConnectionState.active)?Column(
               children: [
                   (snapshot.data.docs.length ==  0 || !snapshot.hasData)
                       ?ListView.builder(
@@ -229,7 +227,8 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
                   },
                 ),
               ],
-            );
+            ): Container()
+            ;
           },
         ),
       ),

@@ -452,6 +452,12 @@ class _OtherUserProfileState extends State<OtherUserProfile> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
+          leading: IconButton(
+            onPressed:(){
+            Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios,color: Colors.deepPurple)
+          ),
           title: Text(
             displayNameX,
             style: TextStyle(

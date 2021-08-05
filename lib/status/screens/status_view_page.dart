@@ -115,29 +115,33 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
               return Center(child: Text("nothing to show"));
             case ConnectionState.waiting:
               return Center(child: Text('waiting'));
-            default:
+            case ConnectionState.active:
               if (snapShot.hasData) {
                 getData();
                 addStoryItem();
                 return Material(
-                  child: StoryView(
-                    storyItems: storyItems,
-                    controller: controller,
-                    onVerticalSwipeComplete: (direction) {
-                      if (widget.myStatus && direction == Direction.up)
-                        Alert(
-                            context: context,
-                            title: "Views : $views",
-                            buttons: []).show();
-                      if (direction == Direction.down)
-                        Navigator.of(context).pop();
-                    },
-                    inline: false,
-                    onComplete: () {
-                      usrViewed();
-                      uploaderView();
-                      Navigator.of(context).pop();
-                    },
+                  child: Stack(
+                    children: [
+                      StoryView(
+                        storyItems: storyItems,
+                        controller: controller,
+                        onVerticalSwipeComplete: (direction) {
+                          if (widget.myStatus && direction == Direction.up)
+                            Alert(
+                                context: context,
+                                title: "Views : $views",
+                                buttons: []).show();
+                          if (direction == Direction.down)
+                            Navigator.of(context).pop();
+                        },
+                        inline: false,
+                        onComplete: () {
+                          usrViewed();
+                          uploaderView();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
                   ),
                 );
               }
