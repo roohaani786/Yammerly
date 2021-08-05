@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'Otheruser/other_user.dart';
 
 class CloudFirebaseFirestoreSearch extends StatefulWidget {
@@ -65,8 +64,14 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
   searchHistory(String val) async{
 
     print("search history");
-
+    await _getRecentSearchesLike(val);
     await _saveToRecentSearches(val);
+    await _saveToRecentSearches(val);
+  }
+  @override
+  initState(){
+    String val;
+    searchHistory(val);
   }
 
   String uidf = CloudFirebaseFirestoreSearch().uidX;
