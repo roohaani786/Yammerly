@@ -25,11 +25,11 @@ dependencies:
     sdk: flutter
   after_layout: null
   cached_network_image: null
-  camera: ^0.8.1+2
+  camera: ^0.8.0
   catcher: null
   cloud_firestore: ^2.2.0
   cupertino_icons: null
-  double_back_to_close_app: null
+  double_back_to_close_app: ^2.0.1
   firebase_auth: ^1.2.0
   firebase_core: null
   firebase_database: null
@@ -46,7 +46,7 @@ dependencies:
   image: null
   image_cropper: null
   image_editor_pro: null
-  image_gallery: null
+#  image_gallery: null
   image_picker: ^0.7.5
   local_auth: null
   path: null
@@ -67,7 +67,7 @@ dependencies:
   qr_flutter: ^4.0.0
   flutter_local_notifications: ^6.0.0
   photofilters: ^3.0.1
-  qr_code_scanner: ^0.5.1
+  qr_code_scanner: ^0.4.0
 
 dev_dependencies:
   flutter_test:

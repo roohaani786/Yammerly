@@ -69,8 +69,8 @@ android {
             minifyEnabled true
             shrinkResources true
 //            println MYAPP_RELEASE_KEY_PASSWORD
-            proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                    'proguard-rules.pro'
+            // proguardFiles getDefaultProguardFile('proguard-android.txt'),
+            //         'proguard-rules.pro'
         }
     }
 }
