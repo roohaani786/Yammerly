@@ -172,7 +172,9 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
                                   case 'true':
                                     return Text('');
                                   case 'false':
-                                    return GestureDetector(
+                                    return(snapShot.data.docs[i]
+                                        .data()["displayName"]
+                                        .toString() == curUsr)? GestureDetector(
                                       child: Card(
                                         child: ListTile(
                                           title: Text(snapShot.data.docs[i]
@@ -198,7 +200,7 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
                                                 builder: (context) =>
                                                     StatusViewScreen(id: id)));
                                       },
-                                    );
+                                    ):Container();
                                 }
                               },
                             );
@@ -229,7 +231,9 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
                                     return Text('');
 
                                   case 'true':
-                                    return GestureDetector(
+                                    return(snapShot.data.docs[i]
+                                        .data()["displayName"]
+                                        .toString() == curUsr)? GestureDetector(
                                       child: Card(
                                         child: ListTile(
                                           title: Text(snapShot.data.docs[i]
@@ -255,7 +259,7 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
                                                 builder: (context) =>
                                                     StatusViewScreen(id: id)));
                                       },
-                                    );
+                                    ):Container();
                                 }
                               },
                             );

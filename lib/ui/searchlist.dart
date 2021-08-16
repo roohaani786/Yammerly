@@ -39,7 +39,8 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
 
   List<String> allSearches = [];
 
-  Future<List<String>> _getRecentSearchesLike(String query) async {
+  Future<List<String>>
+  _getRecentSearchesLike(String query) async {
     final pref = await SharedPreferences.getInstance();
     allSearches = pref.getStringList("recentSearches");
     allSearches = pref.getStringList("recentSearches");

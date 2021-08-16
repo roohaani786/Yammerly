@@ -44,6 +44,8 @@ class postPage extends StatefulWidget {
 class _postPageState extends State<postPage> {
   bool isLoading = true;
   bool _liked = false;
+  int localLikes = 0;
+  bool isLiked = false;
   bool loading = false;
   bool isEditable = false;
   final String displayNamecurrentUser;
@@ -846,59 +848,81 @@ class _postPageState extends State<postPage> {
                                     IconButton(
                                       padding:
                                       EdgeInsets.only(left: 10),
-                                      onPressed: (likess[index] ==
-                                          true)
-                                          ? () {
-                                        if (timer?.isActive ??
-                                            false)
-                                          timer
-                                              .cancel(); //cancel if [timer] is null or running
-                                        timer = Timer(
-                                          const Duration(
-                                              milliseconds:
-                                              340),
-                                              () {
-                                            setState(() {
-                                              likess[index] =
-                                              false;
-                                              loading = true;
-                                            });
-                                            DatabaseService()
-                                                .unlikepost(
-                                                likes,
-                                                postId,
-                                                uidController
-                                                    .text,
-                                                displayNameController
-                                                    .text);
-                                          },
-                                        );
-                                      }
-                                          : () {
-                                        if (timer?.isActive ??
-                                            false)
-                                          timer
-                                              .cancel(); //cancel if [timer] is null or running
-                                        timer = Timer(
-                                          const Duration(
-                                              milliseconds:
-                                              340),
-                                              () {
-                                            setState(() {
-                                              likess[index] =
-                                              true;
-                                              loading = true;
-                                            });
-                                            DatabaseService()
-                                                .likepost(
-                                                likes,
-                                                postId,
-                                                uidController
-                                                    .text,
-                                                displayNameController
-                                                    .text);
-                                          },
-                                        );
+                                      // onPressed: (likess[index] ==
+                                      //     true)
+                                      //     ? () {
+                                      //   if (timer?.isActive ??
+                                      //       false)
+                                      //     timer
+                                      //         .cancel(); //cancel if [timer] is null or running
+                                      //   timer = Timer(
+                                      //     const Duration(
+                                      //         milliseconds:
+                                      //         340),
+                                      //         () {
+                                      //       setState(() {
+                                      //         likess[index] =
+                                      //         false;
+                                      //         loading = true;
+                                      //       });
+                                      //       DatabaseService()
+                                      //           .unlikepost(
+                                      //           likes,
+                                      //           postId,
+                                      //           uidController
+                                      //               .text,
+                                      //           displayNameController
+                                      //               .text);
+                                      //     },
+                                      //   );
+                                      // }
+                                      //     : () {
+                                      //   if (timer?.isActive ??
+                                      //       false)
+                                      //     timer
+                                      //         .cancel(); //cancel if [timer] is null or running
+                                      //   timer = Timer(
+                                      //     const Duration(
+                                      //         milliseconds:
+                                      //         340),
+                                      //         () {
+                                      //       setState(() {
+                                      //         likess[index] =
+                                      //         true;
+                                      //         loading = true;
+                                      //       });
+                                      //       DatabaseService()
+                                      //           .likepost(
+                                      //           likes,
+                                      //           postId,
+                                      //           uidController
+                                      //               .text,
+                                      //           displayNameController
+                                      //               .text);
+                                      //     },
+                                      //   );
+                                      // },
+                                      onPressed: (){
+                                        if(isLiked==false){
+                                          setState(() {
+                                            localLikes++;
+                                            DatabaseService().likepost(
+                                              localLikes-1,
+                                              postId,
+                                              uidController.text,
+                                              displayNameController.text
+                                            );
+                                            isLiked = true;
+                                          });
+                                        }
+                                        else{
+                                          setState(() {
+                                            localLikes--;
+                                            DatabaseService().unlikepost(
+                                              localLikes+1,postId,uidController.text,displayNameController.text
+                                            );
+                                          });
+                                        }
                                       },
                                       icon: Icon(Icons.thumb_up),
                                       iconSize: 25,
