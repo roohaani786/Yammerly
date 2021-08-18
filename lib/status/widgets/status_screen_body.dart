@@ -320,11 +320,12 @@ class MyStatus extends StatelessWidget {
           ),
           onTap: () {
             switch (snap.data) {
-              case 0:
+              case null:
                 return Center(
                   child: Text('nothing to show'),
                 );
               default:
+                if(snap.data != null){
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => StatusViewScreen(
@@ -334,6 +335,7 @@ class MyStatus extends StatelessWidget {
                   ),
                 );
             }
+          }
           },
         ),
       ),

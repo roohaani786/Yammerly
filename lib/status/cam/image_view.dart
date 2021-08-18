@@ -71,6 +71,14 @@ class ImageViewPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         actions: [
+          IconButton(
+              onPressed: () {
+              },
+              icon: Icon(
+                Icons.filter,
+                size: 18,
+                color: Colors.white,
+              )),
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: IconButton(

@@ -141,6 +141,10 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
                           Navigator.of(context).pop();
                         },
                       ),
+                      Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Icon(Icons.keyboard_arrow_up,size:28, color: Colors.white)
+                      ),
                     ],
                   ),
                 );
