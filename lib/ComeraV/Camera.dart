@@ -473,42 +473,42 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   Widget _modeControlRowWidget() {
     return Column(
       children: [
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //   mainAxisSize: MainAxisSize.max,
-        //   children: <Widget>[
-        //     IconButton(
-        //       icon: Icon(Icons.flash_on),
-        //       color: Colors.blue,
-        //       onPressed: controller != null ? onFlashModeButtonPressed : null,
-        //     ),
-        //     IconButton(
-        //       icon: Icon(Icons.exposure),
-        //       color: Colors.blue,
-        //       onPressed:
-        //       controller != null ? onExposureModeButtonPressed : null,
-        //     ),
-        //     IconButton(
-        //       icon: Icon(Icons.filter_center_focus),
-        //       color: Colors.blue,
-        //       onPressed: controller != null ? onFocusModeButtonPressed : null,
-        //     ),
-        //     IconButton(
-        //       icon: Icon(enableAudio ? Icons.volume_up : Icons.volume_mute),
-        //       color: Colors.blue,
-        //       onPressed: controller != null ? onAudioModeButtonPressed : null,
-        //     ),
-        //     IconButton(
-        //       icon: Icon(controller?.value?.isCaptureOrientationLocked ?? false
-        //           ? Icons.screen_lock_rotation
-        //           : Icons.screen_rotation),
-        //       color: Colors.blue,
-        //       onPressed: controller != null
-        //           ? onCaptureOrientationLockButtonPressed
-        //           : null,
-        //     ),
-        //   ],
-        // ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.flash_on),
+              color: Colors.white,
+              onPressed: controller != null ? onFlashModeButtonPressed : null,
+            ),
+            // IconButton(
+            //   icon: Icon(Icons.exposure),
+            //   color: Colors.blue,
+            //   onPressed:
+            //   controller != null ? onExposureModeButtonPressed : null,
+            // ),
+            // IconButton(
+            //   icon: Icon(Icons.filter_center_focus),
+            //   color: Colors.blue,
+            //   onPressed: controller != null ? onFocusModeButtonPressed : null,
+            // ),
+            // IconButton(
+            //   icon: Icon(enableAudio ? Icons.volume_up : Icons.volume_mute),
+            //   color: Colors.blue,
+            //   onPressed: controller != null ? onAudioModeButtonPressed : null,
+            // ),
+            // IconButton(
+            //   icon: Icon(controller?.value?.isCaptureOrientationLocked ?? false
+            //       ? Icons.screen_lock_rotation
+            //       : Icons.screen_rotation),
+            //   color: Colors.blue,
+            //   onPressed: controller != null
+            //       ? onCaptureOrientationLockButtonPressed
+            //       : null,
+            // ),
+          ],
+        ),
         _flashModeControlRowWidget(),
         _exposureModeControlRowWidget(),
         _focusModeControlRowWidget(),
@@ -534,15 +534,15 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                     ? () => onSetFlashModeButtonPressed(FlashMode.off)
                     : null,
               ),
-              IconButton(
-                icon: Icon(Icons.flash_auto),
-                color: controller?.value?.flashMode == FlashMode.auto
-                    ? Colors.orange
-                    : Colors.white,
-                onPressed: controller != null
-                    ? () => onSetFlashModeButtonPressed(FlashMode.auto)
-                    : null,
-              ),
+              // IconButton(
+              //   icon: Icon(Icons.flash_auto),
+              //   color: controller?.value?.flashMode == FlashMode.auto
+              //       ? Colors.orange
+              //       : Colors.white,
+              //   onPressed: controller != null
+              //       ? () => onSetFlashModeButtonPressed(FlashMode.auto)
+              //       : null,
+              // ),
               IconButton(
                 icon: Icon(Icons.flash_on),
                 color: controller?.value?.flashMode == FlashMode.always

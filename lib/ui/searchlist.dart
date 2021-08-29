@@ -41,6 +41,8 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
 
   Future<List<String>>
   _getRecentSearchesLike(String query) async {
+    print("search history");
+    print(query);
     final pref = await SharedPreferences.getInstance();
     allSearches = pref.getStringList("recentSearches");
     allSearches = pref.getStringList("recentSearches");
@@ -50,6 +52,7 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
   }
 
   Future<void> _saveToRecentSearches(String searchText) async {
+    print("save to recent searchs");
     if (searchText == null) return; //Should not be null
     final pref = await SharedPreferences.getInstance();
 
@@ -63,11 +66,12 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
   }
 
   searchHistory(String val) async{
-
-    print("search history");
-    await _getRecentSearchesLike(val);
-    await _saveToRecentSearches(val);
-    await _saveToRecentSearches(val);
+    print("search history function");
+    _getRecentSearchesLike(val);
+    print("search history up");
+    _saveToRecentSearches(val);
+    print("search history down");
+    // await _saveToRecentSearches(val);
   }
   @override
   initState(){
@@ -99,7 +103,8 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
           child: TextField(
             textInputAction: TextInputAction.search,
             onSubmitted: (val){
-              searchHistory(val);
+              _saveToRecentSearches(val);
+              // searchHistory(val);
             },
             decoration: InputDecoration(
 //                prefixIcon: Icon(Icons.search,color: Colors.white,),
@@ -117,7 +122,7 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
                     .where('displayName', isLessThan: searchKey + 'z')
                     .snapshots();
                 _getRecentSearchesLike(val);
-                searchHistory(val);
+               // searchHistory(val);
                 //_showSearch();
               });
 
@@ -150,7 +155,7 @@ class _CloudFirebaseFirestoreSearchState extends State<CloudFirebaseFirestoreSea
                   (snapshot.data.docs.length ==  0 || !snapshot.hasData)
                       ?ListView.builder(
                   shrinkWrap: true,
-                  itemCount: allSearches.length,
+                  itemCount: (allSearches == null)?0:allSearches.length,
                   itemBuilder: (context, index) {
                     return (index<5)?ListTile(
                       leading: Icon(Icons.restore),
