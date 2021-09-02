@@ -20,7 +20,7 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
   @override
   Widget build(BuildContext context) {
     List<Status> statusList = [];
-    List<StoryItem> storyItems = [];
+    List<StoryItem> storyItemss = [];
     final controller = StoryController();
 
     void addData(dynamic doc) {
@@ -56,13 +56,13 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
     void addStoryItem() {
       for (int i = 0; i < statusList.length; i++) {
         if (statusList[i].type == StatusType.text)
-          storyItems.add(
+          storyItemss.add(
             StoryItem.text(
                 title: statusList[i].data, backgroundColor: Colors.blue),
           );
 
         if (statusList[i].type == StatusType.image)
-          storyItems.add(
+          storyItemss.add(
             StoryItem.pageImage(
                 caption: statusList[i].caption,
                 url: statusList[i].data,
@@ -119,11 +119,14 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
               if (snapShot.hasData) {
                 getData();
                 addStoryItem();
-                return Material(
+                return
+
+                  (!storyItemss.isEmpty)?
+                  Material(
                   child: Stack(
                     children: [
                       StoryView(
-                        storyItems: storyItems,
+                        storyItems: storyItemss,
                         controller: controller,
                         onVerticalSwipeComplete: (direction) {
                           if (widget.myStatus && direction == Direction.up)
@@ -147,7 +150,8 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
                       ),
                     ],
                   ),
-                );
+                ):
+                  Scaffold(appBar: AppBar(backgroundColor: Colors.white,elevation: 0,automaticallyImplyLeading: false,leading : IconButton(onPressed:(){Navigator.pop(context);},icon: Icon(Icons.arrow_back_ios),color: Colors.deepPurple,)),body: Container(color: Colors.white,child: Center(child: Text("No story added by you yet",style: TextStyle(color: Colors.deepPurple),))));
               }
           }
         },
