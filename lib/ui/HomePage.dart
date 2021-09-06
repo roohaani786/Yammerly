@@ -228,8 +228,7 @@ class TabLayoutDemo extends StatefulWidget {
   _TabLayoutDemoState createState() => _TabLayoutDemoState(initialindexg);
 }
 
-bool hideappbar = false;
-bool hidebottombar = false;
+
 
 class _TabLayoutDemoState extends State<TabLayoutDemo>
     with SingleTickerProviderStateMixin {

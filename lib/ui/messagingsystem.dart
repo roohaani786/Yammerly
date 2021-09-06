@@ -14,22 +14,7 @@ class ConversationPage extends StatefulWidget {
 class _ConversationPageState extends State<ConversationPage> {
   final displayName;
   _ConversationPageState(this.displayName);
-//  void _onHorizontalDrag(DragEndDetails details) {
-//    if (details.primaryVelocity == 0)
-//      // user have just tapped on screen (no dragging)
-//      return;
-//
-//    if (details.primaryVelocity.compareTo(0) == -1) {
-//       dispose();
-//      return;
-//    }
-//    else {
-//      Navigator.push(
-//        context,
-//        MaterialPageRoute(builder: (context) => HomePage(initialindexg: 4)),
-//      );
-//    }
-//  }
+
 
   getUserName(List<dynamic> users) {
     print('tst' + users[0]);
@@ -71,7 +56,7 @@ class _ConversationPageState extends State<ConversationPage> {
         else {
           DateTime time =
           DateTime.tryParse(snap.data.data()['last seen'].toString());
-          return Text(
+          return (time == null)?Container():Text(
             '${time.hour}:${time.minute}',
             style: TextStyle(fontStyle: FontStyle.italic),
           );

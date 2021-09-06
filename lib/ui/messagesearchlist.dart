@@ -146,12 +146,12 @@ class _searchtomessageState extends State<SearchtoMessage> {
                     String uid = snapshot.data.docs[index]["uid"];
                     String displayName =
                         snapshot.data.docs[index]["displayName"];
-                    print(displayName);
+                    print("displayname:"+displayName);
                     return (searchKey != null)
                         ? GestureDetector(
                             onTap: () {
-                              print("user pe click kiya");
-                              createChatRoombySearch(searchKey);
+                              print("user pe click kiya :"+ searchKey + displayName);
+                              createChatRoombySearch(displayName);
                               // print(searchKey);
                             },
                             child: Card(

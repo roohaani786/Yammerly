@@ -183,7 +183,7 @@ class CameraScreenState extends State<CameraScreen>
       DeviceOrientation.portraitDown,
     ]);
 
-    _controller.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 
@@ -405,13 +405,19 @@ class CameraScreenState extends State<CameraScreen>
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    dispose();
+                    // dispose();
                     // Navigator.pop(context,
                     //   MaterialPageRoute(builder: (context) => HomePage()),);
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => MyApp()),
+                    // );
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyApp()),
-                    );
+                        context,
+                        MaterialPageRoute(
+                        builder: (context) {
+                      return HomePage(initialindexg: 1);
+                    },));
                     //Navigator.pushNamed(context, '/HomePage');
                     //Navigator.of(context, rootNavigator: true).pop(context);
                     //Navigator.of(context).maybePop();

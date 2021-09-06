@@ -270,9 +270,17 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                                 color: Colors.white,
                               ),
                               onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return HomePage(initialindexg: 1);
+                                    },
+                                  ),
+                                );
                                 // Navigator.pop(context,
                                 //   MaterialPageRoute(builder: (context) => HomePage()),);
-                                Navigator.of(context).pop();
+                                // Navigator.of(context).pop();
                               },
                             ),
                           ),
