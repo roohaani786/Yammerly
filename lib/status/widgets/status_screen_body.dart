@@ -29,7 +29,9 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
         .collection('users')
         .doc(curUsr.uid)
         .get();
-    curUsrPic = result.data()["photoURL"];
+    setState(() {
+      curUsrPic = result.data()["photoURL"];
+    });
   }
 
   isViewed(String id) async {
@@ -145,6 +147,7 @@ class _StatusScreenBodyState extends State<StatusScreenBody> {
                         ),
                       ),
                     ],
+
                   ),
                   SizedBox(height: 20),
                   viewRecent
@@ -288,14 +291,14 @@ class MyStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    isMyStatus() async {
+    Future isMyStatus() async {
       var result = await FirebaseFirestore.instance
           .collection("story")
           .doc(curUsr.email)
           .collection("uploaded status")
           .get();
 
-      return result.size;
+      return result;
     }
 
     return FutureBuilder(
@@ -319,13 +322,12 @@ class MyStatus extends StatelessWidget {
             ),
           ),
           onTap: () {
-            switch (snap.data) {
-              case null:
+            if(snap.data == null){
                 return Center(
                   child: Text('nothing to show'),
-                );
-              default:
-                if(snap.data != null){
+                );}
+             else
+                if(snap.data !=null){
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => StatusViewScreen(
@@ -336,8 +338,7 @@ class MyStatus extends StatelessWidget {
                 );
             }
           }
-          },
-        ),
+          ),
       ),
     );
   }
