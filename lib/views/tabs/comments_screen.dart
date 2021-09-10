@@ -342,7 +342,7 @@ class Comment extends StatelessWidget {
         .delete();
   }
 
-  deleteComments(String displayNameComment) async {
+  deleteComments(String displayNameComment,context) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String displayName = prefs.getString("displayName");
@@ -354,6 +354,9 @@ class Comment extends StatelessWidget {
     print(commCount);
     print("delete comment");
     //int deleteC= comments+commCount;
+    print(displayNameComment);
+    print(displayNameCurrUser);
+    print(displayName);
 
 
     if(displayNameComment == displayNameCurrUser){
@@ -363,23 +366,24 @@ class Comment extends StatelessWidget {
       print(displayNameCurrUser);
       await FirebaseFirestore.instance.collection('posts').doc(postId)
           .collection("comments").doc(commentId).delete();
+      DeleteNotification();
 
     }
-    else if(displayName == displayNameCurrUser){
-      print("delte clickd");
-      DatabaseService().CommentD(postId,comments,commCount);
-      print(postId);
-      print(displayName);
-      print("halelula");
-      print(displayNameCurrUser);
-      await FirebaseFirestore.instance.collection('posts').doc(postId)
-          .collection("comments").doc(commentId).delete();
-    }
+    // else if(displayName == displayNameCurrUser){
+    //   print("delte clickd");
+    //   DatabaseService().CommentD(postId,comments,commCount);
+    //   print(postId);
+    //   print(displayName);
+    //   print("halelula");
+    //   print(displayNameCurrUser);
+    //   await FirebaseFirestore.instance.collection('posts').doc(postId)
+    //       .collection("comments").doc(commentId).delete();
+    // }
     else{
       print("aaya bhai ko");
       return showDialog(
           context: context,
-          builder: (context) {
+          builder: (BuildContext context) {
             return AlertDialog(
               title: Text('You are not the owner of this comment'),
               actions: <Widget>[
@@ -443,11 +447,11 @@ class Comment extends StatelessWidget {
 
                       ),
                     ),
-                  IconButton(
+                    IconButton(
                     icon: Icon(Icons.delete),
                     onPressed: () {
-                      deleteComments(userName);
-                      DeleteNotification();
+                      deleteComments(userName,context);
+
                       print("delete me");
                     },
                   )

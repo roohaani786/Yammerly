@@ -6,16 +6,21 @@
 
 import 'dart:async';
 import 'dart:io';
-
+import 'package:get/get.dart';
 import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:techstagram/ComeraV/filters.dart';
 import 'package:techstagram/ComeraV/gallery.dart';
 import 'package:techstagram/ComeraV/video_preview.dart';
 import 'package:techstagram/resources/uploadimage.dart';
+import 'package:techstagram/status/model/status_model.dart';
 import 'package:techstagram/ui/HomePage.dart';
 import 'package:video_player/video_player.dart';
 
@@ -329,7 +334,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                           ),
                           Align(
                               alignment: Alignment.bottomCenter,
-                              child: _captureControlRowWidget()),
+                              child: _captureControlRowWidget(context)),
                         ],
                       ),
                     ),
@@ -486,8 +491,21 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.flash_on),
-              color: Colors.white,
+              icon: (controller?.value?.flashMode == FlashMode.always)
+                  ?Icon(Icons.flash_on)
+                  :(controller?.value?.flashMode == FlashMode.off)
+                  ?Icon(Icons.flash_off)
+                  :(controller?.value?.flashMode == FlashMode.torch)
+                  ?Icon(Icons.highlight)
+                 :Icon(Icons.flash_on),
+                  //:(Icons.flash_on),
+              color: (controller?.value?.flashMode == FlashMode.always)
+                  ?Colors.orange
+                  :(controller?.value?.flashMode == FlashMode.off)
+                  ?Colors.orange
+                  :(controller?.value?.flashMode == FlashMode.torch)
+                  ?Colors.orange
+                  :Colors.white,
               onPressed: controller != null ? onFlashModeButtonPressed : null,
             ),
             // IconButton(
@@ -742,7 +760,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   bool _isRecording = false;
 
   /// Display the control bar with buttons to take pictures and record videos.
-  Widget _captureControlRowWidget() {
+  Widget _captureControlRowWidget(context) {
     return Container(
       height: 100,
       child: Row(
@@ -830,11 +848,34 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                             )
                           : Icon(Icons.camera_alt),
                       color: Colors.black,
-                      onPressed: controller != null &&
-                              controller.value.isInitialized &&
-                              !controller.value.isRecordingVideo
-                          ? onTakePictureButtonPressed
-                          : null,
+                      onPressed: (){
+                        controller != null &&
+                            controller.value.isInitialized &&
+                            !controller.value.isRecordingVideo
+                            ?takePicture().then((XFile file) {
+                          if (mounted) {
+                            setState(() {
+                              imageFile = file;
+                              videoController?.dispose();
+                              videoController = null;
+                            });
+                            if (file != null)
+                              onTakePictureButtonPressed(context,file);
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) =>
+                              //           Gallery(
+                              //             filePath: file,
+                              //             cam: cam,
+                              //           )),
+                              // );
+                          }
+                        })
+                            // ? onTakePictureButtonPressed(context)
+                            : null;
+
+                      },
                     ),
                   ),
                 )
@@ -1027,27 +1068,105 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     }
   }
 
-  void onTakePictureButtonPressed() {
+  void onTakePictureButtonPressed(context,file) {
     print("camera start 2");
-    takePicture().then((XFile file) {
-      if (mounted) {
-        setState(() {
-          imageFile = file;
-          videoController?.dispose();
-          videoController = null;
-        });
-        if (file != null)
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Gallery(
-                      filePath: file,
-                      cam: cam,
-                    )),
-          );
-        //showInSnackBar('Picture saved to ${file.path}');
-      }
-    });
+    Alert(
+      closeFunction: () {
+        Navigator.of(context).pop();
+        setState(() {});
+      },
+      context: context,
+      title: 'Select Photo',
+      buttons: [
+        DialogButton(
+            color: Colors.deepPurple[400],
+            child: Text(
+              'Upload Photo on home feed',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              print("photo upload");
+              // uploadFile();
+              // Get.to(Gallery(filePath: file, cam: cam,));
+              takePicture().then((XFile file) {
+                if (mounted) {
+                  setState(() {
+                    imageFile = file;
+                    videoController?.dispose();
+                    videoController = null;
+                  });
+                  if (file != null)
+                    // onTakePictureButtonPressed(context,file);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Gallery(
+                              filePath: file,
+                              cam: cam,
+                            )),
+                  );
+                }
+              });
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => Gallery(
+                  //         filePath: file,
+                  //         cam: cam,
+                  //       )),
+                  // );
+                //showInSnackBar('Picture saved to ${file.path}');
+              print("after photo upload");
+              Navigator.of(context).pop();
+              setState(() {});
+
+            }),
+        DialogButton(
+            color: Colors.deepPurple[400],
+            child: Text(
+              'Upload Photo in status',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+                uploadFile(File(file.path),context);
+
+              Navigator.of(context).pop();
+              setState(() {});
+            })
+      ],
+    ).show();
+
+  }
+
+  Future uploadFile(File file,context) async {
+    getCurrentUser();
+    Reference storageRef = FirebaseStorage.instance
+        .ref()
+        .child("Story")
+        .child(uid)
+        .child(DateTime.now().toString());
+
+    UploadTask uploadTask = storageRef.putFile(file);
+    TaskSnapshot taskSnapshot = await uploadTask;
+
+    urlDownload = await taskSnapshot.ref.getDownloadURL();
+
+    final Status status =
+    Status(data: urlDownload, type: StatusType.image, caption: '');
+    status.addMediaStatus();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Yay! Status Upload successfully!')));
+  }
+
+  String uid;
+  User currUser = FirebaseAuth.instance.currentUser;
+  String urlDownload;
+  getCurrentUser() async {
+    var docSnap = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(currUser.uid)
+        .get();
+    uid = docSnap["uid"];
   }
 
   void onFlashModeButtonPressed() {
