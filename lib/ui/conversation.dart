@@ -51,6 +51,7 @@ class _ConversationScreenState extends State<ConversationScreen>
     isTyping = false;
     super.initState();
   }
+  ScrollController controller = new ScrollController();
 
   Widget ChatMessageList() {
     return StreamBuilder(
@@ -60,6 +61,7 @@ class _ConversationScreenState extends State<ConversationScreen>
             //   onlineCheck();
             return ListView.builder(
                 itemCount: snapshot.data.docs.length,
+                controller: controller,
                 itemBuilder: (context, index) {
                   return MessageTile(
                       snapshot.data.docs[index].data()["message"],
@@ -179,6 +181,7 @@ class _ConversationScreenState extends State<ConversationScreen>
                         isTyping = false;
                         updateTypingState();
                         SendMessage();
+                        controller.jumpTo(controller.position.maxScrollExtent);
                       },
                     ),
                   ],

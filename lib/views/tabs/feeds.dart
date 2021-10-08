@@ -455,9 +455,17 @@ class _FeedsPageState extends State<FeedsPage> {
                                     null) {
                                   OwnerUid = aja['OwnerUid'];
                                 }
+                                print("jsjjjk");
+                                bool isVideo;
 
-//print("push");
-                                bool isVideo = aja['isVideo'];
+                                if (snapshot.data.docs[index]
+                                    .data()
+                                    .containsKey('isVideo') ==
+                                    null) {
+                                  isVideo = aja['isVideo'];
+                                }
+//print("push")
+
 
                                 if (isVideo == null) {
                                   isVideo = false;

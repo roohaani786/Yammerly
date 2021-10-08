@@ -860,16 +860,16 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                               videoController = null;
                             });
                             if (file != null)
-                              onTakePictureButtonPressed(context,file);
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) =>
-                              //           Gallery(
-                              //             filePath: file,
-                              //             cam: cam,
-                              //           )),
-                              // );
+                              // onTakePictureButtonPressed(context,file);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Gallery(
+                                          filePath: file,
+                                          cam: cam,
+                                        )),
+                              );
                           }
                         })
                             // ? onTakePictureButtonPressed(context)

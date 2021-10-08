@@ -1,15 +1,22 @@
 import 'dart:io';
 import 'dart:math' as math;
 import 'package:camera/camera.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path/path.dart' as path;
 import 'package:photofilters/filters/preset_filters.dart';
 import 'package:photofilters/widgets/photo_filter.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:techstagram/ComeraV/Camera.dart';
 import 'package:techstagram/resources/uploadimage.dart';
 import 'package:image/image.dart' as imageLib;
+import 'package:techstagram/status/model/status_model.dart';
+import 'package:techstagram/ui/HomePage.dart';
+import 'package:video_player/video_player.dart';
 
 class Gallery extends StatefulWidget {
   Gallery({this.filePath, this.cam});
@@ -28,6 +35,11 @@ class _GalleryState extends State<Gallery> {
   int cam;
   File image;
   bool _inProcess = false;
+  CameraController controller;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  XFile imageFile;
+  XFile videoFile;
+  VideoPlayerController videoController;
 
   _GalleryState(this.currentFilePath, this.cam);
 
@@ -162,15 +174,156 @@ class _GalleryState extends State<Gallery> {
     }
   }
 
+  void showInSnackBar(String message) {
+    // ignore: deprecated_member_use
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<XFile> takePicture() async {
+    if (!controller.value.isInitialized) {
+      showInSnackBar('Error: select a camera first.');
+      return null;
+    }
+
+    if (controller.value.isTakingPicture) {
+      // A capture is already pending, do nothing.
+      return null;
+    }
+
+    try {
+      XFile file = await controller.takePicture();
+      return file;
+    } on CameraException catch (e) {
+      _showCameraException(e);
+      return null;
+    }
+  }
+
+
+  void _showCameraException(CameraException e) {
+    logError(e.code, e.description);
+    showInSnackBar('Error: ${e.code}\n${e.description}');
+  }
+
   getImage(File file) async {
     cropImage(File(currentFilePath.path));
+    print("home feed");
+    print(_selectedFile);
     if (_selectedFile != null)
+      print("in if condition");
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => UploadImage(
                 file: _selectedFile, shared: false, isVideo: false)),
       );
+  }
+
+  void onTakePictureButtonPressed(context,file) {
+    print("camera start 2");
+    Alert(
+      closeFunction: () {
+        Navigator.of(context).pop();
+        setState(() {});
+      },
+      context: context,
+      title: 'Select Photo',
+      buttons: [
+        DialogButton(
+            color: Colors.deepPurple[400],
+            child: Text(
+              'Upload Photo on home feed',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              print("photo upload");
+              // uploadFile();
+              // Get.to(Gallery(filePath: file, cam: cam,));
+              getImage(File(file.path));
+              // takePicture().then((XFile file) {
+              //   if (mounted) {
+              //     setState(() {
+              //       imageFile = file;
+              //       videoController?.dispose();
+              //       videoController = null;
+              //     });
+              //     if (file != null)
+              //       // onTakePictureButtonPressed(context,file);
+              //
+              //       // Navigator.push(
+              //       //   context,
+              //       //   MaterialPageRoute(
+              //       //       builder: (context) =>
+              //       //           Gallery(
+              //       //             filePath: file,
+              //       //             cam: cam,
+              //       //           )),
+              //       // );
+              //   }
+              // });
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => Gallery(
+              //         filePath: file,
+              //         cam: cam,
+              //       )),
+              // );
+              //showInSnackBar('Picture saved to ${file.path}');
+              print("after photo upload");
+              Navigator.of(context).pop();
+              setState(() {});
+
+            }),
+        DialogButton(
+            color: Colors.deepPurple[400],
+            child: Text(
+              'Upload Photo in status',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              uploadFile(File(file.path),context);
+
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage(initialindexg: 0)),
+              );
+              setState(() {});
+            })
+      ],
+    ).show();
+
+  }
+
+  Future uploadFile(File file,context) async {
+    getCurrentUser();
+    Reference storageRef = FirebaseStorage.instance
+        .ref()
+        .child("Story")
+        .child(uid)
+        .child(DateTime.now().toString());
+
+    UploadTask uploadTask = storageRef.putFile(file);
+    TaskSnapshot taskSnapshot = await uploadTask;
+
+    urlDownload = await taskSnapshot.ref.getDownloadURL();
+
+    final Status status =
+    Status(data: urlDownload, type: StatusType.image, caption: '');
+    status.addMediaStatus();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Yay! Status Upload successfully!')));
+  }
+
+  String uid;
+  User currUser = FirebaseAuth.instance.currentUser;
+  String urlDownload;
+  getCurrentUser() async {
+    var docSnap = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(currUser.uid)
+        .get();
+    uid = docSnap["uid"];
   }
 
   @override
@@ -303,7 +456,8 @@ class _GalleryState extends State<Gallery> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            getImage(File(currentFilePath.path));
+                            onTakePictureButtonPressed(context,File(currentFilePath.path));
+                            // getImage(File(currentFilePath.path));
                           },
                           child:
                               Text((_selectedFile != null) ? 'Post' : 'Crop'),

@@ -175,6 +175,9 @@ class CameraScreenState extends State<CameraScreen>
   void dispose() {
     _flashModeControlRowAnimationController.dispose();
     _exposureModeControlRowAnimationController.dispose();
+    setState(() {
+
+    });
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
