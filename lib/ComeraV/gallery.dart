@@ -211,12 +211,18 @@ class _GalleryState extends State<Gallery> {
     print(_selectedFile);
     if (_selectedFile != null)
       print("in if condition");
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => UploadImage(
-                file: _selectedFile, shared: false, isVideo: false)),
-      );
+    Navigator.of(context).push(
+      MaterialPageRoute(
+          builder: (context) => UploadImage(
+              file: _selectedFile, shared: false, isVideo: false)),
+    );
+    print("afeter if");
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => UploadImage(
+      //           file: _selectedFile, shared: false, isVideo: false)),
+      // );
   }
 
   void onTakePictureButtonPressed(context,file) {
